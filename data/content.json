@@ -1,0 +1,27 @@
+[
+  
+  {
+    "id": 1,
+    "title": "Monte Carlo Simulation Applications",
+    "description": "This article is part of the problem set, focusing on Monte Carlo Simulation Applications.",
+    "category": "Article",
+    "author": "MIN",
+    "date": "2024-01-01",
+    "tags": ["Mathematics", "Mechanics", "Methods"],
+    "slug": "mathematical-methods-mechanics",
+    "filePath": "/public/content/articles/MMM.pdf",
+    "downloadLink": "/public/content/articles/MMM.pdf"
+  },
+  {
+    "id": 2,
+    "title": "IMO 2023 Shortlist Problem",
+    "description": "A problem from the 2023 International Mathematical Olympiad Shortlist.",
+    "category": "Problem",
+    "author": "IMO Committee",
+    "date": "2023-07-01",
+    "tags": ["IMO", "Problem Solving", "Geometry"],
+    "slug": "imo-2023-shortlist-problem",
+    "filePath": "/content/problems/IMO2023SL.pdf",
+    "downloadLink": "/content/problems/IMO2023SL.pdf"
+  }
+]

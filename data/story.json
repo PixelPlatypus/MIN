@@ -1,0 +1,38 @@
+[
+  {
+    "year": "2020",
+    "title": "The Beginning",
+    "description": "MIN was founded with a vision to democratize mathematics education in Nepal",
+    "icon": "Target"
+  },
+  {
+    "year": "2021",
+    "title": "First Programs",
+    "description": "Launched ETA Campaigns and Junior Mathematics Olympiad Camp (JMOC)",
+    "icon": "BookOpen"
+  },
+  {
+    "year": "2022",
+    "title": "Community Growth",
+    "description": "Expanded to 500+ students and launched Women in Mathematics initiative",
+    "icon": "Users"
+  },
+  {
+    "year": "2023",
+    "title": "Digital Innovation",
+    "description": "Started YouTube series and Mathematical Modelling Bootcamp (M³)",
+    "icon": "Rocket"
+  },
+  {
+    "year": "2024",
+    "title": "National Impact",
+    "description": "Reached 1000+ students across Nepal with comprehensive programs",
+    "icon": "Globe"
+  },
+  {
+    "year": "2025",
+    "title": "Future Vision",
+    "description": "Expanding digital presence and international collaborations",
+    "icon": "Award"
+  }
+]

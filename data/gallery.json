@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "title": "MIN STEM Adventure",
+    "category": "Event",
+    "tags": [],
+    "image": "/gallery/2.png",
+    "description": ""
+  },
+  {
+    "id": 2,
+    "title": "Road to Olympiad (RTO) Session",
+    "category": "RTO",
+    "tags": [],
+    "image": "/gallery/3.png",
+    "description": ""
+  },
+  {
+    "id": 3,
+    "title": "ETA Module at FPL",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/4.png",
+    "description": ""
+  },
+  {
+    "id": 4,
+    "title": "Graph Theory at FPL",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/5.png",
+    "description": ""
+  },
+  {
+    "id": 5,
+    "title": "Graph Theory",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/6.png",
+    "description": ""
+  },
+  {
+    "id": 6,
+    "title": "ETA Session",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/7.png",
+    "description": ""
+  },
+  {
+    "id": 7,
+    "title": "ETA Session",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/8.png",
+    "description": ""
+  },
+  {
+    "id": 8,
+    "title": "ETA Session",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/9.png",
+    "description": ""
+  },
+  {
+    "id": 9,
+    "title": "ETA Session Graph Theory",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/10.png",
+    "description": ""
+  },
+  {
+    "id": 10,
+    "title": "Student Engagement",
+    "category": "Community",
+    "tags": [],
+    "image": "/gallery/11.png",
+    "description": ""
+  },
+  {
+    "id": 11,
+    "title": "Graph Theory Session",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/12.png",
+    "description": ""
+  },
+  {
+    "id": 12,
+    "title": "Idea Pitching",
+    "category": "Team",
+    "tags": [],
+    "image": "/gallery/13.png",
+    "description": ""
+  },
+  {
+    "id": 13,
+    "title": "Ideathon at MIN",
+    "category": "Team",
+    "tags": [],
+    "image": "/gallery/14.png",
+    "description": ""
+  },
+  {
+    "id": 14,
+    "title": "Arts and Craft",
+    "category": "Community",
+    "tags": [],
+    "image": "/gallery/15.png",
+    "description": ""
+  },
+  {
+    "id": 15,
+    "title": "MIN Badges for Kid",
+    "category": "Community",
+    "tags": [],
+    "image": "/gallery/16.png",
+    "description": ""
+  },
+  {
+    "id": 16,
+    "title": "Fun Mela at Lalitpur",
+    "category": "Community",
+    "tags": [],
+    "image": "/gallery/17.png",
+    "description": ""
+  },
+  {
+    "id": 17,
+    "title": "Treasure Hunt",
+    "category": "Community",
+    "tags": [],
+    "image": "/gallery/18.png",
+    "description": ""
+  },
+  {
+    "id": 18,
+    "title": "Cryptography Session",
+    "category": "ETA",
+    "tags": [],
+    "image": "/gallery/19.png",
+    "description": ""
+  },
+  {
+    "id": 19,
+    "title": "Fun Mela",
+    "category": "Community",
+    "tags": [],
+    "image": "/gallery/20.png",
+    "description": ""
+  },
+  {
+    "id": 20,
+    "title": "Teaching Math with Games",
+    "category": "Community",
+    "tags": [],
+    "image": "/gallery/21.png",
+    "description": ""
+  }
+]

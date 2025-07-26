@@ -1,0 +1,10 @@
+{
+  "volunteer": {
+    "link": "volunteer.link",
+    "text": "Apply as a Volunteer"
+  },
+  "partnership": {
+    "link": "test.link",
+    "text": "Request Partnership"
+  }
+}

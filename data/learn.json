@@ -1,0 +1,204 @@
+{
+"videoCourses": [
+    {
+      "id": "MMM_Bootcamp_2025",
+      "title": "MMM Bootcamp 2025",
+      "description": "A comprehensive bootcamp on model assessment in data science and mathematics, covering accuracy, precision, interpretability, generalizability, efficiency, residual analysis, R square, AIC, F test, and sensitivity analysis.",
+      "videoCount": 28,
+      "thumbnail": "https://i.ytimg.com/vi/JIVd-XcgWhY/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=JIVd-XcgWhY&list=PLP-XS8Gh9pzcC-3lRwvC_HlN61It89XGz&ab_channel=MathematicsInitiativesinNepal-MIN",
+      "category": "IMMC"
+    },
+    {
+      "id": "JMOC_2023",
+      "title": "JMOC 2023",
+      "description": "Junior Mathematical Olympiad Camp focusing on foundations of proof, including indirect methods like proof by contradiction and contrapositive with problem-solving sessions led by expert participants.",
+      "videoCount": 20,
+      "thumbnail": "https://i.ytimg.com/vi/oUlY3dz7cqE/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=oUlY3dz7cqE&list=PLP-XS8Gh9pze5XcXq2ZIjuCSmoGTxeuTJ",
+      "category": "JMOC"
+    },
+    {
+      "id": "JMOC_2022",
+      "title": "JMOC 2022",
+      "description": "Junior Mathematical Olympiad Camp 2022 focusing on fundamental problem-solving techniques and advanced mathematical concepts for Olympiad preparation.",
+      "videoCount": 15,
+      "thumbnail": "https://i.ytimg.com/vi/habU_7LgwI0/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=habU_7LgwI0&list=PLP-XS8Gh9pzcx7z3OTTH1G8zTEoeMx4IG&ab_channel=MathematicsInitiativesinNepal-MIN",
+      "category": "JMOC"
+    },
+    {
+      "id": "GMOC",
+      "title": "GMOC",
+      "description": "Geometry Mathematical Olympiad Camp introducing Euclidean geometry and advanced problem-solving strategies for competition.",
+      "videoCount": 18,
+      "thumbnail": "https://i.ytimg.com/vi/8JXLuXme2Os/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=8JXLuXme2Os&list=PLP-XS8Gh9pzduoDbZIUpqQvS9LV5WSu0T&ab_channel=MathematicsInitiativesinNepal-MIN",
+      "category": "JMOC"
+    },
+    {
+      "id": "OlymPrep",
+      "title": "OlymPrep",
+      "description": "Preparation series for mathematical olympiads covering a wide range of problem types and solution methods.",
+      "videoCount": 22,
+      "thumbnail": "https://i.ytimg.com/vi/FL-H6uva51o/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=FL-H6uva51o&list=PLP-XS8Gh9pzfW5ZWNo-1QoPkDW94vPqrY&ab_channel=MathematicsInitiativesinNepal-MIN",
+      "category": "IMO"
+    },
+    {
+      "id": "Road_to_Olympiad_2021",
+      "title": "Road to Olympiad 2021",
+      "description": "Roadmap series to prepare students for mathematics olympiads with foundational topics and problem-solving techniques.",
+      "videoCount": 20,
+      "thumbnail": "https://i.ytimg.com/vi/JfTOfFOtiwk/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=JfTOfFOtiwk&list=PLP-XS8Gh9pzcO5S15vmZ_AVvkvVFBqiky&ab_channel=MathematicsInitiativesinNepal-MIN",
+      "category": "IMO"
+    },
+    {
+      "id": "Eli5_Series",
+      "title": "Eli5 Series",
+      "description": "Mathematical concepts explained in simple terms, aimed at enhancing conceptual understanding for all levels.",
+      "videoCount": 12,
+      "thumbnail": "https://i.ytimg.com/vi/n1XXH8RO3GA/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=n1XXH8RO3GA&list=PLP-XS8Gh9pzc4SjzeWsnkcwgrj98C23OH&ab_channel=MathematicsInitiativesinNepal-MIN",
+      "category": "General"
+    },
+    {
+      "id": "Calculus_Made_EZ",
+      "title": "Calculus Made EZ",
+      "description": "Simplified explanations of calculus concepts with detailed walkthroughs on limits, derivatives, and integrals.",
+      "videoCount": 25,
+      "thumbnail": "https://i.ytimg.com/vi/Vc0N9JGtb6E/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=Vc0N9JGtb6E&list=PLP-XS8Gh9pzdUyDZeqtlhPUfKThWuW4CH&ab_channel=MathematicsInitiativesinNepal-MIN",
+      "category": "General"
+    },
+    {
+      "id": "Game_Theory_Made_EZ",
+      "title": "Game Theory Made EZ",
+      "description": "An introduction to game theory concepts such as strategic games, Nash equilibrium, and applications in economics and social science.",
+      "videoCount": 10,
+      "thumbnail": "https://i.ytimg.com/vi/ky6jrE_uzzc/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=ky6jrE_uzzc&list=PLP-XS8Gh9pzcd_RKXUb5hx0dwmooxs6G-&index=5&ab_channel=MathematicsInitiativesinNepal-MIN",
+      "category": "General"
+    },
+    {
+      "id": "Eulers_Day_Celebrations",
+      "title": "Eulers Day Celebrations",
+      "description": "Videos and events celebrating the mathematical legacy of Euler, exploring his contributions and related mathematical concepts.",
+      "videoCount": 5,
+      "thumbnail": "https://i.ytimg.com/vi/GMjYZS5rddk/hqdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=GMjYZS5rddk&list=PLP-XS8Gh9pzcehcE47cGh8vKv3PeBnFKW",
+      "category": "General"
+    }
+  ],
+  "funSeries": [
+    {
+      "id": "fun1",
+      "title": "Made EZ Explained",
+      "description": "The most complex mathematical concepts, explained as if you're 5 years old. Mathematical genius meets childlike wonder.",
+      "videoCount": 15,
+      "thumbnail": "/placeholder.svg?height=200&width=300&text=Made+EZ",
+      "url": "https://www.youtube.com/watch?v=NQxF1X07joQ&list=PLP-XS8Gh9pzcd_RKXUb5hx0dwmooxs6G-"
+    },
+    {
+      "id": "fun3",
+      "title": "Math in Real Life",
+      "description": "Discover how mathematics lives, breathes, and thrives in your everyday world. From cooking to cosmos.",
+      "videoCount": 12,
+      "thumbnail": "/placeholder.svg?height=200&width=300&text=Real+Life+Math",
+      "url": "https://www.youtube.com/watch?v=A-QgGXbDyR0&list=PLE3376FF44087B17B&ab_channel=TED-Ed"
+    }
+  ],
+  "resourcesData": [
+    {
+      "category": "IMO",
+      "title": "International Mathematical Olympiad Resources",
+      "resources": [
+        {
+          "name": "IMO Official Portal",
+          "url": "https://www.imo-official.org/"
+        },
+        {
+          "name": "Past IMO Problems & Solutions",
+          "url": "https://www.imo-official.org/problems.aspx"
+        },
+        {
+          "name": "Art of Problem Solving (AoPS) Community",
+          "url": "https://artofproblemsolving.com/community"
+        }
+      ]
+    },
+    {
+      "category": "IMMC",
+      "title": "International Mathematical Modelling Challenge (IMMC) Resources",
+      "resources": [
+        {
+          "name": "IMMC Official Website",
+          "url": "https://www.immchallenge.org/"
+        },
+        {
+          "name": "IMMC Supporting Resources and Guidebook",
+          "url": "https://www.immchallenge.org.au/supporting-resources"
+        },
+        {
+          "name": "IMMC Past Problems and Reports",
+          "url": "https://www.immchallenge.org.au/supporting-resources/example-problems"
+        },
+        {
+          "name": "COMAP - Consortium for Mathematics and Its Applications",
+          "url": "https://www.comap.com/contests/immc"
+        },
+        {
+          "name": "Mathematical Modelling Resources - SIAM",
+          "url": "https://www.siam.org/careers-education/resources/education-resources/mathematical-modeling"
+        },
+        {
+          "name": "Introduction to Mathematical Modelling Videos (YouTube)",
+          "url": "https://www.youtube.com/results?search_query=mathematical+modelling+tutorial"
+        }
+      ]
+    },
+    {
+      "category": "General",
+      "title": "General Mathematics Resources",
+      "resources": [
+        {
+          "name": "arXiv (Preprint Server)",
+          "url": "https://arxiv.org/"
+        },
+        {
+          "name": "JSTOR (Mathematics Collection)",
+          "url": "https://www.jstor.org/disciplines/mathematics"
+        },
+        {
+          "name": "MathSciNet (AMS)",
+          "url": "https://mathscinet.ams.org/mathscinet"
+        },
+        {
+          "name": "Wolfram Alpha",
+          "url": "https://www.wolframalpha.com/"
+        },
+        {
+          "name": "GeoGebra",
+          "url": "https://www.geogebra.org/"
+        },
+        {
+          "name": "LaTeX Project",
+          "url": "https://www.latex-project.org/"
+        },
+        {
+          "name": "Principles of Mathematical Analysis by Walter Rudin",
+          "url": "https://www.amazon.com/Principles-Mathematical-Analysis-International-Mathematics/dp/007054235X"
+        },
+        {
+          "name": "Calculus by Michael Spivak",
+          "url": "https://www.amazon.com/Calculus-4th-Michael-Spivak/dp/0914098918"
+        },
+        {
+          "name": "Linear Algebra Done Right by Sheldon Axler",
+          "url": "https://www.amazon.com/Linear-Algebra-Done-Right-Undergraduate/dp/3319110799"
+        }
+      ]
+    }
+  ]
+}
