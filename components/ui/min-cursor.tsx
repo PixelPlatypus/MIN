@@ -7,6 +7,20 @@ export const MinCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
   const [isClicking, setIsClicking] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // Adjust breakpoint as needed
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
@@ -43,6 +57,10 @@ export const MinCursor = () => {
       observer.disconnect()
     }
   }, [])
+
+  if (isMobile) {
+    return null
+  }
 
   return (
     <>
