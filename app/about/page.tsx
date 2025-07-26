@@ -6,7 +6,7 @@ import Image from "next/image"
 import { ArrowLeft, Target, Users, Award, Globe } from "lucide-react"
 import { FloatingSymbols } from "@/components/ui/floating-symbols"
 async function fetchTeamData() {
-  const res = await fetch('/api/team');
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/team`);
   if (!res.ok) {
     throw new Error('Failed to fetch team data');
   }
