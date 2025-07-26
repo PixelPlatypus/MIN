@@ -1,7 +1,8 @@
-import LearnPage from './learn-page-client';
+'use client';
 
-async function fetchLearnData() {
-  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/learn`;
+ import LearnPage from './learn-page-client';
+ 
+ async function fetchLearnData() {  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/learn`;
   console.log('Fetching from:', url);
   try {
     const res = await fetch(url, { cache: 'no-store' });
