@@ -3,11 +3,17 @@ import LearnPage from './learn-page-client';
 async function fetchLearnData() {
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/learn`;
   console.log('Fetching from:', url);
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error('Failed to fetch learn data');
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) {
+      console.error(`Failed to fetch learn data: ${res.status} ${res.statusText}`);
+      throw new Error('Failed to fetch learn data');
+    }
+    return res.json();
+  } catch (error) {
+    console.error('Error fetching learn data:', error);
+    throw error;
   }
-  return res.json();
 }
 
 export default async function LearnPageWrapper() {
