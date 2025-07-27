@@ -185,7 +185,7 @@ export default function CertificateRequestPage() {
               </div>
               <div>
                 <label className="block text-white/90 text-sm font-medium mb-2">Team</label>
-                <Select onValueChange={(value) => handleChange({ target: { id: 'team', value } } as React.ChangeEvent<HTMLInputElement>)} value={formData.team} required>
+                <Select onValueChange={(value) => setFormData((prevData) => ({ ...prevData, team: value }))} value={formData.team} required>
                   <SelectTrigger id="team" className="w-full px-4 py-3 glass rounded-xl text-white focus:border-min-accent focus:outline-none font-light text-sm sm:text-base">
                     <SelectValue placeholder="Select your team" />
                   </SelectTrigger>
@@ -210,16 +210,15 @@ export default function CertificateRequestPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="contributions" className="block text-sm font-medium text-white/80 mb-2">Works you have contributed in MIN</Label>
-                <Textarea
-                  id="contributions"
-                  placeholder="Describe your contributions (e.g., projects, tasks, roles)"
-                  value={formData.contributions}
-                  onChange={handleChange}
-                  rows={5}
-                  required
-                  className="w-full px-4 py-3 glass rounded-lg text-white placeholder-[#ccc] focus:border-min-accent focus:outline-none font-light text-sm sm:text-base"
-                ></Textarea>
+                <Label htmlFor="contributions" className="block text-sm font-medium text-white/80 mb-2">Mention your Contributions</Label>
+                  <textarea
+                    id="contributions"
+                    placeholder="Describe your contributions (e.g., projects, tasks, roles)"
+                    value={formData.contributions}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 glass rounded-xl text-white placeholder-white/60 focus:border-min-accent focus:outline-none transition-colors min-h-[120px]"
+                  />
               </div>
               <motion.button
                 type="submit"

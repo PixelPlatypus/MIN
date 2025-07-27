@@ -179,7 +179,7 @@ export default function SubmitContentPage() {
                   value={formData.tags}
                   onChange={handleChange}
                   className="w-full px-4 py-3 glass rounded-lg text-white placeholder-white/60 focus:border-min-accent focus:outline-none font-light text-sm sm:text-base"
-                  placeholder="e.g., AI, Machine Learning, Research"
+                  placeholder="e.g., Geometry, Research, Number Theory etc."
                 />
               </div>
               <div className="mb-4">
