@@ -151,6 +151,7 @@ export default function CertificateRequestPage() {
                   <label className="block text-white/90 text-sm font-medium mb-2">Name</label>
                   <input
                     type="text"
+                    id="name"
                     name="name"
                     placeholder="Your Full Name"
                     value={formData.name}
@@ -163,6 +164,7 @@ export default function CertificateRequestPage() {
                   <label className="block text-white/90 text-sm font-medium mb-2">Email</label>
                   <input
                     type="email"
+                    id="email"
                     name="email"
                     placeholder="your.email@example.com"
                     value={formData.email}
@@ -176,6 +178,7 @@ export default function CertificateRequestPage() {
                 <label className="block text-white/90 text-sm font-medium mb-2">Joining Date</label>
                 <input
                   type="date"
+                  id="joiningDate"
                   name="joiningDate"
                   value={formData.joiningDate}
                   onChange={handleChange}
@@ -201,6 +204,7 @@ export default function CertificateRequestPage() {
                 <label className="block text-white/90 text-sm font-medium mb-2">Position</label>
                 <input
                   type="text"
+                  id="position"
                   name="position"
                   placeholder="Your Position"
                   value={formData.position}
@@ -213,6 +217,7 @@ export default function CertificateRequestPage() {
                 <Label htmlFor="contributions" className="block text-sm font-medium text-white/80 mb-2">Mention your Contributions</Label>
                   <textarea
                     id="contributions"
+                    name="contributions"
                     placeholder="Describe your contributions (e.g., projects, tasks, roles)"
                     value={formData.contributions}
                     onChange={handleChange}

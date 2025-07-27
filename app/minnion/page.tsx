@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'; // Trigger recompile
 import Link from 'next/link';
 import Confetti from '@/components/ui/confetti';
 import { useEffect, useState } from 'react';
+import { MinFloatingElements } from '@/components/ui/min-floating-elements';
+import { ClientOnly } from '@/components/client-only';
 
 export default function MinnionPage() {
   const [showConfetti, setShowConfetti] = useState(true);
@@ -15,8 +17,11 @@ export default function MinnionPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center bg-[#16556d] p-8 w-full overflow-hidden">
+    <div className="flex flex-col items-center justify-center p-8 w-full overflow-hidden">
       {showConfetti && <Confetti count={100} />}
+      <ClientOnly>
+        <MinFloatingElements />
+      </ClientOnly>
       <div className="relative z-10 p-8 rounded-xl shadow-lg backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 border border-white border-opacity-30 max-w-3xl w-full flex flex-col items-center">
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-center mb-8 min-gradient-accent drop-shadow-md animate-pulse">
            Congratulations! 🎉
