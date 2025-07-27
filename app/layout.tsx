@@ -7,6 +7,7 @@ import { ScrollToTopButton } from '@/components/ui/scroll-to-top-button'
 import 'katex/dist/katex.min.css'
 import AnimatedGlassmorphicBackground from '@/components/ui/animated-glassmorphic-background'
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: 'Mathematics Initiatives in Nepal (MIN) - Transforming Math Education',
@@ -37,6 +38,7 @@ html {
         {children}
         <ScrollToTopButton />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
