@@ -6,6 +6,7 @@ import { MinCursor } from '@/components/ui/min-cursor'
 import { ScrollToTopButton } from '@/components/ui/scroll-to-top-button'
 import 'katex/dist/katex.min.css'
 import AnimatedGlassmorphicBackground from '@/components/ui/animated-glassmorphic-background'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   title: 'Mathematics Initiatives in Nepal (MIN) - Transforming Math Education',
@@ -35,6 +36,7 @@ html {
         <MinCursor />
         {children}
         <ScrollToTopButton />
+        <SpeedInsights />
       </body>
     </html>
   )
