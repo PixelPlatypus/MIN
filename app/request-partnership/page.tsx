@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { MinFloatingElements } from '@/components/ui/min-floating-elements';
@@ -24,6 +24,11 @@ export default function RequestPartnershipPage() {
     goalsObjective: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogContent, setDialogContent] = useState({
+    title: '',
+    description: '',
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -56,9 +61,11 @@ export default function RequestPartnershipPage() {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success('Partnership request submitted successfully!', {
+        setDialogContent({
+          title: 'Partnership Request Submitted!',
           description: 'We have received your request and will get back to you soon.',
         });
+        setShowDialog(true);
         setFormData({
           personName: '',
           organizationName: '',
@@ -69,15 +76,19 @@ export default function RequestPartnershipPage() {
           goalsObjective: '',
         });
       } else {
-        toast.error('Failed to submit partnership request.', {
-          description: result.message || 'An unknown error occurred.',
+        setDialogContent({
+          title: 'Submission Failed',
+          description: result.message || 'An unknown error occurred. Please try again.',
         });
+        setShowDialog(true);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error('Network error or server is unreachable.', {
+      setDialogContent({
+        title: 'Network Error',
         description: 'Please check your internet connection and try again.',
       });
+      setShowDialog(true);
     }
     setIsSubmitting(false);
   };
@@ -239,6 +250,20 @@ export default function RequestPartnershipPage() {
       </section>
 
       <Footer />
+
+      <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+        <AlertDialogContent className="glass-card">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">{dialogContent.title}</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/70">
+              {dialogContent.description}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction className="btn-min-accent" onClick={() => setShowDialog(false)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

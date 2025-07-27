@@ -10,11 +10,19 @@ export async function POST(request: Request) {
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: Number(process.env.EMAIL_PORT),
-      secure: process.env.EMAIL_SECURE === 'true',
+      secure: false, // Use STARTTLS
+      requireTLS: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+    });
+    console.log('Nodemailer config:', {
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: false, // Use STARTTLS
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS ? '********' : 'undefined' // Mask password for logs
     });
 
     const mainContentEmail = process.env.MAIN_CONTENT_EMAIL;
@@ -25,7 +33,7 @@ export async function POST(request: Request) {
 
     // Email to MAIN_CONTENT_EMAIL
     const mailOptionsToMain = {
-      from: process.env.EMAIL_USER,
+      from: '"MIN Team" <team@min.org>',
       to: mainContentEmail,
       subject: `New Partnership Request from ${personName} (${organizationName}) | MIN`,
       html: `
@@ -41,7 +49,7 @@ export async function POST(request: Request) {
 
     // Email to the provided Contact Email
     const mailOptionsToContact = {
-      from: process.env.EMAIL_USER,
+      from: '"MIN Team" <team@min.org>',
       to: contactEmail,
       subject: 'Your Partnership Request to MIN has been received | MIN',
       html: `
@@ -60,8 +68,13 @@ export async function POST(request: Request) {
       `,
     };
 
-    await transporter.sendMail(mailOptionsToMain);
-    await transporter.sendMail(mailOptionsToContact);
+    const infoMain = await transporter.sendMail(mailOptionsToMain);
+    console.log('Message sent to MIN Team: %s', infoMain.messageId);
+    console.log('Preview URL (MIN Team): %s', nodemailer.getTestMessageUrl(infoMain));
+
+    const infoContact = await transporter.sendMail(mailOptionsToContact);
+    console.log('Message sent to Contact: %s', infoContact.messageId);
+    console.log('Preview URL (Contact): %s', nodemailer.getTestMessageUrl(infoContact));
 
     return NextResponse.json({ message: 'Partnership request sent successfully!' }, { status: 200 });
   } catch (error) {
