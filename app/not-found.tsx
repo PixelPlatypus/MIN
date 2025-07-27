@@ -1,12 +1,19 @@
 import Link from 'next/link';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
+import { MinFloatingElements } from '@/components/ui/min-floating-elements';
+import { ClientOnly } from '@/components/client-only';
+import { PopupNotice } from '@/components/ui/popup-notice';
 
 export default function NotFound() {
   return (
     <div className="flex flex-col min-h-screen">
+      <ClientOnly>
+        <MinFloatingElements />
+      </ClientOnly>
+      <PopupNotice />
       <Navigation />
-      <main className="flex flex-grow flex-col items-center justify-center bg-gradient-to-br from-[#16556d] via-[#356a72] to-[#16556d] text-white p-4 pt-24">
+      <main className="flex flex-grow flex-col items-center justify-center text-white p-4 pt-24 overflow-x-hidden">
         <h1 className="text-6xl md:text-8xl font-bold text-min-accent mb-4 animate-pulse">
           404
         </h1>

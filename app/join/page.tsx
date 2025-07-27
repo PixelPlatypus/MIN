@@ -9,6 +9,7 @@ import { Users, Building, Heart, Lightbulb, Target, Globe } from "lucide-react"
 import { MinCursor } from "@/components/ui/min-cursor"
 import { MinFloatingElements } from "@/components/ui/min-floating-elements"
 import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
 import joinData from "@/data/join.json"
 
 export default function JoinPage() {
@@ -259,15 +260,17 @@ export default function JoinPage() {
                   </li>
                 ))}
               </ul>
-              <motion.button
+              <motion.a
+                href={joinData.volunteer.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full btn-min-accent text-min-primary px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 data-hover="true"
-                onClick={() => setActiveForm("volunteer")}
               >
                 Become a Volunteer
-              </motion.button>
+              </motion.a>
             </motion.div>
 
             {/* Organization Card */}
@@ -303,15 +306,17 @@ export default function JoinPage() {
                   </li>
                 ))}
               </ul>
-              <motion.button
+              <motion.a
+                href={joinData.partnership.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full bg-gradient-to-r from-min-primary to-min-secondary text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:from-min-secondary hover:to-min-accent shadow-lg hover:shadow-xl"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 data-hover="true"
-                onClick={() => setActiveForm("organization")}
               >
                 Partner With Us
-              </motion.button>
+              </motion.a>
             </motion.div>
           </div>
         </div>
@@ -541,23 +546,7 @@ export default function JoinPage() {
         </motion.div>
       )}
 
-      {/* Footer */}
-      <footer className="py-16 relative overflow-hidden border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-4 mb-8 md:mb-0">
-              <div className="w-12 h-12 glass-light rounded-xl flex items-center justify-center">
-                <Image src="/images/min-logo.png" alt="MIN" width={32} height={32} className="rounded-lg" />
-              </div>
-              <div>
-                <div className="font-bold text-xl text-white min-gradient-accent">MIN</div>
-                <div className="text-white/60 text-sm">Mathematics Initiatives Nepal</div>
-              </div>
-            </div>
-            <div className="text-white/60 text-sm">© 2024 Mathematics Initiatives in Nepal. All rights reserved.</div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

@@ -1,10 +1,10 @@
 {
   "volunteer": {
-    "link": "volunteer.link",
+    "link": "https://forms.gle/dAr66nu5fsKgaPcW9",
     "text": "Apply as a Volunteer"
   },
   "partnership": {
-    "link": "test.link",
+    "link": "/request-partnership",
     "text": "Request Partnership"
   }
 }

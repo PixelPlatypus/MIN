@@ -56,6 +56,9 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        placeholderColor: {
+          DEFAULT: "rgba(255, 255, 255, 0.6)", // white with 60% opacity
+        },
         min: {
           primary: '#FFD700',
           secondary: '#FFECB3',
