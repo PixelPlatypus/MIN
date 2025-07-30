@@ -25,13 +25,21 @@ export async function POST(request: Request) {
     const bytes = await certificate.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
+    console.log('Attempting to save certificate file...');
     // Save file to public/certificates
-    await writeFile(publicPath, buffer);
+    try {
+      await writeFile(publicPath, buffer);
+      console.log(`Certificate saved to: ${publicPath}`);
+    } catch (writeError) {
+      console.error('Error writing certificate file:', writeError);
+      throw writeError; // Re-throw to be caught by the main catch block
+    }
     
     // Create shareable link
     const shareableLink = `${process.env.NEXT_PUBLIC_BASE_URL}/certificates/${fileName}`; 
+    console.log(`Shareable link created: ${shareableLink}`);
 
-    
+    console.log('Attempting to create Nodemailer transporter...');
     // Send email with link
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -40,24 +48,14 @@ export async function POST(request: Request) {
         pass: process.env.GMAIL_PASS,
       },
     });
+    console.log('Nodemailer transporter created. Attempting to send user email...');
     await sendCertificateEmail(transporter, email, name, shareableLink);
+    console.log('User email sent. Attempting to send admin email...');
 
     // Email to the certificate upload recipient
     const adminMailOptions = {
       from: process.env.GMAIL_USER,
-      to: process.env.CERTIFICATE_EMAIL,
-      subject: `New Certificate Upload from ${name} | MIN`,
-      html: `
-        <p>A new certificate has been uploaded with the following details:</p>
-        <ul>
-          <li><strong>Name:</strong> ${name}</li>
-          <li><strong>Email:</strong> ${email}</li>
-          <li><strong>Shareable Link:</strong> <a href="${shareableLink}">${shareableLink}</a></li>
-        </ul>
-        <p>Please review the uploaded certificate and take appropriate action.</p>
-      `,
-    };
-    await transporter.sendMail(adminMailOptions);
+      to: process.env.CERTIFICATE_EMAIL
     
     return NextResponse.json({
       message: 'Certificate uploaded successfully',
