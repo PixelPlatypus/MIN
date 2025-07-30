@@ -21,15 +21,17 @@ export async function POST(request: Request) {
   try {
     // Generate unique filename
     const fileName = `${randomBytes(8).toString('hex')}.pdf`;
-    const publicPath = join(process.cwd(), 'public', 'certificates', fileName);
+    const currentWorkingDirectory = process.cwd();
+    const certificatesDirectory = join(currentWorkingDirectory, 'public', 'certificates');
+    const filePath = join(certificatesDirectory, fileName);
     const bytes = await certificate.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
-    console.log('Attempting to save certificate file...');
+
     // Save file to public/certificates
     try {
-      await writeFile(publicPath, buffer);
-      console.log(`Certificate saved to: ${publicPath}`);
+      await writeFile(filePath, buffer);
+      console.log(`Certificate saved to: ${filePath}`);
     } catch (writeError) {
       console.error('Error writing certificate file:', writeError);
       throw writeError; // Re-throw to be caught by the main catch block
@@ -55,16 +57,24 @@ export async function POST(request: Request) {
     // Email to the certificate upload recipient
     const adminMailOptions = {
       from: process.env.GMAIL_USER,
-      to: process.env.CERTIFICATE_EMAIL
-    
+      to: process.env.CERTIFICATE_EMAIL,
+      subject: 'New Certificate Uploaded',
+      html: `
+        <p>A new certificate has been uploaded for ${name} (${email}).</p>
+        <p>Shareable Link: <a href="${shareableLink}">${shareableLink}</a></p>
+      `
+    };
+    await transporter.sendMail(adminMailOptions);
+    console.log('Admin email sent.');
+
     return NextResponse.json({
       message: 'Certificate uploaded successfully',
       shareableLink
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error uploading certificate:', error);
     return NextResponse.json(
-      { message: 'Failed to upload certificate' },
+      { message: 'Failed to upload certificate', error: error.message },
       { status: 500 }
     );
   }
