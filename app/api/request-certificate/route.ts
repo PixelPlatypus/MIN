@@ -8,26 +8,23 @@ export async function POST(request: Request) {
     console.log('Received certificate request data:', { name, email, joiningDate, team, position, contributions });
 
     console.log('Nodemailer config:', {
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      user: process.env.EMAIL_USER,
+      service: 'gmail',
+      user: process.env.GMAIL_USER,
       certificateEmail: process.env.CERTIFICATE_EMAIL,
     });
 
     // Create a Nodemailer transporter
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: 587,
-      secure: false,
+      service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
       },
     });
 
     // Email to the user
     const userMailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.GMAIL_USER,
       to: email,
       subject: 'Certificate Request Confirmation | MIN',
       html: `
@@ -55,7 +52,7 @@ export async function POST(request: Request) {
 
     // Email to the certificate request recipient
     const adminMailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.GMAIL_USER,
       to: process.env.CERTIFICATE_EMAIL,
       subject: `New Certificate Request from ${name} | MIN`,
       html: `

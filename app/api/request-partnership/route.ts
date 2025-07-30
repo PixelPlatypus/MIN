@@ -8,20 +8,16 @@ export async function POST(request: Request) {
 
     // Create a Nodemailer transporter using SMTP
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: false, // Use STARTTLS
+      service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
       },
     });
     console.log('Nodemailer config:', {
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: false, // Use STARTTLS
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS ? '********' : 'undefined' // Mask password for logs
+      service: 'gmail',
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS ? '********' : 'undefined' // Mask password for logs
     });
 
     const mainContentEmail = process.env.MAIN_CONTENT_EMAIL;
