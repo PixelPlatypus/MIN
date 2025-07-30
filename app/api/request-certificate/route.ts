@@ -7,12 +7,18 @@ export async function POST(request: Request) {
     const { name, email, joiningDate, team, position, contributions } = formData;
     console.log('Received certificate request data:', { name, email, joiningDate, team, position, contributions });
 
+    console.log('Nodemailer config:', {
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      user: process.env.EMAIL_USER,
+      certificateEmail: process.env.CERTIFICATE_EMAIL,
+    });
+
     // Create a Nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: false, // Use STARTTLS
-      requireTLS: true,
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -66,8 +72,19 @@ export async function POST(request: Request) {
       `,
     };
 
-    await transporter.sendMail(userMailOptions);
-    await transporter.sendMail(adminMailOptions);
+    try {
+      await transporter.sendMail(userMailOptions);
+      console.log('User email sent successfully!');
+    } catch (userMailError) {
+      console.error('Error sending user email:', userMailError);
+    }
+
+    try {
+      await transporter.sendMail(adminMailOptions);
+      console.log('Admin email sent successfully!');
+    } catch (adminMailError) {
+      console.error('Error sending admin email:', adminMailError);
+    }
 
     return NextResponse.json({ message: 'Certificate request submitted successfully!' }, { status: 200 });
   } catch (error) {
