@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
 import { randomBytes } from 'crypto';
 import nodemailer from 'nodemailer';
+import { writeFile } from 'fs/promises';
+import path from 'path';
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -21,25 +21,19 @@ export async function POST(request: Request) {
   try {
     // Generate unique filename
     const fileName = `${randomBytes(8).toString('hex')}.pdf`;
-    const currentWorkingDirectory = process.cwd();
-    const certificatesDirectory = join(currentWorkingDirectory, 'public', 'certificates');
-    const filePath = join(certificatesDirectory, fileName);
     const bytes = await certificate.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    
 
-    // Save file to public/certificates
-    try {
-      await writeFile(filePath, buffer);
-      console.log(`Certificate saved to: ${filePath}`);
-    } catch (writeError) {
-      console.error('Error writing certificate file:', writeError);
-      throw writeError; // Re-throw to be caught by the main catch block
-    }
-    
-    // Create shareable link
-    const shareableLink = `${process.env.NEXT_PUBLIC_BASE_URL}/certificates/${fileName}`; 
-    console.log(`Shareable link created: ${shareableLink}`);
+    // Save file locally
+    const uploadDir = path.join(process.cwd(), 'public', 'certificates');
+    const filePath = path.join(uploadDir, fileName);
+
+    // Ensure the directory exists
+    await import('fs').then(fs => fs.promises.mkdir(uploadDir, { recursive: true }));
+    await writeFile(filePath, buffer);
+
+    const shareableLink = `${process.env.NEXT_PUBLIC_BASE_URL}/certificates/${fileName}`;
+
 
     console.log('Attempting to create Nodemailer transporter...');
     // Send email with link
