@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "copy-pdf-worker": "cp ./node_modules/pdfjs-dist/build/pdf.worker.min.mjs ./public/pdf.worker.mjs",
     "build": "cp ./node_modules/pdfjs-dist/build/pdf.worker.min.mjs ./public/pdf.worker.mjs && next build",
-    "dev": "npm run copy-pdf-worker && next dev --turbo",
+    "dev": "cp ./node_modules/pdfjs-dist/build/pdf.worker.min.mjs ./public/pdf.worker.mjs && next dev --turbo",
     "lint": "next lint",
     "start": "next start"
   },
