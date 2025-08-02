@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     console.log(`Attempting to upload blob with filename: ${blobFilename}`);
     const blob = await put(blobFilename, bytes, { access: 'public', addRandomSuffix: false });
     const vercelBlobUrl = blob.url;
-    const appShareableLink = `${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${minnionId}`;
+    const appShareableLink = `${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${minnionId}.pdf`;
     console.log(`Certificate uploaded successfully. App Shareable link: ${appShareableLink}`);
     console.log(`Direct Blob URL: ${vercelBlobUrl}`);
 
