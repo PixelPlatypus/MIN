@@ -6,7 +6,6 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import Image from "next/image"
 import { Users, Building, Heart, Lightbulb, Target, Globe } from "lucide-react"
-import { MinCursor } from "@/components/ui/min-cursor"
 import { MinFloatingElements } from "@/components/ui/min-floating-elements"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
@@ -58,7 +57,7 @@ export default function JoinPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden">
-      <MinCursor />
+      
       <MinFloatingElements />
 
       {/* Navigation */}
@@ -111,7 +110,7 @@ export default function JoinPage() {
               data-hover="true"
             >
               <Users className="w-12 h-12 text-min-accent mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-3 group-hover:min-gradient-accent transition-colors">
+              <h3 className="text-2xl font-bold text-white mb-3 transition-colors group-hover:min-gradient-accent">
                 Volunteer Application
               </h3>
               <p className="text-white/80 font-light mb-6">
@@ -131,13 +130,13 @@ export default function JoinPage() {
               data-hover="true"
             >
               <Building className="w-12 h-12 text-min-accent mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-3 group-hover:min-gradient-accent transition-colors">
+              <h3 className="text-2xl font-bold text-white mb-3 transition-colors group-hover:min-gradient-accent">
                 Partnership Request
               </h3>
               <p className="text-white/80 font-light mb-6">
                 Partner with us as an educational institution or organization to expand our reach.
               </p>
-              <div className="btn-min-primary text-white px-6 py-3 rounded-full font-semibold inline-block">
+              <div className="btn-min-accent text-min-primary px-6 py-3 rounded-full font-semibold inline-block">
                 {joinData.partnership.text}
               </div>
             </motion.a>
@@ -310,7 +309,7 @@ export default function JoinPage() {
                 href={joinData.partnership.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-gradient-to-r from-min-primary to-min-secondary text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:from-min-secondary hover:to-min-accent shadow-lg hover:shadow-xl"
+                className="w-full btn-min-accent text-min-primary px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 data-hover="true"

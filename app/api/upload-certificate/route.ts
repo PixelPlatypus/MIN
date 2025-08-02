@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { randomBytes } from 'crypto';
 import nodemailer from 'nodemailer';
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
 export async function POST(request: Request) {
@@ -24,16 +24,12 @@ export async function POST(request: Request) {
     const bytes = await certificate.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Save file locally
     const uploadDir = path.join(process.cwd(), 'public', 'certificates');
+    await mkdir(uploadDir, { recursive: true });
     const filePath = path.join(uploadDir, fileName);
-
-    // Ensure the directory exists
-    await import('fs').then(fs => fs.promises.mkdir(uploadDir, { recursive: true }));
     await writeFile(filePath, buffer);
 
-    const shareableLink = `${process.env.NEXT_PUBLIC_BASE_URL}/certificates/${fileName}`;
-
+    const shareableLink = `/certificates/${fileName}`;
 
     console.log('Attempting to create Nodemailer transporter...');
     // Send email with link

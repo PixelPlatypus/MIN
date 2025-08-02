@@ -38,6 +38,7 @@ export default function UploadCertificatePage() {
     const data = await res.json();
     if (res.ok) {
       setAuthenticated(true);
+      console.log('Authenticated state set to true');
       setMessage(data.message);
     } else {
       setMessage(data.message);
@@ -45,6 +46,8 @@ export default function UploadCertificatePage() {
   };
 
   const handleFileUpload = async (e: React.FormEvent) => {
+    console.log('handleFileUpload function entered');
+
     e.preventDefault();
     setMessage('');
     if (!file) {
@@ -58,22 +61,30 @@ export default function UploadCertificatePage() {
     formData.append('email', email);
     formData.append('name', name);
 
-    const res = await fetch('/api/upload-certificate', {
-      method: 'POST',
-      body: formData,
-    });
 
-    const data = await res.json();
-    if (res.ok) {
-      setMessage(data.message);
-      setShareableLink(data.shareableLink);
-      setFile(null);
-      setEmail('');
-      setName('');
-      setIsSuccessDialogOpen(true);
-    } else {
-      setMessage(data.message);
+    try {
+      const res = await fetch('/api/upload-certificate', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setMessage(data.message);
+        setShareableLink(data.shareableLink);
+        setFile(null);
+        setEmail('');
+        setName('');
+        setIsSuccessDialogOpen(true);
+      } else {
+        setMessage(data.message);
+      }
+    } catch (error: any) {
+      console.error('Client-side upload error:', error);
+      setMessage(`Upload failed: ${error.message || 'Unknown error'}`);
     }
+
+
     setIsLoading(false);
   };
 
