@@ -63,6 +63,12 @@ export default function UploadCertificatePage() {
     formData.append('name', name);
     formData.append('minnionId', minnionId);
 
+    const minnionIdRegex = /^[A-Z]{3,4}-[A-Z0-9]{2,3}-[A-Z0-9]+-\d{4}$/;
+    if (!minnionIdRegex.test(minnionId)) {
+      setMessage('Invalid MINnion ID format. Expected format: [Prefix]-[Department Code]-[Unique Serial Number]-[Year]');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const res = await fetch('/api/upload-certificate', {
@@ -73,7 +79,8 @@ export default function UploadCertificatePage() {
       const data = await res.json();
       if (res.ok) {
         setMessage(data.message);
-        setShareableLink(data.shareableLink);
+        const lastSegment = data.shareableLink.split('/').pop();
+        setShareableLink(`${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${lastSegment}`);
         setFile(null);
         setEmail('');
         setName('');
@@ -198,9 +205,9 @@ export default function UploadCertificatePage() {
           {shareableLink && (
             <div className="mt-4">
               <p>Shareable Link:</p>
-              <a href={`${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${shareableLink.split('/').pop()}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                {`${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${shareableLink.split('/').pop()}`}
-              </a>
+              <a href={shareableLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                 {shareableLink}
+               </a>
             </div>
           )}
             </form>
