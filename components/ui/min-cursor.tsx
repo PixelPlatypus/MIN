@@ -76,9 +76,9 @@ export const MinCursor = () => {
           scale: isClicking ? 0.8 : 1,
         }}
         transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 30,
+          type: "tween",
+          duration: 0.1,
+          ease: "easeOut",
         }}
       />
 
@@ -95,9 +95,9 @@ export const MinCursor = () => {
           opacity: isHovering ? 0.8 : 0.4,
         }}
         transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 30,
+          type: "tween",
+          duration: 0.15,
+          ease: "easeOut",
         }}
       />
 
@@ -113,9 +113,9 @@ export const MinCursor = () => {
             y: mousePosition.y - 24,
           }}
           transition={{
-            type: "spring",
-            stiffness: 500,
-            damping: 30,
+            type: "tween",
+            duration: 0.2,
+            ease: "easeOut",
           }}
         />
       )}
