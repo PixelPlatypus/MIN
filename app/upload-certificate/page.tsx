@@ -22,6 +22,7 @@ export default function UploadCertificatePage() {
   const [file, setFile] = useState<File | null>(null);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [minnionId, setMinnionId] = useState('');
   const [message, setMessage] = useState('');
   const [shareableLink, setShareableLink] = useState('');
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
@@ -60,6 +61,7 @@ export default function UploadCertificatePage() {
     formData.append('certificate', file);
     formData.append('email', email);
     formData.append('name', name);
+    formData.append('minnionId', minnionId);
 
 
     try {
@@ -75,6 +77,7 @@ export default function UploadCertificatePage() {
         setFile(null);
         setEmail('');
         setName('');
+        setMinnionId('');
         setIsSuccessDialogOpen(true);
       } else {
         setMessage(data.message);
@@ -176,15 +179,30 @@ export default function UploadCertificatePage() {
                   required
                 />
               </div>
+              <div>
+                <Label htmlFor="minnionId" className="text-white/80">MINnion ID</Label>
+                <Input
+                  type="text"
+                  id="minnionId"
+                  value={minnionId}
+                  onChange={(e) => setMinnionId(e.target.value)}
+                  className="mt-1 block w-full glass-input placeholder-gray-400 text-black"
+                  placeholder="Enter MINnion ID"
+                  required
+                />
+              </div>
               <Button type="submit" className="w-full glass-button bg-white/10 hover:bg-[#cdaa72]/20 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out" disabled={isLoading}>
                 {isLoading ? 'Uploading...' : 'Upload Certificate'}
               </Button>
-              {message && <p className="text-center text-green-400 mt-4">{message}</p>}
-              {shareableLink && (
-                <p className="text-center text-blue-400 mt-2">
-                  Shareable Link: <a href={shareableLink} target="_blank" rel="noopener noreferrer" className="underline">{shareableLink}</a>
-                </p>
-              )}
+          <p className="text-green-500 mt-4">{message}</p>
+          {shareableLink && (
+            <div className="mt-4">
+              <p>Shareable Link:</p>
+              <a href={`${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${shareableLink.split('/').pop()}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                {`${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${shareableLink.split('/').pop()}`}
+              </a>
+            </div>
+          )}
             </form>
           )}
         </motion.div>

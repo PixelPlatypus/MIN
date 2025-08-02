@@ -1,17 +1,17 @@
-import { NextResponse } from 'next/server';
 import { randomBytes } from 'crypto';
 import nodemailer from 'nodemailer';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { put } from '@vercel/blob';
+import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   const formData = await request.formData();
   const certificate = formData.get('certificate') as File;
   const email = formData.get('email') as string;
   const name = formData.get('name') as string;
-  console.log('Received upload certificate data:', { email, name, certificate: certificate ? certificate.name : 'No file' });
+  const minnionId = formData.get('minnionId') as string;
+  console.log('Received upload certificate data:', { email, name, minnionId, certificate: certificate ? certificate.name : 'No file' });
 
-  if (!certificate || !email || !name) {
+  if (!certificate || !email || !name || !minnionId) {
     return NextResponse.json(
       { message: 'Missing required fields' },
       { status: 400 }
@@ -19,17 +19,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Generate unique filename
-    const fileName = `${randomBytes(8).toString('hex')}.pdf`;
     const bytes = await certificate.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const blob = await put(`${minnionId}-${certificate.name}`, bytes, { access: 'public' });
 
-    const uploadDir = path.join(process.cwd(), 'public', 'certificates');
-    await mkdir(uploadDir, { recursive: true });
-    const filePath = path.join(uploadDir, fileName);
-    await writeFile(filePath, buffer);
-
-    const shareableLink = `/certificates/${fileName}`;
+    // The shareableLink will be the full blob URL, as the client will directly use this
+    const shareableLink = blob.url;
 
     console.log('Attempting to create Nodemailer transporter...');
     // Send email with link
@@ -41,7 +35,7 @@ export async function POST(request: Request) {
       },
     });
     console.log('Nodemailer transporter created. Attempting to send user email...');
-    await sendCertificateEmail(transporter, email, name, shareableLink);
+    await sendCertificateEmail(transporter, email, name, `${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${blob.pathname.split('/').pop()}`);
     console.log('User email sent. Attempting to send admin email...');
 
     // Email to the certificate upload recipient
@@ -51,13 +45,14 @@ export async function POST(request: Request) {
       subject: 'New Certificate Uploaded',
       html: `
         <p>A new certificate has been uploaded for ${name} (${email}).</p>
-        <p>Shareable Link: <a href="${shareableLink}">${shareableLink}</a></p>
+        <p>Shareable Link: <a href="${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${blob.pathname.split('/').pop()}">${process.env.NEXT_PUBLIC_BASE_URL}/certificate/${blob.pathname.split('/').pop()}</a></p>
       `
     };
     await transporter.sendMail(adminMailOptions);
     console.log('Admin email sent.');
 
     return NextResponse.json({
+
       message: 'Certificate uploaded successfully',
       shareableLink
     });
