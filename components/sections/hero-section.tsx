@@ -52,9 +52,9 @@ export const HeroSection = () => {
           variants={itemVariants}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 sm:mb-6 leading-tight"
         >
-          Mathematics
-          <span className="block min-gradient-accent">Reimagined</span>
-          <span className="block text-white/95">for Nepal</span>
+          Building Nepal’s
+          <span className="block min-gradient-accent">Mathematical Future</span>
+          <span className="block text-white/95">Together</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -62,8 +62,7 @@ export const HeroSection = () => {
           variants={itemVariants}
           className="text-white/80 text-base sm:text-lg md:text-xl lg:text-2xl font-light max-w-4xl mx-auto leading-relaxed mb-8 sm:mb-12 px-4"
         >
-          We believe every student deserves extraordinary mathematical education. That's why we're transforming how
-          Nepal learns, one equation at a time.
+          Join us as we reshape the future of mathematics education in Nepal, nurturing the minds that will lead, innovate, and transform society one equation at a time.
         </motion.p>
 
         {/* CTA Buttons */}

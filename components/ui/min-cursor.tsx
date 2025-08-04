@@ -58,9 +58,8 @@ export const MinCursor = () => {
     }
   }, [])
 
-  if (isMobile) {
-    return null
-  }
+  // Temporarily hide the MIN cursor until it is perfectly smooth with no lag and other buggy parts
+  return null
 
   return (
     <>
@@ -76,9 +75,9 @@ export const MinCursor = () => {
           scale: isClicking ? 0.8 : 1,
         }}
         transition={{
-          type: "tween",
-          duration: 0.1,
-          ease: "easeOut",
+          type: "spring",
+          stiffness: 500,
+          damping: 30,
         }}
       />
 
@@ -95,9 +94,9 @@ export const MinCursor = () => {
           opacity: isHovering ? 0.8 : 0.4,
         }}
         transition={{
-          type: "tween",
-          duration: 0.15,
-          ease: "easeOut",
+          type: "spring",
+          stiffness: 500,
+          damping: 30,
         }}
       />
 
@@ -113,10 +112,10 @@ export const MinCursor = () => {
             y: mousePosition.y - 24,
           }}
           transition={{
-            type: "tween",
-            duration: 0.2,
-            ease: "easeOut",
-          }}
+          type: "spring",
+          stiffness: 500,
+          damping: 30,
+        }}
         />
       )}
     </>

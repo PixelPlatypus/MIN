@@ -8,41 +8,41 @@ const programs = [
     title: "ETA Campaigns",
     description:
       "Free resources, workshops, and tutoring for underprivileged students, promoting interactive math learning beyond curriculum limits.",
-    features: ["Free Resources", "Interactive Workshops", "Peer Tutoring", "Beyond Curriculum"],
+    features: ["Free Resources", "Interactive Workshops", "Fun Activities", "Beyond Curriculum"],
     icon: BookOpen,
   },
   {
     title: "Olympiad Training",
     description:
       "Junior Mathematics Olympiad Camp (JMOC) and Olymprep programs designed for skill development and international competition preparation.",
-    features: ["JMOC Training", "Olymprep Program", "International Prep", "Skill Development"],
+    features: ["JMOC Training", "Olymprep Program", "International Prep", "Mathematical Thinking"],
     icon: Award,
   },
   {
     title: "Mathematical Modelling",
     description: "M³ Bootcamp focusing on real-world applications of mathematics and problem-solving techniques.",
-    features: ["Real-world Applications", "Problem Solving", "Practical Skills", "Industry Connections"],
+    features: ["Real-world Applications", "Problem Solving", "Practical Skills"],
     icon: Globe,
   },
   {
     title: "Women in Mathematics",
     description:
       "Girls Mathematics Olympiad Camp and empowerment initiatives aimed at encouraging female participation in mathematics.",
-    features: ["Girls Olympiad Camp", "Mentorship", "Role Models", "Community Support"],
+    features: ["Girls Mathematical Olympiad Camp", "Mentorship", "Community Support"],
     icon: Users,
   },
   {
     title: "Digital Content",
     description:
-      "YouTube series including 'ELI5' for simplifying complex concepts and 'Road to Olympiad' training series.",
-    features: ["ELI5 Series", "Road to Olympiad", "Concept Videos", "Online Learning"],
+      "YouTube series including ELI5(Explain Like I'm 5) for simplifying complex concepts and 'Road to Olympiad' training series.",
+    features: ["ELI5 Series", "Road to Olympiad", "Concept Videos", "MadeEZ"],
     icon: Video,
   },
   {
     title: "Community Engagement",
     description:
       "Online communities on Discord and social media for collaboration, continuous learning, and peer support.",
-    features: ["Discord Community", "Social Media", "Peer Support", "Collaboration"],
+    features: ["Discord Community", "Social Media", "Collaboration"],
     icon: MessageCircle,
   },
 ]

@@ -51,7 +51,7 @@ export const Navigation = () => {
             </div>
             <div>
               <span className="text-white font-bold text-lg sm:text-xl tracking-tight min-gradient-accent">MIN</span>
-              <div className="text-min-accent/80 text-xs font-medium hidden sm:block">
+              <div className="text-white text-xs font-medium hidden sm:block">
                 Mathematics Initiatives Nepal
               </div>
             </div>

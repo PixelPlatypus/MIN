@@ -118,8 +118,7 @@ export const StorySection = () => {
 
               {/* Timeline dot */}
               <motion.div
-                className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 sm:w-6 sm:h-6 glass-light rounded-full border-2 border-min-accent shadow-lg z-10"
-                whileHover={{ scale: 1.2 }}
+                className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 sm:w-6 sm:h-6 glass-light rounded-full border-2 border-min-accent shadow-lg z-10 hidden sm:block"
               />
             </motion.div>
           ))}
