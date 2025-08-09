@@ -27,6 +27,7 @@ export const Navigation = () => {
     { name: "Contents", href: "/content" },
     { name: "Join Us", href: "/join" },
     { name: "Gallery", href: "/gallery" },
+    { name: "RTO", href: "/rto" },
   ]
 
   const isActive = (href: string) => {

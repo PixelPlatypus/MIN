@@ -1,0 +1,95 @@
+[
+  {
+    "id": "foundations",
+    "title": "Stage 1: Foundations",
+    "description": "Master the basics of number theory, algebra, geometry, and combinatorics.",
+    "topics": [
+      {
+        "id": "basic-arithmetic",
+        "title": "Basic Arithmetic & Number Properties",
+        "video_url": "https://www.youtube.com/watch?v=example1",
+        "reading_material": "/docs/rto/foundations/basic-arithmetic.pdf"
+      },
+      {
+        "id": "algebraic-manipulations",
+        "title": "Algebraic Manipulations & Equations",
+        "video_url": "https://www.youtube.com/watch?v=example2",
+        "reading_material": "/docs/rto/foundations/algebraic-manipulations.pdf"
+      },
+      {
+        "id": "euclidean-geometry",
+        "title": "Euclidean Geometry Fundamentals",
+        "video_url": "https://www.youtube.com/watch?v=example3",
+        "reading_material": "/docs/rto/foundations/euclidean-geometry.pdf"
+      },
+      {
+        "id": "counting-principles",
+        "title": "Counting Principles & Probability",
+        "video_url": "https://www.youtube.com/watch?v=example4",
+        "reading_material": "/docs/rto/foundations/counting-principles.pdf"
+      }
+    ]
+  },
+  {
+    "id": "intermediate-concepts",
+    "title": "Stage 2: Intermediate Concepts",
+    "description": "Dive deeper into problem-solving techniques and advanced topics.",
+    "topics": [
+      {
+        "id": "modular-arithmetic",
+        "title": "Modular Arithmetic & Diophantine Equations",
+        "video_url": "https://www.youtube.com/watch?v=example5",
+        "reading_material": "/docs/rto/intermediate/modular-arithmetic.pdf"
+      },
+      {
+        "id": "polynomials-inequalities",
+        "title": "Polynomials & Inequalities",
+        "video_url": "https://www.youtube.com/watch?v=example6",
+        "reading_material": "/docs/rto/intermediate/polynomials-inequalities.pdf"
+      },
+      {
+        "id": "trigonometry-coordinate",
+        "title": "Trigonometry & Coordinate Geometry",
+        "video_url": "https://www.youtube.com/watch?v=example7",
+        "reading_material": "/docs/rto/intermediate/trigonometry-coordinate.pdf"
+      },
+      {
+        "id": "graph-theory",
+        "title": "Graph Theory & Recurrence Relations",
+        "video_url": "https://www.youtube.com/watch?v=example8",
+        "reading_material": "/docs/rto/intermediate/graph-theory.pdf"
+      }
+    ]
+  },
+  {
+    "id": "advanced-problem-solving",
+    "title": "Stage 3: Advanced & Problem Solving",
+    "description": "Refine your skills with complex problems and competition strategies.",
+    "topics": [
+      {
+        "id": "functional-equations",
+        "title": "Functional Equations & Advanced Inequalities",
+        "video_url": "https://www.youtube.com/watch?v=example9",
+        "reading_material": "/docs/rto/advanced/functional-equations.pdf"
+      },
+      {
+        "id": "projective-geometry",
+        "title": "Projective & Inversive Geometry",
+        "video_url": "https://www.youtube.com/watch?v=example10",
+        "reading_material": "/docs/rto/advanced/projective-geometry.pdf"
+      },
+      {
+        "id": "generating-functions",
+        "title": "Generating Functions & Pigeonhole Principle",
+        "video_url": "https://www.youtube.com/watch?v=example11",
+        "reading_material": "/docs/rto/advanced/generating-functions.pdf"
+      },
+      {
+        "id": "olympiad-strategies",
+        "title": "Olympiad Problem-Solving Strategies",
+        "video_url": "https://www.youtube.com/watch?v=example12",
+        "reading_material": "/docs/rto/advanced/olympiad-strategies.pdf"
+      }
+    ]
+  }
+]

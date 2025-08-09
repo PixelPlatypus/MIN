@@ -183,6 +183,25 @@ body {
   background-clip: text;
 }
 
+.min-gradient-border {
+  position: relative;
+  z-index: 0;
+}
+
+.min-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit; /* Ensure border-radius matches the element */
+  padding: 2px; /* Adjust this value for border thickness */
+  background: linear-gradient(135deg, #cdaa72, #f6f094); /* Gold gradient */
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+}
+
 /* Enhanced glassmorphism hover effects */
 .glass-hover:hover {
   background: rgba(255, 255, 255, 0.15);
