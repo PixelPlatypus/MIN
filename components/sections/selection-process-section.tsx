@@ -48,17 +48,11 @@ export function SelectionProcessSection({
               <li
                 key={item.id}
                 className={cn(
-                  "mb-10 flex items-center w-full",
-                  index % 2 === 0 ? "justify-start" : "justify-end"
+                  "mb-10 flex flex-col md:flex-row items-center w-full",
+                  index % 2 === 0 ? "md:justify-start" : "md:justify-end"
                 )}
               >
-                <div
-                  className="absolute z-10 flex items-center justify-center w-4 h-4 sm:w-6 sm:h-6 glass-light rounded-full border-2 border-min-accent shadow-lg hidden sm:block"
-                   style={{
-                     left: '50%',
-                     transform: 'translateX(-50%)',
-                   }}
-                 />
+
                 <motion.div
                   ref={ref}
                   initial={{ opacity: 0, y: 50 }}
@@ -66,8 +60,8 @@ export function SelectionProcessSection({
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className={cn(
-                    "glass-card p-6 rounded-lg shadow-lg w-[calc(50%-2rem)]",
-                    index % 2 === 0 ? "mr-auto" : "ml-auto"
+                    "glass-card p-6 rounded-lg shadow-lg w-full md:w-[calc(50%-2rem)]",
+                    index % 2 === 0 ? "md:mr-auto" : "md:ml-auto"
                   )}
                 >
                   <h3 className="text-lg font-semibold min-gradient-accent">
