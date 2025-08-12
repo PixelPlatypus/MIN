@@ -57,7 +57,7 @@ export default function RTOPage() {
                 className="flex items-center space-x-2 glass rounded-full px-4 sm:px-6 py-2 sm:py-3 mx-auto mb-6 sm:mb-8"
               >
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-min-accent" />
-                <span className="text-white/90 text-xs sm:text-sm font-medium">he Challenge Awaits</span>
+                <span className="text-white/90 text-xs sm:text-sm font-medium">The Challenge Awaits</span>
               </motion.div>
               <motion.h1
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 sm:mb-6 leading-tight"
