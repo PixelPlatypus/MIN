@@ -53,7 +53,14 @@ export function SelectionProcessSection({
                 )}
               >
 
-                <motion.div
+                  <div
+                   className="absolute z-10 flex items-center justify-center w-4 h-4 sm:w-6 sm:h-6 glass-light rounded-full border-2 border-min-accent shadow-lg hidden md:flex"
+                    style={{
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                    }}
+                  />
+                 <motion.div
                   ref={ref}
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
