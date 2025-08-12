@@ -12,7 +12,7 @@ import { Analytics } from "@vercel/analytics/next"
 export const metadata: Metadata = {
   title: 'Mathematics Initiatives in Nepal (MIN) - Transforming Math Education',
   description: 'Mathematics Initiatives in Nepal (MIN) is a prominent non-profit platform transforming math education in Nepal. We make math engaging, accessible, and enjoyable for students of all ages, addressing math anxiety and promoting deep understanding through Olympiad training, free resources, women empowerment initiatives, interactive activities, and mathematical modeling bootcamps. Join our global community.',
-  keywords: 'Mathematics Initiatives Nepal, MIN, math education Nepal, Junior Mathematics Olympiad Camps, JMOC, Olymprep, Road to Olympiad, ETA campaigns, Women in Mathematics, Girls Mathematics Olympiad Camp, eli5, Mathematical Modelling Bootcamp, Sunaulo Sanibar, math games, math anxiety, rote learning, Kathmandu University Computational Mathematics Club, SOMAES, HundrED 2025 Global Collection, math Olympiad training, accessible math, engaging math, Nepal education, global math community',
+  keywords: 'Mathematics Initiatives Nepal, MIN, math education Nepal, Junior Mathematics Olympiad Camps, JMOC, Olymprep, Road to Olympiad, ETA campaigns, Women in Mathematics, Girls Mathematics Olympiad Camp, eli5, Mathematical Modelling Bootcamp, Sunaulo Sanibar, math games, math anxiety, rote learning, Kathmandu University Computational Mathematics Club, SOMAES, HundrED 2025 Global Collection, math Olympiad training, accessible math, engaging math, Nepal education, global math community, JMOC, Olymprep, Nepal, MIN Nepal, Olympiad Nepal, MMM Bootcamp',
   generator: 'MIN',
 }
 

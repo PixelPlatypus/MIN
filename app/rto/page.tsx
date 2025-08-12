@@ -111,7 +111,7 @@ export default function RTOPage() {
               <SelectionProcessSection
                 data={selectionProcessData}
                 title="Olympiad Selection Process in Nepal"
-                subtitle="The selection process for the International Mathematical Olympiad (IMO) in Nepal involves several stages, designed to identify and nurture the most talented young mathematicians." subtitleClassName="text-white dark:text-white"
+                subtitle="The selection process for the International Mathematical Olympiad (IMO) in Nepal involves several stages, designed to identify and nurture the most talented young mathematicians." subtitleClassName="text-white/80"
               />
             </section>
 
