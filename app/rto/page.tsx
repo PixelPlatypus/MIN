@@ -12,8 +12,9 @@ import { Footer } from '@/components/footer';
 import { MinFloatingElements } from '@/components/ui/min-floating-elements';
 import { PopupNotice } from '@/components/ui/popup-notice';
 import roadmapData from '@/data/rto-roadmap.json';
-import { TopicCard } from '@/components/rto/topic-card';
 import { ResourcePanel } from '@/components/rto/resource-panel';
+import selectionProcessData from '@/data/selection-process.json';
+import { SelectionProcessSection } from '@/components/sections/selection-process-section';
 
 export default function RTOPage() {
   const [time, setTime] = useState(new Date());
@@ -107,64 +108,18 @@ export default function RTOPage() {
 
             {/* Olympiad Selection Process Section */}
             <section id="selection-process" className="mb-32">
-              <h2 className="text-4xl font-bold text-center mb-12 min-gradient-accent">Olympiad Selection Process in Nepal</h2>
-              <div className="overflow-x-auto glassmorphic-card p-6">
-                <table className="min-w-full bg-transparent min-gradient-border">
-                  <thead>
-                    <tr className="bg-gray-700 bg-opacity-50">
-                      <th className="px-4 py-2 border-b border-gray-600 text-left">Stage</th>
-                      <th className="px-4 py-2 border-b border-gray-600 text-left">Description</th>
-                      <th className="px-4 py-2 border-b border-gray-600 text-left">Focus Areas</th>
-                      <th className="px-4 py-2 border-b border-gray-600 text-left">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-gray-700">
-                      <td className="px-4 py-2">1. School/Local Level Awareness</td>
-                      <td className="px-4 py-2">Students learn about Olympiads through schools, clubs, or MIN outreach.</td>
-                      <td className="px-4 py-2">General math interest, curiosity</td>
-                      <td className="px-4 py-2">Attend math clubs, explore MIN resources, start basic problem solving.</td>
-                    </tr>
-                    <tr className="border-b border-gray-700">
-                      <td className="px-4 py-2">2. District Mathematics Olympiad (DMO)</td>
-                      <td className="px-4 py-2">First formal selection stage; open to school students.</td>
-                      <td className="px-4 py-2">School-level math, basic problem-solving</td>
-                      <td className="px-4 py-2">Study prealgebra, algebra, number theory basics, geometry, combinatorics; practice past DMO papers.</td>
-                    </tr>
-                    <tr className="border-b border-gray-700">
-                      <td className="px-4 py-2">3. Provincial Mathematics Olympiad (PMO)</td>
-                      <td className="px-4 py-2">Higher difficulty; selects for national level.</td>
-                      <td className="px-4 py-2">Intermediate problem-solving</td>
-                      <td className="px-4 py-2">Deepen knowledge in algebra, number theory, geometry, combinatorics; timed practice papers.</td>
-                    </tr>
-                    <tr className="border-b border-gray-700">
-                      <td className="px-4 py-2">4. Nepal Mathematical Olympiad (NMO)</td>
-                      <td className="px-4 py-2">National competition; top scorers shortlisted for training.</td>
-                      <td className="px-4 py-2">Proof-writing, advanced problem-solving</td>
-                      <td className="px-4 py-2">Learn rigorous proofs; solve harder problems; attempt past Top 100 problems.</td>
-                    </tr>
-                    <tr className="border-b border-gray-700">
-                      <td className="px-4 py-2">5. National Camp & Selection Test</td>
-                      <td className="px-4 py-2">Intensive training by MIN; final team chosen.</td>
-                      <td className="px-4 py-2">All four major areas at IMO level</td>
-                      <td className="px-4 py-2">Full mock Olympiads, advanced theory, weak area improvement.</td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-2">6. International Mathematical Olympiad (IMO)</td>
-                      <td className="px-4 py-2">Nepal’s team represents the country internationally.</td>
-                      <td className="px-4 py-2">Global-level competition</td>
-                      <td className="px-4 py-2">Solve IMO past papers, strategize problem selection, manage time effectively.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <SelectionProcessSection
+                data={selectionProcessData}
+                title="Olympiad Selection Process in Nepal"
+                subtitle="The selection process for the International Mathematical Olympiad (IMO) in Nepal involves several stages, designed to identify and nurture the most talented young mathematicians." subtitleClassName="text-white dark:text-white"
+              />
             </section>
 
 
 
             {/* Roadmap - From Beginner to IMO Section */}
             <section id="roadmap" className="mb-20">
-              <h2 className="text-4xl font-bold text-center mb-12 min-gradient-accent">Roadmap – From Beginner to IMO</h2>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 min-gradient-accent">Roadmap – From Beginner to IMO</h2>
 
 
               <div className="space-y-12">

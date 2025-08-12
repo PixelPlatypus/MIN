@@ -1,0 +1,44 @@
+[
+  {
+    "id": "school-local-awareness",
+    "title": "School/Local Level Awareness",
+    "description": "Students learn about Olympiads through schools, clubs, MIN outreach, or self-discovery.",
+    "focusAreas": "General math interest, curiosity",
+    "actions": "Understand the math topics in the curriculum, identify topics required for Olympiads, and start basic problem solving."
+  },
+  {
+    "id": "district-mathematics-olympiad",
+    "title": "District Mathematics Olympiad (DMO)",
+    "description": "First formal selection stage; open to school students.",
+    "focusAreas": "School-level math, basic problem-solving",
+    "actions": "Study prealgebra, algebra, number theory basics, geometry, combinatorics"
+  },
+  {
+    "id": "provincial-mathematics-olympiad",
+    "title": "Provincial Mathematics Olympiad (PMO)",
+    "description": "Higher difficulty; selects for national level.",
+    "focusAreas": "Intermediate problem-solving",
+    "actions": "Deepen knowledge in algebra, number theory, geometry, combinatorics; timed practice papers."
+  },
+  {
+    "id": "nepal-mathematical-olympiad",
+    "title": "Nepal Mathematical Olympiad (NMO)",
+    "description": "National competition; top scorers shortlisted for training.",
+    "focusAreas": "Proof-writing, advanced problem-solving",
+    "actions": "Learn rigorous proofs; solve harder problems; attempt past Top 100 problems."
+  },
+  {
+    "id": "national-camp-selection-test",
+    "title": "National Camp & Selection Test",
+    "description": "Intensive training by MIN; final team chosen.",
+    "focusAreas": "All four major areas at IMO level",
+    "actions": "Full mock Olympiads, advanced theory, weak area improvement."
+  },
+  {
+    "id": "international-mathematical-olympiad",
+    "title": "International Mathematical Olympiad (IMO)",
+    "description": "Nepal’s team represents the country internationally.",
+    "focusAreas": "Global-level competition",
+    "actions": "Solve IMO past papers, strategize problem selection, manage time effectively."
+  }
+]
