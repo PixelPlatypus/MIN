@@ -18,9 +18,10 @@ interface CertificatePdfRendererProps {
   filePath: string;
   className?: string;
   onLoadError?: (error: Error) => void;
+  onLoadSuccess?: () => void;
 }
 
-export const CertificatePdfRenderer = ({ filePath, className = '', onLoadError }: CertificatePdfRendererProps) => {
+export const CertificatePdfRenderer = ({ filePath, className = '', onLoadError, onLoadSuccess }: CertificatePdfRendererProps) => {
   const [numPages, setNumPages] = useState<number>();
   const [pageNumber, setPageNumber] = useState<number>(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -48,6 +49,7 @@ export const CertificatePdfRenderer = ({ filePath, className = '', onLoadError }
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
     setPageNumber(1); // Reset to first page on new document load
+    onLoadSuccess?.();
   }
 
   const goToNextPage = () =>

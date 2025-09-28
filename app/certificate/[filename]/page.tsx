@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { CertificatePdfRenderer } from "@/components/ui/certificate-pdf-renderer";
+import { useState } from "react";
 
 interface CertificatePageProps {
   params: {
@@ -13,6 +14,7 @@ interface CertificatePageProps {
 export default function CertificatePage({ params }: CertificatePageProps) {
   const router = useRouter();
   const { filename } = params;
+  const [isLoading, setIsLoading] = useState(true);
 
   if (!filename) {
     router.push('/404');
@@ -33,7 +35,16 @@ export default function CertificatePage({ params }: CertificatePageProps) {
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <h1 className="text-3xl font-bold text-white mb-4">Your Certificate</h1>
       <div className="w-full max-w-3xl h-[80vh] bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-        <CertificatePdfRenderer filePath={blobUrl} onLoadError={handlePdfError} />
+        {isLoading && (
+          <div className="flex items-center justify-center h-full text-white text-xl">
+            Please wait, the certificate is loading...
+          </div>
+        )}
+        <CertificatePdfRenderer
+          filePath={blobUrl}
+          onLoadError={handlePdfError}
+          onLoadSuccess={() => setIsLoading(false)}
+        />
       </div>
     </div>
   );

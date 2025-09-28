@@ -1,15 +1,16 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react"
 
 export const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
   const pathname = usePathname()
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export const Navigation = () => {
             <div>
               <span className="text-white font-bold text-lg sm:text-xl tracking-tight min-gradient-accent">MIN</span>
               <div className="text-white text-xs font-medium hidden sm:block">
-                Mathematics Initiatives Nepal
+                Mathematics Initiatives in Nepal
               </div>
             </div>
           </Link>
@@ -74,17 +75,12 @@ export const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            <motion.button
-              className="btn-min-accent px-4 sm:px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ml-4"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              data-hover="true"
-              onClick={() => {
-                window.location.href = "/submit-content"
-              }}
+            <Link
+              href="/submit-content"
+              className="btn-min-accent px-4 py-2 rounded-full text-sm font-semibold"
             >
               Submit Content
-            </motion.button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -100,11 +96,12 @@ export const Navigation = () => {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <motion.div
+            as="div"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden mt-4 glass-dark rounded-2xl p-4 sm:p-6"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
           >
             {navItems.map((item) => (
               <Link
@@ -136,3 +133,5 @@ export const Navigation = () => {
     </nav>
   )
 }
+
+export default Navigation;

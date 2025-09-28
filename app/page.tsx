@@ -4,7 +4,7 @@
 import { MinFloatingElements } from "@/components/ui/min-floating-elements"
 import { ClientOnly } from "@/components/client-only"
 import { PopupNotice } from "@/components/ui/popup-notice"
-import { Navigation } from "@/components/navigation"
+import Navigation from "@/components/navigation"
 import { HeroSection } from "@/components/sections/hero-section"
 import { StorySection } from "@/components/sections/story-section"
 import { AchievementsSection } from "@/components/sections/achievements-section"
