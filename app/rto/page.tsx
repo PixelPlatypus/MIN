@@ -54,53 +54,54 @@ export default function RTOPage() {
             <section className="text-center flex flex-col items-center justify-center min-h-screen">
               <motion.div
                 variants={itemVariants}
-                className="flex items-center space-x-2 glass rounded-full px-4 sm:px-6 py-2 sm:py-3 mx-auto mb-6 sm:mb-8"
               >
-                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-min-accent" />
-                <span className="text-white/90 text-xs sm:text-sm font-medium">The Challenge Awaits</span>
+                <div className="flex items-center space-x-2 glass rounded-full px-4 sm:px-6 py-2 sm:py-3 mx-auto mb-6 sm:mb-8">
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-min-accent" />
+                  <span className="text-white/90 text-xs sm:text-sm font-medium">The Challenge Awaits</span>
+                </div>
               </motion.div>
               <motion.h1
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 sm:mb-6 leading-tight"
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: easeInOut }}
               >
-                <span className="block min-gradient-accent">Road to Olympiad</span>
+                <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 sm:mb-6 leading-tight block min-gradient-accent">Road to Olympiad</span>
               </motion.h1>
               <motion.p
-                className="text-white/80 text-base sm:text-lg md:text-xl lg:text-2xl font-light max-w-4xl mx-auto leading-relaxed mb-8 sm:mb-12 px-4"
                 initial={{ opacity: 0, y: -30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: easeInOut, delay: 0.2 }}
               >
-                Your comprehensive guide to navigating the RTO process and accessing essential study materials.
+                <span className="text-white/80 text-base sm:text-lg md:text-xl lg:text-2xl font-light max-w-4xl mx-auto leading-relaxed mb-8 sm:mb-12 px-4 block">Your comprehensive guide to navigating the RTO process and accessing essential study materials.</span>
               </motion.p>
 
               <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
                 <Link href="#selection-process">
                   <motion.button
-                    className="group btn-min-primary text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect"
                     data-hover="true"
                     ref={useShiningEffect<HTMLButtonElement>()}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: easeInOut, delay: 0.6 }}
                   >
-                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Selection Process</span>
+                    <span className="group btn-min-primary text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect">
+                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span>Selection Process</span>
+                    </span>
                   </motion.button>
                 </Link>
                 <Link href="#roadmap">
                   <motion.button
-                    className="group glass text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg hover:glass-hover transition-all duration-300 flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect"
                     data-hover="true"
                     ref={useShiningEffect<HTMLButtonElement>()}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: easeInOut, delay: 0.8 }}
                   >
-                    <span>Roadmap</span>
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                    <span className="group glass text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg hover:glass-hover transition-all duration-300 flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect">
+                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span>Roadmap & Resources</span>
+                    </span>
                   </motion.button>
                 </Link>
               </div>
@@ -280,6 +281,20 @@ export default function RTOPage() {
               </div>
             </section>
 
+            {/* DMO Practice Section */}
+            <section className="mb-20">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tighter text-center mb-8 min-gradient-accent">Dive into DMO Practice Questions</h2>
+              <p className="text-center mb-10 text-white/80 text-lg max-w-3xl mx-auto">Sharpen your problem-solving skills with a diverse set of DMO (District Mathematical Olympiad) practice questions. Each set is designed to challenge and prepare you for the real competition.</p>
+              <div className="flex justify-center">
+                <Link href="/dmopractice">
+                  <button className="btn-min-primary text-white px-8 py-3 rounded-full font-semibold text-lg flex items-center space-x-2 shining-effect" data-hover="true" ref={useShiningEffect<HTMLButtonElement>()}>
+                    <Sparkles className="w-5 h-5" />
+                    <span>Start Practicing Now</span>
+                  </button>
+                </Link>
+              </div>
+            </section>
+
             {/* Resources Section (retained with updated props) */}
             <section className="mb-20">
               <h2 className="text-4xl font-bold text-center mb-12 min-gradient-accent">Essential Resources</h2>
@@ -324,6 +339,16 @@ export default function RTOPage() {
           </div>
         </main>
 
+        <Link href="/dmopractice" className="fixed bottom-8 left-8 z-50">
+          <button
+            className="group glass text-white p-4 rounded-full shadow-lg hover:glass-hover transition-all duration-300 flex items-center space-x-2 shining-effect"
+            data-hover="true"
+            ref={useShiningEffect<HTMLButtonElement>()}
+          >
+            <Sparkles className="w-5 h-5" />
+            <span className="font-semibold">DMO Practice</span>
+          </button>
+        </Link>
         <Footer />
       </div>
   );

@@ -1,15 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getRandomQuestions } from './data/questionSelector';
-
-
 import { Question } from './data/questions';
+import { getRandomQuestions } from './data/questionSelector';
 import 'katex/dist/katex.min.css';
+import { InlineMath } from 'react-katex';
 import { useShiningEffect } from '@/hooks/use-shining-effect';
 import { MinFloatingElements } from "@/components/ui/min-floating-elements"
 import { ClientOnly } from "@/components/client-only"
-import { PopupNotice } from "@/components/ui/popup-notice"
 import Navigation from "@/components/navigation"
 import { Footer } from "@/components/footer"
 
@@ -17,7 +15,7 @@ import { Footer } from "@/components/footer"
 export default function DmopracticePage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(3600); // 1 hour in seconds
+  const [timeLeft, setTimeLeft] = useState(6000); // 100 minutes in seconds
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: string }>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
@@ -60,18 +58,29 @@ export default function DmopracticePage() {
   const handleSubmitExam = () => {
     setExamFinished(true);
     let correctCount = 0;
-    questions.forEach((question) => {
-      if (selectedAnswers[question.id] === question.correctAnswer) {
+    const questionDetails = questions.map(question => {
+      const isCorrect = selectedAnswers[question.id] === question.correctAnswer;
+      if (isCorrect) {
         correctCount++;
       }
+      return {
+        id: question.id,
+        questionText: question.questionText.substring(0, 50) + (question.questionText.length > 50 ? '...' : ''),
+        selectedAnswer: selectedAnswers[question.id] || 'Not answered',
+        correctAnswer: question.correctAnswer,
+        isCorrect
+      };
     });
+    
     setScore(correctCount);
     setShowResults(true);
 
     const results = {
       score: correctCount,
       totalQuestions: questions.length,
-      selectedAnswers,
+      percentage: Math.round((correctCount / questions.length) * 100),
+      questionDetails,
+      timeSpent: 6000 - timeLeft, // in seconds
       timestamp: new Date().toISOString(),
     };
     const storedResults = JSON.parse(localStorage.getItem('dmoExamResults') || '[]');
@@ -113,7 +122,6 @@ export default function DmopracticePage() {
         <ClientOnly>
           <MinFloatingElements />
         </ClientOnly>
-        <PopupNotice />
         <Navigation />
         <div className="min-h-screen flex flex-col items-center justify-center p-4 pt-20 relative z-10">
           <div className="glassmorphic-card p-8 rounded-lg shadow-lg w-full max-w-3xl text-white">
@@ -129,14 +137,31 @@ export default function DmopracticePage() {
 
             {previousResults.length > 0 && (
               <div className="mt-10">
-                <h2 className="text-2xl font-bold mb-4 min-gradient-accent">Previous Scores</h2>
-                <ul className="list-disc list-inside">
-                  {previousResults.map((result, index) => (
-                    <li key={index} className="mb-2">
-                      Score: {result.score} / {result.totalQuestions} on {new Date(result.timestamp).toLocaleString()}
-                    </li>
+                <h2 className="text-2xl font-bold mb-4 min-gradient-accent">Previous Attempts</h2>
+                <div className="grid gap-4">
+                  {previousResults.slice().reverse().map((result, index) => (
+                    <div key={index} className="glassmorphic-card p-4 rounded-lg">
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="text-xl font-bold">
+                          Score: {result.score} / {result.totalQuestions} 
+                          {result.percentage && <span className="ml-2">({result.percentage}%)</span>}
+                        </div>
+                        <div className="text-sm opacity-80">
+                          {new Date(result.timestamp).toLocaleDateString()} at {new Date(result.timestamp).toLocaleTimeString()}
+                        </div>
+                      </div>
+                      {result.timeSpent && (
+                        <div className="text-sm mb-2">
+                          Time spent: {Math.floor(result.timeSpent / 60)}m {result.timeSpent % 60}s
+                        </div>
+                      )}
+                      <div className="flex gap-2 mt-2">
+                        <div className="h-2 bg-green-500 rounded-full" style={{ width: `${(result.score / result.totalQuestions) * 100}%` }}></div>
+                        <div className="h-2 bg-red-500 rounded-full" style={{ width: `${((result.totalQuestions - result.score) / result.totalQuestions) * 100}%` }}></div>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
           </div>
@@ -147,32 +172,52 @@ export default function DmopracticePage() {
   }
 
   if (examFinished) {
+    const percentage = Math.round((score / questions.length) * 100);
+    const timeSpent = 6000 - timeLeft;
+    
     return (
       <div className="overflow-x-hidden">
         <ClientOnly>
           <MinFloatingElements />
         </ClientOnly>
-        <PopupNotice />
         <Navigation />
         <div className="min-h-screen flex flex-col items-center justify-center p-4 pt-20 relative z-10">
-          <div className="glassmorphic-card p-8 rounded-lg shadow-lg w-full max-w-3xl text-white text-center">
-            <h1 className="text-4xl font-bold mb-8 min-gradient-accent">Exam Finished!</h1>
-            <p className="text-xl mb-8">Your score: {score} / {questions.length}</p>
-            <button
-              onClick={() => {
-                setShowResults(false);
-                setExamFinished(false);
-                setQuestions([]); // Clear questions
-                setCurrentQuestionIndex(0);
-                setSelectedAnswers({});
-                setTimeLeft(3600);
-                setExamStarted(false); // Go back to start screen
-              }}
-              className="group glass text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg hover:glass-hover transition-all duration-300 flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect mx-auto"
-              ref={shiningEffectRef}
-            >
-              Start New Exam
-            </button>
+          <div className="glassmorphic-card p-8 rounded-lg shadow-lg w-full max-w-3xl text-white">
+            <h1 className="text-4xl font-bold mb-6 min-gradient-accent text-center">Exam Finished!</h1>
+            
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-2xl">Your score: {score} / {questions.length}</p>
+                <p className="text-2xl font-bold">{percentage}%</p>
+              </div>
+              
+              <div className="w-full h-4 bg-gray-700 rounded-full mb-4">
+                <div 
+                  className={`h-full rounded-full ${percentage >= 70 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`} 
+                  style={{ width: `${percentage}%` }}
+                ></div>
+              </div>
+              
+              <p className="text-lg">Time spent: {Math.floor(timeSpent / 60)} minutes {timeSpent % 60} seconds</p>
+            </div>
+            
+            <div className="flex justify-center mb-8">
+              <button
+                onClick={() => {
+                  setShowResults(false);
+                  setExamFinished(false);
+                  setQuestions([]); // Clear questions
+                  setCurrentQuestionIndex(0);
+                  setSelectedAnswers({});
+                  setTimeLeft(6000);
+                  setExamStarted(false); // Go back to start screen
+                }}
+                className="group glass text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg hover:glass-hover transition-all duration-300 flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect mx-auto"
+                ref={shiningEffectRef}
+              >
+                Start New Exam
+              </button>
+            </div>
           </div>
         </div>
         <Footer />
@@ -185,8 +230,33 @@ export default function DmopracticePage() {
   }
 
   const renderTextWithLatex = (text: string) => {
-  return <span>{text}</span>;
-};
+    if (!text) return <span></span>;
+    
+    // Regular expression to match LaTeX expressions between $ symbols
+    const regex = /\$(.*?)\$/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = regex.exec(text)) !== null) {
+      // Add text before the match
+      if (match.index > lastIndex) {
+        parts.push(<span key={`text-${lastIndex}`}>{text.substring(lastIndex, match.index)}</span>);
+      }
+      
+      // Add the LaTeX expression
+      parts.push(<InlineMath key={`math-${match.index}`} math={match[1]} />);
+      
+      lastIndex = match.index + match[0].length;
+    }
+    
+    // Add any remaining text
+    if (lastIndex < text.length) {
+      parts.push(<span key={`text-${lastIndex}`}>{text.substring(lastIndex)}</span>);
+    }
+    
+    return <>{parts}</>;
+  };
 
   const currentQuestion = questions[currentQuestionIndex];
   return (
@@ -205,23 +275,30 @@ export default function DmopracticePage() {
             <p className="text-xl mb-4 text-white">Question {currentQuestionIndex + 1} of {questions.length}:</p>
             <p className="text-lg mb-6 text-white">{renderTextWithLatex(currentQuestion.questionText)}</p>
             {currentQuestion.image && (
-              <img src={currentQuestion.image} alt="Question Image" className="max-w-full h-auto mb-4" />
+              <div className="flex justify-center mb-4">
+                <img 
+                  src={`/qsn_img/${currentQuestion.image}`}
+                  alt="Question Image" 
+                  className="bg-white p-2 rounded shadow-md max-w-full h-auto" 
+                />
+              </div>
             )}
             {currentQuestion.math && (
-              <div className="text-lg font-mono bg-card p-2 rounded mb-4">
-                <span>{currentQuestion.math}</span>
+              <div className="text-lg bg-card p-2 rounded mb-4">
+                <InlineMath math={currentQuestion.math} />
               </div>
             )}
           </div>
 
-          <div className="flex flex-wrap justify-start gap-4 mb-8">
+          <div className="flex flex-col gap-4 mb-8">
             {currentQuestion.options.map((option: string, index: number) => (
               <button
                 key={index}
-                className={`flex-grow items-center text-left p-4 rounded-lg border-2 ${selectedAnswers[currentQuestion.id] === option ? 'border-min-primary bg-primary-foreground text-primary' : 'border-border bg-card'} hover:border-min-primary transition-all duration-200 glassmorphic-button`}
+                className={`flex items-center text-left p-4 rounded-lg border-2 ${selectedAnswers[currentQuestion.id] === option ? 'border-min-primary bg-primary-foreground text-primary' : 'border-border bg-card'} hover:border-min-primary transition-all duration-200 glassmorphic-button`}
                 onClick={() => handleAnswerSelect(currentQuestion.id, option)}
               >
-                {option}
+                <span className="font-bold mr-3">{String.fromCharCode(65 + index)}.</span>
+                {renderTextWithLatex(option)}
               </button>
             ))}
           </div>

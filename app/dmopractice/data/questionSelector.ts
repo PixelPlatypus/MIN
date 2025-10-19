@@ -1,34 +1,21 @@
-import { Question, allQuestions } from './questions';
-import questionSets from './questionSets.json';
+import { Question } from './questions';
+import { allQuestionSets } from './allQuestionSets';
 
 export function getRandomQuestions(count: number): Question[] {
-  if (questionSets.length === 0) {
-    console.warn("No question sets defined. Returning all questions.");
-    return [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, count);
+  const randomIndex = Math.floor(Math.random() * allQuestionSets.length);
+  const selectedQuestionSet = allQuestionSets[randomIndex];
+  
+  // If we need exactly the number of questions in the set, return them
+  if (selectedQuestionSet.length === count) {
+    return [...selectedQuestionSet];
   }
-
-  // Randomly select one question set
-  const randomSetIndex = Math.floor(Math.random() * questionSets.length);
-  const selectedQuestionIds = questionSets[randomSetIndex];
-
-  // Filter allQuestions to include only those in the selected set
-  const selectedQuestions = allQuestions.filter(question =>
-    selectedQuestionIds.includes(question.id)
-  );
-
-  // Ensure we return exactly 'count' questions, even if the set has more or less
-  // (though ideally each set in questionSets.json should have 'count' questions)
-  if (selectedQuestions.length > count) {
-    return selectedQuestions.sort(() => 0.5 - Math.random()).slice(0, count);
-  } else if (selectedQuestions.length < count) {
-    console.warn("Selected question set has fewer questions than requested count. Filling with random questions.");
-    const remainingCount = count - selectedQuestions.length;
-    const alreadySelectedIds = new Set(selectedQuestions.map(q => q.id));
-    const fillerQuestions = allQuestions.filter(q => !alreadySelectedIds.has(q.id))
-                                      .sort(() => 0.5 - Math.random())
-                                      .slice(0, remainingCount);
-    return selectedQuestions.concat(fillerQuestions).sort(() => 0.5 - Math.random());
+  
+  // If we need fewer questions than in the set, return the first 'count' questions
+  if (selectedQuestionSet.length > count) {
+    return selectedQuestionSet.slice(0, count);
   }
-
-  return selectedQuestions.sort(() => 0.5 - Math.random()); // Final shuffle
+  
+  // If we need more questions than in the set, just return all questions from set 1
+  console.warn("Selected question set has fewer questions than requested count. Returning all available questions from Set 1.");
+  return [...selectedQuestionSet];
 }
