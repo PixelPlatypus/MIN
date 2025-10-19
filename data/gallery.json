@@ -158,5 +158,38 @@
     "tags": [],
     "image": "/gallery/21.png",
     "description": ""
+  },
+  {
+    "id": 21,
+    "title": "Students of Helambu Camp",
+    "category": "Helambu Camp",
+    "tags": [],
+    "image": "/gallery/22.png",
+    "description": ""
+  },
+  {
+    "id": 22,
+    "title": "Session of Helambu Camp",
+    "category": "Helambu Camp",
+    "tags": [],
+    "image": "/gallery/23.png",
+    "description": ""
+  },
+  {
+    "id": 23,
+    "title": "Project Demostration",
+    "category": "Helambu Camp",
+    "tags": [],
+    "image": "/gallery/24.png",
+    "description": ""
+  },
+  {
+    "id": 24,
+    "title": "Helambu Team",
+    "category": "Helambu Camp",
+    "tags": [],
+    "image": "/gallery/25.png",
+    "description": ""
   }
+
 ]
