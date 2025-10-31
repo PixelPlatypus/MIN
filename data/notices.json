@@ -1,45 +1,24 @@
 [
   {
     "id": "notice-1",
-    "title": "JMOC 2025 Registration Open!",
-    "message": "Join us for the Junior Mathematics Olympiad Camp 2025. Early bird registration ends March 15th.",
+    "title": "JMOC Registration open",
+    "message": "Join us for the Junior Mathematics Olympiad Camp 2025. Registration ends Nov 15.",
     "type": "announcement",
-    "priority": "high",
-    "showUntil": "2025-03-15",
-    "link": {
-      "text": "Register Now",
-      "url": "/join"
-    },
-    "imageUrl": "/images/min-logo.png",
-    "status": "inactive",
-    "buttons": [
-      {
-        "text": "Register Now",
-        "url": "/join"
-      },
-      {
-        "text": "Close",
-        "url": "#",
-        "action": "close"
-      }
-    ]
-  },
-  {
-    "id": "notice-2",
-    "title": "New Content Submission Portal",
-    "message": "Share your mathematical insights! Submit your articles, research papers, and problems to be featured on MIN.",
-    "type": "info",
     "priority": "medium",
     "link": {
-      "text": "Submit Content",
-      "url": "/submit-content"
+      "text": "Register Now",
+      "url": "https://bit.ly/JMOC25"
     },
-    "imageUrl": "/notices/submit_your_content.png",
+    "imageUrl": "/notices/JMOC_logo.png",
     "status": "active",
     "buttons": [
       {
-        "text": "Submit Content",
-        "url": "/submit-content"
+        "text": "Register Now",
+        "url": "https://bit.ly/JMOC25"
+      },
+      {
+        "text": "Read More",
+        "url": "/jmoc"
       }
     ]
   }
