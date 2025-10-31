@@ -72,14 +72,7 @@ export default function JMOCPage() {
           </motion.div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="#admission">
-              <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: easeInOut, delay: 0.3 }} ref={useShiningEffect<HTMLButtonElement>()} data-hover="true">
-                <span className="group btn-min-accent text-min-primary px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect">
-                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>Joining Process</span>
-                </span>
-              </motion.button>
-            </Link>
+            <a href="https://bit/ly/JMOC25" target="_blank" rel="noopener noreferrer" className="group btn-min-accent text-min-primary px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect">Join JMOC</a>
             <Link href="#about">
               <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: easeInOut, delay: 0.4 }} ref={useShiningEffect<HTMLButtonElement>()} data-hover="true">
                 <span className="group glass text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg hover:glass-hover transition-all duration-300 flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect">
@@ -94,7 +87,7 @@ export default function JMOCPage() {
 
       {/* About */}
       <section id="about" className="py-12 sm:py-20">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: easeInOut }}>
             <div className="glass rounded-2xl p-6 sm:p-10">
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 min-gradient-accent">Overview</h2>
@@ -124,31 +117,7 @@ export default function JMOCPage() {
         </div>
       </section>
 
-      {/* Joining Process */}
-      <section id="admission" className="py-12 sm:py-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: easeInOut }}>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-              <div className="lg:col-span-2 glass rounded-2xl p-6 sm:p-10">
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 min-gradient-accent">Joining Process</h2>
-                <p className="text-white/80 font-light leading-relaxed mb-6">
-                  The joining process for JMOC happens only once every year, mostly at the end of each year. Steps are easy to follow - simply visit this JMOC section and fill out the application form to secure your spot in the JMOC camp.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="https://bit.ly/JMOC25">
-                    <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: easeInOut }} ref={useShiningEffect<HTMLButtonElement>()} data-hover="true">
-                      <span className="btn-min-primary text-white px-6 sm:px-8 py-3 rounded-full font-semibold flex items-center gap-2 shining-effect">
-                        <ArrowRight className="w-4 h-4" />
-                        Join JMOC
-                      </span>
-                    </motion.button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+
 
       {/* Testimonials */}
       <section className="py-12 sm:py-20">
@@ -204,7 +173,7 @@ export default function JMOCPage() {
 
       {/* FAQ */}
       <section id="faq" className="py-12 sm:py-20">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: easeInOut }}>
             <div className="glass rounded-2xl p-6 sm:p-10">
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 min-gradient-accent">
