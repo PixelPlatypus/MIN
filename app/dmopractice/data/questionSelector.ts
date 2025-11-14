@@ -19,3 +19,24 @@ export function getRandomQuestions(count: number): Question[] {
   console.warn("Selected question set has fewer questions than requested count. Returning all available questions from Set 1.");
   return [...selectedQuestionSet];
 }
+
+export function getRandomQuestionsAcrossSets(count: number): Question[] {
+  const flat: Question[] = allQuestionSets.reduce<Question[]>((acc, set) => acc.concat(set), []);
+  if (flat.length === 0) return [];
+
+  const shuffled = [...flat];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  const uniqueById: Record<string, Question> = {};
+  for (const q of shuffled) {
+    if (!uniqueById[q.id]) uniqueById[q.id] = q;
+    if (Object.keys(uniqueById).length >= count) break;
+  }
+
+  const result = Object.values(uniqueById);
+  if (result.length < count) return result;
+  return result.slice(0, count);
+}
