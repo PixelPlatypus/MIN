@@ -50,7 +50,7 @@ const MemberCard = ({ member, index }: { member: any; index: number }) => {
         <h4 className="text-base sm:text-lg lg:text-xl font-semibold text-white mb-2 group-hover:min-gradient-accent transition-colors">
           {member.name}
         </h4>
-        <p className="text-white/80 font-medium text-xs sm:text-sm mb-2">{member.position}</p>
+        <p className="text-white/80 font-medium text-xs sm:text-sm mb-2">{member.isAlumni ? "Alumni" : member.position}</p>
         <p className="text-white/60 font-light text-xs mb-4">{member.specialty}</p>
 
         <div className="mt-4 w-8 sm:w-12 h-0.5 bg-gradient-to-r from-min-accent to-min-light mx-auto transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
@@ -67,12 +67,11 @@ export default function TeamPage() {
 
   // Calculate alumni count automatically
   const alumniCount = useMemo(() => {
-    const currentYear = new Date().getFullYear()
     let total = 0
-    Object.entries(teamData).forEach(([year, members]) => {
-      if (Number.parseInt(year) < currentYear) {
-        total += members.length
-      }
+    Object.values(teamData).forEach((members: any) => {
+      members.forEach((m: any) => {
+        if (m.isAlumni === true) total++
+      })
     })
     return total
   }, [])

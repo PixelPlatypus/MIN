@@ -1,6 +1,27 @@
 [
   {
-
+    "id": "notice-1",
+    "title": "JMOC Registration open",
+    "message": "Join us for the Junior Mathematics Olympiad Camp 2025. Registration ends Nov 15.",
+    "type": "announcement",
+    "priority": "medium",
+    "turnOffNoticeDate": "2025-11-15",
+    "link": {
+      "text": "Register Now",
+      "url": "https://bit.ly/JMOC25"
+    },
+    "imageUrl": "/notices/JMOC_logo.png",
+    "status": "active",
+    "buttons": [
+      {
+        "text": "Register Now",
+        "url": "https://bit.ly/JMOC25"
+      },
+      {
+        "text": "Read More",
+        "url": "/jmoc"
+      }
+    ]
   }
 ]
 
