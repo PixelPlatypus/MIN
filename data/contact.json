@@ -1,7 +1,7 @@
 {
   "contactInfo": [
     { "label": "Email", "value": "join.min.np@gmail.com", "icon": "Mail" },
-    { "label": "Phone", "value": "+977-XXXXXXXXXX", "icon": "Phone" },
+    { "label": "Phone", "value": "Not Available", "icon": "Phone" },
     { "label": "Location", "value": "Kathmandu, Nepal", "icon": "MapPin" }
   ],
   "socialLinks": [
