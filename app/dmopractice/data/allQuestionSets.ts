@@ -12,11 +12,11 @@ export const allQuestionSets: Question[][] = [
   questionSet1,
   questionSet2,
   questionSet3,
-  questionSet4
-  // questionSet5,
-  // questionSet6,
-  // questionSet7,
-  // questionSet8
+  questionSet4,
+  questionSet5,
+  questionSet6,
+  questionSet7,
+  questionSet8
 ];
 
 export default allQuestionSets;

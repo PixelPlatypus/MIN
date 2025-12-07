@@ -22,6 +22,9 @@ export default function TestPrepPage() {
   const [examStarted, setExamStarted] = useState(false);
   const [previousResults, setPreviousResults] = useState<any[]>([]);
   const [studentName, setStudentName] = useState('');
+  const [studentEmail, setStudentEmail] = useState('');
+  const [studentGrade, setStudentGrade] = useState('');
+  const [studentSection, setStudentSection] = useState('');
 
   const shiningEffectRef = useShiningEffect<HTMLButtonElement>();
 
@@ -51,7 +54,16 @@ export default function TestPrepPage() {
   }, [examStarted]);
 
   const startExam = () => {
-    if (studentName.trim().length === 0) return;
+    const emailValid = /.+@.+\..+/.test(studentEmail.trim());
+    if (
+      studentName.trim().length === 0 ||
+      studentEmail.trim().length === 0 ||
+      !emailValid ||
+      studentGrade.trim().length === 0 ||
+      studentSection.trim().length === 0
+    ) {
+      return;
+    }
     setExamStarted(true);
   };
 
@@ -83,15 +95,21 @@ export default function TestPrepPage() {
       timeSpent: 6000 - timeLeft,
       timestamp: new Date().toISOString(),
       studentName,
+      studentEmail,
+      studentGrade,
+      studentSection,
     };
     const storedResults = JSON.parse(localStorage.getItem('trinityExamResults') || '[]');
     localStorage.setItem('trinityExamResults', JSON.stringify([...storedResults, results]));
 
-    fetch('/api/trinity-results', {
+    fetch('/api/testprep-results', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         studentName,
+        studentEmail,
+        studentGrade,
+        studentSection,
         score: correctCount,
         percentage: Math.round((correctCount / questions.length) * 100),
         timeSpent: 6000 - timeLeft,
@@ -139,7 +157,7 @@ export default function TestPrepPage() {
         <div className="min-h-screen flex flex-col items-center justify-center p-4 pt-20 relative z-10">
           <div className="glassmorphic-card p-8 rounded-lg shadow-lg w-full max-w-3xl text-white">
             <h1 className="text-3xl font-bold mb-6 min-gradient-accent">MIN | Trinity Exam</h1>
-            <p className="text-lg mb-8">Enter your name and click below to begin your 100-minute exam.</p>
+            <p className="text-lg mb-8">Enter your details and click below to begin your 100-minute exam.</p>
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2">Student Name</label>
               <input
@@ -150,10 +168,51 @@ export default function TestPrepPage() {
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-min-accent"
               />
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">Email</label>
+                <input
+                  type="email"
+                  value={studentEmail}
+                  onChange={(e) => setStudentEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-min-accent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Grade</label>
+                <select
+                  value={studentGrade}
+                  onChange={(e) => setStudentGrade(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-min-accent"
+                >
+                  <option value="" className="text-black">Select grade</option>
+                  <option value="11" className="text-black">11</option>
+                  <option value="12" className="text-black">12</option>
+                  <option value="A levels" className="text-black">A levels</option>
+                </select>
+              </div>
+            </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2">Section</label>
+              <input
+                type="text"
+                value={studentSection}
+                onChange={(e) => setStudentSection(e.target.value)}
+                placeholder="e.g., A, B, C"
+                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-min-accent"
+              />
+            </div>
             <button
               onClick={() => startExam()}
               className="group glass text-white px-6 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-lg hover:glass-hover transition-all duration-300 flex items-center justify-center space-x-2 w-full sm:w-auto shining-effect disabled:opacity-60 disabled:cursor-not-allowed"
-              disabled={studentName.trim().length === 0}
+              disabled={
+                studentName.trim().length === 0 ||
+                studentEmail.trim().length === 0 ||
+                !/.+@.+\..+/.test(studentEmail.trim()) ||
+                !['11','12','A levels'].includes(studentGrade.trim()) ||
+                studentSection.trim().length === 0
+              }
               ref={shiningEffectRef}
             >
               Start Test

@@ -8,6 +8,9 @@ import { MinFloatingElements } from '@/components/ui/min-floating-elements';
 
 type Result = {
   studentName: string;
+  studentEmail?: string | null;
+  studentGrade?: string | null;
+  studentSection?: string | null;
   score: number;
   percentage: number | null;
   timeSpent: number | null;
@@ -19,11 +22,14 @@ export default function TestPrepResultsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/api/trinity-results');
+        const res = await fetch('/api/testprep-results');
         if (!res.ok) throw new Error('Failed to load results');
         const data = await res.json();
         const sorted = [...data].sort((a: Result, b: Result) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -38,7 +44,7 @@ export default function TestPrepResultsPage() {
   }, []);
 
   const toCSV = (rows: Result[]) => {
-    const header = ['Student','Score','Percentage','TimeSpentSeconds','Timestamp'];
+    const header = ['Student','Email','Grade','Section','Score','Percentage','TimeSpentSeconds','Timestamp'];
     const esc = (v: any) => {
       const s = v == null ? '' : String(v);
       const e = s.replace(/"/g, '""');
@@ -46,6 +52,9 @@ export default function TestPrepResultsPage() {
     };
     const lines = [header.join(',')].concat(rows.map(r => [
       esc(r.studentName),
+      esc(r.studentEmail ?? ''),
+      esc(r.studentGrade ?? ''),
+      esc(r.studentSection ?? ''),
       esc(r.score),
       esc(r.percentage != null ? r.percentage : ''),
       esc(r.timeSpent != null ? r.timeSpent : ''),
@@ -74,6 +83,25 @@ export default function TestPrepResultsPage() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (deleting) return;
+    const ok = typeof window !== 'undefined' ? window.confirm('Delete all stored results? This cannot be undone.') : true;
+    if (!ok) return;
+    setDeleting(true);
+    try {
+      const res = await fetch('/api/testprep-results', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: deletePassword }) });
+      if (!res.ok) {
+        setDeleteError('Incorrect password');
+        return;
+      }
+      setDeleteError(null);
+      try { localStorage.removeItem('trinityExamResults'); } catch {}
+      setResults([]);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="overflow-x-hidden">
       <ClientOnly>
@@ -83,7 +111,7 @@ export default function TestPrepResultsPage() {
       <div className="min-h-screen flex flex-col items-center justify-start p-4 pt-24 relative z-10">
         <div className="glassmorphic-card p-8 rounded-lg shadow-lg w-full max-w-5xl text-white">
           <h1 className="text-3xl font-bold mb-6 min-gradient-accent">TestPrep Results</h1>
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end mb-4 gap-3">
             <button
               onClick={handleDownloadCSV}
               disabled={loading || results.length === 0 || downloading}
@@ -91,7 +119,22 @@ export default function TestPrepResultsPage() {
             >
               {downloading ? 'Preparing...' : 'Download CSV'}
             </button>
+            <input
+              type="password"
+              value={deletePassword}
+              onChange={(e) => setDeletePassword(e.target.value)}
+              placeholder="Enter password"
+              className="px-3 py-2 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-min-accent"
+            />
+            <button
+              onClick={handleDeleteAll}
+              disabled={loading || deleting || deletePassword.trim().length === 0}
+              className="btn-min-accent px-4 py-2 rounded-full text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {deleting ? 'Deleting...' : 'Delete All Results'}
+            </button>
           </div>
+          {deleteError && <div className="text-red-400 mb-2">{deleteError}</div>}
           {loading && <div className="text-white/80">Loading...</div>}
           {error && <div className="text-red-400">{error}</div>}
           {!loading && !error && (
@@ -100,6 +143,9 @@ export default function TestPrepResultsPage() {
                 <thead>
                   <tr className="bg-gray-700 bg-opacity-50">
                     <th className="px-4 py-2 border-b border-gray-600 text-left">Student</th>
+                    <th className="px-4 py-2 border-b border-gray-600 text-left">Email</th>
+                    <th className="px-4 py-2 border-b border-gray-600 text-left">Grade</th>
+                    <th className="px-4 py-2 border-b border-gray-600 text-left">Section</th>
                     <th className="px-4 py-2 border-b border-gray-600 text-left">Score</th>
                     <th className="px-4 py-2 border-b border-gray-600 text-left">Percentage</th>
                     <th className="px-4 py-2 border-b border-gray-600 text-left">Time Spent</th>
@@ -115,6 +161,9 @@ export default function TestPrepResultsPage() {
                     results.map((r, i) => (
                       <tr className="border-b border-gray-700" key={`${r.studentName}-${r.timestamp}-${i}`}>
                         <td className="px-4 py-2">{r.studentName}</td>
+                        <td className="px-4 py-2">{r.studentEmail ?? '—'}</td>
+                        <td className="px-4 py-2">{r.studentGrade ?? '—'}</td>
+                        <td className="px-4 py-2">{r.studentSection ?? '—'}</td>
                         <td className="px-4 py-2">{r.score}</td>
                         <td className="px-4 py-2">{r.percentage != null ? `${r.percentage}%` : '—'}</td>
                         <td className="px-4 py-2">{r.timeSpent != null ? `${Math.floor(r.timeSpent / 60)}m ${r.timeSpent % 60}s` : '—'}</td>
