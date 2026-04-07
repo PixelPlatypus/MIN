@@ -14,6 +14,25 @@ const nextConfig = {
   images: {
     unoptimized: false,
   },
+  async redirects() {
+    return [
+      {
+        source: '/testprep',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/testprep-auth',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/testprep-result',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
 }
 
 export default nextConfig

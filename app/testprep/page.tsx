@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Question } from '../dmopractice/data/questions';
 import { getRandomQuestionsAcrossSets } from '../dmopractice/data/questionSelector';
 import 'katex/dist/katex.min.css';
@@ -11,20 +12,63 @@ import { ClientOnly } from '@/components/client-only'
 import Navigation from '@/components/navigation'
 import { Footer } from '@/components/footer'
 
+interface PreviousResult {
+  score: number;
+  totalQuestions: number;
+  percentage?: number;
+  timestamp: string;
+  studentName?: string;
+  timeSpent?: number;
+}
+
 export default function TestPrepPage() {
+  const router = useRouter();
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loadingAuth, setLoadingAuth] = useState(true);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(6000);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: string }>({});
-  const [showResults, setShowResults] = useState(false);
-  const [score, setScore] = useState(0);
-  const [examFinished, setExamFinished] = useState(false);
   const [examStarted, setExamStarted] = useState(false);
-  const [previousResults, setPreviousResults] = useState<any[]>([]);
+  const [examFinished, setExamFinished] = useState(false);
   const [studentName, setStudentName] = useState('');
   const [studentEmail, setStudentEmail] = useState('');
   const [studentGrade, setStudentGrade] = useState('');
   const [studentSection, setStudentSection] = useState('');
+  const [score, setScore] = useState(0);
+  const [showSummary, setShowSummary] = useState(false);
+  const [summaryData, setSummaryData] = useState<any>(null);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultId, setResultId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [previousResults, setPreviousResults] = useState<PreviousResult[]>([]);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const res = await fetch('/api/testprep-auth');
+      const data = await res.json();
+      if (!data.authenticated) {
+        router.push('/testprep-auth');
+      } else {
+        setAuthenticated(true);
+      }
+      setLoadingAuth(false);
+    };
+    checkAuth();
+  }, [router]);
+
+  if (loadingAuth) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center p-24">
+        <p>Loading authentication...</p>
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return null; // Should redirect, but just in case
+  }
 
   const shiningEffectRef = useShiningEffect<HTMLButtonElement>();
 
@@ -222,7 +266,7 @@ export default function TestPrepPage() {
               <div className="mt-10">
                 <h2 className="text-2xl font-bold mb-4 min-gradient-accent">Previous Attempts</h2>
                 <div className="grid gap-4">
-                  {previousResults.slice().reverse().map((result, index) => (
+                  {previousResults.slice().reverse().map((result: PreviousResult, index: number) => (
                     <div key={index} className="glassmorphic-card p-4 rounded-lg">
                       <div className="flex justify-between items-center mb-2">
                         <div className="text-xl font-bold">
