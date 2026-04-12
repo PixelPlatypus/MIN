@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, X, Loader2, AlertCircle, Save, ArrowLeft, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -11,29 +11,44 @@ import ImageUploader from './ImageUploader'
 
 const teamSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  position: z.string().min(2, 'Position must be at least 2 characters'),
+  position: z.string().min(1, 'Position is required'),
   bio: z.string().optional(),
   tenure: z.string().min(4, 'Tenure year is required'),
   joined_date: z.string().min(1, 'Joined date is required'),
   farewell_date: z.string().optional().nullable(),
-  photo_url: z.string().optional(),
+  photo_url: z.string().optional().nullable(),
   display_order: z.number().int().default(0),
-  is_active: z.boolean().default(true),
+  status: z.enum(['ACTIVE', 'ALUMNI', 'INACTIVE', 'REMOVED']).default('ACTIVE'),
   social_links: z.object({
+    social_media: z.string().url().or(z.literal('')).optional(),
     facebook: z.string().url().or(z.literal('')).optional(),
     instagram: z.string().url().or(z.literal('')).optional(),
     linkedin: z.string().url().or(z.literal('')).optional(),
-    twitter: z.string().url().or(z.literal('')).optional(),
     email: z.string().email().or(z.literal('')).optional(),
     github: z.string().url().or(z.literal('')).optional(),
   }).default({}),
+}).refine(data => {
+  if (data.farewell_date && data.joined_date) {
+    return new Date(data.farewell_date) >= new Date(data.joined_date)
+  }
+  return true
+}, {
+  message: "Farewell date cannot be earlier than joined date",
+  path: ["farewell_date"]
 })
 
 export default function TeamForm({ initialData = null }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [settings, setSettings] = useState(null)
   const router = useRouter()
   const isEditing = !!initialData
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+  }, [])
 
   const {
     register,
@@ -45,19 +60,19 @@ export default function TeamForm({ initialData = null }) {
     resolver: zodResolver(teamSchema),
     defaultValues: initialData || {
       name: '',
-      position: '',
+      position: 'MINion',
       bio: '',
       tenure: new Date().getFullYear().toString(),
       joined_date: new Date().toISOString().split('T')[0],
       farewell_date: null,
       photo_url: '',
       display_order: 0,
-      is_active: true,
+      status: 'ACTIVE',
       social_links: {
+        social_media: '',
         facebook: '',
         instagram: '',
         linkedin: '',
-        twitter: '',
         email: '',
         github: '',
       },
@@ -69,6 +84,12 @@ export default function TeamForm({ initialData = null }) {
   async function onSubmit(data) {
     setLoading(true)
     setError(null)
+
+    // Fun randomized photo selection if empty
+    if (!data.photo_url && settings?.team_identity_assets?.length > 0) {
+      const assets = settings.team_identity_assets
+      data.photo_url = assets[Math.floor(Math.random() * assets.length)]
+    }
 
     try {
       const url = isEditing ? `/api/team/${initialData.id}` : '/api/team'
@@ -153,7 +174,7 @@ export default function TeamForm({ initialData = null }) {
                   <input 
                     {...register('name')}
                     placeholder="e.g. John Doe"
-                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 ${
+                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
                       errors.name ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
                     }`}
                   />
@@ -161,14 +182,28 @@ export default function TeamForm({ initialData = null }) {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Position</label>
-                  <input 
+                  <label className="text-sm font-bold ml-1">Status</label>
+                  <select 
+                    {...register('status')}
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 appearance-none cursor-pointer"
+                  >
+                    <option value="ACTIVE">Active</option>
+                    <option value="ALUMNI">Alumni</option>
+                    <option value="INACTIVE">Inactive</option>
+                    <option value="REMOVED">Removed</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold ml-1">Role / Position</label>
+                  <select 
                     {...register('position')}
-                    placeholder="e.g. Program Manager"
-                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 ${
-                      errors.position ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
-                    }`}
-                  />
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 appearance-none cursor-pointer"
+                  >
+                    <option value="MINion">MINion</option>
+                    <option value="President">President</option>
+                    <option value="Manager">Manager</option>
+                  </select>
                   {errors.position && <p className="text-xs text-coral ml-1">{errors.position.message}</p>}
                 </div>
 
@@ -177,11 +212,10 @@ export default function TeamForm({ initialData = null }) {
                   <input 
                     {...register('tenure')}
                     placeholder="e.g. 2025"
-                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 ${
+                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
                       errors.tenure ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
                     }`}
                   />
-                  {errors.tenure && <p className="text-xs text-coral ml-1">{errors.tenure.message}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -189,11 +223,17 @@ export default function TeamForm({ initialData = null }) {
                   <input 
                     {...register('joined_date')}
                     type="date"
-                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 ${
-                      errors.joined_date ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
-                    }`}
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
-                  {errors.joined_date && <p className="text-xs text-coral ml-1">{errors.joined_date.message}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold ml-1">Display Order</label>
+                  <input 
+                    {...register('display_order', { valueAsNumber: true })}
+                    type="number"
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  />
                 </div>
               </div>
 
@@ -203,30 +243,20 @@ export default function TeamForm({ initialData = null }) {
                   {...register('bio')}
                   placeholder="Tell us a bit about this team member..."
                   rows={4}
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
+                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Farewell Date (Optional)</label>
-                  <input 
-                    {...register('farewell_date')}
-                    type="date"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                  />
-                  <p className="text-[10px] text-text-tertiary ml-1">Leave empty if current member.</p>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Display Order</label>
-                  <input 
-                    {...register('display_order', { valueAsNumber: true })}
-                    type="number"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                  />
-                  <p className="text-[10px] text-text-tertiary ml-1">Higher numbers appear later.</p>
-                </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold ml-1">Farewell Date (Optional)</label>
+                <input 
+                  {...register('farewell_date')}
+                  type="date"
+                  className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
+                    errors.farewell_date ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                  }`}
+                />
+                {errors.farewell_date && <p className="text-xs text-coral ml-1">{errors.farewell_date.message}</p>}
               </div>
             </div>
 
@@ -234,13 +264,21 @@ export default function TeamForm({ initialData = null }) {
             <div className="glass rounded-[2rem] p-8 space-y-6">
               <h3 className="text-lg font-bold tracking-tight">Social & Contact Links</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {['Facebook', 'Instagram', 'LinkedIn', 'Twitter', 'Email', 'GitHub'].map((platform) => (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium ml-1">Social Media</label>
+                  <input 
+                    {...register('social_links.social_media')}
+                    placeholder="Link to Facebook or Instagram"
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  />
+                </div>
+                {['LinkedIn', 'Email', 'GitHub'].map((platform) => (
                   <div key={platform} className="space-y-2">
                     <label className="text-sm font-medium ml-1">{platform}</label>
                     <input 
                       {...register(`social_links.${platform.toLowerCase()}`)}
                       placeholder={`${platform} ${platform === 'Email' ? 'address' : 'URL'}`}
-                      className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                     />
                   </div>
                 ))}

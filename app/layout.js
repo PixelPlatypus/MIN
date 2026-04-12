@@ -21,9 +21,28 @@ const jetBrainsMono = JetBrains_Mono({
 })
 
 export const metadata = {
-  title: 'Mathematics Initiatives in Nepal (MIN)',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  title: {
+    template: '%s | MIN',
+    default: 'MIN | Mathematics Initiatives in Nepal'
+  },
   description: 'Making mathematics accessible, engaging, and inspiring for all students in Nepal.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_NP',
+    url: 'https://mathsinitiatives.org.np',
+    siteName: 'MIN',
+    title: 'Mathematics Initiatives in Nepal',
+    description: 'Empowering students across Nepal to excel globally through innovative mathematics education.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MIN | Mathematics Initiatives in Nepal',
+    description: 'Empowering students across Nepal to excel globally through innovative mathematics education.',
+  }
 }
+
+import { SmoothScroll } from '@/components/shared/SmoothScroll'
 
 export default function RootLayout({ children }) {
   return (

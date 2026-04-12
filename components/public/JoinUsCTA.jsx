@@ -1,10 +1,20 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 export default function JoinUsCTA() {
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('JoinUsCTA settings load error', err))
+  }, [])
+
   return (
     <section className="container mx-auto px-6 py-24 relative overflow-hidden">
       <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
@@ -18,12 +28,10 @@ export default function JoinUsCTA() {
           <div className="space-y-4">
             <span className="text-primary font-bold uppercase tracking-widest text-sm">Join the Community</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-              Ready to <span className="text-primary">make an impact</span> in Nepal's education?
+              {settings?.join_cta_title || "Ready to make an impact in Nepal's education?"}
             </h2>
             <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              We're always looking for passionate volunteers, educators, and 
-              collaborators to join our mission. Whether you're a student, teacher, 
-              or professional, there's a place for you at MIN.
+              {settings?.join_cta_description || "We're always looking for passionate volunteers, educators, and collaborators to join our mission. Whether you're a student, teacher, or professional, there's a place for you at MIN."}
             </p>
           </div>
 
@@ -32,7 +40,7 @@ export default function JoinUsCTA() {
               href="/join"
               className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-[0.98] group"
             >
-              Become a Volunteer
+              {settings?.join_cta_btn_text || "Become a Volunteer"}
               <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
             </Link>
             <Link 
@@ -54,7 +62,7 @@ export default function JoinUsCTA() {
           <div className="aspect-video relative rounded-[3rem] overflow-hidden shadow-2xl group">
             <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/10 transition-colors z-10" />
             <Image 
-              src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2098&auto=format&fit=crop" 
+              src={settings?.join_cta_image_url || "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2098&auto=format&fit=crop"} 
               alt="Volunteers collaborating" 
               fill
               className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
@@ -64,9 +72,9 @@ export default function JoinUsCTA() {
             <div className="absolute inset-0 flex items-center justify-center z-20">
               <div className="glass p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-6">
                 <Sparkles className="text-primary mx-auto mb-4" size={32} />
-                <h4 className="text-2xl font-bold mb-2">50+ Volunteers</h4>
+                <h4 className="text-2xl font-bold mb-2">{settings?.join_cta_stat_title || "50+ Volunteers"}</h4>
                 <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
-                  Building the future of mathematics in Nepal together.
+                  {settings?.join_cta_stat_desc || "Building the future of mathematics in Nepal together."}
                 </p>
               </div>
             </div>

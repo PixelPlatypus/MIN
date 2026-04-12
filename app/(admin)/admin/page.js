@@ -74,13 +74,7 @@ export default async function AdminDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="glass px-4 py-2 rounded-xl text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-all">
-            Download Report
-          </button>
-          <button className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
-            <TrendingUp size={14} />
-            View Analytics
-          </button>
+          {/* Analytics integrations coming soon */}
         </div>
       </div>
 

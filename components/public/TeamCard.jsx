@@ -1,20 +1,28 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { Facebook, Instagram, Linkedin, Twitter, ExternalLink, Mail } from 'lucide-react'
+import { Facebook, Instagram, Linkedin, Github, Mail, Globe, ExternalLink } from 'lucide-react'
 
 const socialIcons = {
   facebook: <Facebook size={18} />,
   instagram: <Instagram size={18} />,
   linkedin: <Linkedin size={18} />,
-  twitter: <Twitter size={18} />,
   email: <Mail size={18} />,
-  github: <ExternalLink size={18} />,
+  github: <Github size={18} />,
+  social_media: <Globe size={18} />,
 }
 
 export default function TeamCard({ member, index }) {
   const { name, position, bio, photo_url, social_links = {}, tenure, farewell_date } = member
-  const isAlumni = !!farewell_date
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('TeamCard settings load error', err))
+  }, [])
 
   return (
     <motion.div
@@ -31,7 +39,7 @@ export default function TeamCard({ member, index }) {
           {/* Profile Image Container */}
           <div className="w-40 h-40 relative mb-6 rounded-full overflow-hidden p-1.5 border-2 border-primary/10 group-hover:border-primary/40 transition-colors">
             <Image 
-              src={photo_url || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop'} 
+              src={photo_url || settings?.default_team_photo || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop'} 
               alt={name}
               fill
               className="object-cover rounded-full grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
@@ -47,21 +55,21 @@ export default function TeamCard({ member, index }) {
               <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/10">
                 {tenure}
               </span>
-              {isAlumni ? (
-                <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-coral/10 text-coral border border-coral/10">
-                  Alumni
-                </span>
-              ) : (
-                <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-green/10 text-green border border-green/10">
-                  Current
-                </span>
-              )}
+              <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                member.status === 'ACTIVE' 
+                  ? 'bg-green/10 text-green border-green/20' 
+                  : member.status === 'ALUMNI'
+                  ? 'bg-coral/10 text-coral border-coral/20'
+                  : 'bg-amber/10 text-amber-600 border-amber-600/20'
+              }`}>
+                {member.status || 'Active'}
+              </span>
             </div>
           </div>
 
           {/* Bio */}
           <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
-            {bio || 'A dedicated member of the MIN family contributing to mathematics initiatives in Nepal.'}
+            {bio || 'Empowering math education in Nepal with the MIN family.'}
           </p>
 
           {/* Social Links */}
@@ -70,7 +78,7 @@ export default function TeamCard({ member, index }) {
               url && (
                 <a 
                   key={platform} 
-                  href={url} 
+                  href={platform.toLowerCase() === 'email' ? `mailto:${url}` : url} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-9 h-9 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-text-secondary hover:text-primary dark:text-text-secondary-dark dark:hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1 z-20"

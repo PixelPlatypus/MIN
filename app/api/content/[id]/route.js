@@ -21,7 +21,7 @@ export async function GET(request, { params }) {
 
 export async function PATCH(request, { params }) {
   const { id } = await params
-  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER'])
+  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const body = await request.json()
@@ -58,7 +58,7 @@ export async function PATCH(request, { params }) {
 
 export async function DELETE(request, { params }) {
   const { id } = await params
-  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER'])
+  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const supabaseAdmin = await createAdminClient()

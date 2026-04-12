@@ -2,23 +2,24 @@
 import { withRole } from '@/lib/rbac'
 
 export async function GET() {
-  const { supabase, error } = await withRole(['ADMIN', 'MANAGER'])
+  const { supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   try {
     // 1. Get pending applications
+    // 1. Get pending applications
     const { data: apps } = await supabase
       .from('join_applications')
-      .select('id, name, role_type, created_at')
+      .select('id, name, type, created_at')
       .eq('status', 'PENDING')
       .order('created_at', { ascending: false })
       .limit(5)
 
-    // 2. Get pending content submissions (if the table exists and uses status=PENDING or DRAFT)
-    const { data: content } = await supabase
-      .from('content')
-      .select('id, title, type, created_at')
-      .eq('status', 'DRAFT')
+    // 2. Get pending content submissions
+    const { data: submissions } = await supabase
+      .from('content_submissions')
+      .select('id, title, type, submitter_name, created_at')
+      .eq('status', 'PENDING')
       .order('created_at', { ascending: false })
       .limit(5)
 
@@ -27,20 +28,20 @@ export async function GET() {
       ...(apps || []).map(a => ({
         id: `app-${a.id}`,
         title: 'New Application',
-        message: `${a.name} applied for ${a.role_type}`,
+        message: `${a.name} applied as ${a.type}`,
         time: a.created_at,
         type: 'APPLICATION',
         href: `/admin/applications/${a.id}`
       })),
-      ...(content || []).map(c => ({
-        id: `content-${c.id}`,
-        title: 'Content Review',
-        message: `New ${c.type.toLowerCase()} draft: ${c.title}`,
-        time: c.created_at,
-        type: 'CONTENT',
-        href: `/admin/content/${c.id}`
+      ...(submissions || []).map(s => ({
+        id: `submission-${s.id}`,
+        title: 'New Content Submission',
+        message: `"${s.title}" from ${s.submitter_name}`,
+        time: s.created_at,
+        type: 'SUBMISSION',
+        href: `/admin/submissions/${s.id}`
       }))
-    ].sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 5)
+    ].sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 10)
 
     return Response.json({
       notifications,

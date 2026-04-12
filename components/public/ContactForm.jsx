@@ -12,10 +12,33 @@ export default function ContactForm() {
     e.preventDefault()
     setLoading(true)
     
-    // Simulate API call for now (can be integrated with /api/contact if exists)
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setSubmitted(true)
-    setLoading(false)
+    try {
+      const res = await fetch('/api/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          type: 'INQUIRY',
+          form_data: {
+            subject: formData.subject,
+            message: formData.message
+          }
+        })
+      })
+
+      if (res.ok) {
+        setSubmitted(true)
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Failed to send message. Please try again later.')
+      }
+    } catch (err) {
+      console.error('Contact submit error', err)
+      alert('A network error occurred.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (submitted) {
@@ -48,8 +71,9 @@ export default function ContactForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-3">
-          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Name</label>
+          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Name <span className="text-coral">*</span></label>
           <input 
+            suppressHydrationWarning
             required
             type="text" 
             placeholder="Your Name"
@@ -59,8 +83,9 @@ export default function ContactForm() {
           />
         </div>
         <div className="space-y-3">
-          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Email</label>
+          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Email <span className="text-coral">*</span></label>
           <input 
+            suppressHydrationWarning
             required
             type="email" 
             placeholder="name@example.com"
@@ -72,8 +97,9 @@ export default function ContactForm() {
       </div>
 
       <div className="space-y-3">
-        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Subject</label>
+        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Subject <span className="text-coral">*</span></label>
         <input 
+          suppressHydrationWarning
           required
           type="text" 
           placeholder="What is this about?"
@@ -84,8 +110,9 @@ export default function ContactForm() {
       </div>
 
       <div className="space-y-3">
-        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Message</label>
+        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Message <span className="text-coral">*</span></label>
         <textarea 
+          suppressHydrationWarning
           required
           rows={5}
           placeholder="Tell us more about your ideas or questions..."

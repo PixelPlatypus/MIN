@@ -1,23 +1,24 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const events = [
-  { year: '2020', title: 'The Beginning', desc: 'MIN was founded by a group of passionate mathematics educators in Kathmandu.' },
-  { year: '2021', title: 'First JMOC', desc: 'The Junior Mathematics Olympiad Camp was launched, reaching over 200 students.' },
-  { year: '2022', title: 'M³ Bootcamp', desc: 'Introduced Mathematical Modelling Bootcamp to bridge theory and real-world application.' },
-  { year: '2023', title: 'ETA Campaigns', desc: 'Expanded outreach to rural areas through Education to Action campaigns.' },
-  { year: '2024', title: 'Global Recognition', desc: 'Named a Top 100 Global Education Innovation by HundrED.' },
-]
-
 export default function Timeline() {
+  const [events, setEvents] = useState([])
   const containerRef = useRef(null)
 
   useEffect(() => {
+    fetch('/api/timeline')
+      .then(res => res.json())
+      .then(data => setEvents(data || []))
+      .catch(err => console.error('Timeline load error', err))
+  }, [])
+
+  useEffect(() => {
+    if (events.length === 0) return
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     const ctx = gsap.context(() => {
@@ -69,8 +70,8 @@ export default function Timeline() {
   }, [])
 
   return (
-    <section ref={containerRef} className="container mx-auto px-6 py-24 relative overflow-hidden">
-      <div className="text-center mb-24 space-y-4">
+    <section ref={containerRef} className="container mx-auto px-6 pt-12 pb-16 relative overflow-hidden">
+      <div className="text-center mb-12 space-y-4">
         <span className="text-primary font-bold uppercase tracking-widest text-sm">Our Journey</span>
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Timeline of Impact</h2>
         <p className="text-lg text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto">
@@ -99,7 +100,7 @@ export default function Timeline() {
                   <span className="text-primary font-bold text-2xl mb-2 block tracking-tight">{event.year}</span>
                   <h3 className="text-xl font-bold mb-3">{event.title}</h3>
                   <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-                    {event.desc}
+                    {event.description || event.desc}
                   </p>
                   
                   {/* Pointer arrow for desktop */}

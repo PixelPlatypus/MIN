@@ -11,6 +11,7 @@ const navLinks = [
   { name: 'Team', href: '/team' },
   { name: 'Content', href: '/content' },
   { name: 'Events', href: '/events' },
+  { name: 'RTO', href: '/rto' },
   { name: 'Gallery', href: '/gallery' },
   { name: 'Join Us', href: '/join' },
 ]
@@ -40,10 +41,11 @@ export default function Navbar() {
         }`}>
           <Link href="/" className="flex items-center gap-2 group">
             <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
-              <span className="text-secondary font-bold text-xl">M</span>
-            </div>
-            <span className="font-semibold text-lg tracking-tight hidden sm:block text-dynamic">MIN</span>
+            <img 
+              src="/images/logo.svg" 
+              alt="MIN Logo" 
+              className="h-10 w-10 p-1 bg-white dark:bg-white/10 rounded-full border border-black/5 dark:border-white/10 object-contain transition-transform group-hover:scale-105" 
+            />
           </Link>
 
           {/* Desktop Nav */}

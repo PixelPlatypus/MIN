@@ -32,24 +32,28 @@ export default function NoticePopup() {
             endDate.setHours(23, 59, 59, 999) // End of day
             if (endDate < now) return false
           }
-          
-          // 2. Check Target Pages
-          // If empty array or null, show on all pages
-          if (n.target_pages && n.target_pages.length > 0) {
-            const isMatch = n.target_pages.some(page => {
-              if (page === '/') return pathname === '/'
-              return pathname.startsWith(page)
-            })
-            if (!isMatch) return false
-          }
-          
-          // 3. Check if dismissed
-          const dismissed = localStorage.getItem(`min_notice_dismissed_${n.id}`)
-          return dismissed !== 'true'
+          return true
         })
 
-        if (eligibleNotices.length > 0) {
-          setNotice(eligibleNotices[0])
+        // Find the first notice that isn't permanently dismissed and matches path
+        const validNotice = eligibleNotices.find(n => {
+          // 1. Check if dismissed permanently
+          const dismissed = localStorage.getItem(`min_notice_dismissed_${n.id}`)
+          if (dismissed === 'true') return false
+
+          // 2. Check target pages
+          if (n.target_pages && n.target_pages.length > 0) {
+            return n.target_pages.some(p => {
+              if (p === 'ALL') return true
+              if (p === 'HOME' && pathname === '/') return true
+              return pathname.startsWith(p)
+            })
+          }
+          return true
+        })
+
+        if (validNotice) {
+          setNotice(validNotice)
           setTimeout(() => setIsVisible(true), 1200)
         }
       } catch (err) {
@@ -60,7 +64,11 @@ export default function NoticePopup() {
     checkNotices()
   }, [pathname])
 
-  const dismiss = () => {
+  const closePopup = () => {
+    setIsVisible(false)
+  }
+
+  const dismissPermanently = () => {
     setIsVisible(false)
     if (notice) {
       localStorage.setItem(`min_notice_dismissed_${notice.id}`, 'true')
@@ -73,71 +81,94 @@ export default function NoticePopup() {
     <AnimatePresence>
       {isVisible && (
         <div className="fixed bottom-6 left-6 right-6 z-[100] sm:left-auto sm:right-8 sm:bottom-8 sm:w-[400px]">
-          <motion.div
-            initial={{ opacity: 0, y: 100, scale: 0.9, filter: 'blur(10px)' }}
-            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: 20, scale: 0.9, filter: 'blur(10px)' }}
-            transition={{ 
-              type: 'spring', 
-              damping: 25, 
-              stiffness: 200 
-            }}
-            className="relative overflow-hidden group shadow-2xl rounded-[2.5rem]"
-          >
-            {/* Background Glow */}
-            <div className="absolute inset-0 bg-primary/10 dark:bg-primary/20 blur-3xl group-hover:bg-primary/20 transition-all duration-500" />
-            
-            <div className="relative glass rounded-[2.5rem] p-8 overflow-hidden">
-              <button 
-                onClick={dismiss}
-                className="absolute top-6 right-6 p-2 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-text-secondary dark:text-white/60 hover:text-text-primary dark:hover:text-white transition-all z-10"
-              >
-                <X size={18} />
-              </button>
+          <>
+            {/* Backdrop Blur — localized fallback */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closePopup}
+              className="fixed inset-0 pointer-events-auto -z-10"
+            />
 
-              <div className="flex flex-col gap-6">
-                <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                  <Bell size={24} className="animate-wiggle" />
-                </div>
+            <motion.div
+              initial={{ opacity: 0, y: 100, scale: 0.9, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: 20, scale: 0.9, filter: 'blur(10px)' }}
+              transition={{ 
+                type: 'spring', 
+                damping: 25, 
+                stiffness: 200 
+              }}
+              className="relative overflow-hidden group shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] rounded-[2.5rem]"
+            >
+              {/* Localized Glow Effect */}
+              <div className="absolute -inset-10 bg-primary/20 dark:bg-primary/30 blur-[80px] opacity-50 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+              
+              <div className="relative glass-brand rounded-[2.5rem] p-8 overflow-hidden">
+                 {/* Close Button — Brand Sync */}
+                 <button 
+                  onClick={closePopup}
+                  className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-black/40 hover:scale-110 active:scale-95 transition-all z-20 shadow-lg border border-border dark:border-white/10"
+                  aria-label="Close"
+                >
+                  <X size={22} strokeWidth={3} className="text-primary dark:text-secondary" />
+                </button>
 
-                <div className="space-y-3">
-                  <h3 className="text-2xl font-black text-text-primary dark:text-white leading-tight font-sans tracking-tight">
-                    {notice.title}
-                  </h3>
-                  <p className="text-text-secondary dark:text-white/70 text-base leading-relaxed line-clamp-4">
-                    {notice.body}
-                  </p>
-                </div>
-
-                <div className="pt-4 flex flex-col gap-3">
-                  {notice.cta_url ? (
-                    <Link 
-                      href={notice.cta_url}
-                      onClick={dismiss}
-                      className="group/btn relative w-full inline-flex items-center justify-center gap-3 bg-primary dark:bg-white text-white dark:text-black px-8 py-4 rounded-2xl font-black transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-primary/10 dark:shadow-white/10"
-                    >
-                      <span>{notice.cta_text || 'Learn More'}</span>
-                      <ArrowRight size={20} className="transition-transform group-hover/btn:translate-x-1" />
-                    </Link>
+                <div className="flex flex-col gap-6">
+                  {notice.image_url ? (
+                    <div className="w-full aspect-video rounded-3xl overflow-hidden border border-primary/10 shadow-2xl">
+                      <img 
+                        src={notice.image_url} 
+                        alt={notice.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   ) : (
-                    <button 
-                      onClick={dismiss}
-                      className="w-full inline-flex items-center justify-center bg-primary/10 dark:bg-white/10 hover:bg-primary/20 dark:hover:bg-white/20 text-primary dark:text-white px-8 py-4 rounded-full font-black transition-all"
-                    >
-                      Got it
-                    </button>
+                    <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center text-white shadow-xl shadow-primary/30">
+                      <Bell size={28} className="animate-wiggle" />
+                    </div>
                   )}
-                  
-                  <button 
-                    onClick={dismiss}
-                    className="text-text-tertiary dark:text-white/40 hover:text-text-secondary dark:hover:text-white/60 text-[10px] font-bold uppercase tracking-widest transition-colors w-full text-center py-2"
-                  >
-                    Don't show this again
-                  </button>
+
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-black text-text-primary dark:text-white leading-tight font-sans tracking-tight">
+                      {notice.title}
+                    </h3>
+                    <p className="text-text-secondary dark:text-white/70 text-base leading-relaxed line-clamp-4">
+                      {notice.body}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 flex flex-col gap-3">
+                    {notice.cta_url ? (
+                      <Link 
+                        href={notice.cta_url}
+                        onClick={closePopup}
+                        className="group/btn relative w-full inline-flex items-center justify-center gap-3 bg-primary dark:bg-white text-white dark:text-black px-8 py-4 rounded-2xl font-black transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-primary/20 dark:shadow-white/10"
+                      >
+                        <span>{notice.cta_text || 'Learn More'}</span>
+                        <ArrowRight size={20} className="transition-transform group-hover/btn:translate-x-1" />
+                      </Link>
+                    ) : (
+                      <button 
+                        onClick={closePopup}
+                        className="w-full inline-flex items-center justify-center bg-primary/10 dark:bg-white/10 hover:bg-primary/20 dark:hover:bg-white/20 text-primary dark:text-white px-8 py-4 rounded-2xl font-black transition-all"
+                      >
+                        Got it
+                      </button>
+                    )}
+                    
+                    <button 
+                      onClick={dismissPermanently}
+                      className="text-text-tertiary dark:text-white/40 hover:text-text-secondary dark:hover:text-white/60 text-[10px] font-bold uppercase tracking-widest transition-colors w-full text-center py-2"
+                    >
+                      Don't show this again
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         </div>
       )}
     </AnimatePresence>

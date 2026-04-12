@@ -2,7 +2,7 @@
 import { withRole } from '@/lib/rbac'
 
 export async function GET() {
-  const { supabase, error } = await withRole(['ADMIN', 'MANAGER'])
+  const { supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   try {

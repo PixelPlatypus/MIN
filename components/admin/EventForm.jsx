@@ -21,7 +21,12 @@ const eventSchema = z.object({
   cover_url: z.string().optional(),
   gallery_urls: z.array(z.string()).default([]),
   action_link: z.string().optional().nullable(),
+  action_text: z.string().optional().nullable(),
   youtube_playlist: z.string().optional().nullable(),
+  youtube_title: z.string().optional().nullable(),
+  show_date: z.boolean().default(true),
+  show_action_link: z.boolean().default(true),
+  show_youtube_playlist: z.boolean().default(true),
   event_type: z.enum(['RECURRING', 'EVERGOING', 'SPECIAL', 'EVENT']).default('EVENT'),
   status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).default('DRAFT'),
 })
@@ -32,6 +37,12 @@ export default function EventForm({ initialData = null }) {
   const router = useRouter()
   const isEditing = !!initialData
 
+  // Format dates for input type="date" (YYYY-MM-DD)
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return ''
+    return new Date(dateStr).toISOString().split('T')[0]
+  }
+
   const {
     register,
     handleSubmit,
@@ -40,17 +51,33 @@ export default function EventForm({ initialData = null }) {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(eventSchema),
-    defaultValues: initialData || {
+    defaultValues: isEditing ? {
+      ...initialData,
+      start_date: formatDateForInput(initialData.start_date),
+      end_date: formatDateForInput(initialData.end_date),
+      show_date: initialData.show_date ?? true,
+      show_action_link: initialData.show_action_link ?? true,
+      show_youtube_playlist: initialData.show_youtube_playlist ?? true,
+      action_text: initialData.action_text || '',
+      action_link: initialData.action_link || '',
+      youtube_playlist: initialData.youtube_playlist || '',
+      youtube_title: initialData.youtube_title || 'Event Recordings',
+    } : {
       title: '',
       slug: '',
       description: '',
       location: '',
       start_date: new Date().toISOString().split('T')[0],
-      end_date: null,
+      end_date: '',
       cover_url: '',
       gallery_urls: [],
       action_link: '',
+      action_text: '',
       youtube_playlist: '',
+      youtube_title: 'Event Recordings',
+      show_date: true,
+      show_action_link: true,
+      show_youtube_playlist: true,
       event_type: 'EVENT',
       status: 'DRAFT',
     },
@@ -72,6 +99,16 @@ export default function EventForm({ initialData = null }) {
     setLoading(true)
     setError(null)
 
+    // Clean data before submission
+    const submissionData = {
+      ...data,
+      end_date: data.end_date === '' ? null : data.end_date,
+      action_link: data.action_link === '' ? null : data.action_link,
+      action_text: data.action_text === '' ? null : data.action_text,
+      youtube_playlist: data.youtube_playlist === '' ? null : data.youtube_playlist,
+      youtube_title: data.youtube_title === '' ? 'Event Recordings' : data.youtube_title,
+    }
+
     try {
       const url = isEditing ? `/api/events/${initialData.id}` : '/api/events'
       const method = isEditing ? 'PATCH' : 'POST'
@@ -79,7 +116,7 @@ export default function EventForm({ initialData = null }) {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(submissionData),
       })
 
       if (!res.ok) {
@@ -214,6 +251,47 @@ export default function EventForm({ initialData = null }) {
                 </select>
               </div>
 
+              <div className="pt-4 space-y-4 border-t border-border dark:border-border-dark">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative">
+                    <input 
+                      type="checkbox"
+                      {...register('show_date')}
+                      className="sr-only peer"
+                    />
+                    <div className="w-10 h-5 bg-bg-secondary dark:bg-white/10 rounded-full peer peer-checked:bg-primary transition-all"></div>
+                    <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-all peer-checked:left-6"></div>
+                  </div>
+                  <span className="text-sm font-bold">Show Date on Event Page</span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative">
+                    <input 
+                      type="checkbox"
+                      {...register('show_action_link')}
+                      className="sr-only peer"
+                    />
+                    <div className="w-10 h-5 bg-bg-secondary dark:bg-white/10 rounded-full peer peer-checked:bg-primary transition-all"></div>
+                    <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-all peer-checked:left-6"></div>
+                  </div>
+                  <span className="text-sm font-bold">Enable Action Button</span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative">
+                    <input 
+                      type="checkbox"
+                      {...register('show_youtube_playlist')}
+                      className="sr-only peer"
+                    />
+                    <div className="w-10 h-5 bg-bg-secondary dark:bg-white/10 rounded-full peer peer-checked:bg-primary transition-all"></div>
+                    <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-all peer-checked:left-6"></div>
+                  </div>
+                  <span className="text-sm font-bold">Show YouTube Playlist</span>
+                </label>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-sm font-bold ml-1">Start Date</label>
                 <input 
@@ -244,22 +322,53 @@ export default function EventForm({ initialData = null }) {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-bold ml-1">Action Link (Optional)</label>
-                <input 
-                  {...register('action_link')}
-                  placeholder="e.g. https://forms.gle/..."
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                />
-              </div>
+              <div className="space-y-4 pt-4 border-t border-border dark:border-border-dark">
+                <h4 className="text-xs font-black uppercase tracking-widest text-text-tertiary">External Links</h4>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-bold ml-1">Action Button Text</label>
+                  <input 
+                    {...register('action_text')}
+                    placeholder="e.g. Register Now, Join Discord"
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-bold ml-1">YouTube Playlist URL (Optional)</label>
-                <input 
-                  {...register('youtube_playlist')}
-                  placeholder="Playlist URL..."
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-                />
+                <div className="space-y-2">
+                  <label className="text-sm font-bold ml-1">Action Link</label>
+                  <input 
+                    {...register('action_link')}
+                    placeholder="e.g. https://forms.gle/..."
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold ml-1">YouTube Video Section Title</label>
+                  <input 
+                    {...register('youtube_title')}
+                    list="youtube-title-suggestions"
+                    placeholder="e.g. Event Recordings"
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  />
+                  <datalist id="youtube-title-suggestions">
+                    <option value="Event Recordings" />
+                    <option value="Online Lesson" />
+                    <option value="Tutorial" />
+                    <option value="Workshop Highlights" />
+                    <option value="Session Replay" />
+                    <option value="Livestream" />
+                  </datalist>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold ml-1">YouTube Playlist/Video URL</label>
+                  <input 
+                    {...register('youtube_playlist')}
+                    placeholder="e.g. https://youtube.com/playlist?list=..."
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  />
+                </div>
               </div>
             </div>
 

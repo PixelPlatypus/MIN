@@ -136,6 +136,7 @@ export default function CreateUserPage() {
               onChange={handleChange}
               className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer"
             >
+              <option value="WEBSITE_MANAGER">Website Manager</option>
               <option value="MANAGER">Manager</option>
               <option value="WRITER">Writer</option>
               <option value="ADMIN">Admin</option>

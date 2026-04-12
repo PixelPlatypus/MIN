@@ -84,7 +84,7 @@ export async function resetPasswordAction(identifier) {
       type: 'recovery',
       email: resetEmail,
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login/reset`
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/login/reset`
       }
     })
 
@@ -97,7 +97,7 @@ export async function resetPasswordAction(identifier) {
 
     const fromEmail = process.env.FROM_EMAIL || 'noreply@mathsinitiatives.org'
     
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
 
     // Load SVG and convert to Base64 Data URI to prevent broken external links in strict email clients
     let logoBase64 = ''

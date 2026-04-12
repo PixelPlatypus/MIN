@@ -27,7 +27,7 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER'])
+  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const body = await request.json()
@@ -47,8 +47,28 @@ export async function POST(request) {
     action: 'CREATED_PROGRAM',
     entity_type: 'programs',
     entity_id: data.id,
-    meta: { title: data.title }
+    meta: { name: data.name }
   })
 
   return Response.json(data)
+}
+
+export async function PATCH(request) {
+  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  if (error) return Response.json({ error: error.message }, { status: error.status })
+
+  const { items } = await request.json() // Expect [{id, display_order}]
+
+  for (const item of items) {
+    await supabase.from('programs').update({ display_order: item.display_order }).eq('id', item.id)
+  }
+
+  await logAudit({
+    actor_id: user.id,
+    actor_name: profile.name,
+    action: 'REORDERED_PROGRAMS',
+    entity_type: 'programs',
+  })
+
+  return Response.json({ success: true })
 }

@@ -1,7 +1,8 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Facebook, Instagram, Linkedin, Twitter, Mail } from 'lucide-react'
+import { Facebook, Instagram, Linkedin, Youtube, Mail } from 'lucide-react'
 
 const footerLinks = [
   {
@@ -32,14 +33,23 @@ const footerLinks = [
   },
 ]
 
-const socialLinks = [
-  { name: 'Facebook', icon: <Facebook size={20} />, href: 'https://facebook.com/mathsinitiatives' },
-  { name: 'Instagram', icon: <Instagram size={20} />, href: 'https://instagram.com/mathsinitiatives' },
-  { name: 'LinkedIn', icon: <Linkedin size={20} />, href: 'https://linkedin.com/company/mathsinitiatives' },
-  { name: 'Twitter', icon: <Twitter size={20} />, href: 'https://twitter.com/mathsinitiatives' },
-]
-
 export default function Footer() {
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Footer settings load error', err))
+  }, [])
+
+  const socialLinks = settings ? [
+    { name: 'Facebook', icon: <Facebook size={20} />, href: settings.facebook_url },
+    { name: 'Instagram', icon: <Instagram size={20} />, href: settings.instagram_url },
+    { name: 'LinkedIn', icon: <Linkedin size={20} />, href: settings.linkedin_url },
+    { name: 'YouTube', icon: <Youtube size={20} />, href: settings.youtube_url },
+  ].filter(s => !!s.href) : []
+
   return (
     <footer className="bg-transparent pt-24 pb-12 transition-colors border-t border-black/10 dark:border-white/10">
       <div className="container mx-auto px-6">
@@ -48,14 +58,14 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 group mb-6">
               <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center transition-transform group-hover:scale-110">
-                <span className="text-secondary font-bold text-2xl">M</span>
-              </div>
-              <span className="font-bold text-2xl tracking-tight text-dynamic">MIN</span>
+              <img 
+                src="/images/logo.svg" 
+                alt="MIN Logo" 
+                className="h-12 w-auto transition-transform group-hover:scale-105" 
+              />
             </Link>
             <p className="text-dynamic max-w-sm mb-8 opacity-80">
-              Mathematics Initiatives in Nepal (MIN) is dedicated to making mathematics 
-              accessible, engaging, and inspiring for every student in Nepal.
+              {settings?.footer_description || "Mathematics Initiatives in Nepal (MIN) is dedicated to making mathematics accessible, engaging, and inspiring for every student in Nepal."}
             </p>
             <div className="flex items-center gap-4">
               {socialLinks.map((social) => (
@@ -100,7 +110,9 @@ export default function Footer() {
             <Link href="/about/legal" className="hover:text-primary transition-colors">Legal</Link>
             <div className="flex items-center gap-2">
               <Mail size={16} />
-              <a href="mailto:contact@mathsinitiatives.org.np" className="hover:text-primary transition-colors">contact@mathsinitiatives.org.np</a>
+                <a href={`mailto:${settings?.contact_email || 'contact@mathsinitiatives.org.np'}`} className="hover:text-primary transition-colors">
+                  {settings?.contact_email || 'contact@mathsinitiatives.org.np'}
+                </a>
             </div>
           </div>
         </div>

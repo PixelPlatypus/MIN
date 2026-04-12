@@ -132,13 +132,15 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4 text-right flex items-center justify-end gap-3 h-full">
                       <select 
-                        className="bg-transparent border border-border dark:border-border-dark rounded-xl px-2 py-1 text-xs font-medium focus:outline-none focus:border-primary cursor-pointer"
+                        className="bg-transparent border border-border dark:border-border-dark rounded-xl px-2 py-1 text-[10px] font-black uppercase focus:outline-none focus:border-primary cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                        disabled={user.id === users.find(u => u.isSelf)?.id} // Assuming we tag self or check uid
                       >
-                        <option value="ADMIN">Make ADMIN</option>
-                        <option value="MANAGER">Make MANAGER</option>
-                        <option value="WRITER">Make WRITER</option>
+                        <option value="WEBSITE_MANAGER">Website Manager</option>
+                        <option value="ADMIN">Administrator</option>
+                        <option value="MANAGER">Manager</option>
+                        <option value="WRITER">Writer</option>
                       </select>
                       <Link 
                         href={`/admin/users/${user.id}`}
@@ -149,8 +151,9 @@ export default function AdminUsersPage() {
                       </Link>
                       <button 
                         onClick={() => handleRemoveUser(user.id)}
-                        className="text-coral hover:bg-coral/10 p-1.5 rounded-lg transition-colors cursor-pointer"
-                        title="Remove User"
+                        disabled={user.id === users.find(u => u.isSelf)?.id}
+                        className="text-coral hover:bg-coral/10 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
+                        title={user.id === users.find(u => u.isSelf)?.id ? "Cannot delete self" : "Remove User"}
                       >
                         <Trash2 size={16} />
                       </button>

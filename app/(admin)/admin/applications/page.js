@@ -23,6 +23,7 @@ const typeColors = {
   VOLUNTEER: 'bg-primary/10 text-primary border-primary/20',
   ORGANIZATION: 'bg-secondary/20 text-secondary-dark border-secondary/20',
   PARTNERSHIP: 'bg-coral/10 text-coral border-coral/20',
+  INQUIRY: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
 }
 
 const statusColors = {
@@ -38,6 +39,9 @@ export default function AdminApplicationsPage() {
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState('ALL')
   const [selectedApp, setSelectedApp] = useState(null)
+  const [activeTab, setActiveTab] = useState('ALL_BATCHES')
+
+  const batches = ['ALL_BATCHES', ...new Set(apps.map(a => a.batch_name).filter(Boolean))]
 
   useEffect(() => {
     async function fetchApps() {
@@ -58,13 +62,17 @@ export default function AdminApplicationsPage() {
   }, [])
 
   const filteredApps = apps.filter(app => {
+    // CRITICAL: Filter OUT inquiries as they have their own sidebar section
+    if (app.type === 'INQUIRY') return false
+
     const matchesSearch = 
       app.name.toLowerCase().includes(search.toLowerCase()) ||
       app.email.toLowerCase().includes(search.toLowerCase())
     
     const matchesFilter = filterType === 'ALL' || app.type === filterType
+    const matchesBatch = activeTab === 'ALL_BATCHES' || app.batch_name === activeTab
     
-    return matchesSearch && matchesFilter
+    return matchesSearch && matchesFilter && matchesBatch
   })
 
   const handleUpdateStatus = async (id, newStatus) => {
@@ -77,6 +85,21 @@ export default function AdminApplicationsPage() {
     if (res.ok) {
       setApps(apps.map(a => a.id === id ? { ...a, status: newStatus } : a))
       if (selectedApp?.id === id) setSelectedApp({ ...selectedApp, status: newStatus })
+    }
+  }
+
+  const handleDeleteBatch = async (batch) => {
+    if (!confirm(`Are you absolutely sure you want to delete the entire batch "${batch}"? This will remove all applicants in this intake.`)) return
+    
+    try {
+      const res = await fetch(`/api/applications/admin?batch=${encodeURIComponent(batch)}`, { method: 'DELETE' })
+      if (res.ok) {
+        setApps(apps.filter(app => app.batch_name !== batch))
+        if (selectedApp?.batch_name === batch) setSelectedApp(null)
+        setActiveTab('ALL_BATCHES')
+      }
+    } catch (err) {
+      console.error('Delete Batch error:', err)
     }
   }
 
@@ -100,25 +123,34 @@ export default function AdminApplicationsPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black tracking-tight mb-1 uppercase">Join Inquiries</h2>
+          <h2 className="text-2xl font-black tracking-tight mb-1 uppercase">Intake Nexus</h2>
           <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
-            Manage Volunteers, Institutions, and Strategic Partnerships.
+            Manage Volunteers and Partners across multiple recruitment batches.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          {apps.length > 0 && (
+          {activeTab !== 'ALL_BATCHES' && (
+             <button
+              onClick={() => handleDeleteBatch(activeTab)}
+              className="flex items-center gap-2 px-6 py-3 bg-coral/10 text-coral hover:bg-coral hover:text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-xl hover:shadow-coral/20 group"
+            >
+              <Trash2 size={16} />
+              Remove Batch: {activeTab}
+            </button>
+          )}
+          {apps.length > 0 && activeTab === 'ALL_BATCHES' && (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => {
-                  if (confirm('Are you absolutely sure you want to clear ALL applications? This cannot be undone.')) {
+                  if (confirm('Are you absolutely sure you want to clear ALL applications across ALL batches?')) {
                     handleClearAll()
                   }
                 }}
-                className="flex items-center gap-2 px-6 py-3 bg-coral/10 text-coral hover:bg-coral hover:text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-xl hover:shadow-coral/20 group"
+                className="flex items-center gap-2 px-6 py-3 bg-coral/10 text-coral hover:bg-coral hover:text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-xl hover:shadow-coral/20 group border border-coral/20"
               >
-                <Trash2 size={16} className="transition-transform group-hover:rotate-12" />
-                Clear All
+                <Trash2 size={16} />
+                Global Clear
               </button>
             </div>
           )}
@@ -128,31 +160,51 @@ export default function AdminApplicationsPage() {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main List */}
         <div className="flex-grow space-y-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-grow glass px-4 py-2 rounded-xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:border-primary transition-all">
-              <Search size={18} className="text-text-tertiary" />
-              <input 
-                type="text" 
-                placeholder="Search by name or email..." 
-                className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary font-medium"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-grow glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:border-primary transition-all shadow-sm">
+                <Search size={18} className="text-text-tertiary" />
+                <input 
+                  suppressHydrationWarning
+                  type="text" 
+                  placeholder="Identify applicant by name, email, or data..." 
+                  className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary font-bold"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center gap-2 bg-bg-secondary dark:bg-white/5 p-1 rounded-2xl border border-border dark:border-border-dark shadow-inner">
+                {['ALL', 'VOLUNTEER', 'ORGANIZATION', 'PARTNERSHIP'].map(t => (
+                  <button
+                    key={t}
+                    onClick={() => setFilterType(t)}
+                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                      filterType === t 
+                        ? 'bg-white dark:bg-primary text-primary dark:text-white shadow-xl ring-1 ring-border/50' 
+                        : 'text-text-tertiary hover:scale-105 active:scale-95'
+                    }`}
+                  >
+                    {t === 'ALL' ? 'Everything' : t.slice(0, 3)}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex items-center gap-2 bg-bg-secondary dark:bg-white/5 p-1 rounded-xl border border-border dark:border-border-dark">
-              {['ALL', 'VOLUNTEER', 'ORGANIZATION', 'PARTNERSHIP'].map(t => (
-                <button
-                  key={t}
-                  onClick={() => setFilterType(t)}
-                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                    filterType === t 
-                      ? 'bg-white dark:bg-white/10 shadow-sm text-primary ring-1 ring-border border-transparent' 
-                      : 'text-text-tertiary hover:text-text-secondary opacity-60'
-                  }`}
-                >
-                  {t === 'ALL' ? 'Everything' : t.slice(0, 3)}
-                </button>
-              ))}
+
+            {/* Batch Navigation */}
+            <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+               {batches.map(b => (
+                 <button
+                    key={b}
+                    onClick={() => setActiveTab(b)}
+                    className={`shrink-0 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
+                      activeTab === b 
+                        ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' 
+                        : 'bg-bg-secondary/50 dark:bg-white/5 text-text-tertiary border-border dark:border-white/5 hover:border-primary/50'
+                    }`}
+                 >
+                   {b === 'ALL_BATCHES' ? 'Total Intake' : `Batch: ${b}`}
+                 </button>
+               ))}
             </div>
           </div>
 
@@ -197,7 +249,7 @@ export default function AdminApplicationsPage() {
             ) : (
               <div className="text-center py-24 text-text-tertiary space-y-4">
                 <Filter size={48} className="mx-auto opacity-20" />
-                <p className="font-bold">No matching inquiries found.</p>
+                <p className="font-bold">No matching applications found.</p>
               </div>
             )}
           </div>

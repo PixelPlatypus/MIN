@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Sparkles, Heart, Target, Lightbulb, Users, Award } from 'lucide-react'
 
@@ -26,6 +27,15 @@ const values = [
 ]
 
 export default function AboutPage() {
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('About settings load error', err))
+  }, [])
+
   return (
     <div className="pt-32 pb-24 space-y-32">
       {/* Hero Section */}
@@ -45,7 +55,7 @@ export default function AboutPage() {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold tracking-tight"
           >
-            Transforming Math Education in Nepal
+            {settings?.about_hero_title || "Transforming Math Education in Nepal"}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -53,8 +63,7 @@ export default function AboutPage() {
             transition={{ delay: 0.2 }}
             className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
           >
-            Mathematics Initiatives in Nepal (MIN) is a non-profit organization dedicated to making 
-            mathematics accessible, engaging, and inspiring for all students across the country.
+            {settings?.about_hero_description || "Mathematics Initiatives in Nepal (MIN) is a non-profit organization dedicated to making mathematics accessible, engaging, and inspiring for all students across the country."}
           </motion.p>
         </div>
       </section>
@@ -73,8 +82,7 @@ export default function AboutPage() {
             </div>
             <h3 className="text-3xl font-bold">Our Vision</h3>
             <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              To build a Nepal where every student is empowered with logical thinking and problem-solving skills, 
-              viewing mathematics as a tool for innovation and understanding.
+              {settings?.about_vision_text || "To build a Nepal where every student is empowered with logical thinking and problem-solving skills, viewing mathematics as a tool for innovation and understanding."}
             </p>
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl" />
           </motion.div>
@@ -90,8 +98,7 @@ export default function AboutPage() {
             </div>
             <h3 className="text-3xl font-bold">Our Mission</h3>
             <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              To democratize math education through innovative programs, community outreach, and high-quality 
-              digital resources that inspire curiosity and foster excellence.
+              {settings?.about_mission_text || "To democratize math education through innovative programs, community outreach, and high-quality digital resources that inspire curiosity and foster excellence."}
             </p>
             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full -mr-16 -mt-16 blur-3xl" />
           </motion.div>
@@ -133,24 +140,26 @@ export default function AboutPage() {
       <section className="container mx-auto px-6 py-12">
         <div className="max-w-5xl mx-auto glass rounded-[3rem] p-12 md:p-24 flex flex-col md:flex-row items-center gap-16">
           <div className="flex-1 space-y-6">
-            <h2 className="text-4xl font-bold tracking-tight leading-tight">Globally Recognized Innovation</h2>
+            <h2 className="text-4xl font-bold tracking-tight leading-tight">
+              {settings?.about_rec_title || "Globally Recognized Innovation"}
+            </h2>
             <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              Our commitment to excellence was recognized by HundrED, identifying MIN as one of the 
-              Top 100 most inspiring global education innovations in 2024. This recognition fuels 
-              our drive to reach even more students across Nepal.
+              {settings?.about_rec_description || "Our commitment to excellence was recognized by HundrED, identifying MIN as one of the Top 100 most inspiring global education innovations in 2024. This recognition fuels our drive to reach even more students across Nepal."}
             </p>
             <div className="pt-4">
               <div className="flex items-center gap-4 mb-2">
                 <div className="w-2 h-2 rounded-full bg-primary" />
-                <span className="font-bold text-primary">HundrED Top 100</span>
+                <span className="font-bold text-primary">{settings?.about_rec_badge_title || "HundrED Top 100"}</span>
               </div>
-              <p className="text-sm text-text-tertiary">Global Education Innovation Award 2024</p>
+              <p className="text-sm text-text-tertiary">
+                {settings?.about_rec_badge_desc || "Global Education Innovation Award 2024"}
+              </p>
             </div>
           </div>
           <div className="w-64 h-64 md:w-80 md:h-80 relative flex-shrink-0">
             <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl" />
             <img 
-              src="https://hundred-cdn.s3.amazonaws.com/uploads/innovation/image/2443/hundred_logo_full_color.png" 
+              src={settings?.about_rec_image || "https://hundred-cdn.s3.amazonaws.com/uploads/innovation/image/2443/hundred_logo_full_color.png"}
               alt="HundrED Award" 
               className="w-full h-full object-contain relative z-10 p-8"
             />

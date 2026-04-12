@@ -3,7 +3,7 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-    
+
 # testing
 /coverage
 
@@ -37,11 +37,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# plan
+# plan/scratch files
 plan.md
 pan.md
+*.bak
+*.tmp
+scratch/
 
-# ai/agents
+# ai/agents tooling - never commit
 .agents/
 .cursor/
 .gemini/
@@ -49,7 +52,16 @@ pan.md
 .kiro/
 skills-lock.json
 
-# scratch
-scratch/
-*.bak
-*.tmp
+# supabase - local dev only
+supabase/.temp/
+supabase/migrations/
+# NOTE: supabase/config.toml can be kept if you want the CLI config tracked.
+# Uncomment to also exclude it:
+# supabase/config.toml
+
+# dev-only scripts (seeding, schema fixes, storage setup)
+/scripts/
+
+# lock files - Vercel generates its own, keeping package.json is enough
+# (comment out if you prefer to track lock file for reproducibility)
+# package-lock.json

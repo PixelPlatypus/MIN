@@ -1,7 +1,20 @@
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import AdminTopbar from '@/components/admin/AdminTopbar'
+import AdminLayoutClient from '@/components/admin/AdminLayoutClient'
+import { SidebarProvider } from '@/components/admin/SidebarProvider'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+
+export const metadata = {
+  title: {
+    template: '%s | MIN Admin',
+    default: 'Dashboard | MIN Admin'
+  },
+  robots: {
+    index: false,
+    follow: false
+  }
+}
 
 export default async function AdminLayout({ children }) {
   const supabase = await createClient()
@@ -24,16 +37,13 @@ export default async function AdminLayout({ children }) {
   }
 
   return (
-    <div className="flex h-screen bg-bg-secondary dark:bg-bg-secondary-dark overflow-hidden transition-colors">
-      <AdminSidebar profile={profile} />
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <AdminTopbar profile={profile} />
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
-        </main>
-      </div>
-    </div>
+    <SidebarProvider>
+      <AdminLayoutClient 
+        sidebar={<AdminSidebar profile={profile} />}
+        topbar={<AdminTopbar profile={profile} />}
+      >
+        {children}
+      </AdminLayoutClient>
+    </SidebarProvider>
   )
 }

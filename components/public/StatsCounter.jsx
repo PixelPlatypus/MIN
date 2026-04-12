@@ -15,16 +15,32 @@ const stats = [
 ]
 
 export default function StatsCounter() {
+  const [settings, setSettings] = useState(null)
   const containerRef = useRef(null)
 
   useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Stats settings load error', err))
+  }, [])
+
+  const dynamicStats = [
+    { label: 'Students Reached', value: settings?.stat_students_count || 1400, suffix: '+', icon: <Users size={28} />, theme: 'primary' },
+    { label: 'Volunteers', value: settings?.stat_volunteers_count || 50, suffix: '+', icon: <Clock size={28} />, theme: 'cyan' },
+    { label: 'Programs', value: settings?.stat_programs_count || 15, suffix: '+', icon: <BookOpen size={28} />, theme: 'purple' },
+    { label: 'Years of Impact', value: settings?.stat_years_count || 5, suffix: '+', icon: <Trophy size={28} />, theme: 'coral' },
+  ]
+
+  useEffect(() => {
+    if (!settings) return
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     const ctx = gsap.context(() => {
       const counts = containerRef.current.querySelectorAll('.stat-value')
       
       counts.forEach((count, i) => {
-        const target = stats[i].value
+        const target = dynamicStats[i].value
         if (prefersReducedMotion) {
           count.innerText = target
         } else {
@@ -46,12 +62,22 @@ export default function StatsCounter() {
     })
 
     return () => ctx.revert()
-  }, [])
+  }, [settings])
 
   return (
     <section ref={containerRef} className="container mx-auto px-6 py-24 relative overflow-hidden">
+      <div className="text-center mb-16 space-y-4">
+        <span className="text-primary font-bold uppercase tracking-widest text-sm">Key Metrics</span>
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+          {settings?.stats_title || "Our Growing Impact"}
+        </h2>
+        <p className="text-lg text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto">
+          {settings?.stats_subtitle || "Quantifying the difference we make in mathematics education across Nepal."}
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {stats.map((stat, i) => (
+        {dynamicStats.map((stat, i) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}

@@ -9,8 +9,14 @@ export default function TeamPage() {
   const [tenures, setTenures] = useState([])
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
+  const [settings, setSettings] = useState(null)
 
   useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Team settings load error', err))
+
     async function fetchTenures() {
       try {
         const res = await fetch('/api/team/tenures')
@@ -33,7 +39,32 @@ export default function TeamPage() {
       setLoading(true)
       const res = await fetch(`/api/team?tenure=${activeTenure}`)
       const data = await res.json()
-      setMembers(Array.isArray(data) ? data : [])
+      
+      const rolePriority = {
+        'President': 1,
+        'Manager': 2,
+        'MINion': 3
+      }
+
+      const statusPriority = {
+        'ACTIVE': 1,
+        'ALUMNI': 2,
+        'INACTIVE': 3
+      }
+
+      const sorted = Array.isArray(data) ? [...data].sort((a, b) => {
+        const priRoleA = rolePriority[a.position] || 99
+        const priRoleB = rolePriority[b.position] || 99
+        if (priRoleA !== priRoleB) return priRoleA - priRoleB
+        
+        const priStatA = statusPriority[a.status] || 99
+        const priStatB = statusPriority[b.status] || 99
+        if (priStatA !== priStatB) return priStatA - priStatB
+
+        return (a.display_order || 0) - (b.display_order || 0)
+      }) : []
+
+      setMembers(sorted)
       setLoading(false)
     }
     fetchTeam()
@@ -50,7 +81,7 @@ export default function TeamPage() {
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
           >
             <Sparkles size={16} />
-            Our Team
+            {settings?.team_title || "Our Team"}
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -58,7 +89,7 @@ export default function TeamPage() {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold tracking-tight"
           >
-            Meet the MIN Family
+            {settings?.team_subtitle || "Meet the MIN Family"}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -66,8 +97,7 @@ export default function TeamPage() {
             transition={{ delay: 0.2 }}
             className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
           >
-            A diverse group of educators, volunteers, and math enthusiasts working 
-            together to transform math education in Nepal.
+            {settings?.team_description || "A diverse group of educators, volunteers, and math enthusiasts working together to transform math education in Nepal."}
           </motion.p>
         </div>
       </section>

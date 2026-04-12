@@ -1,11 +1,11 @@
 'use client'
 import { Sun, Moon } from 'lucide-react'
-import { useThemeStore } from './ThemeProvider'
+import { useTheme } from 'next-themes'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 export default function ThemeToggle() {
-  const { theme, toggleTheme } = useThemeStore()
+  const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -13,6 +13,10 @@ export default function ThemeToggle() {
   }, [])
 
   if (!mounted) return <div className="w-10 h-10" />
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }
 
   return (
     <button

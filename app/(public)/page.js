@@ -10,6 +10,7 @@ const TeamStrip = dynamic(() => import('@/components/public/TeamStrip'), { ssr: 
 const JoinUsCTA = dynamic(() => import('@/components/public/JoinUsCTA'), { ssr: true })
 
 export const metadata = {
+  metadataBase: new URL('https://mathsinitiatives.org.np'),
   title: 'Mathematics Initiatives in Nepal (MIN)',
   description: 'MIN is a nonprofit making mathematics accessible, engaging, and inspiring for all students in Nepal. HundrED Top 100 Global Education Innovations 2024.',
   openGraph: {

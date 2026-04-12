@@ -1,12 +1,11 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, FileText, FileDown, Loader2, CheckCircle2, AlertCircle, Sparkles, User, Mail, Plus, X } from 'lucide-react'
+import { Send, FileDown, Loader2, CheckCircle2, AlertCircle, Sparkles, User, Mail, Plus, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import ImageUploader from '@/components/admin/ImageUploader'
-import TipTapEditor from '@/components/admin/TipTapEditor'
 import { captureEvent } from '@/lib/analytics'
 
 const submissionSchema = z.object({
@@ -39,7 +38,7 @@ export default function SubmitContentPage() {
       submitter_email: '',
       title: '',
       type: 'ARTICLE',
-      content_type: 'RICHTEXT',
+      content_type: 'PDF',
       body: '',
       pdf_url: '',
       pdf_filename: '',
@@ -138,28 +137,6 @@ export default function SubmitContentPage() {
           {/* Main Content Form */}
           <div className="lg:col-span-2 space-y-8">
             <div className="glass rounded-[3rem] p-8 md:p-12 space-y-8 shadow-sm">
-              <div className="flex flex-wrap items-center gap-2 p-1.5 bg-bg-secondary dark:bg-white/5 rounded-3xl w-fit">
-                {[
-                  { id: 'RICHTEXT', label: 'Rich Text', icon: FileText, color: 'text-primary' },
-                  { id: 'PDF', label: 'PDF Upload', icon: FileDown, color: 'text-coral' },
-                  { id: 'LINK', label: 'External Link', icon: Send, color: 'text-secondary-dark' }
-                ].map((mode) => (
-                  <button
-                    key={mode.id}
-                    type="button"
-                    onClick={() => setValue('content_type', mode.id)}
-                    className={`px-6 py-2.5 rounded-2xl text-xs font-black transition-all flex items-center gap-2 ${
-                      contentType === mode.id 
-                        ? 'bg-white dark:bg-bg-dark shadow-xl shadow-black/5 ' + mode.color 
-                        : 'text-text-tertiary hover:text-text-secondary'
-                    }`}
-                  >
-                    <mode.icon size={16} />
-                    {mode.label}
-                  </button>
-                ))}
-              </div>
-
               <div className="space-y-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">Content Title</label>
@@ -173,81 +150,51 @@ export default function SubmitContentPage() {
                   {errors.title && <p className="text-xs text-coral ml-1">{errors.title.message}</p>}
                 </div>
 
-                {contentType === 'RICHTEXT' ? (
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold ml-1">Your Content</label>
-                    <TipTapEditor 
-                      content={body}
-                      onChange={(html) => setValue('body', html)}
-                    />
-                  </div>
-                ) : contentType === 'PDF' ? (
-                  <div className="space-y-6 p-8 bg-bg-secondary dark:bg-white/5 rounded-3xl border border-dashed border-coral/20">
-                    <div className="space-y-2 text-center">
-                      <div className="w-16 h-16 bg-coral/10 text-coral rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <FileDown size={32} />
-                      </div>
-                      <h4 className="font-bold">Upload PDF Document</h4>
-                      <p className="text-xs text-text-tertiary">Max size: 10MB. Document will be hosted on Cloudinary.</p>
+                <div className="space-y-6 p-8 bg-bg-secondary dark:bg-white/5 rounded-3xl border border-dashed border-coral/20">
+                  <div className="space-y-2 text-center">
+                    <div className="w-16 h-16 bg-coral/10 text-coral rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <FileDown size={32} />
                     </div>
-                    
-                    {pdfUrl && (
-                      <div className="p-4 bg-white dark:bg-bg-dark rounded-2xl flex items-center justify-between border border-border dark:border-border-dark shadow-sm">
-                        <div className="flex items-center gap-3">
-                          <FileDown className="text-coral" size={20} />
-                          <span className="text-sm font-bold truncate max-w-[200px]">{watch('pdf_filename') || 'document.pdf'}</span>
-                        </div>
-                        <button 
-                          type="button" 
-                          onClick={() => {
-                            setValue('pdf_url', '')
-                            setValue('pdf_filename', '')
-                          }}
-                          className="text-text-tertiary hover:text-coral transition-colors"
-                        >
-                          <X size={18} />
-                        </button>
+                    <h4 className="font-bold">Upload PDF Document</h4>
+                    <p className="text-xs text-text-tertiary">Max size: 10MB. Document will be hosted on Cloudinary.</p>
+                  </div>
+                  
+                  {pdfUrl && (
+                    <div className="p-4 bg-white dark:bg-bg-dark rounded-2xl flex items-center justify-between border border-border dark:border-border-dark shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <FileDown className="text-coral" size={20} />
+                        <span className="text-sm font-bold truncate max-w-[200px]">{watch('pdf_filename') || 'document.pdf'}</span>
                       </div>
-                    )}
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          setValue('pdf_url', '')
+                          setValue('pdf_filename', '')
+                        }}
+                        className="text-text-tertiary hover:text-coral transition-colors"
+                      >
+                        <X size={18} />
+                      </button>
+                    </div>
+                  )}
 
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary ml-1">Display Filename</label>
-                        <input 
-                          {...register('pdf_filename')}
-                          placeholder="e.g. Geometry_Notes.pdf"
-                          className="w-full bg-white dark:bg-bg-dark border border-border dark:border-border-dark rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-coral transition-all shadow-sm"
-                        />
-                      </div>
-                      <ImageUploader 
-                        onUpload={(url) => setValue('pdf_url', url)}
-                        folder="min-website/submissions/pdfs"
-                        label={pdfUrl ? 'Replace PDF' : 'Select PDF File'}
-                        accept="application/pdf"
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary ml-1">Display Filename</label>
+                      <input 
+                        {...register('pdf_filename')}
+                        placeholder="e.g. Geometry_Notes.pdf"
+                        className="w-full bg-white dark:bg-bg-dark border border-border dark:border-border-dark rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-coral transition-all shadow-sm"
                       />
                     </div>
+                    <ImageUploader 
+                      onUpload={(url) => setValue('pdf_url', url)}
+                      folder="min-website/submissions/pdfs"
+                      label={pdfUrl ? 'Replace PDF' : 'Select PDF File'}
+                      accept="application/pdf"
+                    />
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="p-8 bg-secondary/5 rounded-3xl border border-dashed border-secondary/20 space-y-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold ml-1">Direct Link (Google Drive, OneDrive, etc.)</label>
-                        <input 
-                          {...register('pdf_url')}
-                          placeholder="https://drive.google.com/..."
-                          className="w-full bg-white dark:bg-bg-dark border border-border dark:border-border-dark rounded-2xl py-4 px-6 text-sm focus:outline-none focus:ring-4 focus:ring-secondary/10"
-                        />
-                      </div>
-                      <div className="bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex items-start gap-3">
-                        <AlertCircle size={16} className="text-secondary-dark shrink-0 mt-0.5" />
-                        <p className="text-[10px] text-text-tertiary leading-relaxed">
-                          Please ensure the link is **publicly accessible** (e.g. "Anyone with the link can view"). 
-                          If the content is a Google Drive PDF, we will attempt to display it in the library.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           </div>

@@ -4,28 +4,37 @@ import { uploadToCloudinary } from '@/lib/cloudinary'
 import { rateLimit } from '@/lib/rateLimit'
 
 export async function POST(request) {
-  // Rate limit (20 uploads per minute)
-  const limited = await rateLimit(request, { requests: 20, window: '1m' })
-  if (limited) return Response.json({ error: 'Too many requests' }, { status: 429 })
+  const formData = await request.formData()
+  const file = formData.get('file')
+  const folder = formData.get('folder') || 'min-website/general'
 
-  // Auth check (using regular client to verify session/role)
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  const isPublicSubmission = folder === 'min-website/submissions/pdfs'
 
-  // Role check
-  const { data: profile } = await supabase
-    .from('profiles').select('role').eq('id', user.id).single()
-  if (!profile || !['ADMIN','MANAGER'].includes(profile.role)) {
-    return Response.json({ error: 'Forbidden' }, { status: 403 })
+  if (isPublicSubmission) {
+    // Stricter rate limit for public submissions (5 uploads per hour, 100 in dev)
+    const limitCount = process.env.NODE_ENV === 'development' ? 100 : 5;
+    const limited = await rateLimit(request, { requests: limitCount, window: '1h' })
+    if (limited) return Response.json({ error: 'Too many requests' }, { status: 429 })
+  } else {
+    // Rate limit (20 uploads per minute) for admin users
+    const limited = await rateLimit(request, { requests: 20, window: '1m' })
+    if (limited) return Response.json({ error: 'Too many requests' }, { status: 429 })
+
+    // Auth check (using regular client to verify session/role)
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+    // Role check
+    const { data: profile } = await supabase
+      .from('profiles').select('role').eq('id', user.id).single()
+    if (!profile || !['ADMIN','MANAGER', 'WEBSITE_MANAGER'].includes(profile.role)) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 })
+    }
   }
 
   // Use Admin Client for Storage (to bypass RLS for uploads)
   const adminSupabase = await createAdminClient()
-
-  const formData = await request.formData()
-  const file = formData.get('file')
-  const folder = formData.get('folder') || 'min-website/general'
 
   if (!file) return Response.json({ error: 'No file provided' }, { status: 400 })
 

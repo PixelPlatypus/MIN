@@ -7,8 +7,9 @@ import fs from 'fs'
 import path from 'path'
 
 export async function POST(request) {
-  // Rate limit: 3 submissions per hour per IP
-  const limited = await rateLimit(request, { requests: 3, window: '1h' })
+  // Rate limit: 3 submissions per hour per IP (100 in dev for testing)
+  const limitCount = process.env.NODE_ENV === 'development' ? 100 : 3;
+  const limited = await rateLimit(request, { requests: limitCount, window: '1h' })
   if (limited) return Response.json({ error: 'Too many requests. Please try again in an hour.' }, { status: 429 })
 
   // Use admin client to bypass RLS — this is a public submission endpoint
@@ -36,7 +37,7 @@ export async function POST(request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const fromEmail = process.env.FROM_EMAIL || 'noreply@mathsinitiatives.org.np'
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
 
     let logoBase64 = ''
     try {
@@ -84,7 +85,7 @@ export async function GET(request) {
   const { data: profile } = await supabase
     .from('profiles').select('role').eq('id', user.id).single()
   
-  if (!profile || !['ADMIN', 'MANAGER', 'WRITER'].includes(profile.role)) {
+  if (!profile || !['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'].includes(profile.role)) {
     return Response.json({ error: 'Forbidden' }, { status: 403 })
   }
 

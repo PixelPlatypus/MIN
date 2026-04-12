@@ -4,7 +4,7 @@ import { logAudit } from '@/lib/audit'
 
 export async function GET() {
   try {
-    const { profile, error: authError } = await withRole(['ADMIN', 'MANAGER'])
+    const { profile, error: authError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
     if (authError) return Response.json({ error: authError.message }, { status: authError.status })
 
     const supabase = await createAdminClient()
@@ -22,7 +22,7 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { user, profile, error: authError } = await withRole(['ADMIN'])
+    const { user, profile, error: authError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
     if (authError) return Response.json({ error: authError.message }, { status: authError.status })
 
     const body = await request.json()

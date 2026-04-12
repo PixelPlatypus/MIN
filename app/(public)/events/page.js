@@ -9,6 +9,14 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('PUBLISHED')
   const [search, setSearch] = useState('')
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Events settings load error', err))
+  }, [])
 
   useEffect(() => {
     async function fetchEvents() {
@@ -49,7 +57,7 @@ export default function EventsPage() {
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
           >
             <Calendar size={16} />
-            Events
+            {settings?.events_title || "Events"}
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -57,7 +65,7 @@ export default function EventsPage() {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold tracking-tight"
           >
-            Our Events & Activities
+            {settings?.events_subtitle || "Our Events & Activities"}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -65,8 +73,7 @@ export default function EventsPage() {
             transition={{ delay: 0.2 }}
             className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
           >
-            Join us in our journey to make mathematics engaging through camps, 
-            bootcamps, workshops, and more.
+            {settings?.events_description || "Join us in our journey to make mathematics engaging through camps, bootcamps, workshops, and more."}
           </motion.p>
         </div>
       </section>

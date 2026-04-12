@@ -37,6 +37,9 @@ export default function AdminContentPage() {
     const res = await fetch(`/api/content/${id}`, { method: 'DELETE' })
     if (res.ok) {
       setContent(content.filter(c => c.id !== id))
+    } else {
+      const err = await res.json()
+      alert(err.error || "Failed to delete content.")
     }
   }
 

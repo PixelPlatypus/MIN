@@ -128,14 +128,29 @@ export default function ContentDetailPage() {
                 <div className="space-y-8">
                   {/* PDF Viewer */}
                   <div className="glass rounded-[2rem] overflow-hidden border border-border dark:border-border-dark aspect-[3/4] md:aspect-[8.5/11] bg-bg-secondary shadow-inner relative group">
+                    {/* Background Loading Spinner */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4 text-text-tertiary">
+                      <Loader2 size={32} className="animate-spin" />
+                      <p className="text-sm font-medium">Loading Document...</p>
+                      <a 
+                        href={pdf_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary hover:underline font-bold"
+                      >
+                        Click here if the viewer doesn't load.
+                      </a>
+                    </div>
+
                     <iframe 
-                      src={`${pdf_url}#view=FitH`}
-                      className="w-full h-full border-none"
+                      src={`https://docs.google.com/viewer?url=${encodeURIComponent(pdf_url)}&embedded=true`}
+                      className="w-full h-full border-none relative z-10"
                       title={title}
+                      loading="lazy"
                     />
                     
                     {/* Floating Mobile/Quick Download Button */}
-                    <div className="absolute bottom-6 right-6 lg:hidden">
+                    <div className="absolute bottom-6 right-6 lg:hidden z-20">
                       <a 
                         href={pdf_url}
                         download

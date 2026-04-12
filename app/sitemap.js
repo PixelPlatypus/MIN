@@ -1,7 +1,7 @@
 // app/sitemap.js — auto-generate sitemap.xml for Next.js
 import { createClient } from '@/lib/supabase/server'
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np'
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL
 
 export default async function sitemap() {
   const supabase = await createClient()

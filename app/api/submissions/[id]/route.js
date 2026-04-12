@@ -1,13 +1,13 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
-import { sendEmail } from '@/lib/resend'
+import { sendEmail, generateMINThemeEmail } from '@/lib/resend'
 import { slugify } from '@/lib/slugify'
 
 export async function PATCH(request, { params }) {
   const { id } = await params
   console.log('PATCH submission request received for ID:', id)
-  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WRITER'])
+  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'])
   if (error) {
     console.error('Auth Error in Submissions:', error)
     return Response.json({ error: error.message }, { status: error.status })
@@ -80,22 +80,20 @@ export async function PATCH(request, { params }) {
 
     // C. Send email to submitter
     try {
-      const liveUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/content/${slug}`
+      const liveUrl = `${process.env.NEXT_PUBLIC_APP_URL}/content/${slug}`
+      const content = `
+          <p>Great news! Your submission <strong>"${submission.title}"</strong> has been reviewed and approved by the MIN team.</p>
+          <p>It is now live on our platform and accessible to students across Nepal.</p>
+          <div style="margin: 30px 0; text-align: center;">
+            <a href="${liveUrl}" style="background-color: #4361ee; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 8px;">View Your Published Work</a>
+          </div>
+          <p>Thank you so much for contributing to the Mathematics Initiatives in Nepal. Your effort helps make geometry and math education more accessible for everyone.</p>
+      `
+      
       await sendEmail({
         to: submission.submitter_email,
         subject: 'Your Content has been Published! - MIN Nepal',
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-            <h2 style="color: #008080;">Hello ${submission.submitter_name},</h2>
-            <p>Great news! Your submission <strong>"${submission.title}"</strong> has been reviewed and approved by the MIN team.</p>
-            <p>It is now live on our platform and accessible to students across Nepal.</p>
-            <div style="margin: 30px 0; text-align: center;">
-              <a href="${liveUrl}" style="background-color: #008080; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 8px;">View Your Published Work</a>
-            </div>
-            <p>Thank you so much for contributing to the Mathematics Initiatives in Nepal. Your effort helps make geometry and math education more accessible for everyone.</p>
-            <p>Best regards,<br>The MIN Editorial Team</p>
-          </div>
-        `
+        html: generateMINThemeEmail(`Hello ${submission.submitter_name},`, content)
       })
     } catch (mailErr) {
       console.error('Approval Email Failed:', mailErr)

@@ -1,10 +1,20 @@
 'use client'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Award, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 export default function Recognition() {
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Recognition settings load error', err))
+  }, [])
+
   return (
     <section className="container mx-auto px-6 py-24 relative overflow-hidden">
       <motion.div 
@@ -26,18 +36,16 @@ export default function Recognition() {
             </div>
             
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight text-white">
-              HundrED Top 100 <span className="text-secondary">Global Education Innovations</span> 2024
+              {settings?.about_rec_title || "Top 100 Global Education Innovations"}
             </h2>
             
             <p className="text-lg text-white/80 leading-relaxed max-w-2xl">
-              MIN is proud to be recognized by HundrED, a global non-profit organization that 
-              researches, identifies and shares the most inspiring K12 education innovations 
-              across the world.
+              {settings?.about_rec_description || "MIN is proud to be recognized by HundrED, a global non-profit organization that researches, identifies and shares the most inspiring K12 education innovations across the world."}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <a 
-                href="https://hundred.org/en/innovations/mathematics-initiatives-in-nepal-min"
+                href={settings?.about_rec_link || "https://hundred.org/en/innovations/mathematics-initiatives-in-nepal-min"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto bg-secondary hover:bg-secondary-dark text-[#16556D] px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-secondary/20 hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-1 active:scale-[0.98]"
@@ -54,20 +62,21 @@ export default function Recognition() {
             </div>
           </div>
 
-          <div className="flex-shrink-0 relative group">
-            <div className="absolute inset-0 bg-white/20 rounded-[2rem] blur-2xl group-hover:blur-3xl transition-all duration-500" />
-            <Image 
-              src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop" 
-              alt="HundrED Global Education Innovation Recognition" 
-              width={320}
-              height={320}
-              className="w-full h-full object-cover rounded-[2rem] relative z-10 shadow-2xl transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 768px) 256px, 320px"
-            />
+          <div className="flex-1 w-full max-w-[500px] relative group">
+            <div className="absolute inset-0 bg-white/20 rounded-[3rem] blur-2xl group-hover:blur-3xl transition-all duration-500" />
+            <div className="aspect-square relative rounded-[3rem] overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-[1.02] z-10 border border-white/10">
+              <Image 
+                src={settings?.recognition_image_url || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop"} 
+                alt="Recognition" 
+                fill
+                className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+                sizes="(max-width: 768px) 100vw, 500px"
+              />
+            </div>
             
-            <div className="absolute -bottom-6 -right-6 glass p-6 rounded-3xl shadow-xl z-20 hidden lg:block">
-              <p className="text-2xl font-bold text-primary mb-1">Top 100</p>
-              <p className="text-xs text-text-secondary dark:text-text-secondary-dark font-semibold uppercase tracking-widest">Global Innovations</p>
+            <div className="absolute -bottom-6 -right-6 glass p-8 rounded-3xl shadow-2xl z-20 hidden lg:block border border-white/20 hover:scale-105 transition-transform">
+              <p className="text-3xl font-black text-primary mb-1 tracking-tighter">{settings?.about_rec_badge_title || "Top 100"}</p>
+              <p className="text-[10px] text-text-secondary dark:text-text-secondary-dark font-black uppercase tracking-[0.2em]">{settings?.about_rec_badge_desc || "Global Innovations"}</p>
             </div>
           </div>
         </div>

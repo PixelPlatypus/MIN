@@ -27,7 +27,7 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WRITER'])
+  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const body = await request.json()

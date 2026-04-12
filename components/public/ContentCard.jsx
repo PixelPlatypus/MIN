@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, FileDown, ArrowRight, User, Calendar, Tag } from 'lucide-react'
 import Image from 'next/image'
@@ -13,6 +14,15 @@ const typeIcons = {
 
 export default function ContentCard({ item, index }) {
   const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [] } = item
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('ContentCard settings load error', err))
+  }, [])
+
   const icon = typeIcons[type] || <FileText className="text-primary" />
 
   return (
@@ -31,7 +41,7 @@ export default function ContentCard({ item, index }) {
             {/* Cover Image */}
             <div className="aspect-[16/10] relative overflow-hidden">
               <Image 
-                src={cover_url || 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'} 
+                src={cover_url || settings?.default_notice_image || 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'} 
                 alt={title}
                 fill
                 className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"

@@ -12,6 +12,14 @@ export default function GalleryPage() {
   const [activeAlbum, setActiveAlbum] = useState('ALL')
   const [activeTag, setActiveTag] = useState('ALL')
   const [index, setIndex] = useState(-1)
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Gallery settings load error', err))
+  }, [])
 
   useEffect(() => {
     async function fetchGallery() {
@@ -43,7 +51,7 @@ export default function GalleryPage() {
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
           >
             <ImageIcon size={16} />
-            Gallery
+            {settings?.gallery_title || "Gallery"}
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -51,7 +59,7 @@ export default function GalleryPage() {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold tracking-tight"
           >
-            Captured Moments
+            {settings?.gallery_subtitle || "Captured Moments"}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -59,7 +67,7 @@ export default function GalleryPage() {
             transition={{ delay: 0.2 }}
             className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
           >
-            A visual journey through our camps, workshops, and the vibrant MIN community.
+            {settings?.gallery_description || "A visual journey through our camps, workshops, and the vibrant MIN community."}
           </motion.p>
         </div>
       </section>
@@ -108,7 +116,7 @@ export default function GalleryPage() {
           <>
             <motion.div 
               layout
-              className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             >
               <AnimatePresence mode="popLayout">
                 {images.map((image, i) => (
@@ -119,7 +127,7 @@ export default function GalleryPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.4 }}
-                    className="relative group cursor-pointer break-inside-avoid rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-black/5 dark:border-white/5"
+                    className="relative group cursor-pointer rounded-[2.5rem] overflow-hidden aspect-[4/3] shadow-sm hover:shadow-2xl transition-all duration-500 border border-black/5 dark:border-white/5"
                     onClick={() => {
                       setIndex(i)
                       captureEvent('gallery_image_opened', { caption: image.caption, album: image.album })
@@ -128,7 +136,7 @@ export default function GalleryPage() {
                     <img 
                       src={image.image_url || image.url} 
                       alt={image.caption || 'Gallery Image'} 
-                      className="w-full h-auto object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                      className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8 space-y-3">
                       <div className="flex flex-wrap gap-1 mb-2">

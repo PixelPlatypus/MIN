@@ -1,12 +1,44 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Calendar, MapPin, ArrowRight, Clock } from 'lucide-react'
 import Link from 'next/link'
 
 export default function EventCard({ event, index }) {
-  const { title, slug, start_date, location, cover_url, status } = event
-  const isPast = new Date(start_date) < new Date()
+  const { title, slug, start_date, end_date, location, cover_url, event_type } = event
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('EventCard settings load error', err))
+  }, [])
+  
+  const now = new Date()
+  const start = new Date(start_date)
+  const end = end_date ? new Date(end_date) : null
+
+  const getStatusBadge = () => {
+    if (event_type === 'RECURRING' || event_type === 'EVERGOING') {
+      return { text: 'Coming Soon', class: 'bg-secondary text-slate-900 border-secondary-dark/30 shadow-lg shadow-secondary/20 font-black' }
+    }
+    
+    if (start > now) {
+      return { text: 'Upcoming', class: 'bg-primary text-white border-primary/20 shadow-lg shadow-primary/20' }
+    }
+    
+    // Past logic: if end date exists and is past, or if no end date but start date is 24h+ old
+    const isPast = end ? end < now : (now.getTime() - start.getTime() > 86400000)
+    if (isPast) {
+      return { text: 'Past Event', class: 'bg-black/40 text-white border-white/40' }
+    }
+    
+    return { text: 'Ongoing', class: 'bg-green/90 text-white border-green/20' }
+  }
+
+  const badge = getStatusBadge()
 
   return (
     <motion.div
@@ -22,21 +54,28 @@ export default function EventCard({ event, index }) {
             {/* Cover Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
               <Image 
-                src={cover_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop'} 
+                src={cover_url || settings?.default_event_cover || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop'} 
                 alt={title}
                 fill
                 className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
+              
+              {/* Status Badge */}
               <div className="absolute top-4 right-4 z-20">
-                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full backdrop-blur-md border ${
-                  isPast 
-                    ? 'bg-black/40 text-white border-white/20' 
-                    : 'bg-primary/90 text-white border-primary/20'
-                }`}>
-                  {isPast ? 'Past Event' : 'Upcoming'}
+                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full backdrop-blur-md border shadow-lg ${badge.class}`}>
+                  {badge.text}
                 </span>
               </div>
+
+              {/* Event Type Badge */}
+              {event_type && event_type !== 'EVENT' && (
+                <div className="absolute top-4 left-4 z-20">
+                  <span className="text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-lg bg-white/10 backdrop-blur-xl text-white border border-white/20">
+                    {event_type}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Content */}
@@ -48,7 +87,7 @@ export default function EventCard({ event, index }) {
               <div className="space-y-2 z-10">
                 <div className="flex items-center gap-3 text-sm text-text-secondary dark:text-text-secondary-dark font-medium">
                   <Calendar size={16} className="text-primary" />
-                  {new Date(start_date).toLocaleDateString('en-US', {
+                  {event_type === 'EVERGOING' ? 'Ongoing Program' : new Date(start_date).toLocaleDateString('en-US', {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric'
