@@ -109,8 +109,9 @@ export default function JoinPage() {
             <button
               onClick={scrollToForm}
               className="glass px-8 py-4 rounded-2xl font-semibold text-sm text-text-secondary dark:text-text-secondary-dark hover:text-primary transition-all flex items-center gap-2"
+              aria-label="Explore joining opportunities"
             >
-              Learn More
+              Explore Opportunities
               <ChevronDown size={16} />
             </button>
           </motion.div>

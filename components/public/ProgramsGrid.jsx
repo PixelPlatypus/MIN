@@ -88,8 +88,8 @@ export default function ProgramsGrid() {
                 <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6 flex-grow">
                   {program.tagline}
                 </p>
-                <div className="flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-4 transition-all">
-                  Learn More
+                <div className="flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-4 transition-all" aria-label={`Discover ${program.name}`}>
+                  Discover Program
                   <ArrowRight size={16} />
                 </div>
               </div>

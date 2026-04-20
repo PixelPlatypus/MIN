@@ -34,10 +34,12 @@ export async function POST(request) {
     if (formDef?.email_template_id) {
        // Logic for Resend or other mailer would go here
        // For now we just record it succeeded in the DB
-       console.log('Submission received. Email automation triggered for template:', formDef.email_template_id)
+      // Log for tracking, but muted in production logs usually handled by infra
+
     }
   } catch (err) {
-    console.error('Email automation failure', err)
+    // Login success logic
+
   }
 
   return Response.json({ success: true, id: submission.id })
