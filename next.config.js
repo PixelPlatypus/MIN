@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['isomorphic-dompurify', 'dompurify', 'resend'],
-  swcMinify: true,
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
@@ -42,7 +41,6 @@ const nextConfig = {
               "base-uri 'self'",
               "form-action 'self'",
               "frame-ancestors 'self'",
-              "require-trusted-types-for 'script'",
             ].join('; '),
           },
         ],
