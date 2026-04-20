@@ -15,15 +15,21 @@ import {
 
 export default function DMOPracticePage() {
   const [sets, setSets] = useState([])
+  const [settings, setSettings] = useState(null)
   const [loading, setLoading] = useState(true)
   const [history, setHistory] = useState([])
 
   useEffect(() => {
-    fetch('/api/practice/sets')
-      .then(res => res.json())
-      .then(data => setSets(data))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false))
+    Promise.all([
+      fetch('/api/practice/sets').then(res => res.json()),
+      fetch('/api/settings').then(res => res.json()).catch(() => ({}))
+    ])
+    .then(([setsData, settingsData]) => {
+      setSets(setsData)
+      setSettings(settingsData)
+    })
+    .catch(err => console.error(err))
+    .finally(() => setLoading(false))
 
     // Load history from local storage
     const saved = localStorage.getItem('min_exam_history')
@@ -43,7 +49,7 @@ export default function DMOPracticePage() {
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-2.5 rounded-full text-xs font-black tracking-widest uppercase shadow-sm border border-primary/5"
           >
             <ShieldCheck size={16} />
-            Official Practice Portal
+            {settings?.dmopractice_badge || 'Official Practice Portal'}
           </motion.div>
           
           <div className="space-y-6">
@@ -53,8 +59,12 @@ export default function DMOPracticePage() {
               transition={{ duration: 0.5, type: 'spring' }}
               className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.85] text-gradient"
             >
-              Master the DMO <br />
-              <span className="text-primary dark:text-secondary">One Set at a Time.</span>
+              <span dangerouslySetInnerHTML={{ __html: settings?.dmopractice_title || 'Master the DMO <br />' }} />
+              {settings?.dmopractice_subtitle ? (
+                <span className="text-primary dark:text-secondary">{settings.dmopractice_subtitle}</span>
+              ) : (
+                <span className="text-primary dark:text-secondary">One Set at a Time.</span>
+              )}
             </motion.h1>
             
             <motion.p 
@@ -63,8 +73,7 @@ export default function DMOPracticePage() {
               transition={{ delay: 0.2 }}
               className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto leading-relaxed font-medium"
             >
-              Experience a realistic competition environment with our curated mock exams, 
-              designed to push your problem-solving boundaries.
+              {settings?.dmopractice_description || 'Experience a realistic competition environment with our curated mock exams, designed to push your problem-solving boundaries.'}
             </motion.p>
           </div>
         </div>

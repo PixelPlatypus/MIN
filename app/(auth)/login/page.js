@@ -152,7 +152,7 @@ export default function LoginPage() {
               <input
                 {...register('identifier')}
                 type="text"
-                placeholder="admin or admin@mathsinitiatives.org"
+                placeholder="Enter your username or email"
                 className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 pl-12 pr-4 text-sm transition-all focus:outline-none focus:ring-4 ${
                   errors.identifier 
                     ? 'border-coral/50 focus:ring-coral/10' 

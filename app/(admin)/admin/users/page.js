@@ -1,13 +1,17 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Users, Search, PlusCircle, Loader2, Shield, Trash2, Edit2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Users, Search, PlusCircle, Loader2, Shield, Trash2, Edit2, CheckCircle2, XCircle, UserCheck } from 'lucide-react'
 import Link from 'next/link'
+
+const ROLES = ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER']
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [feedback, setFeedback] = useState(null) // { type: 'success'|'error', message }
+  const [changingRole, setChangingRole] = useState(null) // userId currently being updated
 
   useEffect(() => {
     async function fetchUsers() {
@@ -27,16 +31,27 @@ export default function AdminUsersPage() {
     user.email.toLowerCase().includes(search.toLowerCase())
   )
 
-  async function handleRoleChange(userId, newRole) {
+  function showFeedback(type, message) {
+    setFeedback({ type, message })
+    setTimeout(() => setFeedback(null), 4000)
+  }
+
+  async function handleRoleChange(userId, newRole, prevRole) {
+    setChangingRole(userId)
     const res = await fetch(`/api/users/${userId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: newRole })
     })
+    setChangingRole(null)
     if (res.ok) {
       setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u))
+      showFeedback('success', `Role updated to ${newRole}`)
     } else {
-      alert('Failed to change role. Ensure you have ADMIN permissions.')
+      const data = await res.json()
+      // Revert the optimistic update in UI on error
+      setUsers(users.map(u => u.id === userId ? { ...u, role: prevRole } : u))
+      showFeedback('error', data.error || 'Failed to change role.')
     }
   }
 
@@ -57,6 +72,24 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Feedback toast */}
+      <AnimatePresence>
+        {feedback && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-semibold ${
+              feedback.type === 'success'
+                ? 'bg-emerald-500 text-white'
+                : 'bg-coral text-white'
+            }`}
+          >
+            {feedback.type === 'success' ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
+            {feedback.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">User Management</h2>
@@ -110,7 +143,14 @@ export default function AdminUsersPage() {
                           {user.name?.[0]?.toUpperCase()}
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-bold truncate">{user.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold truncate">{user.name}</span>
+                            {user.isSelf && (
+                              <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center gap-1">
+                                <UserCheck size={9} /> You
+                              </span>
+                            )}
+                          </div>
                           <span className="text-xs text-text-tertiary truncate">{user.email}</span>
                         </div>
                       </div>
@@ -119,10 +159,11 @@ export default function AdminUsersPage() {
                       <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border flex items-center gap-1.5 w-fit ${
                         user.role === 'ADMIN' ? 'bg-coral/10 text-coral border-coral/20' :
                         user.role === 'MANAGER' ? 'bg-purple-500/10 text-purple-500 border-purple-500/20' :
+                        user.role === 'WEBSITE_MANAGER' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
                         'bg-text-tertiary/10 text-text-secondary border-text-tertiary/20'
                       }`}>
                         {user.role === 'ADMIN' && <Shield size={10} />}
-                        {user.role}
+                        {user.role.replace('_', ' ')}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -131,29 +172,37 @@ export default function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right flex items-center justify-end gap-3 h-full">
-                      <select 
-                        className="bg-transparent border border-border dark:border-border-dark rounded-xl px-2 py-1 text-[10px] font-black uppercase focus:outline-none focus:border-primary cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                        value={user.role}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        disabled={user.id === users.find(u => u.isSelf)?.id} // Assuming we tag self or check uid
-                      >
-                        <option value="WEBSITE_MANAGER">Website Manager</option>
-                        <option value="ADMIN">Administrator</option>
-                        <option value="MANAGER">Manager</option>
-                        <option value="WRITER">Writer</option>
-                      </select>
-                      <Link 
+                      <div className="relative">
+                        {changingRole === user.id && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Loader2 size={14} className="animate-spin text-primary" />
+                          </div>
+                        )}
+                        <select
+                          className={`bg-transparent border border-border dark:border-border-dark rounded-xl px-2 py-1 text-[10px] font-black uppercase focus:outline-none focus:border-primary cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                            changingRole === user.id ? 'opacity-0' : ''
+                          }`}
+                          value={user.role}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value, user.role)}
+                          disabled={changingRole !== null}
+                        >
+                          {ROLES.map(r => (
+                            <option key={r} value={r}>{r.replace('_', ' ')}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <Link
                         href={`/admin/users/${user.id}`}
                         className="text-text-tertiary hover:text-primary hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
                         title="Edit User"
                       >
                         <Edit2 size={16} />
                       </Link>
-                      <button 
+                      <button
                         onClick={() => handleRemoveUser(user.id)}
-                        disabled={user.id === users.find(u => u.isSelf)?.id}
+                        disabled={user.isSelf}
                         className="text-coral hover:bg-coral/10 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
-                        title={user.id === users.find(u => u.isSelf)?.id ? "Cannot delete self" : "Remove User"}
+                        title={user.isSelf ? 'Cannot delete your own account' : 'Remove User'}
                       >
                         <Trash2 size={16} />
                       </button>

@@ -5,14 +5,17 @@ import { Bell, X, ExternalLink, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+let noticeClosedForSession = false
+
 export default function NoticePopup() {
   const [notice, setNotice] = useState(null)
   const [isVisible, setIsVisible] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
-    // Don't show popups on admin pages
-    if (pathname.startsWith('/admin')) return
+    // Don't show popups on admin or login pages, or if it was closed in this session
+    if (pathname.startsWith('/admin') || pathname.startsWith('/login')) return
+    if (noticeClosedForSession) return
 
     async function checkNotices() {
       try {
@@ -54,7 +57,11 @@ export default function NoticePopup() {
 
         if (validNotice) {
           setNotice(validNotice)
-          setTimeout(() => setIsVisible(true), 1200)
+          setTimeout(() => {
+            if (!noticeClosedForSession) {
+              setIsVisible(true)
+            }
+          }, 1200)
         }
       } catch (err) {
         console.error('Popup check error:', err)
@@ -66,10 +73,12 @@ export default function NoticePopup() {
 
   const closePopup = () => {
     setIsVisible(false)
+    noticeClosedForSession = true
   }
 
   const dismissPermanently = () => {
     setIsVisible(false)
+    noticeClosedForSession = true
     if (notice) {
       localStorage.setItem(`min_notice_dismissed_${notice.id}`, 'true')
     }

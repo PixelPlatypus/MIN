@@ -16,7 +16,7 @@ import {
   Send, Compass, ChevronDown, Monitor,
   Smartphone, Eye, Settings, ShieldCheck,
   Zap, Bell, ArrowRight, HelpCircle, ExternalLink,
-  Layers
+  Layers, Calculator
 } from 'lucide-react'
 
 // Layout/Internal Components
@@ -116,6 +116,7 @@ const TAB_GROUPS = [
       { id: 'join', name: 'Join Us Page', icon: <UserPlus size={16} /> },
       { id: 'contact', name: 'Contact Page', icon: <Send size={16} /> },
       { id: 'rto', name: 'RTO Program', icon: <Compass size={16} /> },
+      { id: 'dmopractice', name: 'DMO Practice', icon: <Calculator size={16} /> },
     ]
   },
   {
@@ -155,7 +156,8 @@ export default function SiteEditor() {
     join_title: '', join_subtitle: '', join_description: '',
     contact_title: '', contact_subtitle: '', contact_description: '',
     rto_title: '', rto_subtitle: '', rto_description: '',
-    rto_stages: [], rto_roadmap: [], rto_resources: []
+    rto_stages: [], rto_roadmap: [], rto_resources: [],
+    dmopractice_badge: '', dmopractice_title: '', dmopractice_subtitle: '', dmopractice_description: ''
   })
 
   // Page fields mapping for DRY rendering of subpages
@@ -165,7 +167,8 @@ export default function SiteEditor() {
     gallery: { name: 'Public Gallery', fields: ['gallery_title', 'gallery_subtitle', 'gallery_description'], icon: <ImageIcon size={20}/> },
     join: { name: 'Join Us', fields: ['join_title', 'join_subtitle', 'join_description'], icon: <UserPlus size={20}/> },
     contact: { name: 'Contact Us', fields: ['contact_title', 'contact_subtitle', 'contact_description'], icon: <Send size={20}/> },
-    rto: { name: 'Road to Olympiad', fields: ['rto_title', 'rto_subtitle', 'rto_description'], icon: <Compass size={20}/> }
+    rto: { name: 'Road to Olympiad', fields: ['rto_title', 'rto_subtitle', 'rto_description'], icon: <Compass size={20}/> },
+    dmopractice: { name: 'DMO Practice', fields: ['dmopractice_title', 'dmopractice_subtitle', 'dmopractice_description'], icon: <Calculator size={20}/> }
   }
 
   const [timelineItems, setTimelineItems] = useState([])
@@ -181,7 +184,15 @@ export default function SiteEditor() {
       ])
       const settingsData = await settingsRes.json()
       const timelineData = await timelineRes.json()
-      if (settingsData) setSettings(settingsData)
+      if (settingsData) {
+        setSettings({
+          ...settingsData,
+          dmopractice_badge: settingsData.dmopractice_badge || 'Official Practice Portal',
+          dmopractice_title: settingsData.dmopractice_title || 'Master the DMO <br />',
+          dmopractice_subtitle: settingsData.dmopractice_subtitle || 'One Set at a Time.',
+          dmopractice_description: settingsData.dmopractice_description || 'Experience a realistic competition environment with our curated mock exams, designed to push your problem-solving boundaries.'
+        })
+      }
       if (timelineData) setTimelineItems(timelineData)
       setLastSaved(new Date().toLocaleTimeString())
     } catch (err) {
@@ -485,6 +496,10 @@ export default function SiteEditor() {
                            <InputField label="Marketing Sub-title" value={settings[SUBPAGE_CONFIG[activeTab].fields[1]]} onChange={e => setSettings({...settings, [SUBPAGE_CONFIG[activeTab].fields[1]]: e.target.value})}/>
                         </div>
                         <InputField label="Introductory Disclosure" value={settings[SUBPAGE_CONFIG[activeTab].fields[2]]} onChange={e => setSettings({...settings, [SUBPAGE_CONFIG[activeTab].fields[2]]: e.target.value})} rows={4}/>
+                        
+                        {activeTab === 'dmopractice' && (
+                           <InputField label="Hero Badge Text" icon={<Award size={14}/>} value={settings.dmopractice_badge} onChange={e => setSettings({...settings, dmopractice_badge: e.target.value})} placeholder="Official Practice Portal"/>
+                        )}
                         
                         {activeTab === 'rto' && (
                           <div className="pt-8 border-t border-border mt-4">
