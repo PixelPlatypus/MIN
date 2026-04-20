@@ -58,6 +58,12 @@ import { SmoothScroll } from '@/components/shared/SmoothScroll'
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://szosktbhsgqnyvbxmprf.supabase.co" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://szosktbhsgqnyvbxmprf.supabase.co" />
+      </head>
       <body className="min-h-screen">
         <ClientProviders>
           <ThemeProvider>
