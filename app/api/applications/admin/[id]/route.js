@@ -21,9 +21,13 @@ export async function PATCH(request, { params }) {
 
     const supabase = await createAdminClient()
     
-    // Convert logic: 'ACCEPTED' in frontend represents 'APPROVED' in DB schema
-    const dbStatus = status === 'ACCEPTED' ? 'APPROVED' : status
-    const updateData = { status: dbStatus }
+    // form_submissions uses: PENDING, APPROVED, REJECTED, DRAFT
+    // join_applications uses: PENDING, REVIEWED, ACCEPTED, REJECTED
+    // Map frontend 'ACCEPTED' to the correct DB value per table
+    const formSubStatus = status === 'ACCEPTED' ? 'APPROVED' : status
+    const legacyStatus = status // join_applications already uses ACCEPTED directly
+
+    const updateData = { status: formSubStatus }
     if (notes !== undefined) updateData.notes = notes
 
     // Try form_submissions first
@@ -34,11 +38,14 @@ export async function PATCH(request, { params }) {
       .select('*, form_definitions(category)')
       .single()
 
-    // If not found in form_submissions, try join_applications
+    // If not found in form_submissions, try join_applications (uses different status enum)
     if (updateError || !updatedSub) {
+      const legacyUpdateData = { status: legacyStatus }
+      if (notes !== undefined) legacyUpdateData.notes = notes
+
       const { data: legacySub, error: legacyError } = await supabase
         .from('join_applications')
-        .update(updateData)
+        .update(legacyUpdateData)
         .eq('id', id)
         .select('*')
         .single()
