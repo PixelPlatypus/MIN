@@ -65,6 +65,8 @@ export default function AdminInquiriesPage() {
     if (res.ok) {
       setInquiries(inquiries.map(a => a.id === id ? { ...a, status: newStatus } : a))
       if (selectedInquiry?.id === id) setSelectedInquiry({ ...selectedInquiry, status: newStatus })
+      // Auto-switch to Responded tab so the item remains visible
+      if (newStatus === 'ACCEPTED') setStatusFilter('ACCEPTED')
     }
   }
 
@@ -95,17 +97,19 @@ export default function AdminInquiriesPage() {
               />
             </div>
             <div className="flex items-center gap-2 bg-bg-secondary dark:bg-white/5 p-1 rounded-2xl border border-border dark:border-border-dark shadow-inner">
-              {['PENDING', 'ACCEPTED', 'ALL'].map(s => (
+              {[{ id: 'PENDING', label: 'New' }, { id: 'ACCEPTED', label: 'Responded' }, { id: 'ALL', label: 'All' }].map(s => (
                 <button
-                  key={s}
-                  onClick={() => setStatusFilter(s)}
+                  key={s.id}
+                  onClick={() => setStatusFilter(s.id)}
                   className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                    statusFilter === s 
-                      ? 'bg-white dark:bg-primary text-primary dark:text-white shadow-xl' 
+                    statusFilter === s.id
+                      ? s.id === 'ACCEPTED'
+                        ? 'bg-green dark:bg-green text-white shadow-xl'
+                        : 'bg-white dark:bg-primary text-primary dark:text-white shadow-xl'
                       : 'text-text-tertiary hover:scale-105 active:scale-95'
                   }`}
                 >
-                  {s === 'ACCEPTED' ? 'Responded' : s === 'PENDING' ? 'New' : 'All'}
+                  {s.label}
                 </button>
               ))}
             </div>

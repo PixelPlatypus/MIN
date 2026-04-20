@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
+import { revalidatePath } from 'next/cache'
 
 export async function GET() {
   const supabase = await createClient()
@@ -15,7 +16,8 @@ export async function GET() {
 
   return Response.json(data || {}, {
     headers: {
-      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600'
+      // No CDN caching — settings must always be fresh after admin saves
+      'Cache-Control': 'no-store'
     }
   })
 }
@@ -74,6 +76,11 @@ export async function PATCH(request) {
       meta: { changes, target_id: 'main' }
     })
   }
+
+  // Bust Next.js page cache so homepage/mission shows fresh image immediately
+  revalidatePath('/')
+  revalidatePath('/about')
+  revalidatePath('/admin/settings')
 
   return Response.json(data)
 }

@@ -44,7 +44,7 @@ export default function JoinUsCTA() {
               <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
             </Link>
             <Link 
-              href="/contact"
+              href="/join#contact"
               className="w-full sm:w-auto glass hover:bg-black/5 dark:hover:bg-white/5 px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all border border-primary/20"
             >
               Contact Us
@@ -69,15 +69,17 @@ export default function JoinUsCTA() {
               sizes="(max-width: 768px) 100vw, 50vw"
             />
             
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-              <div className="glass p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-6">
-                <Sparkles className="text-primary mx-auto mb-4" size={32} />
-                <h4 className="text-2xl font-bold mb-2">{settings?.join_cta_stat_title || "50+ Volunteers"}</h4>
-                <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
-                  {settings?.join_cta_stat_desc || "Building the future of mathematics in Nepal together."}
-                </p>
+            {(settings?.join_cta_stat_title || settings?.join_cta_stat_desc) && (
+              <div className="absolute inset-0 flex items-center justify-center z-20">
+                <div className="glass p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-6">
+                  <Sparkles className="text-primary mx-auto mb-4" size={32} />
+                  <h4 className="text-2xl font-bold mb-2">{settings?.join_cta_stat_title}</h4>
+                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                    {settings?.join_cta_stat_desc}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
           
           {/* Decorative Elements */}
