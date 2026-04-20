@@ -19,5 +19,15 @@ export async function POST(request) {
     return Response.json({ error: error.message }, { status: 500 })
   }
 
+  // 2. Send confirmation email
+  try {
+    const { sendTemplatedEmail } = await import('@/lib/resend')
+    await sendTemplatedEmail('reminder_confirmed', email, {
+      form_name: category.charAt(0) + category.slice(1).toLowerCase()
+    })
+  } catch (mailError) {
+    console.error('Reminder confirmation mail failed:', mailError)
+  }
+  
   return Response.json({ success: true, message: "Added to reminder list" })
 }

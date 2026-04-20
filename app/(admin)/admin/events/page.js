@@ -107,12 +107,16 @@ export default function AdminEventsPage() {
                   <tr key={event.id} className="hover:bg-bg-secondary/50 dark:hover:bg-white/5 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/10 border border-primary/20">
-                          <img 
-                            src={event.cover_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop'} 
-                            alt={event.title} 
-                            className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all"
-                          />
+                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark flex items-center justify-center">
+                          {event.cover_url ? (
+                            <img 
+                              src={event.cover_url} 
+                              alt={event.title} 
+                              className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all"
+                            />
+                          ) : (
+                            <CalendarPlus size={18} className="text-text-tertiary opacity-50" />
+                          )}
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="text-sm font-bold truncate">{event.title}</span>

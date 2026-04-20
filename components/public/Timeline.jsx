@@ -30,6 +30,7 @@ export default function Timeline() {
       gsap.registerPlugin(ScrollTrigger)
       
       ctx = gsap.context(() => {
+        if (!containerRef.current) return
         const items = containerRef.current.querySelectorAll('.timeline-item')
 
         if (prefersReducedMotion) {

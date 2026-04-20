@@ -22,7 +22,8 @@ export default function AdminTopbar({ profile }) {
       try { setReadNotifs(JSON.parse(stored)) } catch (e) {}
     }
     
-    fetchNotifications()
+    // Slight delay before first fetch to avoid race with auth/server startup
+    const timer = setTimeout(fetchNotifications, 2000)
     const interval = setInterval(fetchNotifications, 60000)
 
     const handleClickOutside = (e) => {
@@ -33,6 +34,7 @@ export default function AdminTopbar({ profile }) {
     document.addEventListener('mousedown', handleClickOutside)
 
     return () => {
+      clearTimeout(timer)
       clearInterval(interval)
       document.removeEventListener('mousedown', handleClickOutside)
     }
@@ -41,16 +43,26 @@ export default function AdminTopbar({ profile }) {
   async function fetchNotifications() {
     try {
       const res = await fetch('/api/admin/notifications')
-      const data = await res.json()
-      if (res.ok) {
-        setNotifications(data.notifications || [])
-        setUnreadCount(data.count || 0)
-      } else if (res.status === 403) {
-        // Suppress alert for background poll but log it
-        console.warn('Notifications permission:', data.error);
+      
+      // If we get a network failure before JSON parsing
+      if (!res.ok) {
+        if (res.status === 403) {
+          const data = await res.json()
+          console.warn('Notifications permission:', data.error)
+        }
+        return
       }
+
+      const data = await res.json()
+      setNotifications(data.notifications || [])
+      setUnreadCount(data.count || 0)
     } catch (err) {
-      console.error('Failed to fetch notifications:', err)
+      // Silence network errors to avoid intrusive console overlays in dev
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        console.debug('Notifications background fetch skipped (offline or server restarting)')
+      } else {
+        console.error('Failed to fetch notifications:', err)
+      }
     }
   }
 

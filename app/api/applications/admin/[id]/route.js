@@ -69,16 +69,16 @@ export async function PATCH(request, { params }) {
       // Specialize event key based on category
       if (category.includes('inquiry') || type.includes('inquiry')) {
         eventKey = status === 'ACCEPTED' ? 'inquiry_responded' : 'application_rejected'
-      } else if (category.includes('org') || type.includes('org')) {
-        eventKey = status === 'ACCEPTED' ? 'org_accepted' : 'application_rejected'
-      } else if (category.includes('partner') || type.includes('partnership')) {
-        eventKey = status === 'ACCEPTED' ? 'partnership_accepted' : 'application_rejected'
+      } else if (category.includes('org') || type.includes('org') || category.includes('partner') || type.includes('partnership')) {
+        eventKey = status === 'ACCEPTED' ? 'org_accepted' : 'org_rejected'
+      } else if (category.includes('ambassador')) {
+        eventKey = status === 'ACCEPTED' ? 'ambassadorship_accepted' : 'ambassadorship_rejected'
       }
 
       if (applicantEmail) {
         await sendTemplatedEmail(eventKey, applicantEmail, {
           applicant_name: applicantName,
-          role_type: updatedSub.form_definitions?.name || updatedSub.type || 'Role',
+          role_type: updatedSub.form_definitions?.title || updatedSub.type || 'Role',
           contact_message: subData.Message || subData.message || ''
         })
       }

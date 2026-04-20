@@ -35,15 +35,18 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
     async function fetchSuggestions() {
       try {
         const res = await fetch('/api/gallery')
-        if (res.ok) {
-          const data = await res.json()
+        if (!res.ok) return
+        const data = await res.json()
+        if (data && Array.isArray(data)) {
           const tags = [...new Set(data.flatMap(img => img.tags || []))]
           const albums = [...new Set(data.map(img => img.album).filter(Boolean))]
           setExistingTags(tags)
           setExistingAlbums(albums)
         }
       } catch (err) {
-        console.error('Fetch suggestions error:', err)
+        if (err.name !== 'TypeError') {
+          console.error('Fetch suggestions error:', err)
+        }
       }
     }
     fetchSuggestions()

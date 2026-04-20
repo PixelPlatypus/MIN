@@ -46,8 +46,13 @@ export default function TeamForm({ initialData = null }) {
 
   useEffect(() => {
     fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => setSettings(data))
+      .then(res => res.ok ? res.json() : null)
+      .then(data => data && setSettings(data))
+      .catch(err => {
+        if (err.name !== 'TypeError') {
+          console.error('Settings load error:', err)
+        }
+      })
   }, [])
 
   const {

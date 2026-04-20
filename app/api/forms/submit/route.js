@@ -39,7 +39,7 @@ export async function POST(request) {
   try {
     const { data: formDef } = await supabase
       .from('form_definitions')
-      .select('email_template_id, category, name')
+      .select('email_template_id, category, title')
       .eq('id', form_id)
       .single()
 
@@ -49,10 +49,11 @@ export async function POST(request) {
       const name = data.Name || data["Full Name"] || data.name || "Friend"
       const category = formDef?.category?.toLowerCase() || ''
       
-      let eventKey = 'inquiry_received'
-      if (category.includes('org')) eventKey = 'org_submission'
-      else if (category.includes('partner')) eventKey = 'partnership_submission'
-      else if (formDef?.email_template_id) eventKey = formDef.email_template_id // Legacy support
+      let eventKey = 'application_received'
+      if (category.includes('inquiry')) eventKey = 'inquiry_received'
+      else if (category.includes('org') || category.includes('partner')) eventKey = 'org_submission'
+      else if (category.includes('ambassador')) eventKey = 'ambassadorship_submission'
+      else if (formDef?.email_template_id) eventKey = formDef.email_template_id
 
       if (email) {
         await sendTemplatedEmail(eventKey, email, {

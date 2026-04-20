@@ -80,7 +80,7 @@ export async function PATCH(request) {
       for (const r of reminders) {
         await sendTemplatedEmail('intake_reopened', r.email, {
           applicant_name: 'there',
-          role_type: data.title,
+          form_name: data.title,
           slug: data.slug
         })
       }

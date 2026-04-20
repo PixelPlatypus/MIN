@@ -55,11 +55,13 @@ export default function EventCard({ event, index, fallbackImage }) {
               />
               
               {/* Status Badge */}
-              <div className="absolute top-4 right-4 z-20">
-                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full backdrop-blur-md border shadow-lg ${badge.class}`}>
-                  {badge.text}
-                </span>
-              </div>
+              {event.show_date !== false && (
+                <div className="absolute top-4 right-4 z-20">
+                  <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full backdrop-blur-md border shadow-lg ${badge.class}`}>
+                    {badge.text}
+                  </span>
+                </div>
+              )}
 
               {/* Event Type Badge */}
               {event_type && event_type !== 'EVENT' && (
@@ -78,14 +80,16 @@ export default function EventCard({ event, index, fallbackImage }) {
               </h3>
 
               <div className="space-y-2 z-10">
-                <div className="flex items-center gap-3 text-sm text-text-secondary dark:text-text-secondary-dark font-medium">
-                  <Calendar size={16} className="text-primary" />
-                  {event_type === 'EVERGOING' ? 'Ongoing Program' : new Date(start_date).toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
-                  })}
-                </div>
+                {event.show_date !== false && (
+                  <div className="flex items-center gap-3 text-sm text-text-secondary dark:text-text-secondary-dark font-medium">
+                    <Calendar size={16} className="text-primary" />
+                    {event_type === 'EVERGOING' ? 'Ongoing Program' : new Date(start_date).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </div>
+                )}
                 {location && (
                   <div className="flex items-center gap-3 text-sm text-text-secondary dark:text-text-secondary-dark font-medium">
                     <MapPin size={16} className="text-primary" />

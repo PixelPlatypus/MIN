@@ -23,6 +23,7 @@ const typeColors = {
   VOLUNTEER: 'bg-primary/10 text-primary border-primary/20',
   ORGANIZATION: 'bg-secondary/20 text-secondary-dark border-secondary/20',
   PARTNERSHIP: 'bg-coral/10 text-coral border-coral/20',
+  AMBASSADOR: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
   INQUIRY: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
 }
 
@@ -140,7 +141,7 @@ export default function AdminApplicationsPage() {
         <div>
           <h2 className="text-2xl font-black tracking-tight mb-1 uppercase">Intake Nexus</h2>
           <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
-            Manage Volunteers and Partners across multiple recruitment batches.
+            Manage Volunteers, Ambassadors, and Partners across multiple recruitment batches.
           </p>
         </div>
 
@@ -189,7 +190,7 @@ export default function AdminApplicationsPage() {
                 />
               </div>
               <div className="flex items-center gap-2 bg-bg-secondary dark:bg-white/5 p-1 rounded-2xl border border-border dark:border-border-dark shadow-inner">
-                {['ALL', 'VOLUNTEER', 'ORGANIZATION', 'PARTNERSHIP'].map(t => (
+                {['ALL', 'VOLUNTEER', 'AMBASSADOR', 'ORGANIZATION'].map(t => (
                   <button
                     key={t}
                     onClick={() => setFilterType(t)}
@@ -199,7 +200,7 @@ export default function AdminApplicationsPage() {
                         : 'text-text-tertiary hover:scale-105 active:scale-95'
                     }`}
                   >
-                    {t === 'ALL' ? 'Everything' : t.slice(0, 3)}
+                    {t === 'ALL' ? 'Everything' : t === 'AMBASSADOR' ? 'AMB' : t.slice(0, 3)}
                   </button>
                 ))}
               </div>

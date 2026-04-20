@@ -62,10 +62,9 @@ export async function POST(request) {
 
     // Notify Submitter
     const { sendTemplatedEmail } = await import('@/lib/resend')
-    await sendTemplatedEmail('application_received', submitter_email, {
+    await sendTemplatedEmail('submission_received', submitter_email, {
       applicant_name: submitter_name,
-      role_type: 'Content Contributor',
-      contact_message: title
+      content_title: title
     })
   } catch (mailErr) {
     console.error('Submission notification email failed:', mailErr)

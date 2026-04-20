@@ -53,24 +53,31 @@ export default async function EventDetailPage({ params }) {
 
   const isPast = new Date(event.start_date) < new Date() && event.event_type !== 'RECURRING' && event.event_type !== 'EVERGOING'
   
-  // Extract YouTube ID safely
-  let youtubeEmbedUrl = null
-  if (event.youtube_playlist) {
-    const ytUrl = event.youtube_playlist
-    if (ytUrl.includes('list=')) {
-      // It's a playlist
-      const listId = ytUrl.split('list=')[1]?.split('&')[0]
-      if (listId) youtubeEmbedUrl = `https://www.youtube.com/embed/videoseries?list=${listId}`
-    } else if (ytUrl.includes('v=') || ytUrl.includes('youtu.be/')) {
-      // It's a single video
+  // Process multiple YouTube videos
+  const videos = event.youtube_videos || []
+  const legacyPlaylist = event.youtube_playlist
+  
+  // Combine videos (handling both new format and legacy field)
+  const allVideos = [...videos]
+  if (legacyPlaylist && !allVideos.find(v => v.url === legacyPlaylist)) {
+    allVideos.unshift({ title: event.youtube_title || 'Playlist', url: legacyPlaylist })
+  }
+
+  const getEmbedUrl = (url) => {
+    if (!url) return null
+    if (url.includes('list=')) {
+      const listId = url.split('list=')[1]?.split('&')[0]
+      if (listId) return `https://www.youtube.com/embed/videoseries?list=${listId}`
+    } else if (url.includes('v=') || url.includes('youtu.be/')) {
       let videoId = ''
-      if (ytUrl.includes('v=')) {
-        videoId = ytUrl.split('v=')[1]?.split('&')[0]
+      if (url.includes('v=')) {
+        videoId = url.split('v=')[1]?.split('&')[0]
       } else {
-        videoId = ytUrl.split('youtu.be/')[1]?.split('?')[0]
+        videoId = url.split('youtu.be/')[1]?.split('?')[0]
       }
-      if (videoId) youtubeEmbedUrl = `https://www.youtube.com/embed/${videoId}`
+      if (videoId) return `https://www.youtube.com/embed/${videoId}`
     }
+    return null
   }
 
   return (
@@ -97,7 +104,7 @@ export default async function EventDetailPage({ params }) {
               }`}>
                 {event.event_type}
               </span>
-              {isPast && (
+              {isPast && event.show_date !== false && (
                 <span className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-text-tertiary/10 text-text-secondary border border-text-tertiary/20">
                   Past Event
                 </span>
@@ -107,7 +114,7 @@ export default async function EventDetailPage({ params }) {
             <h1 className="text-4xl md:text-6xl font-black tracking-tight">{event.title}</h1>
             
             <div className="flex flex-wrap items-center gap-6 text-text-secondary font-medium">
-              {event.show_date !== false && (
+              {event.show_date !== false && event.start_date && (
                 <div className="flex items-center gap-2">
                   <Calendar size={18} className="text-primary" />
                   <span>
@@ -130,8 +137,8 @@ export default async function EventDetailPage({ params }) {
           {event.action_link && event.show_action_link !== false && (
             <div className="glass p-6 md:p-8 rounded-[2rem] border-2 border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-6 bg-gradient-to-r from-primary/5 to-transparent">
               <div className="space-y-2 text-center sm:text-left">
-                <h3 className="text-xl font-bold">Registration / Action Required</h3>
-                <p className="text-sm text-text-tertiary">Follow the link to participate or register for this event.</p>
+                <h3 className="text-xl font-bold">{event.action_title || 'Registration / Action Required'}</h3>
+                <p className="text-sm text-text-tertiary">{event.action_description || 'Follow the link to participate or register for this event.'}</p>
               </div>
               <EventActionLink
                 href={event.action_link}
@@ -248,25 +255,43 @@ export default async function EventDetailPage({ params }) {
             </div>
           )}
 
-          {/* YouTube Playlist Embed */}
-          {youtubeEmbedUrl && event.show_youtube_playlist !== false && (
-            <div className="space-y-6">
+          {/* YouTube Videos Section */}
+          {allVideos.length > 0 && event.show_youtube_playlist !== false && (
+            <div className="space-y-12">
               <div className="flex items-center gap-3 mb-8">
                 <PlayCircle size={32} className="text-coral flex-shrink-0" />
                 <h2 className="text-2xl md:text-3xl font-black tracking-tight">
                   {event.youtube_title || 'Event Recordings'}
                 </h2>
               </div>
-              <div className="aspect-video w-full rounded-[2.5rem] overflow-hidden border border-border dark:border-white/10 shadow-xl bg-black">
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src={youtubeEmbedUrl}
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                ></iframe>
+              
+              <div className="grid grid-cols-1 gap-12">
+                {allVideos.map((vid, idx) => {
+                  const embedUrl = getEmbedUrl(vid.url)
+                  if (!embedUrl) return null
+                  
+                  return (
+                    <div key={idx} className="space-y-4">
+                      {vid.title && (
+                        <h4 className="text-lg font-bold flex items-center gap-2">
+                          <Video size={18} className="text-text-tertiary" />
+                          {vid.title}
+                        </h4>
+                      )}
+                      <div className="aspect-video w-full rounded-[2.5rem] overflow-hidden border border-border dark:border-white/10 shadow-xl bg-black group transition-all hover:border-primary/30">
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src={embedUrl}
+                          title={vid.title || "YouTube video player"}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )}
