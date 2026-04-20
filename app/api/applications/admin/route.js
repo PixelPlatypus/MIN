@@ -74,29 +74,54 @@ export async function GET(request) {
 
 export async function DELETE(request) {
   try {
-    const { error } = await withRole(['ADMIN', 'WEBSITE_MANAGER']) 
+    const { user, profile, error } = await withRole(['ADMIN', 'WEBSITE_MANAGER']) 
     if (error) return Response.json({ error: error.message }, { status: error.status })
 
     const { searchParams } = new URL(request.url)
     const batch = searchParams.get('batch')
+    const id = searchParams.get('id')
 
     const supabase = await createAdminClient()
     
-    if (batch) {
+    if (id) {
+      // Individual delete
+      const { error: err1 } = await supabase.from('form_submissions').delete().eq('id', id)
+      const { error: err2 } = await supabase.from('join_applications').delete().eq('id', id)
+      
+      await logAudit({
+        actor_id: user.id,
+        actor_name: profile.name,
+        action: 'DELETE_APPLICATION',
+        entity_type: 'applications',
+        entity_id: id
+      })
+      
+      return Response.json({ success: true, idDeleted: id })
+    } else if (batch) {
       // Find form IDs belonging to that batch
       const { data: forms } = await supabase.from('form_definitions').select('id').eq('batch_name', batch)
       if (forms && forms.length > 0) {
         const formIds = forms.map(f => f.id)
         await supabase.from('form_submissions').delete().in('form_id', formIds)
       }
+      
+      await logAudit({
+        actor_id: user.id,
+        actor_name: profile.name,
+        action: 'DELETE_BATCH_APPLICATIONS',
+        entity_type: 'form_submissions',
+        meta: { batch_name: batch }
+      })
     } else {
       await supabase.from('form_submissions').delete().neq('id', '00000000-0000-0000-0000-000000000000') 
+      
+      await logAudit({
+        actor_id: user.id,
+        actor_name: profile.name,
+        action: 'CLEAR_ALL_APPLICATIONS',
+        entity_type: 'form_submissions'
+      })
     }
-
-    await logAudit(batch ? 'DELETE_BATCH_APPLICATIONS' : 'CLEAR_ALL_APPLICATIONS', 'form_submissions', batch, { 
-      batch_name: batch,
-      timestamp: new Date().toISOString() 
-    })
 
     return Response.json({ success: true, batchDeleted: batch })
   } catch (fatalError) {

@@ -55,9 +55,30 @@ export default function DynamicFormPage() {
 
     if (definition?.fields) {
       for (const field of definition.fields) {
-        if (field.type === 'phone' && formData[field.label]) {
-          if (!isValidPhoneNumber(formData[field.label])) {
-            setError(`Invalid phone number format or length for ${field.label}. Please ensure it is correct.`)
+        const val = formData[field.label]
+        
+        // Required check (redundant but good for custom UI)
+        if (field.required && (!val || (Array.isArray(val) && val.length === 0))) {
+          setError(`Please fill out the required field: ${field.label}`)
+          setSubmitting(false)
+          return
+        }
+
+        // Phone validation
+        if (field.type === 'phone' && val) {
+          if (!isValidPhoneNumber(val)) {
+            setError(`Invalid phone number format for ${field.label}. Please include country code (e.g. +977).`)
+            setSubmitting(false)
+            return
+          }
+        }
+
+        // URL validation for links
+        if (field.type === 'link' && val) {
+          try {
+            new URL(val)
+          } catch (e) {
+            setError(`Please enter a valid URL (starting with http:// or https://) for ${field.label}.`)
             setSubmitting(false)
             return
           }
@@ -290,14 +311,23 @@ export default function DynamicFormPage() {
                         className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all resize-none"
                         placeholder={`Tell us about ${field.label.toLowerCase()}...`}
                       />
-                    ) : field.type === 'phone' ? (
+                     ) : field.type === 'phone' ? (
                        <PhoneInput 
                          international
                          defaultCountry="NP"
                          flags={flags}
                          value={formData[field.label]}
                          onChange={(val) => handleChange(field.label, val || '')}
+                         className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl px-6 py-4 text-sm font-bold focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/5 outline-none transition-all"
                        />
+                    ) : field.type === 'link' ? (
+                      <input 
+                        type="url"
+                        required={field.required}
+                        onChange={(e) => handleChange(field.label, e.target.value)}
+                        className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                        placeholder="https://..."
+                      />
                     ) : field.type === 'file' ? (
                        <div className="relative group bg-white dark:bg-white/10 border border-dashed border-border rounded-2xl p-6 text-center hover:border-primary/50 transition-colors">
                           <input 

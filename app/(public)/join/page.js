@@ -4,7 +4,7 @@ import JoinForm from '@/components/public/JoinForm'
 import ContactForm from '@/components/public/ContactForm'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Heart, Sparkles, Target, Users, ArrowRight, Zap, Globe, ChevronDown } from 'lucide-react'
+import { Heart, Sparkles, Target, Users, ArrowRight, Zap, Globe, ChevronDown, Building2 } from 'lucide-react'
 
 export default function JoinPage() {
   const formRef = useRef(null)
@@ -21,42 +21,57 @@ export default function JoinPage() {
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const values = [
-    { icon: <Zap size={24} />, title: 'Purpose Driven', desc: 'Contribute to projects that directly improve how mathematics is perceived in Nepal.' },
-    { icon: <Globe size={24} />, title: 'Global Network', desc: 'Collaborate with educators and innovators from across the globe through our programs.' },
-    { icon: <Target size={24} />, title: 'Direct Influence', desc: 'Have a voice in the design and execution of high-impact workshops and competitions.' },
-    { icon: <Users size={24} />, title: 'Rich Community', desc: 'Connect with hundreds of like-minded problem solvers and community leaders.' },
+  const getIcon = (type) => {
+    switch(type) {
+      case 'Heart': return <Heart size={28} />
+      case 'Building2': return <Building2 size={28} />
+      case 'Globe': return <Globe size={28} />
+      case 'Target': return <Target size={28} />
+      case 'Zap': return <Zap size={24} />
+      case 'Users': return <Users size={24} />
+      default: return <Sparkles size={24} />
+    }
+  }
+
+  const values = settings?.join_features?.length > 0 ? settings.join_features : [
+    { title: 'Purpose Driven', desc: 'Contribute to projects that directly improve how mathematics is perceived in Nepal.' },
+    { title: 'Global Network', desc: 'Collaborate with educators and innovators from across the globe through our programs.' },
+    { title: 'Direct Influence', desc: 'Have a voice in the design and execution of high-impact workshops and competitions.' },
+    { title: 'Rich Community', desc: 'Connect with hundreds of like-minded problem solvers and community leaders.' },
   ]
 
-  const roles = [
+  const roles = settings?.join_paths?.length > 0 ? settings.join_paths : [
     {
       id: 'volunteer',
       title: 'Become a Volunteer',
       desc: 'Join our core operational teams, create content, or help organize our nationwide programs.',
-      icon: <Heart size={28} />,
-      features: ['Team Access', 'Certificate', 'Networking'],
+      icon: 'Heart',
+      perks: ['Team Access', 'Certificate', 'Networking'],
+      slug: 'volunteer'
     },
     {
       id: 'organization',
       title: 'Scale as a Partner',
       desc: 'Register your school or organization to collaborate on workshops and resource distribution.',
-      icon: <Globe size={28} />,
-      features: ['Resource Kit', 'Brand Logo', 'Priority Support'],
+      icon: 'Globe',
+      perks: ['Resource Kit', 'Brand Logo', 'Priority Support'],
+      slug: 'organization'
     },
     {
       id: 'ambassador',
       title: 'Join as Ambassador',
-      desc: 'Lead the movement in your local region or university and represent MATHS INITIATIVE NEPAL.',
-      icon: <Target size={28} />,
-      features: ['Leadership Role', 'Exclusive Merch', 'Direct Mentorship'],
+      desc: 'Lead the movement in your local region or university and represent Mathematics Initiatives in Nepal.',
+      icon: 'Target',
+      perks: ['Leadership Role', 'Exclusive Merch', 'Direct Mentorship'],
+      slug: 'ambassador'
     },
   ]
 
-  const faqs = [
-    { q: 'Can I join remotely?', a: 'Yes, many of our operational and content creation roles are fully remote. We coordinate via Slack and Zoom.' },
-    { q: 'Is there a time commitment?', a: 'It varies by role, typically ranging from 2–10 hours per week depending on the current project phase.' },
-    { q: 'Do I need a math degree?', a: 'Not at all! We need writers, designers, and organizers as much as we need mathematicians.' },
-    { q: 'How long is the process?', a: 'After submission, we usually perform a technical review and then invite you for a 20-minute intro call.' },
+  const faqs = settings?.join_faqs?.length > 0 ? settings.join_faqs : [
+    { question: 'Can I join remotely?', answer: 'Yes, many of our operational and content creation roles are fully remote. We coordinate via Slack and Zoom.' },
+    { question: 'Is there a time commitment?', answer: 'It varies by role, typically ranging from 2–10 hours per week depending on the current project phase.' },
+    { question: 'Do I need a math degree?', answer: 'Not at all! We need writers, designers, and organizers as much as we need mathematicians.' },
+    { question: 'How long is the process?', answer: 'After submission, we usually perform a technical review and then invite you for a 20-minute intro call.' },
   ]
 
   return (
@@ -131,7 +146,7 @@ export default function JoinPage() {
               className="glass rounded-3xl p-7 group hover:shadow-xl transition-all duration-300"
             >
               <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                {item.icon}
+                {getIcon(item.icon)}
               </div>
               <h3 className="text-base font-bold tracking-tight mb-2">{item.title}</h3>
               <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
@@ -145,7 +160,7 @@ export default function JoinPage() {
       {/* ── Role Selection ── */}
       <section ref={formRef} className="container mx-auto px-6 max-w-6xl pb-32 scroll-mt-24">
         <div className="text-center space-y-3 mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Identify Your Path</h2>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">{settings?.join_badge || 'Identify Your Path'}</h2>
           <p className="text-text-secondary dark:text-text-secondary-dark max-w-xl mx-auto">
             Choose how you want to contribute to the mathematical revolution in Nepal.
           </p>
@@ -154,7 +169,7 @@ export default function JoinPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {roles.map((role, idx) => (
             <motion.div
-              key={role.id}
+              key={role.id || idx}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -163,7 +178,7 @@ export default function JoinPage() {
             >
               <div className="glass rounded-3xl p-8 flex flex-col h-full hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
                 <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  {role.icon}
+                  {getIcon(role.icon)}
                 </div>
 
                 <h3 className="text-xl font-bold tracking-tight mb-2">{role.title}</h3>
@@ -172,7 +187,7 @@ export default function JoinPage() {
                 </p>
 
                 <ul className="space-y-2.5 flex-1 mb-8">
-                  {role.features.map(f => (
+                  {(role.perks || role.features || []).map(f => (
                     <li key={f} className="flex items-center gap-2.5 text-xs font-medium text-text-secondary dark:text-text-secondary-dark">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                       {f}
@@ -181,11 +196,11 @@ export default function JoinPage() {
                 </ul>
 
                 <Link
-                  href={`/join/${role.id}`}
-                  className="w-full bg-primary hover:bg-primary-dark text-white py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+                  href={`/join/${role.slug || role.id}`}
+                  className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
                 >
                   Apply Now
-                  <ArrowRight size={16} />
+                  <ArrowRight size={18} />
                 </Link>
               </div>
             </motion.div>
@@ -204,8 +219,8 @@ export default function JoinPage() {
           <div className="divide-y divide-border dark:divide-border-dark">
             {faqs.map((faq, i) => (
               <div key={i} className="py-7 first:pt-0 last:pb-0">
-                <h4 className="text-base font-bold text-primary mb-2">{faq.q}</h4>
-                <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">{faq.a}</p>
+                <h4 className="text-base font-bold text-primary mb-2">{faq.question || faq.q}</h4>
+                <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">{faq.answer || faq.a}</p>
               </div>
             ))}
           </div>

@@ -1,15 +1,13 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { rateLimit } from '@/lib/rateLimit'
-import { Resend } from 'resend'
-import fs from 'fs'
-import path from 'path'
 
 
 export async function POST(request) {
   try {
-    // 1. Rate limiting (Upstash) - Wrapped in try/catch to prevent crashing on Redis issues
+    // 1. Rate limiting (Upstash)
     try {
-      const limited = await rateLimit(request, { requests: 5, window: '1h' })
+      const isDev = process.env.NODE_ENV === 'development'
+      const limited = await rateLimit(request, { requests: isDev ? 500 : 5, window: '1h' })
       if (limited) {
         return Response.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
       }
@@ -20,12 +18,9 @@ export async function POST(request) {
     // Use admin client to bypass RLS — public unauthenticated route
     const supabaseAdmin = await createAdminClient()
     
-    let body
-    try {
-      body = await request.json()
-    } catch (e) {
-      return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
-    }
+    const { sanitizeObject } = await import('@/lib/security')
+    let body = await request.json()
+    body = sanitizeObject(body)
 
     const { name, email, phone, type, form_data } = body
 
@@ -66,82 +61,38 @@ export async function POST(request) {
     }
 
     // 4. Send confirmation email to applicant + admin notification
+    // 4. Send confirmation email to applicant + admin notification
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY)
-      const fromEmail = process.env.FROM_EMAIL || 'noreply@mathsinitiatives.org.np'
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL
-      
-      const logoSrc = `${appUrl}/images/logo.png` // Using static PNG for reliability in emails
-
+      const { sendTemplatedEmail, sendEmail, generateMINThemeEmail } = await import('@/lib/resend')
       const typeLabel = type.charAt(0) + type.slice(1).toLowerCase()
       const isInquiry = type === 'INQUIRY'
       
-      const emailHtml = `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f7f9fb; padding: 40px; text-align: center; color: #374151;">
-          <div style="max-width: 520px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; padding: 48px; border: 1px solid #e5e7eb; text-align: left; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-            <div style="margin-bottom: 32px;">
-              <img src="${logoSrc}" alt="MIN Logo" style="height: 48px; width: auto;" />
-            </div>
-            
-            <h1 style="color: #16556D; font-size: 24px; font-weight: 900; margin-bottom: 16px; letter-spacing: -0.025em;">
-              ${isInquiry ? 'Question Received!' : 'Application Received!'}
-            </h1>
-            
-            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
-              Hi ${name}, thank you for reaching out to **Mathematics Initiatives in Nepal**. We've received your ${isInquiry ? 'message' : 'interest to join as a **' + typeLabel + '**'}.
-            </p>
-            
-            <div style="background-color: #f0f7f9; border-radius: 20px; padding: 24px; margin-bottom: 32px; border: 1px solid #16556d10;">
-              <h4 style="margin: 0 0 8px 0; font-size: 12px; font-weight: 800; color: #16556D; text-transform: uppercase; letter-spacing: 0.05em;">${isInquiry ? 'Subject' : 'Category'}</h4>
-              <p style="margin: 0; font-weight: 600; font-size: 14px;">${isInquiry ? (form_data?.subject || 'General Inquiry') : typeLabel}</p>
-            </div>
-            
-            <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin-bottom: 32px;">
-              ${isInquiry 
-                ? "Our team has received your inquiry and will reach out to you directly at this address as soon as possible with a response."
-                : "Our team performs a weekly review of all submissions. We'll reach out to you directly at this address if we require further details or to discuss next steps."
-              }
-            </p>
-            
-            <div style="border-top: 1px solid #e5e7eb; padding-top: 24px; text-align: center;">
-              <p style="font-size: 12px; color: #9ca3af; margin-bottom: 8px;">Follow our impact</p>
-              <div style="display: flex; justify-content: center; gap: 12px;">
-                <a href="${appUrl}" style="color: #16556D; text-decoration: none; font-weight: 700; font-size: 13px;">Website</a>
-                <span style="color: #d1d5db;">&bull;</span>
-                <a href="https://facebook.com/mathsinitiatives" style="color: #16556D; text-decoration: none; font-weight: 700; font-size: 13px;">Facebook</a>
-              </div>
-            </div>
-          </div>
-          <p style="margin-top: 24px; font-size: 11px; color: #9ca3af;">
-            Mathematics Initiatives in Nepal &bull; Kathmandu, Nepal
-          </p>
-        </div>
-      `
+      let eventKey = 'application_received' // Generic fallback
+      if (isInquiry) eventKey = 'inquiry_received'
+      else if (type.includes('ORG')) eventKey = 'org_submission'
+      else if (type.includes('PARTNER')) eventKey = 'partnership_submission'
 
-      // Send to applicant
-      await resend.emails.send({
-        from: `MIN Nepal <${fromEmail}>`,
-        to: email,
-        subject: isInquiry ? `We've received your question — MIN Nepal` : `Your ${typeLabel} Application — MIN Nepal`,
-        html: emailHtml
+      // Send to applicant using the new branding system
+      await sendTemplatedEmail(eventKey, email, {
+        applicant_name: name,
+        role_type: typeLabel,
+        contact_message: form_data?.message || form_data?.subject || typeLabel
       })
 
-      // Notify admin with summary
-      await resend.emails.send({
-        from: `MIN Alerts <${fromEmail}>`,
-        to: fromEmail,
+      // Notify admin (using the same branding)
+      const adminHtml = await generateMINThemeEmail(`New ${isInquiry ? 'Inquiry' : 'Application'}`, `
+        <p><strong>From:</strong> ${name} (${email})</p>
+        <p><strong>Type:</strong> ${typeLabel}</p>
+        <div style="background: #f4f4f4; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 12px; margin: 20px 0;">
+          ${JSON.stringify(form_data, null, 2)}
+        </div>
+        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/inquiries">Review in Admin Panel</a></p>
+      `, settings || {})
+
+      await sendEmail({
+        to: process.env.FROM_EMAIL || 'noreply@mathsinitiatives.org.np',
         subject: isInquiry ? `[Inquiry] From ${name}` : `[New App] ${typeLabel}: ${name}`,
-        html: `
-          <div style="font-family: sans-serif; padding: 24px; border: 1px solid #eee; border-radius: 12px;">
-            <h2 style="color: #16556D;">${isInquiry ? 'New Inquiry' : 'New Application'}</h2>
-            <p><strong>Type:</strong> ${type}</p>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Data:</strong></p>
-            <pre style="background: #f4f4f4; padding: 12px; border-radius: 8px;">${JSON.stringify(form_data, null, 2)}</pre>
-            <a href="${appUrl}/admin/inquiries" style="background: #16556D; color: #fff; padding: 10px 20px; border-radius: 8px; text-decoration: none;">View in Admin</a>
-          </div>
-        `
+        html: adminHtml
       })
     } catch (mailErr) {
       console.error('Mail delivery error:', mailErr)

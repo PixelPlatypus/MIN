@@ -17,7 +17,8 @@ import {
   ExternalLink,
   FileText,
   Incite,
-  Send
+  Send,
+  Trash2
 } from 'lucide-react'
 
 export default function AdminInquiriesPage() {
@@ -67,6 +68,20 @@ export default function AdminInquiriesPage() {
       if (selectedInquiry?.id === id) setSelectedInquiry({ ...selectedInquiry, status: newStatus })
       // Auto-switch to Responded tab so the item remains visible
       if (newStatus === 'ACCEPTED') setStatusFilter('ACCEPTED')
+    }
+  }
+
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this inquiry permanently?')) return
+    
+    try {
+      const res = await fetch(`/api/applications/admin?id=${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setInquiries(inquiries.filter(i => i.id !== id))
+        if (selectedInquiry?.id === id) setSelectedInquiry(null)
+      }
+    } catch (err) {
+      console.error('Delete inquiry error:', err)
     }
   }
 
@@ -180,12 +195,21 @@ export default function AdminInquiriesPage() {
                     </span>
                     <h3 className="text-3xl font-black tracking-tight leading-none pt-2">{selectedInquiry.name}</h3>
                   </div>
-                  <button 
-                    onClick={() => setSelectedInquiry(null)}
-                    className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl transition-all text-text-tertiary hover:rotate-90"
-                  >
-                    <XCircle size={24} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => handleDelete(selectedInquiry.id)}
+                      className="p-2.5 bg-coral/10 text-coral hover:bg-coral hover:text-white rounded-2xl transition-all"
+                      title="Delete Inquiry"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                    <button 
+                      onClick={() => setSelectedInquiry(null)}
+                      className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl transition-all text-text-tertiary hover:rotate-90"
+                    >
+                      <XCircle size={24} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-6 relative z-10">

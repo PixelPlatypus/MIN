@@ -86,6 +86,11 @@ plan.md
 pan.md
 scratch/
 /scripts/
+antigravity/
+.system_generated/
+*.tmp
+*.bak
 
-# Lock files (Vercel/Dev preference)
-# package-lock.json
+# Lock files (Project standard uses npm/package-lock.json)
+# yarn.lock
+# pnpm-lock.yaml

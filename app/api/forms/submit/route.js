@@ -1,7 +1,19 @@
 import { createAdminClient } from '@/lib/supabase/server'
 
 export async function POST(request) {
-  const body = await request.json()
+  // Rate limiting
+  try {
+    const { rateLimit } = await import('@/lib/rateLimit')
+    const limitCount = process.env.NODE_ENV === 'development' ? 500 : 5
+    const limited = await rateLimit(request, { requests: limitCount, window: '1h' })
+    if (limited) return Response.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
+  } catch (e) {
+    console.error('Rate limit error:', e)
+  }
+
+  const { sanitizeObject } = await import('@/lib/security')
+  let body = await request.json()
+  body = sanitizeObject(body)
   const { form_id, data } = body
 
   if (!form_id || !data) {
@@ -27,19 +39,31 @@ export async function POST(request) {
   try {
     const { data: formDef } = await supabase
       .from('form_definitions')
-      .select('email_template_id')
+      .select('email_template_id, category, name')
       .eq('id', form_id)
       .single()
 
-    if (formDef?.email_template_id) {
-       // Logic for Resend or other mailer would go here
-       // For now we just record it succeeded in the DB
-      // Log for tracking, but muted in production logs usually handled by infra
+    if (formDef?.email_template_id || true) { // We always check mappings now
+      const { sendTemplatedEmail } = await import('@/lib/resend')
+      const email = data.Email || data["Email Address"] || data.email
+      const name = data.Name || data["Full Name"] || data.name || "Friend"
+      const category = formDef?.category?.toLowerCase() || ''
+      
+      let eventKey = 'inquiry_received'
+      if (category.includes('org')) eventKey = 'org_submission'
+      else if (category.includes('partner')) eventKey = 'partnership_submission'
+      else if (formDef?.email_template_id) eventKey = formDef.email_template_id // Legacy support
 
+      if (email) {
+        await sendTemplatedEmail(eventKey, email, {
+          applicant_name: name,
+          site_url: process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np',
+          contact_message: data.Message || data.message || ''
+        })
+      }
     }
   } catch (err) {
-    // Login success logic
-
+    console.error('Automated Form Email Error:', err)
   }
 
   return Response.json({ success: true, id: submission.id })

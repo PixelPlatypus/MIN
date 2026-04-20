@@ -1376,3 +1376,91 @@ ALTER TABLE site_settings
 ADD COLUMN IF NOT EXISTS dmopractice_badge text;
 
 
+
+-- ============================================================
+-- Migration: Add Default Placeholders (20260412121200)
+-- ============================================================
+ALTER TABLE site_settings 
+ADD COLUMN IF NOT EXISTS default_team_photo TEXT DEFAULT 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop',
+ADD COLUMN IF NOT EXISTS default_event_cover TEXT DEFAULT 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop',
+ADD COLUMN IF NOT EXISTS default_notice_image TEXT DEFAULT 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?q=80&w=2068&auto=format&fit=crop';
+
+UPDATE site_settings SET 
+  default_team_photo = 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop',
+  default_event_cover = 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop',
+  default_notice_image = 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?q=80&w=2068&auto=format&fit=crop'
+WHERE id = 'main';
+
+-- ============================================================
+-- Migration: Add Content Fallback (20260412122100)
+-- ============================================================
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS default_content_image TEXT DEFAULT 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop';
+UPDATE site_settings SET default_content_image = 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop' WHERE id = 'main';
+
+-- ============================================================
+-- Migration: Add About Recognition Image (20260420095000)
+-- ============================================================
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_rec_image TEXT;
+
+-- ============================================================
+-- Migration: Add Join Page Config (20260420104000)
+-- ============================================================
+ALTER TABLE site_settings 
+ADD COLUMN IF NOT EXISTS join_badge TEXT DEFAULT 'Identify Your Path',
+ADD COLUMN IF NOT EXISTS join_features JSONB DEFAULT '[]',
+ADD COLUMN IF NOT EXISTS join_paths JSONB DEFAULT '[]',
+ADD COLUMN IF NOT EXISTS join_faqs JSONB DEFAULT '[]';
+
+UPDATE site_settings 
+SET 
+  join_badge = 'Identify Your Path',
+  join_features = '[
+    {"title": "Purpose Driven", "desc": "Contribute to projects that directly improve how mathematics is perceived in Nepal."},
+    {"title": "Global Network", "desc": "Collaborate with educators and innovators from across the globe through our programs."},
+    {"title": "Direct Influence", "desc": "Have a voice in the design and execution of high-impact workshops and competitions."},
+    {"title": "Rich Community", "desc": "Connect with hundreds of like-minded problem solvers and community leaders."}
+  ]',
+  join_paths = '[
+    {
+      "id": "path-volunteer",
+      "title": "Become a Volunteer",
+      "desc": "Join our core operational teams, create content, or help organize our nationwide programs.",
+      "perks": ["Team Access", "Certificate", "Networking"],
+      "slug": "volunteer",
+      "icon": "Heart"
+    },
+    {
+      "id": "path-partner",
+      "title": "Scale as a Partner",
+      "desc": "Register your school or organization to collaborate on workshops and resource distribution.",
+      "perks": ["Resource Kit", "Brand Logo", "Priority Support"],
+      "slug": "organization",
+      "icon": "Building2"
+    },
+    {
+      "id": "path-ambassador",
+      "title": "Join as Ambassador",
+      "desc": "Lead the movement in your local region or university and represent Mathematics Initiatives in Nepal.",
+      "perks": ["Leadership Role", "Exclusive Merch", "Direct Mentorship"],
+      "slug": "ambassador",
+      "icon": "Globe"
+    }
+  ]',
+  join_faqs = '[
+    {"question": "Can I join remotely?", "answer": "Yes, many of our operational and content creation roles are fully remote. We coordinate via Slack and Zoom."},
+    {"question": "Is there a time commitment?", "answer": "It varies by role, typically ranging from 2–10 hours per week depending on the current project phase."},
+    {"question": "Do I need a math degree?", "answer": "Not at all! We need writers, designers, and organizers as much as we need mathematicians."},
+    {"question": "How long is the process?", "answer": "After submission, we usually perform a technical review and then invite you for a 20-minute intro call."}
+  ]'
+WHERE id = 'main';
+
+-- ============================================================
+-- Migration: Add Audit Tracking (20260420105000)
+-- ============================================================
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS updated_by_name TEXT;
+
+-- ============================================================
+-- Migration: Add Site Branding (20260420110000)
+-- ============================================================
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS site_logo_url TEXT;
+

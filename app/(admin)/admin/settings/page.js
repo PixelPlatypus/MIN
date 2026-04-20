@@ -16,7 +16,7 @@ import {
   Send, Compass, ChevronDown, Monitor,
   Smartphone, Eye, Settings, ShieldCheck,
   Zap, Bell, ArrowRight, HelpCircle, ExternalLink,
-  Layers, Calculator
+  Layers, Calculator, XCircle
 } from 'lucide-react'
 
 // Layout/Internal Components
@@ -114,7 +114,6 @@ const TAB_GROUPS = [
       { id: 'events', name: 'Events & Programs', icon: <Calendar size={16} /> },
       { id: 'gallery', name: 'Public Gallery', icon: <ImageIcon size={16} /> },
       { id: 'join', name: 'Join Us Page', icon: <UserPlus size={16} /> },
-      { id: 'contact', name: 'Contact Page', icon: <Send size={16} /> },
       { id: 'rto', name: 'RTO Program', icon: <Compass size={16} /> },
       { id: 'dmopractice', name: 'DMO Practice', icon: <Calculator size={16} /> },
     ]
@@ -153,11 +152,15 @@ export default function SiteEditor() {
     team_title: '', team_subtitle: '', team_description: '',
     events_title: '', events_subtitle: '', events_description: '',
     gallery_title: '', gallery_subtitle: '', gallery_description: '',
-    join_title: '', join_subtitle: '', join_description: '',
+    join_badge: '', join_title: '', join_subtitle: '', join_description: '',
+    join_features: [], join_paths: [], join_faqs: [],
     contact_title: '', contact_subtitle: '', contact_description: '',
     rto_title: '', rto_subtitle: '', rto_description: '',
     rto_stages: [], rto_roadmap: [], rto_resources: [],
-    dmopractice_badge: '', dmopractice_title: '', dmopractice_subtitle: '', dmopractice_description: ''
+    dmopractice_badge: '', dmopractice_title: '', dmopractice_subtitle: '', dmopractice_description: '',
+    default_team_photo: '', default_event_cover: '', default_content_image: '', team_identity_assets: [],
+    site_logo_url: '', active_volunteer_batch: 'General',
+    updated_by_name: null, updated_at: null
   })
 
   // Page fields mapping for DRY rendering of subpages
@@ -165,8 +168,6 @@ export default function SiteEditor() {
     team: { name: 'Our Team', fields: ['team_title', 'team_subtitle', 'team_description'], icon: <Users size={20}/> },
     events: { name: 'Events & Programs', fields: ['events_title', 'events_subtitle', 'events_description'], icon: <Calendar size={20}/> },
     gallery: { name: 'Public Gallery', fields: ['gallery_title', 'gallery_subtitle', 'gallery_description'], icon: <ImageIcon size={20}/> },
-    join: { name: 'Join Us', fields: ['join_title', 'join_subtitle', 'join_description'], icon: <UserPlus size={20}/> },
-    contact: { name: 'Contact Us', fields: ['contact_title', 'contact_subtitle', 'contact_description'], icon: <Send size={20}/> },
     rto: { name: 'Road to Olympiad', fields: ['rto_title', 'rto_subtitle', 'rto_description'], icon: <Compass size={20}/> },
     dmopractice: { name: 'DMO Practice', fields: ['dmopractice_title', 'dmopractice_subtitle', 'dmopractice_description'], icon: <Calculator size={20}/> }
   }
@@ -262,7 +263,15 @@ export default function SiteEditor() {
                 <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-green">
                    <ShieldCheck size={12} /> Live Link Active
                 </span>
-                <span className="text-[10px] font-medium text-text-tertiary">Last sync: {lastSaved}</span>
+                 <span className="text-[10px] font-medium text-text-tertiary">
+                   Last sync: {lastSaved}
+                   {settings?.updated_by_name && (
+                     <span className="ml-3 border-l border-border pl-3">
+                       Modified by <span className="font-black text-dynamic uppercase">{settings.updated_by_name}</span> 
+                       {settings.updated_at && ` on ${new Date(settings.updated_at).toLocaleDateString()}`}
+                     </span>
+                   )}
+                 </span>
              </div>
            </div>
         </div>
@@ -330,43 +339,43 @@ export default function SiteEditor() {
                   <div className="space-y-16">
                     <SettingSection title="Hero Section" subtitle="The first thing visitors see" icon={<Sparkles size={20}/>}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                          <InputField label="Impact Badge" icon={<Award size={14}/>} value={settings.hero_badge} onChange={e => setSettings({...settings, hero_badge: e.target.value})} placeholder="Top 100 Innovation..."/>
-                          <InputField label="CTA Link" icon={<MousePointer2 size={14}/>} value={settings.hero_cta_link} onChange={e => setSettings({...settings, hero_cta_link: e.target.value})} placeholder="/join" mono/>
+                          <InputField label="Impact Badge" icon={<Award size={14}/>} value={settings.hero_badge} onChange={e => setSettings(prev => ({...prev, hero_badge: e.target.value}))} placeholder="Top 100 Innovation..."/>
+                          <InputField label="CTA Link" icon={<MousePointer2 size={14}/>} value={settings.hero_cta_link} onChange={e => setSettings(prev => ({...prev, hero_cta_link: e.target.value}))} placeholder="/join" mono/>
                        </div>
-                       <InputField label="Main Headline" icon={<Type size={14}/>} value={settings.hero_title} onChange={e => setSettings({...settings, hero_title: e.target.value})} rows={2}/>
-                       <InputField label="Narrative Text" value={settings.hero_subtitle} onChange={e => setSettings({...settings, hero_subtitle: e.target.value})} rows={4}/>
-                       <InputField label="CTA Button Label" value={settings.hero_cta_text} onChange={e => setSettings({...settings, hero_cta_text: e.target.value})} placeholder="Join Us"/>
+                       <InputField label="Main Headline" icon={<Type size={14}/>} value={settings.hero_title} onChange={e => setSettings(prev => ({...prev, hero_title: e.target.value}))} rows={2}/>
+                       <InputField label="Narrative Text" value={settings.hero_subtitle} onChange={e => setSettings(prev => ({...prev, hero_subtitle: e.target.value}))} rows={4}/>
+                       <InputField label="CTA Button Label" value={settings.hero_cta_text} onChange={e => setSettings(prev => ({...prev, hero_cta_text: e.target.value}))} placeholder="Join Us"/>
                     </SettingSection>
 
                     <SettingSection title="Impact Numbers" subtitle="Real-time growth metrics" icon={<BarChart3 size={20}/>}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                          <InputField label="Section Title" value={settings.stats_title} onChange={e => setSettings({...settings, stats_title: e.target.value})} />
-                          <InputField label="Section Subtitle" value={settings.stats_subtitle} onChange={e => setSettings({...settings, stats_subtitle: e.target.value})} />
+                          <InputField label="Section Title" value={settings.stats_title} onChange={e => setSettings(prev => ({...prev, stats_title: e.target.value}))} />
+                          <InputField label="Section Subtitle" value={settings.stats_subtitle} onChange={e => setSettings(prev => ({...prev, stats_subtitle: e.target.value}))} />
                        </div>
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
-                          <InputField label="Active Students" type="number" value={settings.stat_students_count} onChange={e => setSettings({...settings, stat_students_count: parseInt(e.target.value) || 0})} />
-                          <InputField label="Global Volunteers" type="number" value={settings.stat_volunteers_count} onChange={e => setSettings({...settings, stat_volunteers_count: parseInt(e.target.value) || 0})} />
-                          <InputField label="Ed. Programs" type="number" value={settings.stat_programs_count} onChange={e => setSettings({...settings, stat_programs_count: parseInt(e.target.value) || 0})} />
-                          <InputField label="Years Active" type="number" value={settings.stat_years_count} onChange={e => setSettings({...settings, stat_years_count: parseInt(e.target.value) || 0})} />
+                          <InputField label="Active Students" type="number" value={settings.stat_students_count} onChange={e => setSettings(prev => ({...prev, stat_students_count: parseInt(e.target.value) || 0}))} />
+                          <InputField label="Global Volunteers" type="number" value={settings.stat_volunteers_count} onChange={e => setSettings(prev => ({...prev, stat_volunteers_count: parseInt(e.target.value) || 0}))} />
+                          <InputField label="Ed. Programs" type="number" value={settings.stat_programs_count} onChange={e => setSettings(prev => ({...prev, stat_programs_count: parseInt(e.target.value) || 0}))} />
+                          <InputField label="Years Active" type="number" value={settings.stat_years_count} onChange={e => setSettings(prev => ({...prev, stat_years_count: parseInt(e.target.value) || 0}))} />
                        </div>
                     </SettingSection>
 
                     <SettingSection title="Mission & Vision" subtitle="Our core philosophy" icon={<Target size={20}/>}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                          <div className="space-y-6">
-                            <InputField label="Section Badge" value={settings.mission_badge} onChange={e => setSettings({...settings, mission_badge: e.target.value})} placeholder="Our Mission"/>
-                            <InputField label="Mission Statement" value={settings.mission_title} onChange={e => setSettings({...settings, mission_title: e.target.value})} rows={2}/>
-                            <InputField label="Full Narrative" value={settings.mission_description} onChange={e => setSettings({...settings, mission_description: e.target.value})} rows={5}/>
+                           <div className="space-y-6">
+                            <InputField label="Section Badge" value={settings.mission_badge} onChange={e => setSettings(prev => ({...prev, mission_badge: e.target.value}))} placeholder="Our Mission"/>
+                            <InputField label="Mission Statement" value={settings.mission_title} onChange={e => setSettings(prev => ({...prev, mission_title: e.target.value}))} rows={2}/>
+                            <InputField label="Full Narrative" value={settings.mission_description} onChange={e => setSettings(prev => ({...prev, mission_description: e.target.value}))} rows={5}/>
                             <div className="p-6 glass bg-secondary/5 border border-secondary/10 rounded-2xl space-y-4">
                                <h6 className="text-[10px] font-black uppercase tracking-widest text-secondary-dark flex items-center gap-2"><Award size={14}/> Recognition Badge (Mission)</h6>
-                               <InputField label="Badge Label" value={settings.mission_rec_title} onChange={e => setSettings({...settings, mission_rec_title: e.target.value})} />
-                               <InputField label="Badge Text" value={settings.mission_rec_desc} onChange={e => setSettings({...settings, mission_rec_desc: e.target.value})} rows={2} />
+                               <InputField label="Badge Label" value={settings.mission_rec_title} onChange={e => setSettings(prev => ({...prev, mission_rec_title: e.target.value}))} />
+                               <InputField label="Badge Text" value={settings.mission_rec_desc} onChange={e => setSettings(prev => ({...prev, mission_rec_desc: e.target.value}))} rows={2} />
                             </div>
                           </div>
                           <ImageField 
                              label="Mission Image" 
                              value={settings.mission_image_url} 
-                             onUpload={(url) => setSettings({...settings, mission_image_url: url})}
+                             onUpload={(url) => setSettings(prev => ({...prev, mission_image_url: url}))}
                              folder="min-website/homepage"
                              description="Portrait or square image showing our impact/students."
                           />
@@ -383,8 +392,8 @@ export default function SiteEditor() {
                                <div className={`w-8 h-8 rounded-lg bg-current/10 ${p.color} flex items-center justify-center`}>
                                  {p.icon}
                                </div>
-                               <InputField label={`Pillar ${p.id} Title`} value={settings[`mission_f${p.id}_title`]} onChange={e => setSettings({...settings, [`mission_f${p.id}_title`]: e.target.value})} />
-                               <InputField label={`Description`} value={settings[`mission_f${p.id}_desc`]} onChange={e => setSettings({...settings, [`mission_f${p.id}_desc`]: e.target.value})} rows={3}/>
+                               <InputField label={`Pillar ${p.id} Title`} value={settings[`mission_f${p.id}_title`]} onChange={e => setSettings(prev => ({...prev, [`mission_f${p.id}_title`]: e.target.value}))} />
+                               <InputField label={`Description`} value={settings[`mission_f${p.id}_desc`]} onChange={e => setSettings(prev => ({...prev, [`mission_f${p.id}_desc`]: e.target.value}))} rows={3}/>
                             </div>
                           ))}
                        </div>
@@ -392,8 +401,8 @@ export default function SiteEditor() {
 
                     <SettingSection title="Programs Overview" subtitle="Highlighting our key initiatives" icon={<Layout size={20}/>}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                          <InputField label="Section Title" value={settings.programs_title} onChange={e => setSettings({...settings, programs_title: e.target.value})} />
-                          <InputField label="Section Subtitle" value={settings.programs_subtitle} onChange={e => setSettings({...settings, programs_subtitle: e.target.value})} />
+                          <InputField label="Section Title" value={settings.programs_title} onChange={e => setSettings(prev => ({...prev, programs_title: e.target.value}))} />
+                          <InputField label="Section Subtitle" value={settings.programs_subtitle} onChange={e => setSettings(prev => ({...prev, programs_subtitle: e.target.value}))} />
                        </div>
                        <div className="p-6 glass border border-primary/20 rounded-2xl bg-primary/5 flex items-center justify-between gap-4 mt-6">
                           <div className="flex items-center gap-4">
@@ -410,22 +419,22 @@ export default function SiteEditor() {
                     <SettingSection title="Join Community CTA" subtitle="Call to action at bottom of home" icon={<UserPlus size={20}/>}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           <div className="space-y-6">
-                             <InputField label="CTA Title" value={settings.join_cta_title} onChange={e => setSettings({...settings, join_cta_title: e.target.value})} rows={2} />
-                             <InputField label="CTA Description" value={settings.join_cta_description} onChange={e => setSettings({...settings, join_cta_description: e.target.value})} rows={4} />
-                             <InputField label="Button Label" value={settings.join_cta_btn_text} onChange={e => setSettings({...settings, join_cta_btn_text: e.target.value})} placeholder="Become a Volunteer" />
+                             <InputField label="CTA Title" value={settings.join_cta_title} onChange={e => setSettings(prev => ({...prev, join_cta_title: e.target.value}))} rows={2} />
+                             <InputField label="CTA Description" value={settings.join_cta_description} onChange={e => setSettings(prev => ({...prev, join_cta_description: e.target.value}))} rows={4} />
+                             <InputField label="Button Label" value={settings.join_cta_btn_text} onChange={e => setSettings(prev => ({...prev, join_cta_btn_text: e.target.value}))} placeholder="Become a Volunteer" />
                           </div>
                           <div className="space-y-8 p-6 glass border border-border rounded-[2rem]">
                              <ImageField 
                                 label="Join CTA Image" 
                                 value={settings.join_cta_image_url} 
-                                onUpload={(url) => setSettings({...settings, join_cta_image_url: url})}
+                                onUpload={(url) => setSettings(prev => ({...prev, join_cta_image_url: url}))}
                                 folder="min-website/homepage"
                                 description="Action-oriented image for the join section."
                              />
                              <div className="space-y-4 pt-4 border-t border-border">
                                 <h6 className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Overlay Stats</h6>
-                                <InputField label="Stat Value (e.g. 50+ Volunteers)" value={settings.join_cta_stat_title} onChange={e => setSettings({...settings, join_cta_stat_title: e.target.value})} />
-                                <InputField label="Stat Description" value={settings.join_cta_stat_desc} onChange={e => setSettings({...settings, join_cta_stat_desc: e.target.value})} rows={2} />
+                                <InputField label="Stat Value (e.g. 50+ Volunteers)" value={settings.join_cta_stat_title} onChange={e => setSettings(prev => ({...prev, join_cta_stat_title: e.target.value}))} />
+                                <InputField label="Stat Description" value={settings.join_cta_stat_desc} onChange={e => setSettings(prev => ({...prev, join_cta_stat_desc: e.target.value}))} rows={2} />
                              </div>
                           </div>
                        </div>
@@ -434,15 +443,15 @@ export default function SiteEditor() {
                     <SettingSection title="Global Recognition Hub" subtitle="Major awards and institutional validation" icon={<Award size={20}/>}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           <div className="space-y-6">
-                            <InputField label="Major Announcement" value={settings.about_rec_title} onChange={e => setSettings({...settings, about_rec_title: e.target.value})} />
-                            <InputField label="Badge Status Title" value={settings.about_rec_badge_title} onChange={e => setSettings({...settings, about_rec_badge_title: e.target.value})} />
-                            <InputField label="Badge Sub-desc" value={settings.about_rec_badge_desc} onChange={e => setSettings({...settings, about_rec_badge_desc: e.target.value})} />
-                            <InputField label="Narrative Proof" value={settings.about_rec_description} onChange={e => setSettings({...settings, about_rec_description: e.target.value})} rows={5} />
+                            <InputField label="Major Announcement" value={settings.about_rec_title} onChange={e => setSettings(prev => ({...prev, about_rec_title: e.target.value}))} />
+                            <InputField label="Badge Status Title" value={settings.about_rec_badge_title} onChange={e => setSettings(prev => ({...prev, about_rec_badge_title: e.target.value}))} />
+                            <InputField label="Badge Sub-desc" value={settings.about_rec_badge_desc} onChange={e => setSettings(prev => ({...prev, about_rec_badge_desc: e.target.value}))} />
+                            <InputField label="Narrative Proof" value={settings.about_rec_description} onChange={e => setSettings(prev => ({...prev, about_rec_description: e.target.value}))} rows={5} />
                           </div>
                           <ImageField 
                              label="Achievement Photo" 
                              value={settings.recognition_image_url} 
-                             onUpload={(url) => setSettings({...settings, recognition_image_url: url})}
+                             onUpload={(url) => setSettings(prev => ({...prev, recognition_image_url: url}))}
                              folder="min-website/homepage"
                              description="Photo of the award, team posing, or certificates."
                           />
@@ -456,31 +465,210 @@ export default function SiteEditor() {
                      <div className="space-y-12">
                         <div className="p-8 glass bg-primary/5 rounded-[2.5rem] border border-primary/10 space-y-6">
                           <h6 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Hero Introduction</h6>
-                          <InputField label="Main Headline" value={settings.about_hero_title} onChange={e => setSettings({...settings, about_hero_title: e.target.value})}/>
-                          <InputField label="Mission Intro" value={settings.about_hero_description} onChange={e => setSettings({...settings, about_hero_description: e.target.value})} rows={3}/>
+                          <InputField label="Main Headline" value={settings.about_hero_title} onChange={e => setSettings(prev => ({...prev, about_hero_title: e.target.value}))}/>
+                          <InputField label="Mission Intro" value={settings.about_hero_description} onChange={e => setSettings(prev => ({...prev, about_hero_description: e.target.value}))} rows={3}/>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                          <InputField label="Vision Philosophy" icon={<Eye size={14}/>} value={settings.about_vision_text} onChange={e => setSettings({...settings, about_vision_text: e.target.value})} rows={4}/>
-                          <InputField label="Operational Mission" icon={<Heart size={14}/>} value={settings.about_mission_text} onChange={e => setSettings({...settings, about_mission_text: e.target.value})} rows={4}/>
+                          <InputField label="Vision Philosophy" icon={<Eye size={14}/>} value={settings.about_vision_text} onChange={e => setSettings(prev => ({...prev, about_vision_text: e.target.value}))} rows={4}/>
+                          <InputField label="Operational Mission" icon={<Heart size={14}/>} value={settings.about_mission_text} onChange={e => setSettings(prev => ({...prev, about_mission_text: e.target.value}))} rows={4}/>
                         </div>
                         <div className="p-8 glass border border-secondary/20 rounded-[2.5rem] space-y-8">
                           <h6 className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary-dark flex items-center gap-2"><Award size={14}/> Global Recognition Hub</h6>
-                          <InputField label="Award Headline" value={settings.about_rec_title} onChange={e => setSettings({...settings, about_rec_title: e.target.value})}/>
-                          <InputField label="Recognition Narrative" value={settings.about_rec_description} onChange={e => setSettings({...settings, about_rec_description: e.target.value})} rows={4}/>
+                          <InputField label="Award Headline" value={settings.about_rec_title} onChange={e => setSettings(prev => ({...prev, about_rec_title: e.target.value}))}/>
+                          <InputField label="Recognition Narrative" value={settings.about_rec_description} onChange={e => setSettings(prev => ({...prev, about_rec_description: e.target.value}))} rows={4}/>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                             <InputField label="Badge Status" value={settings.about_rec_badge_title} onChange={e => setSettings({...settings, about_rec_badge_title: e.target.value})}/>
-                             <InputField label="Badge Sub-desc" value={settings.about_rec_badge_desc} onChange={e => setSettings({...settings, about_rec_badge_desc: e.target.value})}/>
+                             <InputField label="Badge Status" value={settings.about_rec_badge_title} onChange={e => setSettings(prev => ({...prev, about_rec_badge_title: e.target.value}))}/>
+                             <InputField label="Badge Sub-desc" value={settings.about_rec_badge_desc} onChange={e => setSettings(prev => ({...prev, about_rec_badge_desc: e.target.value}))}/>
                           </div>
                           <ImageField 
                              label="Award Graphic/Logo" 
                              value={settings.about_rec_image} 
-                             onUpload={(url) => setSettings({...settings, about_rec_image: url})}
+                             onUpload={(url) => setSettings(prev => ({...prev, about_rec_image: url}))}
                              folder="min-website/about"
                              description="Upload the HundrED logo or official organization badge graphic."
                           />
                         </div>
                      </div>
                   </SettingSection>
+                )}
+
+                {activeTab === 'join' && (
+                  <div className="space-y-16">
+                    <SettingSection title="Join Us Page Identity" subtitle="Manage the header and brand identity of the intake portal" icon={<UserPlus size={20}/>}>
+                       <div className="p-8 glass rounded-[2.5rem] border border-border space-y-8">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                             <InputField label="Hero Badge" icon={<Sparkles size={14}/>} value={settings.join_badge} onChange={e => setSettings(prev => ({...prev, join_badge: e.target.value}))} placeholder="Identify Your Path"/>
+                             <InputField label="Primary Title" value={settings.join_title} onChange={e => setSettings(prev => ({...prev, join_title: e.target.value}))}/>
+                          </div>
+                          <InputField label="Marketing Headline" value={settings.join_subtitle} onChange={e => setSettings(prev => ({...prev, join_subtitle: e.target.value}))} rows={2}/>
+                          <InputField label="Mission Disclosure" value={settings.join_description} onChange={e => setSettings(prev => ({...prev, join_description: e.target.value}))} rows={4}/>
+                       </div>
+                    </SettingSection>
+
+                    <SettingSection title="Value Propositions" subtitle="Why should people join MIN Nepal?" icon={<Target size={20}/>}>
+                       <div className="flex justify-end pr-2">
+                          <button 
+                            onClick={() => setSettings(prev => ({...prev, join_features: [...(settings.join_features || []), { title: '', desc: '' }]}))}
+                            className="px-6 py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group"
+                          >
+                             <Plus size={14} /> Add Value Card
+                          </button>
+                       </div>
+                       <Reorder.Group axis="y" values={settings.join_features || []} onReorder={(newVal) => setSettings(prev => ({...prev, join_features: newVal}))} className="space-y-4">
+                          {(settings.join_features || []).map((feat, idx) => (
+                            <Reorder.Item key={idx} value={feat} className="p-6 glass rounded-2xl border border-border relative group flex gap-6 hover:border-primary/40 transition-all">
+                               <div className="flex items-center justify-center text-text-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-4 border-r border-border"><GripVertical size={20} /></div>
+                               <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                 <InputField label="Value Title" value={feat.title} onChange={e => {
+                                    const newFeats = [...settings.join_features]
+                                    newFeats[idx] = { ...feat, title: e.target.value }
+                                    setSettings(prev => ({...prev, join_features: newFeats }))
+                                 }} />
+                                 <div className="md:col-span-2">
+                                    <InputField label="Explanation" value={feat.desc} onChange={e => {
+                                       const newFeats = [...settings.join_features]
+                                       newFeats[idx] = { ...feat, desc: e.target.value }
+                                       setSettings(prev => ({...prev, join_features: newFeats }))
+                                    }} />
+                                 </div>
+                               </div>
+                               <button 
+                                 onClick={() => {
+                                    const newFeats = [...settings.join_features]
+                                    newFeats.splice(idx, 1)
+                                    setSettings(prev => ({...prev, join_features: newFeats }))
+                                 }}
+                                 className="p-2 text-coral opacity-0 group-hover:opacity-100 hover:bg-coral/10 rounded-xl transition-all self-center"
+                               >
+                                  <Trash2 size={16} />
+                               </button>
+                            </Reorder.Item>
+                          ))}
+                       </Reorder.Group>
+                    </SettingSection>
+
+                    <SettingSection title="Intake Paths" subtitle="Direct links to your form builder blueprints" icon={<Layers size={20}/>}>
+                       <div className="flex justify-end pr-2">
+                          <button 
+                            onClick={() => setSettings(prev => ({...prev, join_paths: [...(settings.join_paths || []), { title: '', desc: '', perks: [], slug: '', icon: 'Heart' }]}))}
+                            className="px-6 py-2.5 bg-secondary/10 text-secondary-dark hover:bg-secondary-dark hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group"
+                          >
+                             <Plus size={14} /> Register Path
+                          </button>
+                       </div>
+                       <Reorder.Group axis="y" values={settings.join_paths || []} onReorder={(newVal) => setSettings(prev => ({...prev, join_paths: newVal}))} className="space-y-4">
+                          {(settings.join_paths || []).map((path, idx) => (
+                            <Reorder.Item key={idx} value={path} className="p-8 glass rounded-[2.5rem] border border-border relative group flex gap-6 hover:border-secondary/40 transition-all">
+                               <div className="flex items-center justify-center text-text-tertiary/20 cursor-grab active:cursor-grabbing transition-colors pr-6 border-r border-border"><GripVertical size={24} /></div>
+                               <div className="flex-1 space-y-6">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                     <InputField label="Path Label" value={path.title} onChange={e => {
+                                        const newPaths = [...settings.join_paths]
+                                        newPaths[idx] = { ...path, title: e.target.value }
+                                        setSettings(prev => ({...prev, join_paths: newPaths }))
+                                     }} />
+                                     <InputField label="Form Slug (Must Match Builder)" icon={<ExternalLink size={12}/>} value={path.slug} onChange={e => {
+                                        const newPaths = [...settings.join_paths]
+                                        newPaths[idx] = { ...path, slug: e.target.value }
+                                        setSettings(prev => ({...prev, join_paths: newPaths }))
+                                     }} mono placeholder="volunteer"/>
+                                  </div>
+                                  <InputField label="Short Description" value={path.desc} onChange={e => {
+                                     const newPaths = [...settings.join_paths]
+                                     newPaths[idx] = { ...path, desc: e.target.value }
+                                     setSettings(prev => ({...prev, join_paths: newPaths }))
+                                  }} rows={2} />
+                                  
+                                  <div className="space-y-2">
+                                     <label className="text-[9px] font-black uppercase tracking-widest text-text-tertiary">Perks / Highlights</label>
+                                     <div className="flex flex-wrap gap-2">
+                                        {(path.perks || []).map((perk, pi) => (
+                                          <div key={pi} className="flex items-center gap-2 bg-white dark:bg-white/5 border border-border px-3 py-1.5 rounded-lg">
+                                             <input 
+                                               value={perk} 
+                                               onChange={e => {
+                                                  const newPaths = [...settings.join_paths]
+                                                  const newPerks = [...path.perks]
+                                                  newPerks[pi] = e.target.value
+                                                  newPaths[idx] = { ...path, perks: newPerks }
+                                                  setSettings(prev => ({...prev, join_paths: newPaths }))
+                                               }}
+                                               className="bg-transparent border-none outline-none text-[10px] font-bold w-24"
+                                             />
+                                             <button onClick={() => {
+                                                const newPaths = [...settings.join_paths]
+                                                const newPerks = path.perks.filter((_, i) => i !== pi)
+                                                newPaths[idx] = { ...path, perks: newPerks }
+                                                setSettings(prev => ({...prev, join_paths: newPaths }))
+                                             }}><XCircle size={12} className="text-coral"/></button>
+                                          </div>
+                                        ))}
+                                        <button 
+                                          onClick={() => {
+                                             const newPaths = [...settings.join_paths]
+                                             newPaths[idx] = { ...path, perks: [...(path.perks || []), 'New Perk'] }
+                                             setSettings(prev => ({...prev, join_paths: newPaths }))
+                                          }}
+                                          className="text-[9px] font-black text-primary hover:underline px-2"
+                                        >+ Add Perk</button>
+                                     </div>
+                                  </div>
+                               </div>
+                               <button 
+                                 onClick={() => {
+                                    const newPaths = [...settings.join_paths]
+                                    newPaths.splice(idx, 1)
+                                    setSettings(prev => ({...prev, join_paths: newPaths }))
+                                 }}
+                                 className="p-3 text-coral opacity-0 group-hover:opacity-100 hover:bg-coral/10 rounded-2xl transition-all self-center"
+                               >
+                                  <Trash2 size={20} />
+                               </button>
+                            </Reorder.Item>
+                          ))}
+                       </Reorder.Group>
+                    </SettingSection>
+
+                    <SettingSection title="Applicant FAQ" subtitle="Address common concerns before they submit" icon={<HelpCircle size={20}/>}>
+                       <div className="flex justify-end pr-2">
+                          <button 
+                            onClick={() => setSettings(prev => ({...prev, join_faqs: [...(settings.join_faqs || []), { question: '', answer: '' }]}))}
+                            className="px-6 py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 group"
+                          >
+                             <Plus size={14} /> New FAQ
+                          </button>
+                       </div>
+                       <Reorder.Group axis="y" values={settings.join_faqs || []} onReorder={(newVal) => setSettings(prev => ({...prev, join_faqs: newVal}))} className="space-y-4">
+                          {(settings.join_faqs || []).map((faq, idx) => (
+                            <Reorder.Item key={idx} value={faq} className="p-8 glass rounded-[2rem] border border-border relative group flex gap-6 hover:border-primary/40 transition-all">
+                               <div className="flex items-center justify-center text-text-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-6 border-r border-border"><GripVertical size={24} /></div>
+                               <div className="flex-1 space-y-6">
+                                  <InputField label="Question" value={faq.question} onChange={e => {
+                                     const newFaqs = [...settings.join_faqs]
+                                     newFaqs[idx] = { ...faq, question: e.target.value }
+                                     setSettings(prev => ({...prev, join_faqs: newFaqs }))
+                                  }} />
+                                  <InputField label="Answer" value={faq.answer} onChange={e => {
+                                     const newFaqs = [...settings.join_faqs]
+                                     newFaqs[idx] = { ...faq, answer: e.target.value }
+                                     setSettings(prev => ({...prev, join_faqs: newFaqs }))
+                                  }} rows={3} />
+                               </div>
+                               <button 
+                                 onClick={() => {
+                                    const newFaqs = [...settings.join_faqs]
+                                    newFaqs.splice(idx, 1)
+                                    setSettings(prev => ({...prev, join_faqs: newFaqs }))
+                                 }}
+                                 className="p-3 text-coral opacity-0 group-hover:opacity-100 hover:bg-coral/10 rounded-2xl transition-all self-center"
+                               >
+                                  <Trash2 size={20} />
+                               </button>
+                            </Reorder.Item>
+                          ))}
+                       </Reorder.Group>
+                    </SettingSection>
+                  </div>
                 )}
 
                 {/* Individual Sub-Pages */}
@@ -492,13 +680,13 @@ export default function SiteEditor() {
                   >
                      <div className="p-8 glass rounded-[2.5rem] border border-border space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                           <InputField label="Primary Page Title" value={settings[SUBPAGE_CONFIG[activeTab].fields[0]]} onChange={e => setSettings({...settings, [SUBPAGE_CONFIG[activeTab].fields[0]]: e.target.value})}/>
-                           <InputField label="Marketing Sub-title" value={settings[SUBPAGE_CONFIG[activeTab].fields[1]]} onChange={e => setSettings({...settings, [SUBPAGE_CONFIG[activeTab].fields[1]]: e.target.value})}/>
+                           <InputField label="Primary Page Title" value={settings[SUBPAGE_CONFIG[activeTab].fields[0]]} onChange={e => setSettings(prev => ({...prev, [SUBPAGE_CONFIG[activeTab].fields[0]]: e.target.value}))}/>
+                           <InputField label="Marketing Sub-title" value={settings[SUBPAGE_CONFIG[activeTab].fields[1]]} onChange={e => setSettings(prev => ({...prev, [SUBPAGE_CONFIG[activeTab].fields[1]]: e.target.value}))}/>
                         </div>
-                        <InputField label="Introductory Disclosure" value={settings[SUBPAGE_CONFIG[activeTab].fields[2]]} onChange={e => setSettings({...settings, [SUBPAGE_CONFIG[activeTab].fields[2]]: e.target.value})} rows={4}/>
+                        <InputField label="Introductory Disclosure" value={settings[SUBPAGE_CONFIG[activeTab].fields[2]]} onChange={e => setSettings(prev => ({...prev, [SUBPAGE_CONFIG[activeTab].fields[2]]: e.target.value}))} rows={4}/>
                         
                         {activeTab === 'dmopractice' && (
-                           <InputField label="Hero Badge Text" icon={<Award size={14}/>} value={settings.dmopractice_badge} onChange={e => setSettings({...settings, dmopractice_badge: e.target.value})} placeholder="Official Practice Portal"/>
+                           <InputField label="Hero Badge Text" icon={<Award size={14}/>} value={settings.dmopractice_badge} onChange={e => setSettings(prev => ({...prev, dmopractice_badge: e.target.value}))} placeholder="Official Practice Portal"/>
                         )}
                         
                         {activeTab === 'rto' && (
@@ -543,15 +731,16 @@ export default function SiteEditor() {
                 {activeTab === 'social' && (
                   <SettingSection title="Social Ecosystem" subtitle="Manage external community connection points" icon={<Youtube size={20}/>}>
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <InputField label="Facebook Hub" icon={<Facebook size={14}/>} value={settings.facebook_url} onChange={e => setSettings({...settings, facebook_url: e.target.value})} mono placeholder="https://facebook.com/..."/>
-                        <InputField label="Instagram Grid" icon={<Instagram size={14}/>} value={settings.instagram_url} onChange={e => setSettings({...settings, instagram_url: e.target.value})} mono placeholder="@mathsinitiatives"/>
-                        <InputField label="YouTube Channel" icon={<Youtube size={14}/>} value={settings.youtube_url} onChange={e => setSettings({...settings, youtube_url: e.target.value})} mono placeholder="Channel URL"/>
-                        <InputField label="LinkedIn Network" icon={<Linkedin size={14}/>} value={settings.linkedin_url} onChange={e => setSettings({...settings, linkedin_url: e.target.value})} mono placeholder="Company Page"/>
+                        <InputField label="Facebook Hub" icon={<Facebook size={14}/>} value={settings.facebook_url} onChange={e => setSettings(prev => ({...prev, facebook_url: e.target.value}))} mono placeholder="https://facebook.com/..."/>
+                        <InputField label="Instagram Grid" icon={<Instagram size={14}/>} value={settings.instagram_url} onChange={e => setSettings(prev => ({...prev, instagram_url: e.target.value}))} mono placeholder="@mathsinitiatives"/>
+                        <InputField label="YouTube Channel" icon={<Youtube size={14}/>} value={settings.youtube_url} onChange={e => setSettings(prev => ({...prev, youtube_url: e.target.value}))} mono placeholder="Channel URL"/>
+                        <InputField label="LinkedIn Network" icon={<Linkedin size={14}/>} value={settings.linkedin_url} onChange={e => setSettings(prev => ({...prev, linkedin_url: e.target.value}))} mono placeholder="Company Page"/>
                      </div>
                   </SettingSection>
                 )}
 
                 {activeTab === 'assets' && (
+                  <div className="space-y-16">
                   <SettingSection title="Global Fallback Assets" subtitle="Identity controls for media-less content interactions" icon={<ImageIcon size={20}/>}>
                      <div className="flex flex-col gap-8 max-w-4xl mx-auto">
                         {/* Team Fallback */}
@@ -576,7 +765,7 @@ export default function SiteEditor() {
                               <ImageField 
                                  label="Active Placeholder" 
                                  value={settings.default_team_photo} 
-                                 onUpload={(url) => setSettings({...settings, default_team_photo: url})}
+                                 onUpload={(url) => setSettings(prev => ({...prev, default_team_photo: url}))}
                                  folder="min-website/defaults"
                                  description="Upload an image that represents the 'MINian' spirit. Square aspect ratio recommended."
                               />
@@ -605,7 +794,7 @@ export default function SiteEditor() {
                               <ImageField 
                                  label="Event Placeholder" 
                                  value={settings.default_event_cover} 
-                                 onUpload={(url) => setSettings({...settings, default_event_cover: url})}
+                                 onUpload={(url) => setSettings(prev => ({...prev, default_event_cover: url}))}
                                  folder="min-website/defaults"
                                  description="Vibrant image suggesting learning, collaboration, or mathematics."
                               />
@@ -634,57 +823,58 @@ export default function SiteEditor() {
                               <ImageField 
                                  label="Content Placeholder" 
                                  value={settings.default_content_image} 
-                                 onUpload={(url) => setSettings({...settings, default_content_image: url})}
+                                 onUpload={(url) => setSettings(prev => ({...prev, default_content_image: url}))}
                                  folder="min-website/defaults"
                                  description="Clean, understated image suitable for overlapping text."
                               />
                            </div>
                         </div>
                      </div>
-
-                     <div className="pt-12 border-t border-border mt-12">
-                        <SettingSection title="Team Identity Assets" subtitle="A collection of images for randomized member profile assignment" icon={<Sparkles size={20}/>}>
-                           <div className="space-y-6">
-                              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                                {settings.team_identity_assets?.map((url, index) => (
-                                  <motion.div 
-                                    key={index} 
-                                    layout
-                                    className="group relative aspect-square rounded-2xl overflow-hidden border border-border dark:border-white/10 hover:border-primary/50 transition-all shadow-sm"
-                                  >
-                                    <img src={url} alt={`Asset ${index}`} className="w-full h-full object-cover" />
-                                    <button 
-                                      onClick={() => {
-                                        const newAssets = [...settings.team_identity_assets]
-                                        newAssets.splice(index, 1)
-                                        setSettings({...settings, team_identity_assets: newAssets})
-                                      }}
-                                      className="absolute inset-0 bg-coral/90 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                      <Trash2 size={24} />
-                                    </button>
-                                  </motion.div>
-                                ))}
-                                <div className="aspect-square rounded-2xl border-2 border-dashed border-primary/20 hover:border-primary flex flex-col items-center justify-center gap-2 transition-all p-4 text-center group bg-primary/5">
-                                   <ImageUploader 
-                                      label="Add Brand Asset" 
-                                      onUpload={(url) => setSettings({...settings, team_identity_assets: [...(settings.team_identity_assets || []), url]})}
-                                      folder="min-website/identity"
-                                   />
-                                   <p className="text-[8px] font-bold text-primary/60 uppercase">Add New Avatar Asset</p>
-                                </div>
-                              </div>
-                           </div>
-                        </SettingSection>
-                     </div>
                   </SettingSection>
+
+                  <div className="pt-12 border-t border-border mt-12">
+                     <SettingSection title="Team Identity Assets" subtitle="A collection of images for randomized member profile assignment" icon={<Sparkles size={20}/>}>
+                        <div className="space-y-6">
+                           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                             {settings.team_identity_assets?.map((url, index) => (
+                               <motion.div 
+                                 key={index} 
+                                 layout
+                                 className="group relative aspect-square rounded-2xl overflow-hidden border border-border dark:border-white/10 hover:border-primary/50 transition-all shadow-sm"
+                               >
+                                 <img src={url} alt={`Asset ${index}`} className="w-full h-full object-cover" />
+                                 <button 
+                                   onClick={() => {
+                                     const newAssets = [...settings.team_identity_assets]
+                                     newAssets.splice(index, 1)
+                                     setSettings(prev => ({...prev, team_identity_assets: newAssets}))
+                                   }}
+                                   className="absolute inset-0 bg-coral/90 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                 >
+                                   <Trash2 size={24} />
+                                 </button>
+                               </motion.div>
+                             ))}
+                             <div className="aspect-square rounded-2xl border-2 border-dashed border-primary/20 hover:border-primary flex flex-col items-center justify-center gap-2 transition-all p-4 text-center group bg-primary/5">
+                                <ImageUploader 
+                                   label="Add Brand Asset" 
+                                   onUpload={(url) => setSettings(prev => ({...prev, team_identity_assets: [...(prev.team_identity_assets || []), url]}))}
+                                   folder="min-website/identity"
+                                />
+                                <p className="text-[8px] font-bold text-primary/60 uppercase">Add New Avatar Asset</p>
+                             </div>
+                           </div>
+                        </div>
+                     </SettingSection>
+                  </div>
+                  </div>
                )}
 
                  {activeTab === 'general' && (
                   <SettingSection title="Global Identities & Fallbacks" subtitle="Administrative contact and sitewide defaults" icon={<Settings size={20}/>}>
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <InputField label="Official Support Inbox" icon={<Mail size={14}/>} type="email" value={settings.contact_email} onChange={e => setSettings({...settings, contact_email: e.target.value})} placeholder="office@mathsinitiatives.org.np"/>
-                        <InputField label="Volunteer Intake Batch" icon={<UserPlus size={14}/>} value={settings.active_volunteer_batch} onChange={e => setSettings({...settings, active_volunteer_batch: e.target.value})} placeholder="Batch 2026-A" description="New applications will be tagged with this batch name"/>
+                        <InputField label="Official Support Inbox" icon={<Mail size={14}/>} type="email" value={settings.contact_email} onChange={e => setSettings(prev => ({...prev, contact_email: e.target.value}))} placeholder="office@mathsinitiatives.org.np"/>
+                        <InputField label="Volunteer Intake Batch" icon={<UserPlus size={14}/>} value={settings.active_volunteer_batch} onChange={e => setSettings(prev => ({...prev, active_volunteer_batch: e.target.value}))} placeholder="Batch 2026-A" description="New applications will be tagged with this batch name"/>
                      </div>
 
                      <div className="pt-8 border-t border-border mt-8">
@@ -692,14 +882,14 @@ export default function SiteEditor() {
                         <ImageField 
                           label="Custom Site Logo" 
                           value={settings.site_logo_url} 
-                          onUpload={(url) => setSettings({...settings, site_logo_url: url})}
+                          onUpload={(url) => setSettings(prev => ({...prev, site_logo_url: url}))}
                           folder="min-website/branding"
                           description="The primary logo used in the navbar and footer. Uploading here enables Cloudinary optimization."
                         />
                      </div>
 
                      <div className="pt-8 border-t border-border mt-8">
-                        <InputField label="Institutional Footer Narrative" value={settings.footer_description} onChange={e => setSettings({...settings, footer_description: e.target.value})} rows={5} description="Displayed at the base of every page interaction"/>
+                        <InputField label="Institutional Footer Narrative" value={settings.footer_description} onChange={e => setSettings(prev => ({...prev, footer_description: e.target.value}))} rows={5} description="Displayed at the base of every page interaction"/>
                      </div>
                   </SettingSection>
                 )}

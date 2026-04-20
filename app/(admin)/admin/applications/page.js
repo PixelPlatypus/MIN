@@ -31,6 +31,7 @@ const statusColors = {
   REVIEWED: 'bg-cyan/10 text-cyan border-cyan/20',
   ACCEPTED: 'bg-green/10 text-green border-green/20',
   REJECTED: 'bg-coral/10 text-coral border-coral/20',
+  EMAIL_SENT: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
 }
 
 export default function AdminApplicationsPage() {
@@ -85,6 +86,20 @@ export default function AdminApplicationsPage() {
     if (res.ok) {
       setApps(apps.map(a => a.id === id ? { ...a, status: newStatus } : a))
       if (selectedApp?.id === id) setSelectedApp({ ...selectedApp, status: newStatus })
+    }
+  }
+
+  const handleDeleteIndividual = async (id) => {
+    if (!confirm('Are you sure you want to delete this application record permanently?')) return
+    
+    try {
+      const res = await fetch(`/api/applications/admin?id=${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setApps(apps.filter(a => a.id !== id))
+        if (selectedApp?.id === id) setSelectedApp(null)
+      }
+    } catch (err) {
+      console.error('Delete individual error:', err)
     }
   }
 
@@ -339,29 +354,58 @@ export default function AdminApplicationsPage() {
                 </div>
 
                 <div className="pt-10 border-t border-border dark:border-border-dark space-y-4 relative z-10">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-text-tertiary mb-2">Update Disposition</h4>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Update Disposition</h4>
                     <button 
-                      onClick={() => handleUpdateStatus(selectedApp.id, 'ACCEPTED')}
-                      className={`flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${
-                        selectedApp.status === 'ACCEPTED' 
-                          ? 'bg-green text-white shadow-xl shadow-green/20' 
-                          : 'bg-green/10 text-green hover:bg-green/100 hover:text-white'
-                      }`}
+                      onClick={() => handleDeleteIndividual(selectedApp.id)}
+                      className="text-coral hover:text-coral/80 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5"
                     >
-                      <CheckCircle2 size={16} /> Accept
-                    </button>
-                    <button 
-                      onClick={() => handleUpdateStatus(selectedApp.id, 'REJECTED')}
-                      className={`flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${
-                        selectedApp.status === 'REJECTED' 
-                          ? 'bg-coral text-white shadow-xl shadow-coral/20' 
-                          : 'bg-coral/10 text-coral hover:bg-coral/100 hover:text-white'
-                      }`}
-                    >
-                      <XCircle size={16} /> Reject
+                      <Trash2 size={12} /> Delete Record
                     </button>
                   </div>
+
+                  {selectedApp.status === 'EMAIL_SENT' ? (
+                    <div className="bg-purple-500/5 rounded-2xl p-6 border border-purple-500/10 text-center">
+                       <p className="text-xs font-black text-purple-500 uppercase tracking-widest flex items-center justify-center gap-2">
+                          <Mail size={16} /> Outreach Email Sent
+                       </p>
+                       <p className="text-[10px] text-text-tertiary mt-2">
+                         Follow-up is in progress. Formal accept/reject is locked until status changes.
+                       </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3">
+                      <button 
+                        onClick={() => handleUpdateStatus(selectedApp.id, 'ACCEPTED')}
+                        className={`flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${
+                          selectedApp.status === 'ACCEPTED' 
+                            ? 'bg-green text-white shadow-xl shadow-green/20' 
+                            : 'bg-green/10 text-green hover:bg-green/100 hover:text-white'
+                        }`}
+                      >
+                        <CheckCircle2 size={16} /> Accept
+                      </button>
+                      <button 
+                        onClick={() => handleUpdateStatus(selectedApp.id, 'REJECTED')}
+                        className={`flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${
+                          selectedApp.status === 'REJECTED' 
+                            ? 'bg-coral text-white shadow-xl shadow-coral/20' 
+                            : 'bg-coral/10 text-coral hover:bg-coral/100 hover:text-white'
+                        }`}
+                      >
+                        <XCircle size={16} /> Reject
+                      </button>
+
+                      {['ORGANIZATION', 'PARTNERSHIP'].includes(selectedApp.type) && (
+                        <button 
+                          onClick={() => handleUpdateStatus(selectedApp.id, 'EMAIL_SENT')}
+                          className="col-span-2 flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white"
+                        >
+                          <Mail size={16} /> Mark as Emailed
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>

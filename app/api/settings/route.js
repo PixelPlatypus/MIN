@@ -56,6 +56,7 @@ export async function PATCH(request) {
     .upsert({ 
       id: 'main', 
       ...body,
+      updated_by_name: profile.name,
       updated_at: new Date().toISOString()
     })
     .select()

@@ -11,8 +11,12 @@ import {
   Sparkles, 
   Loader2, 
   Wrench,
-  Plus
+  Plus,
+  AlertCircle
 } from 'lucide-react'
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
+import flags from 'react-phone-number-input/flags'
+import 'react-phone-number-input/style.css'
 import { captureEvent } from '@/lib/analytics'
 
 const defaultSchemas = {
@@ -141,6 +145,13 @@ export default function JoinForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    // Validation
+    if (formData.phone && !isValidPhoneNumber(formData.phone)) {
+      alert('Please enter a valid phone number.')
+      return
+    }
+
     setLoading(true)
 
     const payload = {
@@ -271,7 +282,40 @@ export default function JoinForm() {
       )}
 
       <AnimatePresence mode="wait">
-        {step === 1 ? (
+        {submitted ? (
+          <motion.div 
+            key="success"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass rounded-[3.5rem] p-20 text-center space-y-8 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary-dark/5 pointer-events-none" />
+            
+            <div className="relative z-10">
+              <div className="w-24 h-24 bg-green/10 text-green rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-lg shadow-green/10 border border-green/20">
+                <CheckCircle2 size={48} />
+              </div>
+              <h2 className="text-5xl font-black tracking-tight mb-4 text-text dark:text-white">Submission Successful!</h2>
+              <p className="text-xl font-bold text-text-tertiary max-w-xl mx-auto leading-relaxed">
+                Thank you for reaching out to MIN Nepal. We've received your {type.toLowerCase()} application and sent a confirmation to <span className="text-primary font-black uppercase tracking-tight">{formData.email}</span>.
+              </p>
+            </div>
+
+            <div className="pt-10 relative z-10">
+              <button 
+                onClick={() => {
+                  setSubmitted(false)
+                  setStep(1)
+                  setFormData({ name: '', email: '', phone: '' })
+                  setFormQuestions({})
+                }}
+                className="px-12 py-5 rounded-2xl bg-black/5 dark:bg-white/5 text-text-tertiary hover:text-primary font-black text-xs uppercase tracking-widest transition-all border border-border"
+              >
+                Submit another application
+              </button>
+            </div>
+          </motion.div>
+        ) : step === 1 ? (
           <motion.div 
             key="step1"
             initial={{ opacity: 0, y: 20 }}
@@ -352,12 +396,13 @@ export default function JoinForm() {
                 </div>
                 <div className="space-y-3">
                   <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Phone Number</label>
-                  <input 
-                    type="tel" 
-                    placeholder="+977"
-                    className="w-full glass bg-white/60 dark:bg-white/5 px-8 py-6 rounded-3xl focus:ring-2 ring-primary/20 outline-none transition-all border border-white/40 dark:border-white/10 hover:border-primary/30 shadow-sm" 
-                    value={formData.phone} 
-                    onChange={e => setFormData({ ...formData, phone: e.target.value })} 
+                  <PhoneInput 
+                    international
+                    defaultCountry="NP"
+                    flags={flags}
+                    value={formData.phone}
+                    onChange={val => setFormData({ ...formData, phone: val || '' })}
+                    className="w-full glass bg-white/60 dark:bg-white/5 px-8 py-6 rounded-3xl focus-within:ring-2 ring-primary/20 outline-none transition-all border border-white/40 dark:border-white/10 hover:border-primary/30 shadow-sm"
                   />
                 </div>
               </div>

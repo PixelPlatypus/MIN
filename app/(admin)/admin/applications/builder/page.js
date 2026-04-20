@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import {
   FilePlus, Settings, CheckCircle2, XCircle,
   Loader2, Layout, Plus, Save, Activity, Layers,
@@ -11,6 +11,7 @@ const FIELD_TYPES = [
   { value: 'text', label: 'Text' },
   { value: 'email', label: 'Email' },
   { value: 'phone', label: 'Phone' },
+  { value: 'link', label: 'Link / URL' },
   { value: 'textarea', label: 'Long Text' },
   { value: 'select', label: 'Dropdown' },
   { value: 'radio', label: 'Radio' },
@@ -73,7 +74,7 @@ export default function FormBuilderPage() {
   function addField() {
     setForm(prev => ({
       ...prev,
-      fields: [...prev.fields, { label: '', type: 'text', required: true, options: [] }],
+      fields: [...prev.fields, { id: `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, label: '', type: 'text', required: true, options: [] }],
     }))
   }
 
@@ -395,11 +396,17 @@ export default function FormBuilderPage() {
                       <p className="text-sm text-text-tertiary font-medium">No fields yet. Add your first field to start building.</p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <Reorder.Group
+                      axis="y"
+                      values={form.fields}
+                      onReorder={(newFields) => setForm(prev => ({ ...prev, fields: newFields }))}
+                      className="space-y-4"
+                    >
                       {form.fields.map((field, i) => (
-                        <div
-                          key={i}
-                          className="bg-bg-secondary dark:bg-white/5 rounded-2xl p-5 border border-border dark:border-border-dark transition-all hover:border-primary/30"
+                        <Reorder.Item
+                          key={field.id || i}
+                          value={field}
+                          className="bg-bg-secondary dark:bg-white/5 rounded-2xl p-5 border border-border dark:border-border-dark transition-all hover:border-primary/30 cursor-grab active:cursor-grabbing"
                         >
                           <div className="flex items-start gap-4">
                             <div className="pt-1 text-text-tertiary opacity-40">
@@ -417,7 +424,7 @@ export default function FormBuilderPage() {
                                 <select
                                   value={field.type}
                                   onChange={e => updateField(i, 'type', e.target.value)}
-                                  className="bg-white dark:bg-black/30 border border-border dark:border-border-dark rounded-lg px-3 py-1.5 text-xs font-semibold text-dynamic outline-none cursor-pointer focus:ring-2 focus:ring-primary/20 transition-all sm:w-36"
+                                  className="bg-white dark:bg-black/30 border border-border dark:border-border-dark rounded-lg px-3 py-1.5 text-xs font-semibold text-dynamic outline-none cursor-pointer focus:ring-2 focus:ring-primary/20 transition-all sm:w-48"
                                 >
                                   {FIELD_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                                 </select>
@@ -452,7 +459,7 @@ export default function FormBuilderPage() {
                                       + Add Option
                                     </button>
                                   </div>
-                                  <div className="flex flex-wrap gap-2">
+                                  <div className="flex flex-wrap gap-2 text-wrap">
                                     {(field.options || []).map((opt, oi) => (
                                       <div
                                         key={oi}
@@ -484,9 +491,9 @@ export default function FormBuilderPage() {
                               <Trash2 size={16} />
                             </button>
                           </div>
-                        </div>
+                        </Reorder.Item>
                       ))}
-                    </div>
+                    </Reorder.Group>
                   )}
                 </div>
 

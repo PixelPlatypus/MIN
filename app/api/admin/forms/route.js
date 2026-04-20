@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
+import { sendTemplatedEmail } from '@/lib/resend'
 
 export async function GET() {
   const { error: roleError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
@@ -59,6 +60,35 @@ export async function PATCH(request) {
     .single()
 
   if (error) return Response.json({ error: error.message }, { status: 500 })
+
+  // Trigger Notifications if form is being activated
+  if (updates.is_active === true) {
+    // 1. Find the previous state
+    const { data: oldForm } = await supabase.from('form_definitions').select('is_active, category, slug').eq('id', id).single()
+    
+    // Only notify if it was previously inactive (or we are forcing it)
+    // Actually, if we are activating, let's just notify everyone on that list
+    const { data: reminders } = await supabase
+      .from('intake_reminders')
+      .select('*')
+      .eq('category', data.category)
+
+    if (reminders && reminders.length > 0) {
+      console.log(`Notifying ${reminders.length} users about reopened intake: ${data.slug}`)
+      
+      // Send emails in background-ish (awaiting for safety in small scale)
+      for (const r of reminders) {
+        await sendTemplatedEmail('intake_reopened', r.email, {
+          applicant_name: 'there',
+          role_type: data.title,
+          slug: data.slug
+        })
+      }
+
+      // Clear reminders for this category now that they've been notified
+      await supabase.from('intake_reminders').delete().eq('category', data.category)
+    }
+  }
 
   await logAudit({
     actor_id: user.id,

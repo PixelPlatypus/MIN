@@ -1,7 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
-import { sendEmail, generateMINThemeEmail } from '@/lib/resend'
+import { sendEmail, generateMINThemeEmail, sendTemplatedEmail } from '@/lib/resend'
 
 export async function PATCH(request, { params }) {
   try {
@@ -56,35 +56,31 @@ export async function PATCH(request, { params }) {
       updatedSub = legacySub
     }
 
-    // Email Notification
+    // Email Notification using Mappings
     if (status === 'ACCEPTED' || status === 'REJECTED') {
-      try {
-        const isAccepted = status === 'ACCEPTED'
-        const subject = isAccepted 
-          ? '🎉 Congratulations! Your Application to MIN Nepal'
-          : 'Thank you for your interest in MIN Nepal'
+      const subData = updatedSub.data || updatedSub.form_data || {}
+      const applicantName = subData.Name || subData["Full Name"] || subData.name || "Applicant"
+      const applicantEmail = updatedSub.email || subData.Email || subData["Email Address"] || subData.email
+      const category = updatedSub.form_definitions?.category?.toLowerCase() || ''
+      const type = updatedSub.type?.toLowerCase() || ''
 
-        // Extract semantic data from JSON blob payload (handle both 'data' for modern and 'form_data' for legacy)
-        const subData = updatedSub.data || updatedSub.form_data || {}
-        const applicantName = subData.Name || subData["Full Name"] || subData.name || "Applicant"
-        const applicantEmail = updatedSub.email || subData.Email || subData["Email Address"] || subData.email
-        const roleType = updatedSub.form_definitions?.category || updatedSub.type || 'Role'
-        
-        const content = isAccepted 
-            ? `We are thrilled to inform you that your application as a <strong>${roleType}</strong> has been <strong>ACCEPTED</strong>! Welcome to the team. Our coordinators will reach out shortly.`
-            : `Thank you for your interest in joining MIN Nepal as a <strong>${roleType}</strong>. After careful consideration, we have decided to move forward with other candidates at this time. We encourage you to apply again in the future.`
+      let eventKey = status === 'ACCEPTED' ? 'application_accepted' : 'application_rejected'
 
-        const html = generateMINThemeEmail(`Hi ${applicantName},`, content)
+      // Specialize event key based on category
+      if (category.includes('inquiry') || type.includes('inquiry')) {
+        eventKey = status === 'ACCEPTED' ? 'inquiry_responded' : 'application_rejected'
+      } else if (category.includes('org') || type.includes('org')) {
+        eventKey = status === 'ACCEPTED' ? 'org_accepted' : 'application_rejected'
+      } else if (category.includes('partner') || type.includes('partnership')) {
+        eventKey = status === 'ACCEPTED' ? 'partnership_accepted' : 'application_rejected'
+      }
 
-        if (applicantEmail) {
-          await sendEmail({
-            to: applicantEmail,
-            subject,
-            html
-          })
-        }
-      } catch (emailErr) {
-        console.error(`[PATCH /api/applications/admin/${id}] Non-fatal email error:`, emailErr)
+      if (applicantEmail) {
+        await sendTemplatedEmail(eventKey, applicantEmail, {
+          applicant_name: applicantName,
+          role_type: updatedSub.form_definitions?.name || updatedSub.type || 'Role',
+          contact_message: subData.Message || subData.message || ''
+        })
       }
     }
 

@@ -1,7 +1,7 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
-import { sendEmail, generateMINThemeEmail } from '@/lib/resend'
+import { sendEmail, generateMINThemeEmail, sendTemplatedEmail } from '@/lib/resend'
 import { slugify } from '@/lib/slugify'
 
 export async function PATCH(request, { params }) {
@@ -80,20 +80,9 @@ export async function PATCH(request, { params }) {
 
     // C. Send email to submitter
     try {
-      const liveUrl = `${process.env.NEXT_PUBLIC_APP_URL}/content/${slug}`
-      const content = `
-          <p>Great news! Your submission <strong>"${submission.title}"</strong> has been reviewed and approved by the MIN team.</p>
-          <p>It is now live on our platform and accessible to students across Nepal.</p>
-          <div style="margin: 30px 0; text-align: center;">
-            <a href="${liveUrl}" style="background-color: #4361ee; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 8px;">View Your Published Work</a>
-          </div>
-          <p>Thank you so much for contributing to the Mathematics Initiatives in Nepal. Your effort helps make geometry and math education more accessible for everyone.</p>
-      `
-      
-      await sendEmail({
-        to: submission.submitter_email,
-        subject: 'Your Content has been Published! - MIN Nepal',
-        html: generateMINThemeEmail(`Hello ${submission.submitter_name},`, content)
+      await sendTemplatedEmail('content_approved', submission.submitter_email, {
+        applicant_name: submission.submitter_name,
+        content_title: submission.title
       })
     } catch (mailErr) {
       console.error('Approval Email Failed:', mailErr)
