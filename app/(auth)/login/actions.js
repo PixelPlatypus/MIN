@@ -5,9 +5,24 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import fs from 'node:fs'
 import path from 'node:path'
+import { headers } from 'next/headers'
+import { getLoginLockout, recordLoginFailure, resetLoginFailures } from '@/lib/rateLimit'
 
 export async function loginAction(data) {
   try {
+    const headerList = await headers()
+    const ip = headerList.get('x-forwarded-for') || '127.0.0.1'
+
+    // Check for existing lockout
+    const lockout = await getLoginLockout(ip)
+    if (lockout.locked) {
+      const waitMinutes = Math.ceil(lockout.remaining / 60)
+      return { 
+        success: false, 
+        error: `Account temporarily locked due to multiple failed attempts. Please try again in ${waitMinutes} minute${waitMinutes !== 1 ? 's' : ''}.` 
+      }
+    }
+
     const supabase = await createClient()
     let loginEmail = data.identifier
 
@@ -21,6 +36,7 @@ export async function loginAction(data) {
         .single()
         
       if (!profile) {
+        await recordLoginFailure(ip)
         return { success: false, error: 'Invalid login credentials' }
       }
       loginEmail = profile.email
@@ -32,28 +48,19 @@ export async function loginAction(data) {
     })
 
     if (error) {
-      console.error('Login error details:', {
-        message: error.message,
-        status: error.status,
-        name: error.name
-      })
+      await recordLoginFailure(ip)
       
-      // If the user doesn't exist, we can try to re-seed it automatically
       if (error.message === 'Invalid login credentials' && data.email === 'admin@mathsinitiatives.org') {
         console.log('Admin login failed. Re-seeding admin user...')
-        // We can't run shell scripts easily from a server action without security risks,
-        // but we've already given the user the seeding script.
       }
 
       return { success: false, error: error.message }
     }
 
-    console.log('Login successful for user:', authData.user.id)
-    
-    // Check if we can get the user immediately to verify cookies are set
-    const { data: { user } } = await supabase.auth.getUser()
-    console.log('Immediate session check:', user ? 'Session exists' : 'No session')
+    // Success! Reset failures
+    await resetLoginFailures(ip)
 
+    console.log('Login successful for user:', authData.user.id)
     return { success: true }
   } catch (err) {
     console.error('Unexpected action error:', err)
