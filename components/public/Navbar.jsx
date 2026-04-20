@@ -29,6 +29,15 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const [settings, setSettings] = useState(null)
+  
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Navbar settings load error', err))
+  }, [])
+
   return (
     <nav 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -42,7 +51,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2 group">
             <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
             <img 
-              src="/images/logo.svg" 
+              src={settings?.site_logo_url || "/images/logo.svg"} 
               alt="MIN Logo" 
               className="h-10 w-10 p-1 bg-white dark:bg-white/10 rounded-full border border-black/5 dark:border-white/10 object-contain transition-transform group-hover:scale-105" 
             />

@@ -687,7 +687,18 @@ export default function SiteEditor() {
                         <InputField label="Volunteer Intake Batch" icon={<UserPlus size={14}/>} value={settings.active_volunteer_batch} onChange={e => setSettings({...settings, active_volunteer_batch: e.target.value})} placeholder="Batch 2026-A" description="New applications will be tagged with this batch name"/>
                      </div>
 
-                     <div className="pt-8 border-t border-border">
+                     <div className="pt-8 border-t border-border mt-8">
+                        <h6 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-6 flex items-center gap-2"><Sparkles size={14}/> Core Site Branding</h6>
+                        <ImageField 
+                          label="Custom Site Logo" 
+                          value={settings.site_logo_url} 
+                          onUpload={(url) => setSettings({...settings, site_logo_url: url})}
+                          folder="min-website/branding"
+                          description="The primary logo used in the navbar and footer. Uploading here enables Cloudinary optimization."
+                        />
+                     </div>
+
+                     <div className="pt-8 border-t border-border mt-8">
                         <InputField label="Institutional Footer Narrative" value={settings.footer_description} onChange={e => setSettings({...settings, footer_description: e.target.value})} rows={5} description="Displayed at the base of every page interaction"/>
                      </div>
                   </SettingSection>

@@ -21,7 +21,11 @@ export async function GET() {
       return Response.json([])
     }
 
-    return Response.json(data || [])
+    return Response.json(data || [], {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
+      }
+    })
   } catch (err) {
     return Response.json([])
   }

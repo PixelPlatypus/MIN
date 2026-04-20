@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Bell, X, ExternalLink, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 let noticeClosedForSession = false
@@ -126,11 +127,13 @@ export default function NoticePopup() {
 
                 <div className="flex flex-col gap-6">
                   {notice.image_url ? (
-                    <div className="w-full aspect-video rounded-3xl overflow-hidden border border-primary/10 shadow-2xl">
-                      <img 
+                    <div className="w-full aspect-video rounded-3xl overflow-hidden border border-primary/10 shadow-2xl relative">
+                      <Image 
                         src={notice.image_url} 
                         alt={notice.title} 
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 400px"
                       />
                     </div>
                   ) : (

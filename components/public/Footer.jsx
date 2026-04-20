@@ -59,7 +59,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 group mb-6">
               <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
               <img 
-                src="/images/logo.svg" 
+                src={settings?.site_logo_url || "/images/logo.svg"} 
                 alt="MIN Logo" 
                 className="h-12 w-auto transition-transform group-hover:scale-105" 
               />
