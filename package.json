@@ -62,7 +62,9 @@
     "zod": "^4.3.6"
   },
   "browserslist": [
-    "defaults and supports es6-module",
-    "maintained node versions"
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions"
   ]
 }

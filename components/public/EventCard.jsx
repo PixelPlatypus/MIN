@@ -1,20 +1,13 @@
 'use client'
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { Calendar, MapPin, ArrowRight, Clock } from 'lucide-react'
+import { Calendar, MapPin, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
-export default function EventCard({ event, index }) {
-  const { title, slug, start_date, end_date, location, cover_url, event_type } = event
-  const [settings, setSettings] = useState(null)
+const DEFAULT_EVENT_COVER = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop'
 
-  useEffect(() => {
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('EventCard settings load error', err))
-  }, [])
+export default function EventCard({ event, index, fallbackImage }) {
+  const { title, slug, start_date, end_date, location, cover_url, event_type } = event
   
   const now = new Date()
   const start = new Date(start_date)
@@ -48,13 +41,13 @@ export default function EventCard({ event, index }) {
       className="group relative h-full"
     >
       <Link href={`/events/${slug}`} className="block h-full">
-        <div className="relative glass bg-white/60 dark:bg-white/5 backdrop-blur-2xl rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/40 dark:border-white/10 hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 group">
+        <div className="relative glass rounded-[2.5rem] overflow-hidden flex flex-col h-full hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 group">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
           <div className="relative z-10 flex flex-col h-full w-full">
             {/* Cover Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
               <Image 
-                src={cover_url || settings?.default_event_cover || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop'} 
+                src={cover_url || fallbackImage || DEFAULT_EVENT_COVER} 
                 alt={title}
                 fill
                 className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"

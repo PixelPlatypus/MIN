@@ -29,13 +29,14 @@ export const metadata = {
   description: 'Making mathematics accessible, engaging, and inspiring for all students in Nepal.',
   icons: {
     icon: [
-      { url: '/favicon.ico' },
+      { url: '/favicon.ico', sizes: 'any' },
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' }
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
-    ]
+    ],
+    shortcut: '/favicon.ico',
   },
   manifest: '/site.webmanifest',
   openGraph: {
@@ -58,12 +59,6 @@ import { SmoothScroll } from '@/components/shared/SmoothScroll'
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`} suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://szosktbhsgqnyvbxmprf.supabase.co" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        <link rel="dns-prefetch" href="https://szosktbhsgqnyvbxmprf.supabase.co" />
-      </head>
       <body className="min-h-screen">
         <ClientProviders>
           <ThemeProvider>

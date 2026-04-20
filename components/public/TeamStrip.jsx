@@ -1,13 +1,12 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import gsap from 'gsap'
+// GSAP removed in favor of CSS marquee for performance
 import Image from 'next/image'
 import Link from 'next/link'
 
 export default function TeamStrip() {
   const [team, setTeam] = useState([])
-  const scrollRef = useRef(null)
 
   useEffect(() => {
     async function fetchTeam() {
@@ -25,27 +24,6 @@ export default function TeamStrip() {
     }
     fetchTeam()
   }, [])
-
-  useEffect(() => {
-    if (team.length === 0 || !scrollRef.current) return
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReducedMotion) return
-
-    const ctx = gsap.context(() => {
-      const el = scrollRef.current
-      const totalWidth = el.scrollWidth / 2
-      
-      gsap.to(el, {
-        x: -totalWidth,
-        duration: 30, // Slow smooth scroll
-        ease: 'none',
-        repeat: -1,
-      })
-    })
-
-    return () => ctx.revert()
-  }, [team])
 
   if (team.length === 0) return null
 
@@ -69,8 +47,7 @@ export default function TeamStrip() {
 
       <div className="relative">
         <div 
-          ref={scrollRef} 
-          className="flex gap-8 px-4 w-max pointer-events-none sm:pointer-events-auto"
+          className="flex gap-8 px-4 w-max animate-marquee pointer-events-none sm:pointer-events-auto will-change-transform"
         >
           {displayTeam.map((member, i) => (
             <div 

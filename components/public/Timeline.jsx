@@ -1,10 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+// GSAP and ScrollTrigger are dynamically loaded inside useEffect to reduce main-thread work
 import { motion } from 'framer-motion'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
 
 export default function Timeline() {
   const [events, setEvents] = useState([])
@@ -24,56 +21,63 @@ export default function Timeline() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isMobile = window.matchMedia('(max-width: 767px)').matches
 
-    const ctx = gsap.context(() => {
-      const items = containerRef.current.querySelectorAll('.timeline-item')
+    let ctx;
 
-      if (prefersReducedMotion) {
-        items.forEach(item => gsap.set(item, { opacity: 1, x: 0 }))
-        const lines = containerRef.current.querySelectorAll('.timeline-line')
-        lines.forEach(line => gsap.set(line, { scaleY: 1 }))
-      } else {
-        items.forEach((item, i) => {
-          // On mobile keep x:0 to avoid horizontal overflow
-          const xFrom = isMobile ? 0 : (i % 2 === 0 ? -50 : 50)
-          gsap.fromTo(item,
-            { opacity: 0, x: xFrom },
-            {
-              opacity: 1,
-              x: 0,
-              duration: 1,
-              ease: 'power3.out',
-              scrollTrigger: {
-                trigger: item,
-                start: 'top 80%',
-                end: 'bottom 20%',
-                toggleActions: 'play none none reverse'
-              }
-            }
-          )
-        })
+    Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger')
+    ]).then(([{ default: gsap }, { ScrollTrigger }]) => {
+      gsap.registerPlugin(ScrollTrigger)
+      
+      ctx = gsap.context(() => {
+        const items = containerRef.current.querySelectorAll('.timeline-item')
 
-        // Animate all .timeline-line elements (center line visible on all screen sizes)
-        const lines = containerRef.current.querySelectorAll('.timeline-line')
-        lines.forEach(line => {
-          gsap.fromTo(line,
-            { scaleY: 0 },
-            {
-              scaleY: 1,
-              duration: 2,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: containerRef.current,
-                start: 'top 50%',
-                end: 'bottom 50%',
-                scrub: true
+        if (prefersReducedMotion) {
+          items.forEach(item => gsap.set(item, { opacity: 1, x: 0 }))
+          const lines = containerRef.current.querySelectorAll('.timeline-line')
+          lines.forEach(line => gsap.set(line, { scaleY: 1 }))
+        } else {
+          items.forEach((item, i) => {
+            const xFrom = isMobile ? 0 : (i % 2 === 0 ? -50 : 50)
+            gsap.fromTo(item,
+              { opacity: 0, x: xFrom },
+              {
+                opacity: 1,
+                x: 0,
+                duration: 1,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: item,
+                  start: 'top 80%',
+                  end: 'bottom 20%',
+                  toggleActions: 'play none none reverse'
+                }
               }
-            }
-          )
-        })
-      }
+            )
+          })
+
+          const lines = containerRef.current.querySelectorAll('.timeline-line')
+          lines.forEach(line => {
+            gsap.fromTo(line,
+              { scaleY: 0 },
+              {
+                scaleY: 1,
+                duration: 2,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: containerRef.current,
+                  start: 'top 50%',
+                  end: 'bottom 50%',
+                  scrub: true
+                }
+              }
+            )
+          })
+        }
+      })
     })
 
-    return () => ctx.revert()
+    return () => ctx?.revert()
   }, [events.length])
 
   return (

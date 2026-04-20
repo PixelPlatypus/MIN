@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { sanitizeHtml } from '@/lib/sanitize'
 import { Calendar, MapPin, ArrowRight, Video, PlayCircle } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
@@ -144,10 +145,13 @@ export default async function EventDetailPage({ params }) {
           {/* Cover Image */}
           {event.cover_url && (
             <div className="aspect-[21/9] w-full rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-border dark:border-white/10 shadow-lg relative bg-bg-secondary dark:bg-white/5">
-              <img 
+              <Image 
                 src={event.cover_url} 
                 alt={event.title} 
+                fill
+                priority
                 className="w-full h-full object-cover"
+                sizes="(max-width: 1024px) 100vw, 896px"
               />
             </div>
           )}
@@ -276,8 +280,14 @@ export default async function EventDetailPage({ params }) {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {event.gallery_urls.map((url, i) => (
-                  <div key={i} className="aspect-square rounded-3xl overflow-hidden glass border border-border dark:border-white/10 hover:-translate-y-1 transition-transform cursor-pointer">
-                    <img src={url} alt={`Gallery ${i+1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                  <div key={i} className="aspect-square rounded-3xl overflow-hidden glass border border-border dark:border-white/10 hover:-translate-y-1 transition-transform cursor-pointer relative">
+                    <Image 
+                      src={url} 
+                      alt={`Gallery ${i+1}`} 
+                      fill
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" 
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 300px"
+                    />
                   </div>
                 ))}
               </div>

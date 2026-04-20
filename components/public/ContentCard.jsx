@@ -1,7 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { FileText, FileDown, ArrowRight, User, Calendar, Tag } from 'lucide-react'
+import { FileText, FileDown, ArrowRight, User, Tag } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -12,16 +11,10 @@ const typeIcons = {
   'RESOURCE': <FileDown className="text-orange" />,
 }
 
-export default function ContentCard({ item, index }) {
-  const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [] } = item
-  const [settings, setSettings] = useState(null)
+const DEFAULT_COVER = 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'
 
-  useEffect(() => {
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('ContentCard settings load error', err))
-  }, [])
+export default function ContentCard({ item, index, fallbackImage }) {
+  const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [] } = item
 
   const icon = typeIcons[type] || <FileText className="text-primary" />
 
@@ -35,13 +28,13 @@ export default function ContentCard({ item, index }) {
       className="group h-full"
     >
       <Link href={`/content/${slug}`} className="block h-full">
-        <div className="relative glass bg-white/60 dark:bg-white/5 backdrop-blur-2xl rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/40 dark:border-white/10 hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 group">
+        <div className="relative glass rounded-[2.5rem] overflow-hidden flex flex-col h-full hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 group">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
           <div className="relative z-10 flex flex-col h-full w-full">
             {/* Cover Image */}
             <div className="aspect-[16/10] relative overflow-hidden">
               <Image 
-                src={cover_url || settings?.default_notice_image || 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'} 
+                src={cover_url || fallbackImage || DEFAULT_COVER} 
                 alt={title}
                 fill
                 className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"

@@ -2,7 +2,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Image as ImageIcon, Loader2, Filter, Maximize2 } from 'lucide-react'
-import Lightbox from 'yet-another-react-lightbox'
+import Image from 'next/image'
+import dynamic from 'next/dynamic'
+// Lightbox is dynamically loaded to reduce main-thread work
+const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
 import 'yet-another-react-lightbox/styles.css'
 import { captureEvent } from '@/lib/analytics'
 
@@ -133,10 +136,12 @@ export default function GalleryPage() {
                       captureEvent('gallery_image_opened', { caption: image.caption, album: image.album })
                     }}
                   >
-                    <img 
+                    <Image 
                       src={image.image_url || image.url} 
                       alt={image.caption || 'Gallery Image'} 
+                      fill
                       className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8 space-y-3">
                       <div className="flex flex-wrap gap-1 mb-2">

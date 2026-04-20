@@ -1,11 +1,8 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+// GSAP and ScrollTrigger are dynamically loaded inside useEffect
 import { Users, Trophy, BookOpen, Clock } from 'lucide-react'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const stats = [
   { label: 'Students Reached', value: 1400, suffix: '+', icon: <Users size={28} />, theme: 'primary' },
@@ -36,32 +33,42 @@ export default function StatsCounter() {
     if (!settings) return
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    const ctx = gsap.context(() => {
-      const counts = containerRef.current.querySelectorAll('.stat-value')
+    let ctx;
+
+    // Load GSAP dynamically to improve TBT and main-thread work
+    Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger')
+    ]).then(([{ default: gsap }, { ScrollTrigger }]) => {
+      gsap.registerPlugin(ScrollTrigger)
       
-      counts.forEach((count, i) => {
-        const target = dynamicStats[i].value
-        if (prefersReducedMotion) {
-          count.innerText = target
-        } else {
-          gsap.fromTo(count, 
-            { innerText: 0 },
-            { 
-              innerText: target,
-              duration: 2,
-              snap: { innerText: 1 },
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: count,
-                start: 'top 85%',
+      ctx = gsap.context(() => {
+        const counts = containerRef.current.querySelectorAll('.stat-value')
+        
+        counts.forEach((count, i) => {
+          const target = dynamicStats[i].value
+          if (prefersReducedMotion) {
+            count.innerText = target
+          } else {
+            gsap.fromTo(count, 
+              { innerText: 0 },
+              { 
+                innerText: target,
+                duration: 2,
+                snap: { innerText: 1 },
+                ease: 'power2.out',
+                scrollTrigger: {
+                  trigger: count,
+                  start: 'top 85%',
+                }
               }
-            }
-          )
-        }
+            )
+          }
+        })
       })
     })
 
-    return () => ctx.revert()
+    return () => ctx?.revert()
   }, [settings])
 
   return (
@@ -84,7 +91,7 @@ export default function StatsCounter() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: i * 0.1 }}
             viewport={{ once: true }}
-            className="relative glass bg-white/60 dark:bg-white/5 backdrop-blur-2xl rounded-[2.5rem] p-8 hover:shadow-2xl transition-all duration-500 border border-white/40 dark:border-white/10 group hover:-translate-y-2 overflow-hidden"
+            className="relative glass rounded-[2.5rem] p-8 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 overflow-hidden will-change-transform"
           >
             <div className={`absolute inset-0 bg-gradient-to-br from-${stat.theme}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0`} />
             <div className="relative z-10 flex flex-col h-full w-full">

@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import gsap from 'gsap'
+// GSAP is dynamically loaded inside useEffect to reduce main-thread work
 import { ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
@@ -20,31 +20,35 @@ export default function Hero() {
     if (!settings) return
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    const ctx = gsap.context(() => {
-      // GSAP text stagger animation
-      if (headlineRef.current) {
-        const words = headlineRef.current.querySelectorAll('.word')
-        if (prefersReducedMotion) {
-          gsap.set(words, { y: 0, opacity: 1, rotate: 0 })
-        } else {
-          gsap.fromTo(words, 
-            { y: 80, opacity: 0, rotate: 4 },
-            { 
-              y: 0, 
-              opacity: 1, 
-              rotate: 0,
-              stagger: 0.12, 
-              duration: 1.2, 
-              ease: 'power4.out',
-              delay: 0.3 
-            }
-          )
+    let ctx;
+    
+    // Dynamic import to keep main thread light during initial load
+    import('gsap').then(({ default: gsap }) => {
+      ctx = gsap.context(() => {
+        if (headlineRef.current) {
+          const words = headlineRef.current.querySelectorAll('.word')
+          if (prefersReducedMotion) {
+            gsap.set(words, { y: 0, opacity: 1, rotate: 0 })
+          } else {
+            gsap.fromTo(words, 
+              { y: 80, opacity: 0, rotate: 4 },
+              { 
+                y: 0, 
+                opacity: 1, 
+                rotate: 0,
+                stagger: 0.12, 
+                duration: 1.2, 
+                ease: 'power4.out',
+                delay: 0.3 
+              }
+            )
+          }
         }
-      }
+      })
     })
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx?.revert()
+  }, [settings])
 
   const splitText = (text) => {
     return text.split(' ').map((word, i) => (
@@ -62,7 +66,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.9, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="inline-flex items-center gap-2 bg-white/40 dark:bg-white/5 text-primary dark:text-secondary px-6 py-2.5 rounded-full text-xs font-bold mb-6 border border-primary/10 dark:border-white/10 backdrop-blur-xl shadow-xl shadow-black/5"
+            className="inline-flex items-center gap-2 glass px-6 py-2.5 rounded-full text-xs font-bold mb-6 shadow-xl will-change-transform"
           >
             <Sparkles size={16} className="text-secondary-dark" />
             <span className="uppercase tracking-[0.2em]">{settings?.hero_badge || "Global Innovation Award Winner"}</span>

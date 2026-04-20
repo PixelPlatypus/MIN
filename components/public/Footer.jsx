@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Facebook, Instagram, Linkedin, Youtube, Mail } from 'lucide-react'
 
@@ -58,10 +59,12 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 group mb-6">
               <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
-              <img 
+              <Image 
                 src={settings?.site_logo_url || "/images/logo.svg"} 
                 alt="MIN Logo" 
-                className="h-12 w-auto transition-transform group-hover:scale-105" 
+                width={48}
+                height={48}
+                className="h-12 w-12 transition-transform group-hover:scale-105 object-contain" 
               />
             </Link>
             <p className="text-dynamic max-w-sm mb-8 opacity-80">

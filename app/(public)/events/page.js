@@ -118,7 +118,7 @@ export default function EventsPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {upcomingEvents.map((event, i) => (
-                    <EventCard key={event.id} event={event} index={i} />
+                    <EventCard key={event.id} event={event} index={i} fallbackImage={settings?.default_event_cover} />
                   ))}
                 </div>
               </div>
@@ -132,7 +132,7 @@ export default function EventsPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {pastEvents.map((event, i) => (
-                    <EventCard key={event.id} event={event} index={i} />
+                    <EventCard key={event.id} event={event} index={i} fallbackImage={settings?.default_event_cover} />
                   ))}
                 </div>
               </div>

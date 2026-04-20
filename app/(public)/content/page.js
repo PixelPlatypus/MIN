@@ -18,6 +18,15 @@ export default function ContentLibraryPage() {
   const [loading, setLoading] = useState(true)
   const [activeType, setActiveType] = useState('ALL')
   const [search, setSearch] = useState('')
+  const [fallbackImage, setFallbackImage] = useState(null)
+
+  useEffect(() => {
+    // Fetch settings once for the whole page — avoids N+1 per card
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setFallbackImage(data?.default_notice_image || null))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     async function fetchContent() {
@@ -125,7 +134,7 @@ export default function ContentLibraryPage() {
           >
             <AnimatePresence mode="popLayout">
               {filteredContent.map((item, i) => (
-                <ContentCard key={item.id} item={item} index={i} />
+                <ContentCard key={item.id} item={item} index={i} fallbackImage={fallbackImage} />
               ))}
             </AnimatePresence>
           </motion.div>

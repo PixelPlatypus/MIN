@@ -135,6 +135,7 @@ export default function TeamPage() {
                   key={member.id} 
                   member={member} 
                   index={i}
+                  fallbackImage={settings?.default_team_photo}
                 />
               ))}
             </AnimatePresence>

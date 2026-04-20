@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
+import Image from 'next/image'
 import ThemeToggle from '@/components/shared/ThemeToggle'
 
 const navLinks = [
@@ -50,9 +51,12 @@ export default function Navbar() {
         }`}>
           <Link href="/" className="flex items-center gap-2 group">
             <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
-            <img 
+            <Image 
               src={settings?.site_logo_url || "/images/logo.svg"} 
               alt="MIN Logo" 
+              width={40}
+              height={40}
+              priority
               className="h-10 w-10 p-1 bg-white dark:bg-white/10 rounded-full border border-black/5 dark:border-white/10 object-contain transition-transform group-hover:scale-105" 
             />
           </Link>

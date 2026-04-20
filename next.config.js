@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['isomorphic-dompurify', 'dompurify', 'cloudinary', 'resend'],
+  transpilePackages: ['isomorphic-dompurify', 'dompurify', 'resend'],
+  swcMinify: true,
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
@@ -81,8 +82,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: [
       'lucide-react', 
-      'framer-motion', 
-      'gsap'
+      'framer-motion',
     ],
   },
 }

@@ -50,7 +50,7 @@ export default function Recognition() {
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto bg-secondary hover:bg-secondary-dark text-[#16556D] px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-secondary/20 hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-1 active:scale-[0.98]"
               >
-                Learn More
+                Explore Recognition
                 <ArrowRight size={20} />
               </a>
               <Link 

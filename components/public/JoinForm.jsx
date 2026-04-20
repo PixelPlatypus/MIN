@@ -283,7 +283,7 @@ export default function JoinForm() {
               <button
                 key={cat.id}
                 onClick={() => handleCategorySelect(cat.id)}
-                className={`relative flex flex-col items-center text-center p-10 rounded-[3.5rem] border-2 transition-all duration-500 group hover:shadow-2xl hover:-translate-y-2 ${cat.borderColor} ${cat.hoverBorder} bg-white/70 dark:bg-white/5 backdrop-blur-2xl overflow-hidden`}
+                className={`relative flex flex-col items-center text-center p-10 rounded-[3.5rem] border-2 transition-all duration-500 group hover:shadow-2xl hover:-translate-y-2 ${cat.borderColor} ${cat.hoverBorder} glass overflow-hidden`}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${cat.gradient} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
                 <div className="relative z-10 flex flex-col items-center">
@@ -305,7 +305,7 @@ export default function JoinForm() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             onSubmit={handleSubmit}
-            className="glass bg-white/40 dark:bg-white/5 backdrop-blur-3xl rounded-[3.5rem] p-10 md:p-16 space-y-12 relative overflow-hidden shadow-2xl border border-white/50 dark:border-white/10"
+            className="glass rounded-[3.5rem] p-10 md:p-16 space-y-12 relative overflow-hidden shadow-2xl"
           >
             <div className="flex items-center justify-between relative z-10">
               <button 
