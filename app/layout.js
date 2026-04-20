@@ -27,6 +27,9 @@ export const metadata = {
     default: 'MIN | Mathematics Initiatives in Nepal'
   },
   description: 'Making mathematics accessible, engaging, and inspiring for all students in Nepal.',
+  alternates: {
+    canonical: '/',
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -42,7 +45,7 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_NP',
-    url: 'https://mathsinitiatives.org.np',
+    url: './',
     siteName: 'MIN',
     title: 'Mathematics Initiatives in Nepal',
     description: 'Empowering students across Nepal to excel globally through innovative mathematics education.',
