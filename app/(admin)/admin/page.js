@@ -14,51 +14,79 @@ export default async function AdminDashboard() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Fetch real-time stats
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  const dateStr = sevenDaysAgo.toISOString()
+
+  // Fetch real-time stats and growth
   const [
     { count: contentCount },
+    { count: newContentCount },
     { count: eventsCount },
+    { count: newEventsCount },
     { count: teamCount },
+    { count: newTeamCount },
     { count: applicationsCount },
+    { count: newAppsCount },
     { data: recentAudit }
   ] = await Promise.all([
     supabase.from('content').select('*', { count: 'exact', head: true }),
+    supabase.from('content').select('*', { count: 'exact', head: true }).gt('created_at', dateStr),
     supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'PUBLISHED'),
+    supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'PUBLISHED').gt('created_at', dateStr),
     supabase.from('team_members').select('*', { count: 'exact', head: true }).eq('is_active', true),
+    supabase.from('team_members').select('*', { count: 'exact', head: true }).eq('is_active', true).gt('created_at', dateStr),
     supabase.from('join_applications').select('*', { count: 'exact', head: true }).eq('status', 'PENDING'),
+    supabase.from('join_applications').select('*', { count: 'exact', head: true }).eq('status', 'PENDING').gt('created_at', dateStr),
     supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(5)
   ])
+
+  // Helper to calculate pseudo-trend
+  const getTrend = (newItemCount, total) => {
+    if (!total || total === 0) return { change: '0', trend: 'neutral' }
+    if (!newItemCount || newItemCount === 0) return { change: '0', trend: 'neutral' }
+    const percent = Math.round((newItemCount / (total - newItemCount || 1)) * 100)
+    return { 
+      change: `+${percent}%`, 
+      trend: percent > 0 ? 'up' : 'neutral' 
+    }
+  }
+
+  const contentTrend = getTrend(newContentCount, contentCount)
+  const eventTrend = getTrend(newEventsCount, eventsCount)
+  const teamTrend = getTrend(newTeamCount, teamCount)
+  const appTrend = { change: `+${newAppsCount || 0}`, trend: (newAppsCount || 0) > 0 ? 'up' : 'neutral' }
 
   const stats = [
     { 
       label: 'Total Content', 
       value: contentCount || 0, 
-      change: '+0%', 
-      trend: 'neutral', 
+      change: contentTrend.change, 
+      trend: contentTrend.trend, 
       icon: <FileText className="text-primary" />,
       color: 'bg-primary/10'
     },
     { 
       label: 'Active Events', 
       value: eventsCount || 0, 
-      change: '+0', 
-      trend: 'neutral', 
+      change: eventTrend.change, 
+      trend: eventTrend.trend, 
       icon: <Calendar className="text-cyan" />,
       color: 'bg-cyan/10'
     },
     { 
       label: 'Team Members', 
       value: teamCount || 0, 
-      change: '0', 
-      trend: 'neutral', 
+      change: teamTrend.change, 
+      trend: teamTrend.trend, 
       icon: <Users className="text-purple" />,
       color: 'bg-purple/10'
     },
     { 
       label: 'New Applications', 
       value: applicationsCount || 0, 
-      change: '0', 
-      trend: 'neutral', 
+      change: appTrend.change, 
+      trend: appTrend.trend, 
       icon: <TrendingUp className="text-green" />,
       color: 'bg-green/10'
     },
@@ -70,7 +98,7 @@ export default async function AdminDashboard() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">Welcome back, {user?.email?.split('@')[0]}</h2>
           <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
-            Here's what's happening with MIN today.
+            Here's what's happening with MIN this week.
           </p>
         </div>
         <div className="flex items-center gap-3">

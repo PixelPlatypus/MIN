@@ -144,8 +144,7 @@ export default function SiteEditor() {
     mission_badge: '', mission_title: '', mission_description: '', mission_image_url: '',
     programs_title: '', programs_subtitle: '',
     stats_title: '', stats_subtitle: '',
-    footer_description: '', stat_students_count: 0,
-    stat_volunteers_count: 0, stat_programs_count: 0, stat_years_count: 0,
+    footer_description: '', stat_students_count: '', stat_volunteers_count: '', stat_programs_count: '', stat_years_count: '',
     about_hero_title: '', about_hero_description: '', about_vision_text: '',
     about_mission_text: '', about_rec_title: '', about_rec_description: '',
     about_rec_badge_title: '', about_rec_badge_desc: '',
@@ -353,10 +352,10 @@ export default function SiteEditor() {
                           <InputField label="Section Subtitle" value={settings.stats_subtitle} onChange={e => setSettings(prev => ({...prev, stats_subtitle: e.target.value}))} />
                        </div>
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
-                          <InputField label="Active Students" type="number" value={settings.stat_students_count} onChange={e => setSettings(prev => ({...prev, stat_students_count: parseInt(e.target.value) || 0}))} />
-                          <InputField label="Global Volunteers" type="number" value={settings.stat_volunteers_count} onChange={e => setSettings(prev => ({...prev, stat_volunteers_count: parseInt(e.target.value) || 0}))} />
-                          <InputField label="Ed. Programs" type="number" value={settings.stat_programs_count} onChange={e => setSettings(prev => ({...prev, stat_programs_count: parseInt(e.target.value) || 0}))} />
-                          <InputField label="Years Active" type="number" value={settings.stat_years_count} onChange={e => setSettings(prev => ({...prev, stat_years_count: parseInt(e.target.value) || 0}))} />
+                          <InputField label="Active Students" type="text" value={settings.stat_students_count} onChange={e => setSettings(prev => ({...prev, stat_students_count: e.target.value}))} />
+                          <InputField label="Global Volunteers" type="text" value={settings.stat_volunteers_count} onChange={e => setSettings(prev => ({...prev, stat_volunteers_count: e.target.value}))} />
+                          <InputField label="Ed. Programs" type="text" value={settings.stat_programs_count} onChange={e => setSettings(prev => ({...prev, stat_programs_count: e.target.value}))} />
+                          <InputField label="Years Active" type="text" value={settings.stat_years_count} onChange={e => setSettings(prev => ({...prev, stat_years_count: e.target.value}))} />
                        </div>
                     </SettingSection>
 

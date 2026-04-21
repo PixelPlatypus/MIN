@@ -23,10 +23,10 @@ export default function StatsCounter() {
   }, [])
 
   const dynamicStats = [
-    { label: 'Students Reached', value: settings?.stat_students_count || 1400, suffix: '+', icon: <Users size={28} />, theme: 'primary' },
-    { label: 'Volunteers', value: settings?.stat_volunteers_count || 50, suffix: '+', icon: <Clock size={28} />, theme: 'cyan' },
-    { label: 'Programs', value: settings?.stat_programs_count || 15, suffix: '+', icon: <BookOpen size={28} />, theme: 'purple' },
-    { label: 'Years of Impact', value: settings?.stat_years_count || 5, suffix: '+', icon: <Trophy size={28} />, theme: 'coral' },
+    { label: 'Students Reached', value: settings?.stat_students_count || 1400, suffix: '', icon: <Users size={28} />, theme: 'primary' },
+    { label: 'Volunteers', value: settings?.stat_volunteers_count || 50, suffix: '', icon: <Clock size={28} />, theme: 'cyan' },
+    { label: 'Programs', value: settings?.stat_programs_count || 15, suffix: '', icon: <BookOpen size={28} />, theme: 'purple' },
+    { label: 'Years of Impact', value: settings?.stat_years_count || 5, suffix: '', icon: <Trophy size={28} />, theme: 'coral' },
   ]
 
   useEffect(() => {
@@ -46,23 +46,32 @@ export default function StatsCounter() {
         const counts = containerRef.current.querySelectorAll('.stat-value')
         
         counts.forEach((count, i) => {
-          const target = dynamicStats[i].value
-          if (prefersReducedMotion) {
-            count.innerText = target
+          const rawValue = dynamicStats[i].value.toString().trim()
+          
+          // Extract numeric part and unit (e.g., "20.5" and "K+")
+          const match = rawValue.match(/^([0-9,.]+)\s*(.*)$/)
+          
+          if (prefersReducedMotion || !match) {
+            count.innerText = rawValue
           } else {
-            gsap.fromTo(count, 
-              { innerText: 0 },
-              { 
-                innerText: target,
-                duration: 2,
-                snap: { innerText: 1 },
-                ease: 'power2.out',
-                scrollTrigger: {
-                  trigger: count,
-                  start: 'top 85%',
-                }
+            const numValue = parseFloat(match[1].replace(/,/g, ''))
+            const unit = match[2] || ""
+            
+            const obj = { val: 0 }
+            gsap.to(obj, {
+              val: numValue,
+              duration: 2,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: count,
+                start: 'top 85%',
+              },
+              onUpdate: () => {
+                // Formatting back with comma if needed, or just floor
+                const current = Math.floor(obj.val)
+                count.innerText = current.toLocaleString() + unit
               }
-            )
+            })
           }
         })
       })

@@ -119,7 +119,7 @@ export default function AdminTopbar({ profile }) {
             onClick={() => setIsOpen(!isOpen)}
             className="w-10 h-10 bg-white dark:bg-bg-dark border border-border dark:border-border-dark rounded-xl flex items-center justify-center relative hover:bg-bg-secondary dark:hover:bg-white/5 transition-colors shadow-sm"
           >
-            <Bell size={18} className="text-text-primary" />
+            <Bell size={18} className="text-dynamic" />
             {actualUnreadCount > 0 && (
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-coral rounded-full ring-2 ring-white dark:ring-bg-dark" />
             )}

@@ -563,18 +563,18 @@ WHERE id = 'main';
 
 -- Add stats fields to site_settings
 ALTER TABLE site_settings 
-ADD COLUMN IF NOT EXISTS stat_students_count INTEGER DEFAULT 1400,
-ADD COLUMN IF NOT EXISTS stat_volunteers_count INTEGER DEFAULT 50,
-ADD COLUMN IF NOT EXISTS stat_programs_count INTEGER DEFAULT 15,
-ADD COLUMN IF NOT EXISTS stat_years_count INTEGER DEFAULT 5;
+ADD COLUMN IF NOT EXISTS stat_students_count TEXT DEFAULT '1400',
+ADD COLUMN IF NOT EXISTS stat_volunteers_count TEXT DEFAULT '50',
+ADD COLUMN IF NOT EXISTS stat_programs_count TEXT DEFAULT '15',
+ADD COLUMN IF NOT EXISTS stat_years_count TEXT DEFAULT '5';
 
 -- Update the main row with these defaults
 UPDATE site_settings 
 SET 
-  stat_students_count = 1400,
-  stat_volunteers_count = 50,
-  stat_programs_count = 15,
-  stat_years_count = 5
+  stat_students_count = '1400',
+  stat_volunteers_count = '50',
+  stat_programs_count = '15',
+  stat_years_count = '5'
 WHERE id = 'main';
 
 
@@ -1502,3 +1502,17 @@ UPDATE public.content
 SET display_order = numbered_content.row_num
 FROM numbered_content
 WHERE public.content.id = numbered_content.id;
+
+-- ============================================================
+-- Migration: Update Stats To Text (20260421130000)
+-- ============================================================
+-- Change impact stat columns from INTEGER to TEXT to support labels like "20K+", "50+", etc.
+DO $$ BEGIN
+  ALTER TABLE public.site_settings 
+    ALTER COLUMN stat_students_count TYPE TEXT USING stat_students_count::TEXT,
+    ALTER COLUMN stat_volunteers_count TYPE TEXT USING stat_volunteers_count::TEXT,
+    ALTER COLUMN stat_programs_count TYPE TEXT USING stat_programs_count::TEXT,
+    ALTER COLUMN stat_years_count TYPE TEXT USING stat_years_count::TEXT;
+EXCEPTION
+  WHEN undefined_column THEN null;
+END $$;
