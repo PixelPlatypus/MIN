@@ -139,17 +139,20 @@ create table public.content (
   id              uuid primary key default gen_random_uuid(),
   title           text not null,
   slug            text unique not null,
-  type            text not null check (type in ('ARTICLE','PROBLEM','BLOG','RESOURCE')),
-  content_type    text not null check (content_type in ('RICHTEXT','PDF')),
+  type            text not null check (type in ('ARTICLE','PROBLEM','BLOG','RESOURCE','VIDEO')),
+  content_type    text not null check (content_type in ('RICHTEXT','PDF','VIDEO','LINK')),
   body            text,                  -- Rich text HTML (if content_type = RICHTEXT)
   pdf_url         text,                  -- Cloudinary URL (if content_type = PDF)
   pdf_filename    text,                  -- Display name for the PDF
+  video_url       text,                  -- YouTube URL (if type = VIDEO)
+  video_metadata  jsonb default '{}',     -- { is_playlist, video_id, video_count }
   excerpt         text,
-  cover_url       text,                  -- Cloudinary URL
+  cover_url       text,                  -- Cloudinary/YouTube thumbnail URL
   tags            text[] default '{}',
   author_name     text,
   status          text default 'DRAFT' check (status in ('DRAFT','PUBLISHED','ARCHIVED')),
   submitted_by    uuid references public.profiles(id),
+  display_order   integer default 0,
   published_at    timestamptz,
   created_at      timestamptz default now(),
   updated_at      timestamptz default now()
@@ -1464,3 +1467,38 @@ ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS updated_by_name TEXT;
 -- ============================================================
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS site_logo_url TEXT;
 
+-- ============================================================
+-- Migration: Add Video To Content (20260421110000)
+-- ============================================================
+ALTER TABLE public.content ADD COLUMN IF NOT EXISTS video_url TEXT;
+ALTER TABLE public.content ADD COLUMN IF NOT EXISTS video_metadata JSONB DEFAULT '{}';
+
+-- Safely update constraints to include 'VIDEO'
+DO $$ BEGIN
+  ALTER TABLE public.content DROP CONSTRAINT IF EXISTS content_type_check;
+  ALTER TABLE public.content ADD CONSTRAINT content_type_check CHECK (type IN ('ARTICLE', 'PROBLEM', 'BLOG', 'RESOURCE', 'VIDEO'));
+EXCEPTION
+  WHEN undefined_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.content DROP CONSTRAINT IF EXISTS content_content_type_check;
+  ALTER TABLE public.content ADD CONSTRAINT content_content_type_check CHECK (content_type IN ('RICHTEXT', 'PDF', 'VIDEO', 'LINK'));
+EXCEPTION
+  WHEN undefined_object THEN null;
+END $$;
+
+-- ============================================================
+-- Migration: Add Display Order To Content (20260421120000)
+-- ============================================================
+ALTER TABLE public.content ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
+
+-- Initialize display_order to preserve history for existing records
+WITH numbered_content AS (
+  SELECT id, ROW_NUMBER() OVER (ORDER BY created_at DESC) as row_num
+  FROM public.content
+)
+UPDATE public.content
+SET display_order = numbered_content.row_num
+FROM numbered_content
+WHERE public.content.id = numbered_content.id;

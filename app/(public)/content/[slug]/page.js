@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, User, Calendar, Tag, FileDown, Loader2 } from 'lucide-react'
+import { ArrowLeft, User, Calendar, Tag, FileDown, Loader2, Video } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import ContentRenderer from '@/components/public/ContentRenderer'
@@ -54,7 +54,7 @@ export default function ContentDetailPage() {
     )
   }
 
-  const { title, type, content_type, body, pdf_url, pdf_filename, excerpt, cover_url, author_name, published_at, tags = [] } = content
+  const { title, type, content_type, body, pdf_url, pdf_filename, video_url, video_metadata, excerpt, cover_url, author_name, published_at, tags = [] } = content
 
   return (
     <div className="pt-32 pb-24">
@@ -112,19 +112,21 @@ export default function ContentDetailPage() {
           </div>
 
           {/* Featured Image */}
-          <div className="aspect-[21/9] rounded-[3rem] overflow-hidden shadow-2xl relative">
-            <img 
-              src={cover_url || 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'} 
-              alt={title} 
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {content_type !== 'VIDEO' && (
+            <div className="aspect-[21/9] rounded-[3rem] overflow-hidden shadow-2xl relative transition-all">
+              <img 
+                src={cover_url || 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'} 
+                alt={title} 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
 
           {/* Content Body */}
           <div className="max-w-4xl mx-auto space-y-12">
             {content_type === 'RICHTEXT' ? (
                 <ContentRenderer html={body} />
-              ) : (
+              ) : content_type === 'PDF' ? (
                 <div className="space-y-8">
                   {/* PDF Viewer */}
                   <div className="glass rounded-[2rem] overflow-hidden border border-border dark:border-border-dark aspect-[3/4] md:aspect-[8.5/11] bg-bg-secondary shadow-inner relative group">
@@ -184,6 +186,36 @@ export default function ContentDetailPage() {
                       Download {pdf_filename || 'PDF Document'}
                     </a>
                   </div>
+                </div>
+              ) : (
+                <div className="space-y-12">
+                   {/* Video Player */}
+                   <div className="aspect-video rounded-[2.5rem] overflow-hidden glass border border-primary/10 shadow-2xl relative bg-black">
+                    {video_url && (
+                      <iframe
+                        src={
+                          video_url.includes('playlist?list=') 
+                            ? `https://www.youtube.com/embed/videoseries?list=${video_url.split('list=')[1]?.split('&')[0]}`
+                            : `https://www.youtube.com/embed/${video_url.includes('v=') ? video_url.split('v=')[1]?.split('&')[0] : video_url.split('youtu.be/')[1]?.split('?')[0]}`
+                        }
+                        className="absolute inset-0 w-full h-full"
+                        allowFullScreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      />
+                    )}
+                   </div>
+                   
+                   {excerpt && (
+                     <div className="glass rounded-[2.5rem] p-8 md:p-12 border border-primary/10 bg-primary/5">
+                        <div className="flex items-center gap-3 mb-6 text-primary">
+                          <Video size={24} />
+                          <h3 className="text-xl font-bold">Video Summary / Excerpt</h3>
+                        </div>
+                        <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                          {excerpt}
+                        </p>
+                     </div>
+                   )}
                 </div>
               )}
 

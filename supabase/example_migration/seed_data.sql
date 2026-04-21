@@ -145,3 +145,57 @@ SET
   role = 'ADMIN',
   username = 'admin'
 WHERE email = 'admin@mathsinitiatives.org.np';
+
+-- 8. Sample Content (Articles, PDFs, Videos)
+INSERT INTO public.content (
+  title, 
+  slug, 
+  type, 
+  content_type, 
+  excerpt, 
+  author_name, 
+  status, 
+  display_order,
+  video_url,
+  video_metadata,
+  cover_url
+) VALUES
+(
+  'Introduction to Modular Arithmetic', 
+  'intro-modular-arithmetic', 
+  'ARTICLE', 
+  'RICHTEXT', 
+  'Learn the fundamentals of modular arithmetic and its applications in competitive mathematics.', 
+  'MIN Academic Team', 
+  'PUBLISHED', 
+  1,
+  NULL,
+  '{}',
+  'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070'
+),
+(
+  'JMOC 2024 Geometry Problem Set', 
+  'jmoc-2024-geometry', 
+  'PROBLEM', 
+  'PDF', 
+  'The complete geometry problem set from the 2024 Junior Mathematics Olympiad Camp.', 
+  'Academic Committee', 
+  'PUBLISHED', 
+  2,
+  NULL,
+  '{}',
+  'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070'
+),
+(
+  'Mastering Number Theory - Part 1', 
+  'mastering-number-theory-1', 
+  'VIDEO', 
+  'VIDEO', 
+  'A full lecture on essential number theory concepts for math olympiads.', 
+  'MIN Video Team', 
+  'PUBLISHED', 
+  3,
+  'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+  '{"video_id": "dQw4w9WgXcQ", "is_playlist": false}',
+  'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
+);

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Save, ArrowLeft, Loader2, AlertCircle, ImageIcon, FileText, FileDown, Plus, X } from 'lucide-react'
+import { Save, ArrowLeft, Loader2, AlertCircle, ImageIcon, FileText, FileDown, Plus, X, Video } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -15,11 +15,13 @@ import { createClient } from '@/lib/supabase/client'
 const contentSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters'),
   slug: z.string().min(2, 'Slug must be at least 2 characters'),
-  type: z.enum(['ARTICLE', 'PROBLEM', 'BLOG', 'RESOURCE']),
-  content_type: z.enum(['RICHTEXT', 'PDF']),
+  type: z.enum(['ARTICLE', 'PROBLEM', 'BLOG', 'RESOURCE', 'VIDEO']),
+  content_type: z.enum(['RICHTEXT', 'PDF', 'VIDEO']),
   body: z.string().optional(),
   pdf_url: z.string().optional(),
   pdf_filename: z.string().optional(),
+  video_url: z.string().optional(),
+  video_metadata: z.record(z.any()).optional(),
   published_date: z.string().optional(),
   excerpt: z.string().optional(),
   cover_url: z.string().optional(),
@@ -50,6 +52,8 @@ export default function ContentForm({ initialData = null }) {
       body: '',
       pdf_url: '',
       pdf_filename: '',
+      video_url: '',
+      video_metadata: {},
       published_at: new Date().toISOString().split('T')[0],
       excerpt: '',
       cover_url: '',
@@ -142,18 +146,23 @@ export default function ContentForm({ initialData = null }) {
           <div className="lg:col-span-2 space-y-8">
             <div className="glass rounded-[2rem] p-8 space-y-6">
               <div className="flex p-1 bg-bg-secondary dark:bg-white/5 rounded-2xl border border-border dark:border-border-dark">
-                {['RICHTEXT', 'PDF'].map((mode) => (
+                {['RICHTEXT', 'PDF', 'VIDEO'].map((mode) => (
                   <button
                     key={mode}
                     type="button"
-                    onClick={() => setValue('content_type', mode)}
+                    onClick={() => {
+                      setValue('content_type', mode)
+                      if (mode === 'VIDEO') {
+                        setValue('type', 'VIDEO')
+                      }
+                    }}
                     className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold transition-all ${
                       watch('content_type') === mode 
                         ? 'bg-white dark:bg-white/10 shadow-sm text-primary' 
                         : 'text-text-tertiary hover:text-text-secondary'
                     }`}
                   >
-                    {mode === 'RICHTEXT' ? 'Rich Text Editor' : 'PDF Document'}
+                    {mode === 'RICHTEXT' ? 'Rich Text Editor' : mode === 'PDF' ? 'PDF Document' : 'Video Content'}
                   </button>
                 ))}
               </div>
@@ -190,7 +199,7 @@ export default function ContentForm({ initialData = null }) {
                 </div>
               </div>
 
-              {watch('content_type') === 'RICHTEXT' ? (
+              {watch('content_type') === 'RICHTEXT' && (
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1 text-primary lowercase tracking-wider opacity-60">Content Body</label>
                   <TipTapEditor 
@@ -198,7 +207,9 @@ export default function ContentForm({ initialData = null }) {
                     onChange={(html) => setValue('body', html)} 
                   />
                 </div>
-              ) : (
+              )}
+
+              {watch('content_type') === 'PDF' && (
                 <div className="space-y-6 pt-4 p-8 bg-bg-secondary dark:bg-white/5 rounded-3xl border border-dashed border-primary/20">
                   <div className="space-y-2 text-center">
                     <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -241,6 +252,75 @@ export default function ContentForm({ initialData = null }) {
                 </div>
               )}
 
+              {watch('content_type') === 'VIDEO' && (
+                <div className="space-y-6 pt-4 p-8 bg-bg-secondary dark:bg-white/5 rounded-3xl border border-dashed border-primary/20">
+                  <div className="space-y-2 text-center">
+                    <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Video size={32} />
+                    </div>
+                    <h4 className="font-bold">YouTube Video / Playlist</h4>
+                    <p className="text-xs text-text-tertiary">Enter a YouTube link to automatically fetch thumbnail and data.</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary ml-1">YouTube URL</label>
+                    <input 
+                      {...register('video_url')}
+                      placeholder="https://www.youtube.com/watch?v=... or https://youtube.com/playlist?list=..."
+                      className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      onChange={async (e) => {
+                        const url = e.target.value
+                        setValue('video_url', url)
+                        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                          let videoId = ''
+                          let playlistId = ''
+                          
+                          if (url.includes('list=')) {
+                            playlistId = url.split('list=')[1]?.split('&')[0]
+                          } else if (url.includes('v=')) {
+                            videoId = url.split('v=')[1]?.split('&')[0]
+                          } else if (url.includes('youtu.be/')) {
+                            videoId = url.split('youtu.be/')[1]?.split('?')[0]
+                          }
+
+                          if (videoId) {
+                            setValue('cover_url', `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`)
+                            setValue('video_metadata', { ...watch('video_metadata'), is_playlist: false, video_id: videoId })
+                          } else if (playlistId) {
+                            try {
+                              const res = await fetch(`https://www.youtube.com/oembed?url=${url}&format=json`)
+                              if (res.ok) {
+                                const data = await res.json()
+                                if (data.thumbnail_url) setValue('cover_url', data.thumbnail_url)
+                                if (data.title && !watch('title')) setValue('title', data.title)
+                                setValue('video_metadata', { ...watch('video_metadata'), is_playlist: true, playlist_id: playlistId, title: data.title })
+                              }
+                            } catch (err) {
+                              console.error('Failed to fetch playlist metadata', err)
+                            }
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {watch('video_metadata')?.is_playlist && (
+                    <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary ml-1">Number of Videos in Playlist</label>
+                      <input 
+                        type="number"
+                        placeholder="e.g. 12"
+                        className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                        value={watch('video_metadata')?.video_count || ''}
+                        onChange={(e) => {
+                          setValue('video_metadata', { ...watch('video_metadata'), video_count: parseInt(e.target.value) || 0 })
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-2">
                 <label className="text-sm font-bold ml-1 text-primary lowercase tracking-wider opacity-60">Excerpt / Summary</label>
                 <textarea 
@@ -269,6 +349,7 @@ export default function ContentForm({ initialData = null }) {
                   <option value="PROBLEM">Problem</option>
                   <option value="BLOG">Blog Post</option>
                   <option value="RESOURCE">Resource</option>
+                  <option value="VIDEO">Video</option>
                 </select>
               </div>
 

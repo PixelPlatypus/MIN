@@ -12,7 +12,7 @@ export async function GET(request) {
   let query = supabase
     .from('content')
     .select('*')
-    .order('published_at', { ascending: false })
+    .order('display_order', { ascending: true })
 
   if (status) query = query.eq('status', status)
   if (type && type !== 'ALL') query = query.eq('type', type)
@@ -37,9 +37,19 @@ export async function POST(request) {
     body.status = 'DRAFT'
   }
 
+  // Find current min display_order to place new item at the top
+  const { data: minOrderData } = await supabase
+    .from('content')
+    .select('display_order')
+    .order('display_order', { ascending: true })
+    .limit(1)
+    .single()
+  
+  const nextOrder = minOrderData ? minOrderData.display_order - 1 : 1
+
   const { data, error: insertError } = await supabase
     .from('content')
-    .insert([{ ...body, submitted_by: user.id }])
+    .insert([{ ...body, display_order: nextOrder, submitted_by: user.id }])
     .select()
     .single()
 

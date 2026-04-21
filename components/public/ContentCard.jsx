@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { FileText, FileDown, ArrowRight, User, Tag } from 'lucide-react'
+import { FileText, FileDown, ArrowRight, User, Tag, Video, LayoutList } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -9,12 +9,13 @@ const typeIcons = {
   'PROBLEM': <Tag className="text-cyan" />,
   'BLOG': <FileText className="text-purple" />,
   'RESOURCE': <FileDown className="text-orange" />,
+  'VIDEO': <Video className="text-coral" />,
 }
 
 const DEFAULT_COVER = 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'
 
 export default function ContentCard({ item, index, fallbackImage }) {
-  const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [] } = item
+  const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [], video_metadata = {} } = item
 
   const icon = typeIcons[type] || <FileText className="text-primary" />
 
@@ -34,11 +35,17 @@ export default function ContentCard({ item, index, fallbackImage }) {
             {/* Cover Image */}
             <div className="aspect-[16/10] relative overflow-hidden">
               <Image 
-                src={cover_url || fallbackImage || DEFAULT_COVER} 
+                src={
+                  cover_url || 
+                  (content_type === 'VIDEO' && video_metadata?.video_id ? `https://img.youtube.com/vi/${video_metadata.video_id}/hqdefault.jpg` : 
+                  (content_type === 'VIDEO' && item.video_url?.includes('v=') ? `https://img.youtube.com/vi/${item.video_url.split('v=')[1]?.split('&')[0]}/hqdefault.jpg` :
+                  fallbackImage || DEFAULT_COVER))
+                } 
                 alt={title}
                 fill
-                className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                className={`object-cover transition-all duration-700 group-hover:scale-150 ${content_type === 'VIDEO' ? 'grayscale-0 scale-[1.35]' : 'grayscale-[20%] group-hover:grayscale-0 scale-100'}`}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                unoptimized={content_type === 'VIDEO'}
               />
               <div className="absolute top-4 left-4 z-20">
                 <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-white/90 dark:bg-black/80 text-primary border border-primary/10 backdrop-blur-md flex items-center gap-2">
@@ -51,6 +58,14 @@ export default function ContentCard({ item, index, fallbackImage }) {
                   <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-coral/90 text-white border border-coral/20 backdrop-blur-md flex items-center gap-2 shadow-lg">
                     <FileDown size={14} />
                     PDF
+                  </span>
+                </div>
+              )}
+              {content_type === 'VIDEO' && video_metadata?.is_playlist && video_metadata?.video_count > 0 && (
+                <div className="absolute bottom-4 right-4 z-20">
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-coral text-white border border-white/10 backdrop-blur-md flex items-center gap-2 shadow-lg">
+                    <LayoutList size={14} />
+                    {video_metadata.video_count} VIDEOS
                   </span>
                 </div>
               )}

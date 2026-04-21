@@ -2,6 +2,7 @@ import AdminSidebar from '@/components/admin/AdminSidebar'
 import AdminTopbar from '@/components/admin/AdminTopbar'
 import AdminLayoutClient from '@/components/admin/AdminLayoutClient'
 import { SidebarProvider } from '@/components/admin/SidebarProvider'
+import NetworkResilience from '@/components/shared/NetworkResilience'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -38,6 +39,7 @@ export default async function AdminLayout({ children }) {
 
   return (
     <SidebarProvider>
+      <NetworkResilience />
       <AdminLayoutClient 
         sidebar={<AdminSidebar profile={profile} />}
         topbar={<AdminTopbar profile={profile} />}

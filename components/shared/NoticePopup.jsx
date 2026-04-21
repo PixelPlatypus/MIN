@@ -156,7 +156,7 @@ export default function NoticePopup() {
                       <Link 
                         href={notice.cta_url}
                         onClick={closePopup}
-                        className="group/btn relative w-full inline-flex items-center justify-center gap-3 bg-primary dark:bg-white text-white dark:text-black px-8 py-4 rounded-2xl font-black transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-primary/20 dark:shadow-white/10"
+                        className="group/btn relative w-full inline-flex items-center justify-center gap-3 bg-primary text-white px-8 py-4 rounded-2xl font-black transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-primary/20 dark:shadow-primary/10"
                       >
                         <span>{notice.cta_text || 'View Announcement'}</span>
                         <ArrowRight size={20} className="transition-transform group-hover/btn:translate-x-1" />

@@ -11,6 +11,7 @@ const contentTypes = [
   { label: 'Problems', value: 'PROBLEM' },
   { label: 'Blog', value: 'BLOG' },
   { label: 'Resources', value: 'RESOURCE' },
+  { label: 'Video', value: 'VIDEO' },
 ]
 
 export default function ContentLibraryPage() {

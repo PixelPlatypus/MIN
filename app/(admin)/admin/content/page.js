@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, Loader2, FileText, FileDown } from 'lucide-react'
+import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, Loader2, FileText, FileDown, ArrowUp, ArrowDown, Video } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -40,6 +40,47 @@ export default function AdminContentPage() {
     } else {
       const err = await res.json()
       alert(err.error || "Failed to delete content.")
+    }
+  }
+
+  async function handleMove(id, direction) {
+    const currentIndex = content.findIndex(item => item.id === id)
+    if (currentIndex === -1) return
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
+    if (targetIndex < 0 || targetIndex >= content.length) return
+
+    const currentItem = content[currentIndex]
+    const targetItem = content[targetIndex]
+
+    // Local swap for immediate UI response
+    const newContent = [...content]
+    const tempOrder = currentItem.display_order
+    currentItem.display_order = targetItem.display_order
+    targetItem.display_order = tempOrder
+    
+    newContent[currentIndex] = { ...targetItem }
+    newContent[targetIndex] = { ...currentItem }
+    setContent(newContent)
+
+    try {
+      // Sync with database
+      await Promise.all([
+        fetch(`/api/content/${currentItem.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ display_order: currentItem.display_order })
+        }),
+        fetch(`/api/content/${targetItem.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ display_order: targetItem.display_order })
+        })
+      ])
+    } catch (err) {
+      console.error('Failed to update sort order:', err)
+      // Re-fetch to normalize state if failed
+      router.refresh()
     }
   }
 
@@ -84,6 +125,7 @@ export default function AdminContentPage() {
             <option value="PROBLEM">Problems</option>
             <option value="BLOG">Blog</option>
             <option value="RESOURCE">Resources</option>
+            <option value="VIDEO">Video</option>
           </select>
           <select 
             className="glass px-4 py-2 rounded-xl text-sm font-medium border border-border dark:border-border-dark focus:outline-none focus:border-primary transition-all bg-transparent"
@@ -109,6 +151,7 @@ export default function AdminContentPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-bg-secondary dark:bg-white/5 text-text-tertiary dark:text-text-tertiary-dark text-[10px] uppercase tracking-widest font-bold">
+                  <th className="px-6 py-4 w-12">Order</th>
                   <th className="px-6 py-4">Title</th>
                   <th className="px-6 py-4">Type</th>
                   <th className="px-6 py-4">Author</th>
@@ -120,11 +163,35 @@ export default function AdminContentPage() {
                 {filteredContent.map((item) => (
                   <tr key={item.id} className="hover:bg-bg-secondary/50 dark:hover:bg-white/5 transition-colors group">
                     <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1 items-center">
+                        <button 
+                          onClick={() => handleMove(item.id, 'up')}
+                          disabled={content.indexOf(item) === 0}
+                          className="p-1 rounded-md text-text-tertiary hover:bg-primary/20 hover:text-primary transition-all disabled:opacity-0"
+                          title="Move Up"
+                        >
+                          <ArrowUp size={14} strokeWidth={3} />
+                        </button>
+                        <button 
+                          onClick={() => handleMove(item.id, 'down')}
+                          disabled={content.indexOf(item) === content.length - 1}
+                          className="p-1 rounded-md text-text-tertiary hover:bg-primary/20 hover:text-primary transition-all disabled:opacity-0"
+                          title="Move Down"
+                        >
+                          <ArrowDown size={14} strokeWidth={3} />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                          item.content_type === 'PDF' ? 'bg-coral/10 text-coral' : 'bg-primary/10 text-primary'
+                          item.content_type === 'PDF' ? 'bg-coral/10 text-coral' : 
+                          item.content_type === 'VIDEO' ? 'bg-orange/10 text-orange' :
+                          'bg-primary/10 text-primary'
                         }`}>
-                          {item.content_type === 'PDF' ? <FileDown size={18} /> : <FileText size={18} />}
+                          {item.content_type === 'PDF' ? <FileDown size={18} /> : 
+                           item.content_type === 'VIDEO' ? <Video size={18} /> :
+                           <FileText size={18} />}
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="text-sm font-bold truncate">{item.title}</span>
