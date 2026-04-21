@@ -82,7 +82,7 @@ export default function Mission() {
           <div className="aspect-square relative rounded-[3rem] overflow-hidden shadow-2xl min-h-[300px]">
             <div className="absolute inset-0 bg-primary/10 mix-blend-overlay z-10" />
             <Image 
-              src={settings?.mission_image_url || "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2132&auto=format&fit=crop"} 
+              src={settings?.mission_image_url || "/images/Mission.jpg"} 
               alt="Students learning mathematics"
               fill
               className="object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700"

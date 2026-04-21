@@ -67,7 +67,7 @@ export default function Recognition() {
             <div className="absolute inset-0 bg-white/20 rounded-[3rem] blur-2xl group-hover:blur-3xl transition-all duration-500" />
             <div className="aspect-square relative rounded-[3rem] overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-[1.02] z-10 border border-white/10">
               <Image 
-                src={settings?.recognition_image_url || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop"} 
+                src={settings?.recognition_image_url || "/images/hundrED.jpg"} 
                 alt="Recognition" 
                 fill
                 className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"

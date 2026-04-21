@@ -69,7 +69,7 @@ export default function Hero() {
             className="inline-flex items-center gap-2 glass px-6 py-2.5 rounded-full text-xs font-bold mb-6 shadow-xl will-change-transform"
           >
             <Sparkles size={16} className="text-secondary-dark" />
-            <span className="uppercase tracking-[0.2em]">{settings?.hero_badge || "Global Innovation Award Winner"}</span>
+            <span className="uppercase tracking-[0.2em]">{settings?.hero_badge || "Math's Future: Crafted in Nepal, Powered by You."}</span>
           </motion.div>
 
           <motion.h1 
