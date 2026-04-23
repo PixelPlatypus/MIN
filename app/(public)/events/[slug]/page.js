@@ -26,9 +26,13 @@ export async function generateMetadata({ params }) {
 
   if (!event) return { title: 'Event Not Found' }
 
+  const plainDescription = event.description
+    ? event.description.replace(/<[^>]*>?/gm, '').substring(0, 160)
+    : 'Mathematics Initiatives in Nepal event.'
+
   return {
     title: `${event.title} - MIN Events`,
-    description: event.description?.replace(/<[^>]*>?/gm, '').substring(0, 160) || 'Mathematics Initiatives in Nepal event.',
+    description: plainDescription,
     openGraph: {
       images: [event.cover_url || '/placeholder-event.png'],
     },
@@ -51,10 +55,12 @@ export default async function EventDetailPage({ params }) {
     notFound()
   }
 
-  const isPast = new Date(event.start_date) < new Date() && event.event_type !== 'RECURRING' && event.event_type !== 'EVERGOING'
+  const isPast = event.start_date 
+    ? new Date(event.start_date) < new Date() && event.event_type !== 'RECURRING' && event.event_type !== 'EVERGOING'
+    : false
   
   // Process multiple YouTube videos
-  const videos = event.youtube_videos || []
+  const videos = Array.isArray(event.youtube_videos) ? event.youtube_videos : []
   const legacyPlaylist = event.youtube_playlist
   
   // Combine videos (handling both new format and legacy field)

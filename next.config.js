@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'szosktbhsgqnyvbxmprf.supabase.co' },
+      { protocol: 'https', hostname: '*.supabase.co' },
       { protocol: 'https', hostname: 'img.youtube.com' },
       { protocol: 'https', hostname: 'i.ytimg.com' },
     ],

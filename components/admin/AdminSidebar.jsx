@@ -75,7 +75,7 @@ const navGroups = [
       { name: 'Site Editor', href: '/admin/settings', icon: <Globe size={20} /> },
       { name: 'Intake Waitlist', href: '/admin/settings/waitlist', icon: <Bell size={20} /> },
       { name: 'Users', href: '/admin/users', icon: <Users size={20} />, roles: ['ADMIN'] },
-      { name: 'Audit Log', href: '/admin/audit', icon: <History size={20} />, roles: ['ADMIN'] },
+      { name: 'Audit Log', href: '/admin/audit', icon: <History size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER'] },
     ]
   }
 ]
