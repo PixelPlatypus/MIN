@@ -13,7 +13,7 @@ import 'highlight.js/styles/github-dark.css'
 import AnalyticsTracker from '@/components/public/AnalyticsTracker'
 import EventActionLink from '@/components/public/EventActionLink'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }) {
   try {
