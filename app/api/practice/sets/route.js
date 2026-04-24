@@ -3,12 +3,21 @@ import { NextResponse } from 'next/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
 
-export async function GET() {
+export async function GET(request) {
+  const { searchParams } = new URL(request.url)
+  const showAll = searchParams.get('show_all') === 'true'
+  
   const supabase = await createClient()
-  const { data, error } = await supabase
+  let query = supabase
     .from('practice_sets')
     .select('*, practice_questions(count)')
     .order('created_at', { ascending: false })
+
+  if (!showAll) {
+    query = query.eq('is_published', true)
+  }
+
+  const { data, error } = await query
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)

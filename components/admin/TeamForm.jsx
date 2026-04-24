@@ -45,6 +45,7 @@ export default function TeamForm({ initialData = null }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [settings, setSettings] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null)
   const router = useRouter()
   const isEditing = !!initialData
 
@@ -52,11 +53,12 @@ export default function TeamForm({ initialData = null }) {
     fetch('/api/settings')
       .then(res => res.ok ? res.json() : null)
       .then(data => data && setSettings(data))
-      .catch(err => {
-        if (err.name !== 'TypeError') {
-          console.error('Settings load error:', err)
-        }
-      })
+      .catch(err => console.error('Settings load error:', err))
+
+    fetch('/api/me')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => data && setCurrentUser(data))
+      .catch(err => console.error('Profile load error:', err))
   }, [])
 
   const {
@@ -210,7 +212,9 @@ export default function TeamForm({ initialData = null }) {
                     className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 appearance-none cursor-pointer"
                   >
                     <option value="MINion">MINion</option>
-                    <option value="President">President</option>
+                    {(currentUser?.role === 'ADMIN' || initialData?.position === 'President') && (
+                      <option value="President">President</option>
+                    )}
                     <option value="Manager">Manager</option>
                   </select>
                   {errors.position && <p className="text-xs text-coral ml-1">{errors.position.message}</p>}
@@ -306,7 +310,9 @@ export default function TeamForm({ initialData = null }) {
                         className="w-full bg-white dark:bg-[#1a1a1a] border border-border dark:border-border-dark rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-primary appearance-none cursor-pointer"
                       >
                         <option value="MINion">MINion</option>
-                        <option value="President">President</option>
+                        {currentUser?.role === 'ADMIN' && (
+                          <option value="President">President</option>
+                        )}
                         <option value="Manager">Manager</option>
                       </select>
                     </div>

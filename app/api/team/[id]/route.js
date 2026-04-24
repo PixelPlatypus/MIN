@@ -8,6 +8,14 @@ export async function PATCH(request, { params }) {
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const body = await request.json()
+
+  // Role Restriction: Only ADMIN can assign 'President' role
+  if (profile.role !== 'ADMIN') {
+    if (body.position === 'President' || body.social_links?.role_history?.some(h => h.position === 'President')) {
+      return Response.json({ error: 'Only administrators can assign the President role.' }, { status: 403 })
+    }
+  }
+
   const supabaseAdmin = await createAdminClient()
   
   const { data, error: updateError } = await supabaseAdmin

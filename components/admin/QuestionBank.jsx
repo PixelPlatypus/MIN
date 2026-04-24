@@ -49,7 +49,7 @@ export default function QuestionBank() {
   async function fetchSets() {
     setLoading(true)
     try {
-      const res = await fetch('/api/practice/sets')
+      const res = await fetch('/api/practice/sets?show_all=true')
       const data = await res.json()
       setSets(data)
     } catch (err) {
@@ -278,6 +278,37 @@ export default function QuestionBank() {
               
               <div className={`absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 transition-all ${activeSet?.id === set.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                  <button 
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    const newStatus = !set.is_published;
+                    try {
+                      const res = await fetch('/api/practice/sets', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: set.id, is_published: newStatus })
+                      });
+                      if (res.ok) {
+                        fetchSets();
+                        if (activeSet?.id === set.id) {
+                          setActiveSet({ ...activeSet, is_published: newStatus });
+                        }
+                      }
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${
+                    set.is_published ? 'bg-emerald-500' : 'bg-coral/30'
+                  }`}
+                  title={set.is_published ? "Hide from Public" : "Show to Public"}
+                 >
+                   <span
+                     className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                       set.is_published ? 'translate-x-5' : 'translate-x-1'
+                     }`}
+                   />
+                 </button>
+                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
                     setEditingSet(set);
@@ -327,9 +358,16 @@ export default function QuestionBank() {
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between glass p-6 rounded-[2rem] border border-border">
-              <div>
-                <h3 className="text-2xl font-black text-dynamic">{activeSet.name}</h3>
-                <p className="text-xs font-bold text-primary uppercase tracking-widest">Question Management</p>
+              <div className="flex items-center gap-4">
+                <div>
+                  <h3 className="text-2xl font-black text-dynamic">{activeSet.name}</h3>
+                  <p className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-2">
+                    Question Management
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] border ${activeSet.is_published ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600' : 'bg-coral/10 border-coral/20 text-coral'}`}>
+                      {activeSet.is_published ? 'Live' : 'Hidden'}
+                    </span>
+                  </p>
+                </div>
               </div>
               <button 
                 onClick={() => {

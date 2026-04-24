@@ -74,6 +74,18 @@ export async function POST(request) {
 
   const body = await request.json()
   const isArray = Array.isArray(body)
+  const items = isArray ? body : [body]
+
+  // Role Restriction: Only ADMIN can assign 'President' role
+  if (profile.role !== 'ADMIN') {
+    const hasPresident = items.some(item => 
+      item.position === 'President' || 
+      item.social_links?.role_history?.some(h => h.position === 'President')
+    )
+    if (hasPresident) {
+      return Response.json({ error: 'Only administrators can assign the President role.' }, { status: 403 })
+    }
+  }
 
   const { data, error: insertError } = await supabase
     .from('team_members')

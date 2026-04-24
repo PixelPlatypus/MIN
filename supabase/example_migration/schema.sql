@@ -1,9 +1,3 @@
--- Consolidated MIN Database Schema & RLS
-
--- ============================================================
--- Migration: Init Schema (20260409123553)
--- ============================================================
-
 DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO postgres; GRANT ALL ON SCHEMA public TO anon; GRANT ALL ON SCHEMA public TO authenticated; GRANT ALL ON SCHEMA public TO service_role;
 -- ============================================================
 -- PROFILES (extends auth.users — role management)
@@ -62,7 +56,7 @@ create table public.team_members (
   tenure        text not null,          -- e.g. "2025", "2024"
   joined_date   date not null,
   farewell_date date,                   -- null = current member
-  social_links  jsonb default '{}',     
+  social_links  jsonb default '{}',     -- { linkedin, twitter, email, github }
   display_order int default 0,
   is_active     boolean default true,
   created_at    timestamptz default now(),
@@ -139,20 +133,17 @@ create table public.content (
   id              uuid primary key default gen_random_uuid(),
   title           text not null,
   slug            text unique not null,
-  type            text not null check (type in ('ARTICLE','PROBLEM','BLOG','RESOURCE','VIDEO')),
-  content_type    text not null check (content_type in ('RICHTEXT','PDF','VIDEO','LINK')),
+  type            text not null check (type in ('ARTICLE','PROBLEM','BLOG','RESOURCE')),
+  content_type    text not null check (content_type in ('RICHTEXT','PDF')),
   body            text,                  -- Rich text HTML (if content_type = RICHTEXT)
   pdf_url         text,                  -- Cloudinary URL (if content_type = PDF)
   pdf_filename    text,                  -- Display name for the PDF
-  video_url       text,                  -- YouTube URL (if type = VIDEO)
-  video_metadata  jsonb default '{}',     -- { is_playlist, video_id, video_count }
   excerpt         text,
-  cover_url       text,                  -- Cloudinary/YouTube thumbnail URL
+  cover_url       text,                  -- Cloudinary URL
   tags            text[] default '{}',
   author_name     text,
   status          text default 'DRAFT' check (status in ('DRAFT','PUBLISHED','ARCHIVED')),
   submitted_by    uuid references public.profiles(id),
-  display_order   integer default 0,
   published_at    timestamptz,
   created_at      timestamptz default now(),
   updated_at      timestamptz default now()
@@ -345,26 +336,8 @@ create policy "Admin/Manager review submissions" on public.content_submissions
   for all using (
     exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER'))
   );
-
-
--- ============================================================
--- Migration: Add Tags To Gallery (20260409135000)
--- ============================================================
-
 ALTER TABLE public.gallery ADD COLUMN IF NOT EXISTS tags text[] DEFAULT '{}';
-
-
--- ============================================================
--- Migration: Add Notes To Submissions (20260409142100)
--- ============================================================
-
 ALTER TABLE public.content_submissions ADD COLUMN IF NOT EXISTS notes text;
-
-
--- ============================================================
--- Migration: Add Delete Policies (20260409142900)
--- ============================================================
-
 -- Add delete policies for content and team members
 CREATE POLICY "Admin/Manager delete content" ON public.content
   FOR DELETE USING (
@@ -375,37 +348,15 @@ CREATE POLICY "Admin/Manager delete team members" ON public.team_members
   FOR DELETE USING (
     EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('ADMIN','MANAGER'))
   );
-
-
--- ============================================================
--- Migration: Add Event Type (20260409144300)
--- ============================================================
-
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS event_type text DEFAULT 'EVENT' CHECK (event_type IN ('RECURRING', 'EVERGOING', 'SPECIAL', 'EVENT'));
-
-
--- ============================================================
--- Migration: Add Event Links (20260409145200)
--- ============================================================
-
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS action_link text;
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS youtube_playlist text;
-
-
--- ============================================================
--- Migration: Add Username To Profiles (20260409150500)
--- ============================================================
-
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS username text UNIQUE;
 
 -- We'll try to update admin if it exists
 UPDATE public.profiles SET username = 'minion' WHERE role = 'ADMIN';
 
-
--- ============================================================
--- Migration: Refactor Join Applications (20260409160000)
--- ============================================================
-
+-- 20260409160000_refactor_join_applications.sql
 -- Refactor join_applications to support dynamic form schemas
 
 ALTER TABLE public.join_applications 
@@ -424,12 +375,6 @@ WHERE form_data = '{}' AND motivation IS NOT NULL;
 
 -- Keep motivation/experience columns for now but make them nullable
 ALTER TABLE public.join_applications ALTER COLUMN motivation DROP NOT NULL;
-
-
--- ============================================================
--- Migration: Add Link To Content Type Check (20260411093658)
--- ============================================================
-
 -- Update content_submissions to allow 'LINK' content type
 ALTER TABLE public.content_submissions 
 DROP CONSTRAINT content_submissions_content_type_check;
@@ -445,12 +390,7 @@ DROP CONSTRAINT content_content_type_check;
 ALTER TABLE public.content 
 ADD CONSTRAINT content_content_type_check 
 CHECK (content_type IN ('RICHTEXT', 'PDF', 'LINK'));
-
-
--- ============================================================
--- Migration: Add Event Display Options (20260411101800)
--- ============================================================
-
+-- 20260411101800_add_event_display_options.sql
 -- Add display options and action text to events table
 
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS show_date boolean DEFAULT true;
@@ -458,19 +398,8 @@ ALTER TABLE public.events ADD COLUMN IF NOT EXISTS show_action_link boolean DEFA
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS show_youtube_playlist boolean DEFAULT true;
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS action_text text;
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS youtube_url text;
-
-
--- ============================================================
--- Migration: Add Youtube Title To Events (20260411163800)
--- ============================================================
-
+-- 20260411163800_add_youtube_title_to_events.sql
 ALTER TABLE public.events ADD COLUMN IF NOT EXISTS youtube_title text DEFAULT 'Event Recordings';
-
-
--- ============================================================
--- Migration: Add Settings And Timeline (20260411171300)
--- ============================================================
-
 CREATE TABLE IF NOT EXISTS site_settings (
     id TEXT PRIMARY KEY DEFAULT 'main',
     facebook_url TEXT,
@@ -524,12 +453,6 @@ CREATE POLICY "Allow public read access on timeline_events" ON timeline_events F
 -- but in production we should check for admin role in auth.users
 CREATE POLICY "Allow authenticated users to manage site_settings" ON site_settings FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Allow authenticated users to manage timeline_events" ON timeline_events FOR ALL USING (auth.role() = 'authenticated');
-
-
--- ============================================================
--- Migration: Expand Site Settings (20260411174300)
--- ============================================================
-
 -- Add fields for full site editing
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS hero_badge TEXT DEFAULT 'Global Innovation Award Winner',
@@ -555,33 +478,21 @@ SET
   mission_description = 'At MIN, we believe that mathematics is more than just numbers and formulas. It''s a powerful tool for understanding the world, driving innovation, and creating impact. Our mission is to inspire a love for math across Nepal.',
   footer_description = 'Mathematics Initiatives in Nepal (MIN) is dedicated to making mathematics accessible, engaging, and inspiring for every student in Nepal.'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Add Stats To Settings (20260411174800)
--- ============================================================
-
 -- Add stats fields to site_settings
 ALTER TABLE site_settings 
-ADD COLUMN IF NOT EXISTS stat_students_count TEXT DEFAULT '1400',
-ADD COLUMN IF NOT EXISTS stat_volunteers_count TEXT DEFAULT '50',
-ADD COLUMN IF NOT EXISTS stat_programs_count TEXT DEFAULT '15',
-ADD COLUMN IF NOT EXISTS stat_years_count TEXT DEFAULT '5';
+ADD COLUMN IF NOT EXISTS stat_students_count INTEGER DEFAULT 1400,
+ADD COLUMN IF NOT EXISTS stat_volunteers_count INTEGER DEFAULT 50,
+ADD COLUMN IF NOT EXISTS stat_programs_count INTEGER DEFAULT 15,
+ADD COLUMN IF NOT EXISTS stat_years_count INTEGER DEFAULT 5;
 
 -- Update the main row with these defaults
 UPDATE site_settings 
 SET 
-  stat_students_count = '1400',
-  stat_volunteers_count = '50',
-  stat_programs_count = '15',
-  stat_years_count = '5'
+  stat_students_count = 1400,
+  stat_volunteers_count = 50,
+  stat_programs_count = 15,
+  stat_years_count = 5
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Add Mission Features (20260411175000)
--- ============================================================
-
 -- Add mission features to site_settings
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS mission_f1_title TEXT DEFAULT 'Accessible Learning',
@@ -605,12 +516,6 @@ SET
   mission_f4_title = 'Community First',
   mission_f4_desc = 'Building a supportive network of educators, volunteers, and math enthusiasts.'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Add About Fields (20260411175400)
--- ============================================================
-
 -- Add about page fields to site_settings
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS about_hero_title TEXT DEFAULT 'Transforming Math Education in Nepal',
@@ -634,12 +539,6 @@ SET
   about_rec_badge_title = 'HundrED Top 100',
   about_rec_badge_desc = 'Global Education Innovation Award 2024'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Add All Page Fields (20260411175900)
--- ============================================================
-
 -- Add page header fields to site_settings
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS team_title TEXT DEFAULT 'Our Team',
@@ -677,12 +576,6 @@ SET
   contact_subtitle = 'We''d Love to Hear From You',
   contact_description = 'Have questions about our programs or want to collaborate? Reach out to us using the form below.'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Add Rto Fields (20260411181600)
--- ============================================================
-
 -- Add RTO page header fields to site_settings
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS rto_title TEXT DEFAULT 'The Challenge Awaits',
@@ -696,12 +589,6 @@ SET
   rto_subtitle = 'Road to Olympiad',
   rto_description = 'Your comprehensive guide to navigating the RTO process, mastering advanced concepts, and accessing essential study materials.'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Add Practice Exam System (20260411181800)
--- ============================================================
-
 -- Practice Sets table
 CREATE TABLE IF NOT EXISTS practice_sets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -735,21 +622,9 @@ CREATE POLICY "Enable write for admin only" ON practice_sets FOR ALL USING (auth
 
 CREATE POLICY "Enable read for all" ON practice_questions FOR SELECT USING (true);
 CREATE POLICY "Enable write for admin only" ON practice_questions FOR ALL USING (auth.role() = 'authenticated');
-
-
--- ============================================================
--- Migration: Add Image To Questions (20260411183300)
--- ============================================================
-
 -- Add image_url to practice_questions
 ALTER TABLE practice_questions 
 ADD COLUMN IF NOT EXISTS image_url TEXT;
-
-
--- ============================================================
--- Migration: Add Rto Content Json (20260411183800)
--- ============================================================
-
 -- Add RTO extended content fields to site_settings
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS rto_stages JSONB DEFAULT '[]',
@@ -869,12 +744,6 @@ SET
     }
   ]'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Update Rto Resource Links (20260411184200)
--- ============================================================
-
 -- Update RTO resources to include links
 UPDATE site_settings 
 SET 
@@ -919,12 +788,7 @@ SET
     }
   ]'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Add Batching To Applications (20260411185500)
--- ============================================================
-
+-- 20260411185500_add_batching_to_applications.sql
 -- Adds support for grouping volunteer/partnership applications into batches
 
 -- 1. Add batch_name to join_applications
@@ -937,12 +801,7 @@ ALTER TABLE public.site_settings
 
 -- 3. Create index for faster batch filtering
 CREATE INDEX IF NOT EXISTS idx_applications_batch_name ON public.join_applications(batch_name);
-
-
--- ============================================================
--- Migration: Rbac Audit Overhaul (20260411190200)
--- ============================================================
-
+-- 20260411190200_rbac_audit_overhaul.sql
 -- 1. Add WEBSITE_MANAGER role
 ALTER TABLE public.profiles 
   DROP CONSTRAINT IF EXISTS profiles_role_check;
@@ -975,12 +834,7 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
-
--- ============================================================
--- Migration: Fix User Deletion Cascades (20260411191000)
--- ============================================================
-
+-- 20260411191000_fix_user_deletion_cascades.sql
 -- Fix foreign key constraints that prevent user deletion due to existing audit logs or content
 
 -- 1. Audit Log: Set actor_id to null when user is deleted
@@ -1012,12 +866,7 @@ ALTER TABLE public.content_submissions
   DROP CONSTRAINT IF EXISTS content_submissions_reviewer_id_fkey,
   ADD CONSTRAINT content_submissions_reviewer_id_fkey 
   FOREIGN KEY (reviewer_id) REFERENCES public.profiles(id) ON DELETE SET NULL;
-
-
--- ============================================================
--- Migration: Form Builder System (20260411193000)
--- ============================================================
-
+-- 20260411193000_form_builder_system.sql
 -- Implements a dynamic form builder and automated email response system
 
 -- 1. Email Templates
@@ -1073,12 +922,7 @@ CREATE POLICY "Admin full access definitions" ON public.form_definitions FOR ALL
 CREATE POLICY "Public read active definitions" ON public.form_definitions FOR SELECT TO anon USING (is_active = true);
 CREATE POLICY "Public submit forms" ON public.form_submissions FOR INSERT TO anon WITH CHECK (true);
 CREATE POLICY "Admin full access submissions" ON public.form_submissions FOR ALL TO authenticated USING (true);
-
-
--- ============================================================
--- Migration: Intake System V2 (20260411194500)
--- ============================================================
-
+-- 20260411194500_intake_system_v2.sql
 -- Enhances the intake system with role categories and automated reminders
 
 -- 1. Add Category to Form Definitions
@@ -1103,24 +947,13 @@ CREATE POLICY "Admin full access reminders" ON public.intake_reminders FOR ALL T
 -- 4. Update indexing
 CREATE INDEX IF NOT EXISTS idx_form_definitions_category ON public.form_definitions(category);
 CREATE INDEX IF NOT EXISTS idx_intake_reminders_category ON public.intake_reminders(category);
-
-
--- ============================================================
--- Migration: Form Builder Enhancements (20260411195800)
--- ============================================================
-
+-- 20260411195800_form_builder_enhancements.sql
 -- Add deadline column
 ALTER TABLE public.form_definitions 
 ADD COLUMN IF NOT EXISTS deadline timestamptz;
 
 -- Notify PostgREST to reload schema cache
 NOTIFY pgrst, reload_schema;
-
-
--- ============================================================
--- Migration: Add Homepage Fields (20260412113600)
--- ============================================================
-
 -- Add homepage image and missing text fields to site_settings
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS hero_image_url TEXT,
@@ -1138,12 +971,6 @@ SET
   stats_title = 'Our Growing Impact',
   stats_subtitle = 'Numbers that drive our mission forward'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Update Programs Fields (20260412114200)
--- ============================================================
-
 -- Add learn_more_link to programs table for custom redirects
 ALTER TABLE programs 
 ADD COLUMN IF NOT EXISTS learn_more_link TEXT;
@@ -1161,12 +988,6 @@ WHERE NOT EXISTS (SELECT 1 FROM programs WHERE slug = 'jmoc');
 INSERT INTO programs (name, slug, tagline, description, status, display_order)
 SELECT 'M³ Bootcamp', 'm3-bootcamp', 'Mathematical Modelling Bootcamp', 'Training students to solve real-world problems using mathematical models.', 'ACTIVE', 3
 WHERE NOT EXISTS (SELECT 1 FROM programs WHERE slug = 'm3-bootcamp');
-
-
--- ============================================================
--- Migration: Expand Homepage Editing (20260412115000)
--- ============================================================
-
 -- Add even more homepage fields to site_settings for complete control
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS mission_rec_title TEXT DEFAULT 'Recognized Globally',
@@ -1190,23 +1011,11 @@ SET
   join_cta_stat_title = '50+ Volunteers',
   join_cta_stat_desc = 'Building the future of mathematics in Nepal together.'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Cleanup Programs Fields (20260412120200)
--- ============================================================
-
 -- Remove unnecessary fields from programs table to align with the simplified UI
 ALTER TABLE programs 
 DROP COLUMN IF EXISTS cover_url,
 DROP COLUMN IF EXISTS tags,
 DROP COLUMN IF EXISTS description;
-
-
--- ============================================================
--- Migration: Add Default Placeholders (20260412121200)
--- ============================================================
-
 -- Add default fallback asset URLs to site_settings
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS default_team_photo TEXT DEFAULT 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop',
@@ -1219,33 +1028,17 @@ SET
   default_event_cover = 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop',
   default_notice_image = 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?q=80&w=2068&auto=format&fit=crop'
 WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Notice Image And Program Fallback (20260412122000)
--- ============================================================
-
 -- Add image support to notices
 ALTER TABLE popup_notices ADD COLUMN IF NOT EXISTS image_url TEXT;
 
 -- Add fallback for programs (initiatives)
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS default_program_image TEXT DEFAULT 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop';
 UPDATE site_settings SET default_program_image = 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop' WHERE id = 'main';
-
-
--- ============================================================
--- Migration: Add Content Fallback (20260412122100)
--- ============================================================
-
 -- Add specific fallback for Content (Articles/Blogs)
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS default_content_image TEXT DEFAULT 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop';
 UPDATE site_settings SET default_content_image = 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop' WHERE id = 'main';
 
-
--- ============================================================
--- Migration: Auto Delete Responded Inquiries (20260412130000)
--- ============================================================
-
+-- 20260412130000_auto_delete_responded_inquiries.sql
 -- Implements automatic deletion of responded inquiries after 30 days
 
 -- 1. Add status_updated_at tracking
@@ -1303,12 +1096,6 @@ BEGIN
         PERFORM cron.schedule('daily-inquiry-purge', '0 0 * * *', 'SELECT public.purge_responded_inquiries()');
     END IF;
 END $$;
-
-
--- ============================================================
--- Migration: Upgrade Team Status (20260412140000)
--- ============================================================
-
 -- Upgrade team_members status system
 alter table public.team_members add column status text default 'ACTIVE' check (status in ('ACTIVE', 'ALUMNI', 'INACTIVE', 'REMOVED'));
 
@@ -1319,22 +1106,11 @@ update public.team_members set status = 'ACTIVE' where is_active = true and fare
 
 -- Log the migration
 comment on column public.team_members.status is 'ACTIVE, ALUMNI, INACTIVE, REMOVED';
-
-
--- ============================================================
--- Migration: Add Team Identity Assets (20260412142000)
--- ============================================================
-
 -- Add team_identity_assets to site_settings
 alter table public.site_settings add column if not exists team_identity_assets jsonb default '[]'::jsonb;
 
 comment on column public.site_settings.team_identity_assets is 'List of URLs for random team photo selection';
-
-
--- ============================================================
--- Migration: Automate Audit Cleanup (20260412152000)
--- ============================================================
-
+-- 20260412152000_automate_audit_cleanup.sql
 -- Schedules the existing public.purge_old_audit_logs() function to run automatically
 
 DO $$
@@ -1355,65 +1131,186 @@ BEGIN
         PERFORM cron.schedule('daily-audit-purge', '0 0 * * *', 'SELECT public.purge_old_audit_logs()');
     END IF;
 END $$;
-
-
--- ============================================================
--- Migration: Add Dmopractice Settings (20260420084900)
--- ============================================================
-
+-- Migration: Add DMO Practice Page Settings
 -- Description: Adds editable content fields for the DMO Practice page in Site Nexus.
 
 ALTER TABLE site_settings
 ADD COLUMN IF NOT EXISTS dmopractice_title text,
 ADD COLUMN IF NOT EXISTS dmopractice_subtitle text,
 ADD COLUMN IF NOT EXISTS dmopractice_description text;
-
-
--- ============================================================
--- Migration: Add Dmopractice Badge (20260420085400)
--- ============================================================
-
+-- Migration: Add DMO Practice Badge
 -- Description: Adds editable content field for the DMO Practice page badge in Site Nexus.
 
 ALTER TABLE site_settings
 ADD COLUMN IF NOT EXISTS dmopractice_badge text;
+-- ============================================================
+-- Migration: Add about_rec_image to site_settings
+-- ============================================================
+-- The about page uses `about_rec_image` for the HundrED Award Graphic/Logo.
+-- This was missing from the DB schema, causing admin saves to silently fail.
 
+ALTER TABLE site_settings
+ADD COLUMN IF NOT EXISTS about_rec_image TEXT;
+-- ============================================================
+-- Migration: Email Templates System (Robust Final Fix)
+-- ============================================================
+-- Allows admins and website managers to fully control automated emails.
 
+-- 1. Temporarily drop foreign key constraint to allow type changes
+ALTER TABLE IF EXISTS public.form_definitions 
+DROP CONSTRAINT IF EXISTS form_definitions_email_template_id_fkey;
 
--- ============================================================
--- Migration: Add Default Placeholders (20260412121200)
--- ============================================================
-ALTER TABLE site_settings 
-ADD COLUMN IF NOT EXISTS default_team_photo TEXT DEFAULT 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop',
-ADD COLUMN IF NOT EXISTS default_event_cover TEXT DEFAULT 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop',
-ADD COLUMN IF NOT EXISTS default_notice_image TEXT DEFAULT 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?q=80&w=2068&auto=format&fit=crop';
+-- 2. Create the table if it's missing entirely
+CREATE TABLE IF NOT EXISTS public.email_templates (
+  id TEXT PRIMARY KEY
+);
 
-UPDATE site_settings SET 
-  default_team_photo = 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop',
-  default_event_cover = 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop',
-  default_notice_image = 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?q=80&w=2068&auto=format&fit=crop'
-WHERE id = 'main';
+-- 3. Force the 'id' column to be TEXT if it was accidentally created as UUID
+ALTER TABLE public.email_templates ALTER COLUMN id TYPE TEXT;
 
--- ============================================================
--- Migration: Add Content Fallback (20260412122100)
--- ============================================================
-ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS default_content_image TEXT DEFAULT 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop';
-UPDATE site_settings SET default_content_image = 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop' WHERE id = 'main';
+-- 4. Clean up old/conflicting columns
+-- If 'body' exists from a previous failed attempt, rename it to 'body_markdown'
+DO $$ 
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='email_templates' AND column_name='body') THEN
+    ALTER TABLE public.email_templates RENAME COLUMN body TO body_markdown;
+  END IF;
+END $$;
 
--- ============================================================
--- Migration: Add About Recognition Image (20260420095000)
--- ============================================================
-ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_rec_image TEXT;
+-- 5. Ensure all core columns exist with correct types
+ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS subject TEXT;
+ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS body_markdown TEXT;
+ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS from_name TEXT DEFAULT 'Mathematics Initiatives in Nepal';
+ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS from_email TEXT DEFAULT 'no-reply@mathsinitiatives.org.np';
+ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS updated_by UUID REFERENCES public.profiles(id);
 
+-- 6. Setup defaults for existing rows before making columns NOT NULL
+UPDATE public.email_templates SET name = 'Template' WHERE name IS NULL;
+UPDATE public.email_templates SET subject = 'Subject' WHERE subject IS NULL;
+UPDATE public.email_templates SET body_markdown = '' WHERE body_markdown IS NULL;
+
+ALTER TABLE public.email_templates ALTER COLUMN name SET NOT NULL;
+ALTER TABLE public.email_templates ALTER COLUMN subject SET NOT NULL;
+ALTER TABLE public.email_templates ALTER COLUMN body_markdown SET NOT NULL;
+
+-- 7. Sync form_definitions type and restore constraint
+ALTER TABLE IF EXISTS public.form_definitions ALTER COLUMN email_template_id TYPE TEXT;
+
+DO $$ 
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'form_definitions') THEN
+        ALTER TABLE public.form_definitions 
+        ADD CONSTRAINT form_definitions_email_template_id_fkey 
+        FOREIGN KEY (email_template_id) REFERENCES public.email_templates(id) ON UPDATE CASCADE;
+    END IF;
+END $$;
+
+-- 8. Policies
+ALTER TABLE public.email_templates ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Admin/WebsiteManager read email templates" ON public.email_templates;
+CREATE POLICY "Admin/WebsiteManager read email templates" ON public.email_templates FOR SELECT
+USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('ADMIN', 'MANAGER', 'WEBSITE_MANAGER')));
+
+DROP POLICY IF EXISTS "Admin/WebsiteManager manage email templates" ON public.email_templates;
+CREATE POLICY "Admin/WebsiteManager manage email templates" ON public.email_templates FOR ALL
+USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('ADMIN', 'WEBSITE_MANAGER')));
+
+-- 9. Seed/Upsert default templates
+INSERT INTO public.email_templates (id, name, description, subject, body_markdown, from_name, from_email)
+VALUES
+(
+  'application_accepted',
+  'Application Accepted',
+  'Sent when an admin marks a volunteer/ambassador/partner application as accepted.',
+  '🎉 Congratulations! Your Application to MIN Nepal',
+  E'## Welcome to the MIN Family, {{applicant_name}}!\n\nWe are absolutely thrilled to let you know that your application to join **Mathematics Initiatives in Nepal (MIN)** as a **{{role_type}}** has been **accepted**.\n\nThis is the beginning of an exciting journey — one that directly contributes to transforming mathematics education across Nepal.\n\nOur team coordinators will be reaching out to you shortly with the next steps, onboarding details, and your role assignment.\n\n> *"The strength of the team is each individual member. The strength of each member is the team."*\n\nWelcome aboard!\n\n**The MIN Team**',
+  'Mathematics Initiatives in Nepal',
+  'no-reply@mathsinitiatives.org.np'
+),
+(
+  'application_rejected',
+  'Application Not Selected',
+  'Sent when an admin marks an application as rejected.',
+  'Thank you for your interest in MIN Nepal',
+  E'## Dear {{applicant_name}},\n\nThank you sincerely for taking the time to apply to **Mathematics Initiatives in Nepal (MIN)** as a **{{role_type}}**.\n\nAfter careful consideration, we have decided to move forward with other candidates who more closely matched our current needs at this time.\n\nWe truly appreciate your passion for mathematics education and encourage you to apply again in the future. We regularly open new opportunities across different teams and programs.\n\nWe wish you all the best in your endeavors.\n\n**The MIN Team**',
+  'Mathematics Initiatives in Nepal',
+  'no-reply@mathsinitiatives.org.np'
+),
+(
+  'content_approved',
+  'Content Submission Approved',
+  'Sent when a submitted article/resource is approved by an admin.',
+  '✅ Your Submission Has Been Published — MIN Nepal',
+  E'## Great news, {{applicant_name}}!\n\nYour submission titled **"{{content_title}}"** has been reviewed and **approved** by the MIN editorial team.\n\nIt is now live on our platform and will be accessible to students and educators across Nepal.\n\nThank you for contributing to our mission of making mathematics accessible and inspiring for everyone.\n\nKeep creating!\n\n**The MIN Editorial Team**',
+  'MIN Editorial Team',
+  'no-reply@mathsinitiatives.org.np'
+),
+(
+  'inquiry_response',
+  'Inquiry Acknowledgement',
+  'Sent as confirmation when a contact form inquiry is received.',
+  'We received your message — MIN Nepal',
+  E'## Thank you for reaching out, {{applicant_name}}!\n\nWe have received your inquiry and a member of our team will get back to you as soon as possible, usually within **1–3 business days**.\n\nIn the meantime, feel free to explore our programs and initiatives on our website.\n\nWarm regards,\n\n**The MIN Team**',
+  'Mathematics Initiatives in Nepal',
+  'contact@mathsinitiatives.org.np'
+)
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  description = EXCLUDED.description,
+  subject = EXCLUDED.subject,
+  body_markdown = EXCLUDED.body_markdown,
+  from_name = EXCLUDED.from_name,
+  from_email = EXCLUDED.from_email;
+
+NOTIFY pgrst, 'reload schema';
 -- ============================================================
--- Migration: Add Join Page Config (20260420104000)
+-- Migration: Email Event Mappings
 -- ============================================================
+-- Allows admins to assign specific templates to system events.
+
+CREATE TABLE IF NOT EXISTS public.email_event_mappings (
+  event_key    TEXT PRIMARY KEY, -- e.g. 'application_accepted'
+  template_id  TEXT REFERENCES public.email_templates(id) ON UPDATE CASCADE ON DELETE SET NULL,
+  updated_at   TIMESTAMPTZ DEFAULT now()
+);
+
+-- RLS
+ALTER TABLE public.email_event_mappings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admin/WebsiteManager read event mappings"
+  ON public.email_event_mappings FOR SELECT
+  USING (EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role IN ('ADMIN', 'MANAGER', 'WEBSITE_MANAGER')
+  ));
+
+CREATE POLICY "Admin/WebsiteManager manage event mappings"
+  ON public.email_event_mappings FOR ALL
+  USING (EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role IN ('ADMIN', 'WEBSITE_MANAGER')
+  ));
+
+-- Seed default mappings
+INSERT INTO public.email_event_mappings (event_key, template_id)
+VALUES
+  ('application_accepted', 'application_accepted'),
+  ('application_rejected', 'application_rejected'),
+  ('content_approved', 'content_approved'),
+  ('inquiry_received', 'inquiry_response')
+ON CONFLICT (event_key) DO NOTHING;
+-- Add Join Us page configuration fields to site_settings
 ALTER TABLE site_settings 
 ADD COLUMN IF NOT EXISTS join_badge TEXT DEFAULT 'Identify Your Path',
 ADD COLUMN IF NOT EXISTS join_features JSONB DEFAULT '[]',
 ADD COLUMN IF NOT EXISTS join_paths JSONB DEFAULT '[]',
 ADD COLUMN IF NOT EXISTS join_faqs JSONB DEFAULT '[]';
 
+-- Initialize with prefilled information
 UPDATE site_settings 
 SET 
   join_badge = 'Identify Your Path',
@@ -1456,44 +1353,68 @@ SET
     {"question": "How long is the process?", "answer": "After submission, we usually perform a technical review and then invite you for a 20-minute intro call."}
   ]'
 WHERE id = 'main';
+-- Add site-wide audit tracking to site_settings
+-- This table stores configuration for all pages (Home, About, Join, etc.)
+ALTER TABLE site_settings 
+ADD COLUMN IF NOT EXISTS updated_by_name TEXT;
+-- Add branding assets to site_settings
+ALTER TABLE site_settings 
+ADD COLUMN IF NOT EXISTS site_logo_url TEXT;
+-- Migration to enhance events functionality
+ALTER TABLE events 
+ADD COLUMN IF NOT EXISTS action_title TEXT DEFAULT 'Registration / Action Required',
+ADD COLUMN IF NOT EXISTS action_description TEXT DEFAULT 'Follow the link to participate or register for this event.',
+ADD COLUMN IF NOT EXISTS youtube_videos JSONB DEFAULT '[]'::jsonb;
 
--- ============================================================
--- Migration: Add Audit Tracking (20260420105000)
--- ============================================================
-ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS updated_by_name TEXT;
+-- Comment out the following if you want to keep start_date required at DB level 
+-- but we'll handle it in the application.
+-- ALTER TABLE events ALTER COLUMN start_date DROP NOT NULL;
+-- Migration to ensure programs table has the latest required columns
+ALTER TABLE programs 
+ADD COLUMN IF NOT EXISTS learn_more_link TEXT;
 
--- ============================================================
--- Migration: Add Site Branding (20260420110000)
--- ============================================================
-ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS site_logo_url TEXT;
-
--- ============================================================
--- Migration: Add Video To Content (20260421110000)
--- ============================================================
+-- Notify PostgREST to reload schema
+NOTIFY pgrst, 'reload schema';
+-- Add video support to content table
 ALTER TABLE public.content ADD COLUMN IF NOT EXISTS video_url TEXT;
-ALTER TABLE public.content ADD COLUMN IF NOT EXISTS video_metadata JSONB DEFAULT '{}';
+ALTER TABLE public.content ADD COLUMN IF NOT EXISTS video_metadata JSONB DEFAULT '{}'::jsonb;
 
--- Safely update constraints to include 'VIDEO'
-DO $$ BEGIN
-  ALTER TABLE public.content DROP CONSTRAINT IF EXISTS content_type_check;
-  ALTER TABLE public.content ADD CONSTRAINT content_type_check CHECK (type IN ('ARTICLE', 'PROBLEM', 'BLOG', 'RESOURCE', 'VIDEO'));
-EXCEPTION
-  WHEN undefined_object THEN null;
+-- Helper to drop constraints if we don't know the name (though we usually do from init_schema)
+DO $$ 
+DECLARE 
+    r RECORD;
+BEGIN
+    -- Drop check constraints on 'content_type' column
+    FOR r IN (
+        SELECT conname 
+        FROM pg_constraint 
+        WHERE conrelid = 'public.content'::regclass 
+        AND contype = 'c' 
+        AND pg_get_constraintdef(oid) LIKE '%content_type%'
+    ) LOOP
+        EXECUTE 'ALTER TABLE public.content DROP CONSTRAINT ' || r.conname;
+    END LOOP;
+
+    -- Drop check constraints on 'type' column
+    FOR r IN (
+        SELECT conname 
+        FROM pg_constraint 
+        WHERE conrelid = 'public.content'::regclass 
+        AND contype = 'c' 
+        AND pg_get_constraintdef(oid) LIKE '%type%'
+        AND pg_get_constraintdef(oid) NOT LIKE '%content_type%' -- Don't match the other column
+    ) LOOP
+        EXECUTE 'ALTER TABLE public.content DROP CONSTRAINT ' || r.conname;
+    END LOOP;
 END $$;
 
-DO $$ BEGIN
-  ALTER TABLE public.content DROP CONSTRAINT IF EXISTS content_content_type_check;
-  ALTER TABLE public.content ADD CONSTRAINT content_content_type_check CHECK (content_type IN ('RICHTEXT', 'PDF', 'VIDEO', 'LINK'));
-EXCEPTION
-  WHEN undefined_object THEN null;
-END $$;
+-- Re-add constraints with VIDEO included
+ALTER TABLE public.content ADD CONSTRAINT content_type_check CHECK (content_type IN ('RICHTEXT', 'PDF', 'VIDEO'));
+ALTER TABLE public.content ADD CONSTRAINT content_type_enum_check CHECK (type IN ('ARTICLE', 'PROBLEM', 'BLOG', 'RESOURCE', 'VIDEO'));
+-- Add display_order column to content table for custom sorting
+ALTER TABLE public.content ADD COLUMN display_order INTEGER DEFAULT 0;
 
--- ============================================================
--- Migration: Add Display Order To Content (20260421120000)
--- ============================================================
-ALTER TABLE public.content ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
-
--- Initialize display_order to preserve history for existing records
+-- Initialize display_order based on created_at to preserve reverse chronological order initially
 WITH numbered_content AS (
   SELECT id, ROW_NUMBER() OVER (ORDER BY created_at DESC) as row_num
   FROM public.content
@@ -1502,22 +1423,91 @@ UPDATE public.content
 SET display_order = numbered_content.row_num
 FROM numbered_content
 WHERE public.content.id = numbered_content.id;
-
--- ============================================================
--- Migration: Update Stats To Text (20260421130000)
--- ============================================================
 -- Change impact stat columns from INTEGER to TEXT to support labels like "20K+", "50+", etc.
-DO $$ BEGIN
-  ALTER TABLE public.site_settings 
-    ALTER COLUMN stat_students_count TYPE TEXT USING stat_students_count::TEXT,
-    ALTER COLUMN stat_volunteers_count TYPE TEXT USING stat_volunteers_count::TEXT,
-    ALTER COLUMN stat_programs_count TYPE TEXT USING stat_programs_count::TEXT,
-    ALTER COLUMN stat_years_count TYPE TEXT USING stat_years_count::TEXT;
-EXCEPTION
-  WHEN undefined_column THEN null;
+ALTER TABLE public.site_settings 
+  ALTER COLUMN stat_students_count TYPE TEXT USING stat_students_count::TEXT,
+  ALTER COLUMN stat_volunteers_count TYPE TEXT USING stat_volunteers_count::TEXT,
+  ALTER COLUMN stat_programs_count TYPE TEXT USING stat_programs_count::TEXT,
+  ALTER COLUMN stat_years_count TYPE TEXT USING stat_years_count::TEXT;
+-- 20260424110000_extend_auto_purge_to_rejected.sql
+-- Extends auto-purge to cover:
+--   1. content_submissions with status = 'REJECTED' after 30 days
+--   2. join_applications with status = 'REJECTED' after 30 days  
+--   3. form_submissions with status = 'REJECTED' after 30 days
+--   4. Inquiries (join_applications + form_submissions) marked RESPONDED after 30 days
+
+-- 1. Add status_updated_at to content_submissions if not already present
+ALTER TABLE public.content_submissions ADD COLUMN IF NOT EXISTS status_updated_at timestamptz DEFAULT now();
+
+-- 2. Ensure trigger function exists (idempotent re-create)
+CREATE OR REPLACE FUNCTION public.update_status_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (OLD.status IS DISTINCT FROM NEW.status) THEN
+        NEW.status_updated_at = now();
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 3. Add trigger to content_submissions
+DROP TRIGGER IF EXISTS tr_content_subs_status_timestamp ON public.content_submissions;
+CREATE TRIGGER tr_content_subs_status_timestamp
+    BEFORE UPDATE ON public.content_submissions
+    FOR EACH ROW EXECUTE FUNCTION public.update_status_timestamp();
+
+-- 4. Replace the purge function with an extended version covering all cases
+CREATE OR REPLACE FUNCTION public.purge_old_records()
+RETURNS void AS $$
+BEGIN
+    -- Delete REJECTED content submissions older than 30 days
+    DELETE FROM public.content_submissions
+    WHERE status = 'REJECTED'
+      AND status_updated_at < now() - interval '30 days';
+
+    -- Delete REJECTED join applications (any type) older than 30 days
+    DELETE FROM public.join_applications
+    WHERE status = 'REJECTED'
+      AND status_updated_at < now() - interval '30 days';
+
+    -- Delete RESPONDED / ACCEPTED inquiries from join_applications older than 30 days
+    DELETE FROM public.join_applications
+    WHERE status IN ('ACCEPTED', 'APPROVED', 'RESPONDED')
+      AND type = 'INQUIRY'
+      AND status_updated_at < now() - interval '30 days';
+
+    -- Delete REJECTED form submissions older than 30 days
+    DELETE FROM public.form_submissions
+    WHERE status = 'REJECTED'
+      AND status_updated_at < now() - interval '30 days';
+
+    -- Delete APPROVED/RESPONDED inquiry form submissions older than 30 days
+    DELETE FROM public.form_submissions
+    WHERE status IN ('APPROVED', 'RESPONDED')
+      AND form_id IN (
+          SELECT id FROM public.form_definitions WHERE category ILIKE '%inquiry%'
+      )
+      AND status_updated_at < now() - interval '30 days';
+END;
+$$ LANGUAGE plpgsql;
+
+-- 5. Reschedule the cron job to use the new unified function
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_cron') THEN
+        -- Remove the old job if it exists
+        PERFORM cron.unschedule('daily-inquiry-purge');
+        -- Schedule the new unified purge job daily at 02:00 UTC
+        PERFORM cron.schedule('daily-records-purge', '0 2 * * *', 'SELECT public.purge_old_records()');
+    END IF;
 END $$;
 -- Add is_maintenance_mode to site_settings
 ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS is_maintenance_mode BOOLEAN DEFAULT FALSE;
+
+-- Force a refresh of the schema cache
+NOTIFY pgrst, 'reload schema';
+-- Add is_published to practice_sets
+ALTER TABLE practice_sets ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT FALSE;
 
 -- Force a refresh of the schema cache
 NOTIFY pgrst, 'reload schema';

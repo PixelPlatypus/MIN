@@ -182,7 +182,22 @@ export default function DMOPracticePage() {
                </div>
 
                <div className="space-y-6">
-                  <h4 className="text-lg font-black text-dynamic">Recent Attempts</h4>
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-lg font-black text-dynamic">Recent Attempts</h4>
+                    {history.length > 0 && (
+                      <button 
+                        onClick={() => {
+                          if (window.confirm('Are you sure you want to clear all your practice history? This action cannot be undone.')) {
+                            localStorage.removeItem('min_exam_history');
+                            setHistory([]);
+                          }
+                        }}
+                        className="text-[10px] font-black uppercase tracking-widest text-coral hover:bg-coral/10 px-3 py-1.5 rounded-lg transition-colors border border-coral/20"
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
                   <div className="space-y-4">
                     {history.slice(0, 5).map((entry, idx) => (
                       <div key={idx} className="rounded-2xl bg-bg-secondary/50 dark:bg-white/5 border border-border/50 overflow-hidden">
