@@ -6,7 +6,7 @@ import {
   ChevronRight, Calculator, Clock, 
   Eye, CheckCircle2, AlertCircle, Loader2,
   ListOrdered, Image as ImageIcon,
-  Upload, XCircle
+  Upload, XCircle, ArrowUp, ArrowDown
 } from 'lucide-react'
 import 'katex/dist/katex.min.css'
 import { InlineMath, BlockMath } from 'react-katex'
@@ -162,6 +162,38 @@ export default function QuestionBank() {
       if (res.ok) fetchQuestions(activeSet.id)
     } catch (err) {
       console.error(err)
+    }
+  }
+
+  async function handleReorderQuestion(idx, direction) {
+    if (direction === 'up' && idx === 0) return;
+    if (direction === 'down' && idx === questions.length - 1) return;
+    
+    const newQs = [...questions];
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    
+    const temp = newQs[idx];
+    newQs[idx] = newQs[swapIdx];
+    newQs[swapIdx] = temp;
+    
+    newQs.forEach((q, i) => q.sort_order = i);
+    setQuestions(newQs);
+    
+    try {
+      await Promise.all([
+        fetch('/api/practice/questions', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: newQs[idx].id, sort_order: newQs[idx].sort_order })
+        }),
+        fetch('/api/practice/questions', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: newQs[swapIdx].id, sort_order: newQs[swapIdx].sort_order })
+        })
+      ]);
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -481,7 +513,7 @@ export default function QuestionBank() {
                   </div>
                   <div className="flex-1 min-w-0 space-y-4">
                     <div className="text-sm font-bold text-dynamic prose-sm dark:prose-invert max-w-none">
-                       {q.question_text.split(/(\$\$[\s\S]*?\ExternalLink\$\$|\$[\s\S]*?\$)/).map((part, i) => {
+                       {q.question_text.split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/).map((part, i) => {
                           if (part.startsWith('$$')) return <BlockMath key={i}>{part.slice(2, -2)}</BlockMath>
                           if (part.startsWith('$')) return <InlineMath key={i}>{part.slice(1, -1)}</InlineMath>
                           return <span key={i}>{part}</span>
@@ -499,7 +531,7 @@ export default function QuestionBank() {
                         <div key={opt} className={`text-xs px-4 py-3 rounded-xl flex items-center gap-2 border ${q.correct_option === opt.toUpperCase() ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold' : 'bg-black/5 dark:bg-white/5 border-transparent opacity-60'}`}>
                           <span className="uppercase text-[10px] opacity-40 font-black shrink-0">{opt}:</span>
                           <div className="truncate prose-sm dark:prose-invert">
-                             {q[`option_${opt}`].split(/(\$\$[\s\S]*?\ExternalLink\$\$|\$[\s\S]*?\$)/).map((part, i) => {
+                             {q[`option_${opt}`].split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/).map((part, i) => {
                                 if (part.startsWith('$$')) return <BlockMath key={i}>{part.slice(2, -2)}</BlockMath>
                                 if (part.startsWith('$')) return <InlineMath key={i}>{part.slice(1, -1)}</InlineMath>
                                 return <span key={i}>{part}</span>
@@ -511,6 +543,10 @@ export default function QuestionBank() {
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center justify-between gap-1 bg-black/5 dark:bg-white/5 rounded-xl p-1 mb-1">
+                      <button onClick={() => handleReorderQuestion(idx, 'up')} disabled={idx === 0} className={`p-1 rounded-md transition-all ${idx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/50 dark:hover:bg-black/50 text-text-secondary'}`}><ArrowUp size={14} /></button>
+                      <button onClick={() => handleReorderQuestion(idx, 'down')} disabled={idx === questions.length - 1} className={`p-1 rounded-md transition-all ${idx === questions.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/50 dark:hover:bg-black/50 text-text-secondary'}`}><ArrowDown size={14} /></button>
+                    </div>
                     <button 
                       onClick={() => {
                         setQuestionForm({

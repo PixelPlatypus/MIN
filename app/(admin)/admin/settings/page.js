@@ -158,7 +158,7 @@ export default function SiteEditor() {
     rto_stages: [], rto_roadmap: [], rto_resources: [],
     dmopractice_badge: '', dmopractice_title: '', dmopractice_subtitle: '', dmopractice_description: '',
     default_team_photo: '', default_event_cover: '', default_content_image: '', team_identity_assets: [],
-    site_logo_url: '', active_volunteer_batch: 'General',
+    site_logo_url: '', active_volunteer_batch: 'General', is_maintenance_mode: false,
     updated_by_name: null, updated_at: null
   })
 
@@ -869,11 +869,65 @@ export default function SiteEditor() {
                   </div>
                )}
 
-                 {activeTab === 'general' && (
-                  <SettingSection title="Global Identities & Fallbacks" subtitle="Administrative contact and sitewide defaults" icon={<Settings size={20}/>}>
+                  <SettingSection title="Global Identities & System" subtitle="Administrative contact and sitewide defaults" icon={<Settings size={20}/>}>
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <InputField label="Official Support Inbox" icon={<Mail size={14}/>} type="email" value={settings.contact_email} onChange={e => setSettings(prev => ({...prev, contact_email: e.target.value}))} placeholder="office@mathsinitiatives.org.np"/>
                         <InputField label="Volunteer Intake Batch" icon={<UserPlus size={14}/>} value={settings.active_volunteer_batch} onChange={e => setSettings(prev => ({...prev, active_volunteer_batch: e.target.value}))} placeholder="Batch 2026-A" description="New applications will be tagged with this batch name"/>
+                     </div>
+
+                     <div className="pt-8 border-t border-border mt-8">
+                        <div className={`flex items-center justify-between p-8 rounded-[2rem] border transition-all duration-500 ${settings.is_maintenance_mode ? 'bg-coral/5 border-coral/30 shadow-lg shadow-coral/10' : 'bg-bg-secondary/50 border-border dark:bg-white/5 dark:border-white/10'}`}>
+                           <div className="space-y-2">
+                              <div className="flex items-center gap-3">
+                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${settings.is_maintenance_mode ? 'bg-coral text-white' : 'bg-primary/10 text-primary'}`}>
+                                    <Zap size={20} className={settings.is_maintenance_mode ? 'animate-pulse' : ''} />
+                                 </div>
+                                 <h6 className={`text-lg font-black tracking-tight ${settings.is_maintenance_mode ? 'text-coral' : 'text-dynamic'}`}>Maintenance Mode</h6>
+                              </div>
+                              <p className="text-xs text-text-tertiary font-medium max-w-md">
+                                 When activated, public access to the website will be restricted. Only <span className="font-bold text-primary">Admins</span> and <span className="font-bold text-primary">Website Managers</span> can view the site.
+                              </p>
+                           </div>
+                           <button 
+                              onClick={async () => {
+                                 const willActivate = !settings.is_maintenance_mode;
+                                 const message = willActivate 
+                                   ? "Are you sure you want to ACTIVATE maintenance mode? \n\nThis will immediately restrict public access to the website for all non-admin users."
+                                   : "Are you sure you want to DEACTIVATE maintenance mode? \n\nYour website will be live and visible to everyone again.";
+                                 
+                                 if (window.confirm(message)) {
+                                    // Update state locally first
+                                    const newSettings = {...settings, is_maintenance_mode: willActivate};
+                                    setSettings(newSettings);
+                                    
+                                    // Auto-trigger save for this critical action
+                                    setSaving(true);
+                                    try {
+                                       const res = await fetch('/api/settings', {
+                                          method: 'PATCH',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify(newSettings)
+                                       });
+                                       if (res.ok) {
+                                          setMessage({ type: 'success', text: `Maintenance mode ${willActivate ? 'activated' : 'deactivated'} successfully` });
+                                          setTimeout(() => setMessage(null), 3000);
+                                       } else {
+                                          throw new Error('Update failed');
+                                       }
+                                    } catch (err) {
+                                       setMessage({ type: 'error', text: 'Failed to update system status' });
+                                    } finally {
+                                       setSaving(false);
+                                    }
+                                 }
+                              }}
+                              disabled={saving}
+                              className={`px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl disabled:opacity-50 ${settings.is_maintenance_mode ? 'bg-coral text-white shadow-coral/20' : 'bg-primary text-white shadow-primary/20 hover:bg-primary-dark'}`}
+                           >
+                              {saving && <Loader2 size={12} className="inline mr-2 animate-spin" />}
+                              {settings.is_maintenance_mode ? 'Deactivate Now' : 'Activate Maintenance'}
+                           </button>
+                        </div>
                      </div>
 
                      <div className="pt-8 border-t border-border mt-8">
@@ -891,7 +945,6 @@ export default function SiteEditor() {
                         <InputField label="Institutional Footer Narrative" value={settings.footer_description} onChange={e => setSettings(prev => ({...prev, footer_description: e.target.value}))} rows={5} description="Displayed at the base of every page interaction"/>
                      </div>
                   </SettingSection>
-                )}
              </motion.div>
           </AnimatePresence>
         </main>

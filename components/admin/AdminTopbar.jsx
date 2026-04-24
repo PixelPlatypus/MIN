@@ -7,7 +7,7 @@ import Link from 'next/link'
 import ThemeToggle from '@/components/shared/ThemeToggle'
 import { useSidebar } from './SidebarProvider'
 
-export default function AdminTopbar({ profile }) {
+export default function AdminTopbar({ profile, isMaintenance }) {
   const pathname = usePathname()
   const { toggleMobile } = useSidebar()
   const [notifications, setNotifications] = useState([])
@@ -101,6 +101,12 @@ export default function AdminTopbar({ profile }) {
           <Menu size={20} />
         </button>
         <h1 className="text-xl font-bold tracking-tight">{getPageTitle(pathname)}</h1>
+        {isMaintenance && (
+          <div className="flex items-center gap-2 bg-rose-500/10 text-rose-500 px-3 py-1.5 rounded-xl border border-rose-500/20 animate-pulse">
+            <AlertCircle size={14} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Maintenance Active</span>
+          </div>
+        )}
         <div className="hidden lg:flex items-center gap-2 bg-bg-secondary dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border dark:border-border-dark">
           <Search size={16} className="text-text-tertiary" />
           <input 

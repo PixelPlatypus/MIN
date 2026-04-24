@@ -37,12 +37,19 @@ export default async function AdminLayout({ children }) {
     redirect('/login?error=profile_not_found')
   }
 
+  // Fetch maintenance status
+  const { data: settings } = await supabase
+    .from('site_settings')
+    .select('is_maintenance_mode')
+    .eq('id', 'main')
+    .single()
+
   return (
     <SidebarProvider>
       <NetworkResilience />
       <AdminLayoutClient 
-        sidebar={<AdminSidebar profile={profile} />}
-        topbar={<AdminTopbar profile={profile} />}
+        sidebar={<AdminSidebar profile={profile} isMaintenance={settings?.is_maintenance_mode} />}
+        topbar={<AdminTopbar profile={profile} isMaintenance={settings?.is_maintenance_mode} />}
       >
         {children}
       </AdminLayoutClient>

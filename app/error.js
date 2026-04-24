@@ -34,62 +34,70 @@ export default function Error({ error, reset }) {
   }, [error])
 
   return (
-    <div className="min-h-screen bg-bg dark:bg-bg-dark flex items-center justify-center p-6 transition-colors duration-500">
-      <div className="max-w-md w-full text-center space-y-12">
-        {/* Error Code/Icon */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative inline-block"
-        >
-          <div className="text-[12rem] font-black text-coral/10 leading-none tracking-tighter select-none">
-            ERR
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-24 h-24 bg-coral/20 rounded-[2.5rem] flex items-center justify-center text-coral backdrop-blur-xl border border-coral/20 animate-pulse">
-              <AlertCircle size={48} />
-            </div>
-          </div>
-        </motion.div>
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Premium Mesh Gradient Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-coral/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[100px]" />
+      </div>
 
-        {/* Message */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="space-y-4"
-        >
-          <h1 className="text-4xl font-black tracking-tight text-text-primary dark:text-text-primary-dark">
-            Something <span className="text-coral">went wrong!</span>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="max-w-xl w-full glass bg-white/5 border-white/10 backdrop-blur-3xl rounded-[3.5rem] p-10 md:p-16 text-center space-y-10 relative z-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]"
+      >
+        {/* Branding inside the box */}
+        <div className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-80">
+          Mathematics Initiatives in Nepal
+        </div>
+
+        <div className="relative mx-auto w-full max-w-sm">
+           <div className="absolute inset-0 bg-coral/20 rounded-[2.5rem] blur-2xl animate-pulse" />
+           <div className="relative w-full aspect-video rounded-[2rem] overflow-hidden border border-white/20 shadow-2xl">
+              <img 
+                src="/images/404page.gif" 
+                alt="System error" 
+                className="w-full h-full object-cover"
+              />
+           </div>
+           <div className="absolute -top-4 -right-4 bg-coral text-white w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-xl shadow-coral/30 rotate-12">
+              ERR
+           </div>
+        </div>
+
+        <div className="space-y-4">
+          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter leading-[0.95]">
+            Something <br /> 
+            <span className="text-coral">Went Wrong</span>
           </h1>
-          <p className="text-lg text-text-secondary dark:text-text-secondary-dark font-medium leading-relaxed">
+          <p className="text-white/50 text-base font-medium leading-relaxed max-w-sm mx-auto">
             An unexpected error occurred. Don't worry, it's not you, it's us. Our team has been notified.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Actions */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-        >
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
           <button 
             onClick={() => reset()}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-primary text-white font-bold hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 hover:shadow-primary/40"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold transition-all border border-white/10 active:scale-95"
           >
-            <RefreshCcw size={20} />
+            <RefreshCcw size={18} />
             Try Again
           </button>
           <Link 
             href="/"
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-10 py-4 rounded-2xl bg-bg-secondary dark:bg-white/5 text-text-primary dark:text-text-primary-dark font-bold hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all border border-border dark:border-border-dark"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-10 py-4 rounded-2xl bg-primary text-white font-bold hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 active:scale-95"
           >
-            <Home size={20} />
+            <Home size={18} />
             Home Page
           </Link>
-        </motion.div>
-      </div>
+        </div>
+
+        <div className="pt-10 border-t border-white/5">
+           <p className="text-[10px] text-white/30 font-black uppercase tracking-[0.3em]">
+             Redirecting to home shortly...
+           </p>
+        </div>
+      </motion.div>
     </div>
   )
 }

@@ -7,7 +7,8 @@ import {
   Clock, 
   ArrowUpRight, 
   ArrowDownRight,
-  MoreVertical
+  MoreVertical,
+  AlertCircle
 } from 'lucide-react'
 
 export default async function AdminDashboard() {
@@ -28,7 +29,8 @@ export default async function AdminDashboard() {
     { count: newTeamCount },
     { count: applicationsCount },
     { count: newAppsCount },
-    { data: recentAudit }
+    { data: recentAudit },
+    settingsData
   ] = await Promise.all([
     supabase.from('content').select('*', { count: 'exact', head: true }),
     supabase.from('content').select('*', { count: 'exact', head: true }).gt('created_at', dateStr),
@@ -38,8 +40,11 @@ export default async function AdminDashboard() {
     supabase.from('team_members').select('*', { count: 'exact', head: true }).eq('is_active', true).gt('created_at', dateStr),
     supabase.from('join_applications').select('*', { count: 'exact', head: true }).eq('status', 'PENDING'),
     supabase.from('join_applications').select('*', { count: 'exact', head: true }).eq('status', 'PENDING').gt('created_at', dateStr),
-    supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(5)
+    supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(5),
+    supabase.from('site_settings').select('is_maintenance_mode').eq('id', 'main').single()
   ])
+
+  const isMaintenance = settingsData?.data?.is_maintenance_mode
 
   // Helper to calculate pseudo-trend
   const getTrend = (newItemCount, total) => {
@@ -105,6 +110,26 @@ export default async function AdminDashboard() {
           {/* Analytics integrations coming soon */}
         </div>
       </div>
+
+      {isMaintenance && (
+        <div className="p-6 rounded-[2.5rem] bg-rose-500/10 border border-rose-500/20 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-rose-500/5 animate-in slide-in-from-top-4 duration-500">
+           <div className="flex items-center gap-5">
+              <div className="w-14 h-14 bg-rose-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-rose-500/20 animate-pulse">
+                 <AlertCircle size={32} />
+              </div>
+              <div className="space-y-1">
+                 <h3 className="text-xl font-black text-rose-600">Site Maintenance Active</h3>
+                 <p className="text-sm text-rose-600/70 font-medium">Public users are currently seeing the maintenance landing page.</p>
+              </div>
+           </div>
+           <a 
+             href="/admin/settings" 
+             className="px-8 py-3 bg-rose-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition-all active:scale-95"
+           >
+             Go to Settings
+           </a>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (

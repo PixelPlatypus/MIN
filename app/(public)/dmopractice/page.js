@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import 'katex/dist/katex.min.css'
+import { InlineMath, BlockMath } from 'react-katex'
 import Link from 'next/link'
 import { 
   Calculator, 
@@ -10,14 +12,35 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
-  History
+  History,
+  ChevronDown
 } from 'lucide-react'
+
+
+function MathText({ text, className = '' }) {
+  if (!text) return null
+  const parts = text.split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/)
+  return (
+    <span className={className}>
+      {parts.map((part, i) => {
+        if (part.startsWith('$$') && part.endsWith('$$')) {
+          return <BlockMath key={i}>{part.slice(2, -2)}</BlockMath>
+        }
+        if (part.startsWith('$') && part.endsWith('$')) {
+          return <InlineMath key={i}>{part.slice(1, -1)}</InlineMath>
+        }
+        return <span key={i}>{part}</span>
+      })}
+    </span>
+  )
+}
 
 export default function DMOPracticePage() {
   const [sets, setSets] = useState([])
   const [settings, setSettings] = useState(null)
   const [loading, setLoading] = useState(true)
   const [history, setHistory] = useState([])
+  const [expandedHistory, setExpandedHistory] = useState(null)
 
   useEffect(() => {
     Promise.all([
@@ -162,15 +185,55 @@ export default function DMOPracticePage() {
                   <h4 className="text-lg font-black text-dynamic">Recent Attempts</h4>
                   <div className="space-y-4">
                     {history.slice(0, 5).map((entry, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-bg-secondary/50 dark:bg-white/5 border border-border/50">
-                        <div className="min-w-0">
-                          <p className="text-sm font-bold truncate">{entry.setName}</p>
-                          <p className="text-[10px] text-text-tertiary font-bold uppercase">{new Date(entry.date).toLocaleDateString()}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-lg font-black text-primary leading-tight">{entry.score}/{entry.total}</p>
-                          <p className="text-[10px] text-text-tertiary font-bold uppercase">Marks</p>
-                        </div>
+                      <div key={idx} className="rounded-2xl bg-bg-secondary/50 dark:bg-white/5 border border-border/50 overflow-hidden">
+                        <button 
+                          onClick={() => setExpandedHistory(expandedHistory === idx ? null : idx)}
+                          className="w-full flex items-center justify-between p-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-bold truncate">{entry.setName}</p>
+                            <p className="text-[10px] text-text-tertiary font-bold uppercase">{new Date(entry.date).toLocaleDateString()}</p>
+                          </div>
+                          <div className="text-right flex items-center gap-3">
+                            <div>
+                              <p className="text-lg font-black text-primary leading-tight">{entry.score}/{entry.total}</p>
+                              <p className="text-[10px] text-text-tertiary font-bold uppercase">Marks</p>
+                            </div>
+                            <ChevronDown size={16} className={`text-text-tertiary transition-transform ${expandedHistory === idx ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                        
+                        <AnimatePresence>
+                          {expandedHistory === idx && entry.wrongAnswers && entry.wrongAnswers.length > 0 && (
+                            <motion.div 
+                              initial={{ height: 0, opacity: 0 }} 
+                              animate={{ height: 'auto', opacity: 1 }} 
+                              exit={{ height: 0, opacity: 0 }}
+                              className="border-t border-border/50 bg-black/5 dark:bg-white/5 p-4 space-y-3"
+                            >
+                              <p className="text-[10px] font-black uppercase tracking-widest text-coral">Incorrect Answers</p>
+                              {entry.wrongAnswers.map((w, i) => (
+                                <div key={i} className="text-xs space-y-1 p-2 rounded-xl bg-white dark:bg-[#111] border border-coral/20">
+                                  <div className="font-semibold text-dynamic pr-4"><MathText text={w.text} /></div>
+                                  <div className="flex items-center gap-4 text-[10px] font-bold">
+                                    <span className="text-coral flex items-center gap-1">You: {w.userAnswer || 'None'} {w.userAnswer && w.options && <span className="opacity-70">(<MathText text={w.options[w.userAnswer.toLowerCase()]} />)</span>}</span>
+                                    <span className="text-emerald-500 flex items-center gap-1">Correct: {w.correctAnswer} {w.options && <span className="opacity-70">(<MathText text={w.options[w.correctAnswer.toLowerCase()]} />)</span>}</span>
+                                  </div>
+                                </div>
+                              ))}
+                            </motion.div>
+                          )}
+                          {expandedHistory === idx && (!entry.wrongAnswers || entry.wrongAnswers.length === 0) && (
+                            <motion.div 
+                              initial={{ height: 0, opacity: 0 }} 
+                              animate={{ height: 'auto', opacity: 1 }} 
+                              exit={{ height: 0, opacity: 0 }}
+                              className="border-t border-border/50 bg-black/5 dark:bg-white/5 p-4"
+                            >
+                              <p className="text-xs font-bold text-emerald-500">Perfect score! No mistakes.</p>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
                     ))}
                     {history.length === 0 && (

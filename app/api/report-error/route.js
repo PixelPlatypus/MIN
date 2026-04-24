@@ -15,6 +15,11 @@ export async function POST(request) {
     }
 
     const { errorName, errorMessage, errorStack, url } = await request.json()
+    
+    // Skip sending emails for localhost errors to prevent dev clutter
+    if (url && (url.includes('localhost') || url.includes('127.0.0.1'))) {
+       return NextResponse.json({ success: true, message: 'Localhost error reporting suppressed' })
+    }
 
     const supabaseAdmin = await createAdminClient()
     const { data: settings } = await supabaseAdmin

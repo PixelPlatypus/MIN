@@ -1516,3 +1516,8 @@ DO $$ BEGIN
 EXCEPTION
   WHEN undefined_column THEN null;
 END $$;
+-- Add is_maintenance_mode to site_settings
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS is_maintenance_mode BOOLEAN DEFAULT FALSE;
+
+-- Force a refresh of the schema cache
+NOTIFY pgrst, 'reload schema';

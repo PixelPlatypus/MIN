@@ -80,7 +80,7 @@ const navGroups = [
   }
 ]
 
-export default function AdminSidebar({ profile }) {
+export default function AdminSidebar({ profile, isMaintenance }) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -126,8 +126,11 @@ export default function AdminSidebar({ profile }) {
         {/* Header */}
         <div className={`p-6 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
           <Link href="/" className="flex items-center gap-3 group min-w-0">
-            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center transition-transform group-hover:scale-110 shadow-lg shadow-primary/20 rounded-full overflow-hidden bg-white/5">
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center transition-transform group-hover:scale-110 shadow-lg shadow-primary/20 rounded-full overflow-hidden bg-white/5 relative">
               <img src="/images/logo.svg" alt="MIN Logo" className="w-full h-full object-cover" />
+              {isMaintenance && isCollapsed && (
+                 <div className="absolute top-0 right-0 w-3 h-3 bg-rose-500 rounded-full border-2 border-white dark:border-bg-dark animate-pulse" />
+              )}
             </div>
             {!isCollapsed && (
               <motion.div 
@@ -135,7 +138,12 @@ export default function AdminSidebar({ profile }) {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex flex-col overflow-hidden"
               >
-                <span className="font-bold text-lg leading-tight tracking-tight truncate">MIN Admin</span>
+                <div className="flex items-center gap-2">
+                   <span className="font-bold text-lg leading-tight tracking-tight truncate">MIN Admin</span>
+                   {isMaintenance && (
+                      <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse shrink-0" title="Maintenance Active" />
+                   )}
+                </div>
                 <span className="text-[10px] text-primary font-semibold uppercase tracking-widest">{profile.role}</span>
               </motion.div>
             )}
