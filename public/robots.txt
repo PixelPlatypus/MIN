@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /api/
-Disallow: /login
-
-Sitemap: https://mathsinitiatives.org.np/sitemap.xml

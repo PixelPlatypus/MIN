@@ -29,9 +29,23 @@ export async function generateMetadata({ params }) {
     return {
       title: `${event.title} - MIN Events`,
       description: plainDescription,
+      alternates: {
+        canonical: `/events/${slug}`,
+      },
+      keywords: [event.title, 'Mathematics Events Nepal', 'MIN Events', 'Math Competitions'],
       openGraph: {
+        title: event.title,
+        description: plainDescription,
+        url: `/events/${slug}`,
+        type: 'article',
         images: [event.cover_url || '/placeholder-event.png'],
       },
+      twitter: {
+        card: 'summary_large_image',
+        title: event.title,
+        description: plainDescription,
+        images: [event.cover_url || '/placeholder-event.png'],
+      }
     }
   } catch (err) {
     console.error('Error generating metadata for event:', err)

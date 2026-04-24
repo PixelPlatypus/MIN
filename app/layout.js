@@ -20,15 +20,37 @@ const jetBrainsMono = JetBrains_Mono({
   preload: false, // Prevents "preloaded but not used" warning if not used immediately
 })
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np'
+
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  metadataBase: new URL(BASE_URL),
   title: {
     template: '%s | MIN',
     default: 'MIN | Mathematics Initiatives in Nepal'
   },
-  description: 'Making mathematics accessible, engaging, and inspiring for all students in Nepal.',
+  description: 'Empowering students across Nepal to excel globally through innovative mathematics education, resources, and events.',
+  keywords: ['Mathematics', 'Nepal', 'MIN', 'Math Initiatives', 'STEM Nepal', 'Math Competitions', 'Mathematics Education'],
+  authors: [{ name: 'Mathematics Initiatives in Nepal' }],
+  creator: 'MIN Team',
+  publisher: 'Mathematics Initiatives in Nepal',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   alternates: {
     canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   icons: {
     icon: [
@@ -45,15 +67,24 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_NP',
-    url: './',
+    url: BASE_URL,
     siteName: 'MIN',
     title: 'Mathematics Initiatives in Nepal',
     description: 'Empowering students across Nepal to excel globally through innovative mathematics education.',
+    images: [
+      {
+        url: '/images/logo.png', // Make sure this exists or replace with a default
+        width: 500,
+        height: 500,
+        alt: 'MIN | Mathematics Initiatives in Nepal',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MIN | Mathematics Initiatives in Nepal',
     description: 'Empowering students across Nepal to excel globally through innovative mathematics education.',
+    images: ['/images/logo.png'],
   }
 }
 
