@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { sanitizeHtml } from '@/lib/sanitize'
 import { Calendar, MapPin, ArrowRight, Video, PlayCircle } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
