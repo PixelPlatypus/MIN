@@ -27,27 +27,41 @@ export async function GET(request) {
   // Intelligent Tenure Propagation Logic (Server-side)
   if (tenure) {
     const filterYear = parseInt(tenure)
-    const filtered = data.filter(member => {
-      const joinedYear = parseInt(member.tenure)
-      if (isNaN(joinedYear)) return member.tenure === tenure // Fallback
-      
-      let leftYear = joinedYear
-      if (member.farewell_date) {
-        const farewellDate = new Date(member.farewell_date)
-        const year = farewellDate.getFullYear()
-        const month = farewellDate.getMonth() // 0-indexed (0: Jan, 5: Jun, 6: Jul)
-        // If farewell in first half of year (June or earlier), show them only up to Year-1
-        leftYear = month >= 6 ? year : year - 1
+    const filtered = data
+      .filter(member => {
+        const joinedYear = parseInt(member.tenure)
+        if (isNaN(joinedYear)) return member.tenure === tenure // Fallback
         
-        // Ensure leftYear is at least joinedYear
-        if (leftYear < joinedYear) leftYear = joinedYear
-      } else if (member.status === 'ACTIVE') {
-        leftYear = new Date().getFullYear()
-      }
-      
-      // Member is visible if requested year falls between joined and left/current year
-      return filterYear >= joinedYear && filterYear <= leftYear
-    })
+        let leftYear = joinedYear
+        if (member.farewell_date) {
+          const farewellDate = new Date(member.farewell_date)
+          const year = farewellDate.getFullYear()
+          const month = farewellDate.getMonth() // 0-indexed (0: Jan, 5: Jun, 6: Jul)
+          // If farewell in first half of year (June or earlier), show them only up to Year-1
+          leftYear = month >= 6 ? year : year - 1
+          
+          // Ensure leftYear is at least joinedYear
+          if (leftYear < joinedYear) leftYear = joinedYear
+        } else if (member.status === 'ACTIVE') {
+          leftYear = new Date().getFullYear()
+        }
+        
+        // Member is visible if requested year falls between joined and left/current year
+        return filterYear >= joinedYear && filterYear <= leftYear
+      })
+      .map(member => {
+        // Apply role_history override: if this member has a past role for this exact year,
+        // override the displayed position with that historical role
+        const roleHistory = member.social_links?.role_history
+        if (Array.isArray(roleHistory) && roleHistory.length > 0) {
+          const historicalRole = roleHistory.find(h => parseInt(h.year) === filterYear)
+          if (historicalRole?.position) {
+            return { ...member, position: historicalRole.position }
+          }
+        }
+        return member
+      })
+
     return Response.json(filtered)
   }
 

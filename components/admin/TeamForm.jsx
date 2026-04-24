@@ -26,6 +26,10 @@ const teamSchema = z.object({
     linkedin: z.string().url().or(z.literal('')).optional(),
     email: z.string().email().or(z.literal('')).optional(),
     github: z.string().url().or(z.literal('')).optional(),
+    role_history: z.array(z.object({
+      year: z.string().min(4, "Year must be 4 digits"),
+      position: z.string().min(1, "Position is required")
+    })).default([]),
   }).default({}),
 }).refine(data => {
   if (data.farewell_date && data.joined_date) {
@@ -262,6 +266,63 @@ export default function TeamForm({ initialData = null }) {
                   }`}
                 />
                 {errors.farewell_date && <p className="text-xs text-coral ml-1">{errors.farewell_date.message}</p>}
+              </div>
+            </div>
+
+            {/* Role History Section (Stored in social_links JSONB to avoid DB migration) */}
+            <div className="glass rounded-[2rem] p-8 space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold tracking-tight">Role History</h3>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentHistory = watch('social_links.role_history') || []
+                    setValue('social_links.role_history', [...currentHistory, { year: '', position: 'MINion' }])
+                  }}
+                  className="px-4 py-2 bg-primary/10 text-primary text-sm font-bold rounded-xl hover:bg-primary hover:text-white transition-all"
+                >
+                  + Add Past Role
+                </button>
+              </div>
+              <p className="text-sm text-text-tertiary">
+                If this person was promoted, add their past roles here. They will automatically show up as their past role in those specific tenure years.
+              </p>
+              
+              <div className="space-y-4">
+                {(watch('social_links.role_history') || []).map((historyItem, index) => (
+                  <div key={index} className="flex items-center gap-4 bg-bg-secondary dark:bg-white/5 p-4 rounded-2xl border border-black/5 dark:border-white/5 relative group">
+                    <div className="space-y-1 flex-1">
+                      <label className="text-xs font-bold text-text-tertiary ml-1">Year</label>
+                      <input 
+                        {...register(`social_links.role_history.${index}.year`)}
+                        placeholder="e.g. 2022"
+                        className="w-full bg-white dark:bg-[#1a1a1a] border border-border dark:border-border-dark rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-primary"
+                      />
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <label className="text-xs font-bold text-text-tertiary ml-1">Position</label>
+                      <select 
+                        {...register(`social_links.role_history.${index}.position`)}
+                        className="w-full bg-white dark:bg-[#1a1a1a] border border-border dark:border-border-dark rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-primary appearance-none cursor-pointer"
+                      >
+                        <option value="MINion">MINion</option>
+                        <option value="President">President</option>
+                        <option value="Manager">Manager</option>
+                      </select>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const currentHistory = watch('social_links.role_history') || []
+                        setValue('social_links.role_history', currentHistory.filter((_, i) => i !== index))
+                      }}
+                      className="mt-5 p-2 text-coral bg-coral/10 hover:bg-coral hover:text-white rounded-xl transition-colors"
+                      title="Remove Role"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
 
