@@ -23,7 +23,7 @@ const eventSchema = z.object({
   action_text: z.string().optional().nullable(),
   action_title: z.string().optional().nullable(),
   action_description: z.string().optional().nullable(),
-  youtube_playlist: z.string().optional().nullable(),
+  action_deadline: z.string().optional().nullable(),
   youtube_title: z.string().optional().nullable(),
   youtube_videos: z.array(z.object({
     title: z.string().optional(),
@@ -80,7 +80,7 @@ export default function EventForm({ initialData = null }) {
       action_link: initialData.action_link || '',
       action_title: initialData.action_title || 'Registration / Action Required',
       action_description: initialData.action_description || 'Follow the link to participate or register for this event.',
-      youtube_playlist: initialData.youtube_playlist || '',
+      action_deadline: formatDateForInput(initialData.action_deadline),
       youtube_title: initialData.youtube_title || 'Event Recordings',
       youtube_videos: initialData.youtube_videos || [],
     } : {
@@ -96,7 +96,7 @@ export default function EventForm({ initialData = null }) {
       action_text: '',
       action_title: 'Registration / Action Required',
       action_description: 'Follow the link to participate or register for this event.',
-      youtube_playlist: '',
+      action_deadline: '',
       youtube_title: 'Event Recordings',
       youtube_videos: [],
       show_date: true,
@@ -136,7 +136,7 @@ export default function EventForm({ initialData = null }) {
       end_date: data.end_date === '' ? null : data.end_date,
       action_link: data.action_link === '' ? null : data.action_link,
       action_text: data.action_text === '' ? null : data.action_text,
-      youtube_playlist: data.youtube_playlist === '' ? null : data.youtube_playlist,
+      action_deadline: data.action_deadline === '' ? null : data.action_deadline,
       youtube_title: data.youtube_title === '' ? 'Event Recordings' : data.youtube_title,
     }
 
@@ -455,6 +455,16 @@ export default function EventForm({ initialData = null }) {
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <label className="text-sm font-bold ml-1">Action Link Deadline</label>
+                  <input 
+                    {...register('action_deadline')}
+                    type="date"
+                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  />
+                  <p className="text-[10px] text-text-tertiary ml-1 italic">If not provided, the event's End Date will be used as the deadline.</p>
+                </div>
+
                 <h4 className="text-xs font-black uppercase tracking-widest text-text-tertiary pt-4">YouTube Section Settings</h4>
 
                 <div className="space-y-2">
@@ -473,16 +483,6 @@ export default function EventForm({ initialData = null }) {
                     <option value="Session Replay" />
                     <option value="Livestream" />
                   </datalist>
-                </div>
-
-                {/* Keep legacy field for compatibility if needed, but we'll focus on the list */}
-                <div className="space-y-2 opacity-50">
-                  <label className="text-[10px] font-bold ml-1">Primary Playlist (Legacy)</label>
-                  <input 
-                    {...register('youtube_playlist')}
-                    placeholder="e.g. https://youtube.com/playlist?list=..."
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-2 px-4 text-xs transition-all focus:outline-none"
-                  />
                 </div>
               </div>
             </div>

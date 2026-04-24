@@ -22,8 +22,10 @@ export default function EventCard({ event, index, fallbackImage }) {
       return { text: 'Upcoming', class: 'bg-primary text-white border-primary/20 shadow-lg shadow-primary/20' }
     }
     
-    // Past logic: if end date exists and is past, or if no end date but start date is 24h+ old
-    const isPast = end ? end < now : (now.getTime() - start.getTime() > 86400000)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const boundary = end || start
+    const isPast = boundary && (new Date(boundary).setHours(0, 0, 0, 0) < today.getTime())
     if (isPast) {
       return { text: 'Past Event', class: 'bg-black/40 text-white border-white/40' }
     }

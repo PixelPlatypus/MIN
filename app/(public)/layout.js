@@ -2,6 +2,7 @@ export const revalidate = 0;
 import Navbar from '@/components/public/Navbar'
 import Footer from '@/components/public/Footer'
 import PageTransition from '@/components/public/PageTransition'
+import ScrollToTop from '@/components/public/ScrollToTop'
 import { createClient } from '@/lib/supabase/server'
 import MaintenanceView from '@/components/public/MaintenanceView'
 
@@ -51,6 +52,7 @@ export default async function PublicLayout({ children }) {
         </PageTransition>
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }

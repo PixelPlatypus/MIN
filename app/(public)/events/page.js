@@ -2,12 +2,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import EventCard from '@/components/public/EventCard'
-import { Sparkles, Loader2, Calendar, Filter, Search } from 'lucide-react'
+import { Sparkles, Loader2, Calendar, Filter, Search, ChevronDown } from 'lucide-react'
 
 export default function EventsPage() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState('PUBLISHED')
+  const [filter, setFilter] = useState('ALL')
   const [search, setSearch] = useState('')
   const [settings, setSettings] = useState(null)
 
@@ -21,30 +21,82 @@ export default function EventsPage() {
   useEffect(() => {
     async function fetchEvents() {
       setLoading(true)
-      const res = await fetch(`/api/events?status=${filter}`)
+      // Fetch all published events and filter locally
+      const res = await fetch(`/api/events?status=PUBLISHED`)
       const data = await res.json()
       setEvents(Array.isArray(data) ? data : [])
       setLoading(false)
     }
     fetchEvents()
-  }, [filter])
+  }, [])
 
-  const filteredEvents = events.filter(event => 
-    event.title.toLowerCase().includes(search.toLowerCase()) ||
-    event.location?.toLowerCase().includes(search.toLowerCase())
-  )
+  const filteredEvents = events.filter(event => {
+    const matchesSearch = event.title.toLowerCase().includes(search.toLowerCase()) ||
+                          event.location?.toLowerCase().includes(search.toLowerCase())
+    if (!matchesSearch) return false
 
-  const upcomingEvents = filteredEvents.filter(e => 
-    new Date(e.start_date) >= new Date() || 
-    e.event_type === 'RECURRING' || 
-    e.event_type === 'EVERGOING'
-  )
-  
-  const pastEvents = filteredEvents.filter(e => 
-    new Date(e.start_date) < new Date() && 
-    e.event_type !== 'RECURRING' && 
-    e.event_type !== 'EVERGOING'
-  )
+    if (filter === 'ALL') return true
+    
+    const start = event.start_date ? new Date(event.start_date) : null
+    if (start) start.setHours(0, 0, 0, 0)
+    const end = new Date(event.end_date || event.start_date)
+    end.setHours(0, 0, 0, 0)
+
+    if (filter === 'ONGOING') {
+      if (event.event_type === 'RECURRING' || event.event_type === 'EVERGOING') return true
+      return start && start <= today && end >= today
+    }
+    if (filter === 'UPCOMING') {
+      if (event.event_type === 'RECURRING' || event.event_type === 'EVERGOING') return false
+      return start && start > today
+    }
+    if (filter === 'PAST') {
+      if (event.event_type === 'RECURRING' || event.event_type === 'EVERGOING') return false
+      return end < today
+    }
+    if (filter === 'RECURRING') return event.event_type === 'RECURRING'
+    if (filter === 'EVERGOING') return event.event_type === 'EVERGOING'
+    
+    return true
+  })
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const sortedEvents = [...filteredEvents].sort((a, b) => {
+    const getPriority = (e) => {
+      // Priority 1: Ongoing (Standard events that have started and not ended)
+      // Priority 2: Upcoming (Standard events that haven't started)
+      // Priority 3: Recurring
+      // Priority 4: Evergoing
+      // Priority 5: Past (Standard events that have ended)
+      
+      if (e.event_type === 'RECURRING') return 3
+      if (e.event_type === 'EVERGOING') return 4
+      
+      if (!e.start_date) return 2
+      const start = new Date(e.start_date); start.setHours(0, 0, 0, 0)
+      const end = new Date(e.end_date || e.start_date); end.setHours(0, 0, 0, 0)
+      
+      if (end < today) return 5
+      if (start <= today && end >= today) return 1
+      if (start > today) return 2
+      return 2
+    }
+
+    const priorityA = getPriority(a)
+    const priorityB = getPriority(b)
+
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB
+    }
+
+    // Secondary sort: By date (closest first)
+    if (a.start_date && b.start_date) {
+      return new Date(a.start_date) - new Date(b.start_date)
+    }
+    return 0
+  })
 
   return (
     <div className="pt-32 pb-24 space-y-24">
@@ -93,14 +145,21 @@ export default function EventsPage() {
           </div>
           <div className="flex items-center gap-3">
             <Filter size={20} className="text-text-tertiary" />
-            <select 
-              className="glass px-6 py-3 rounded-2xl text-base font-semibold border border-primary/10 focus:outline-none focus:border-primary transition-all bg-transparent cursor-pointer shadow-sm"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            >
-              <option value="PUBLISHED">Published</option>
-              <option value="ARCHIVED">Past / Archived</option>
-            </select>
+            <div className="relative group">
+              <select 
+                className="glass pl-6 pr-12 py-3 rounded-2xl text-base font-semibold border border-primary/10 focus:outline-none focus:border-primary transition-all bg-transparent cursor-pointer shadow-sm appearance-none min-w-[160px]"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="ALL">All Events</option>
+                <option value="ONGOING">Ongoing Events</option>
+                <option value="UPCOMING">Upcoming Events</option>
+                <option value="PAST">Past Events</option>
+                <option value="RECURRING">Recurring Events</option>
+                <option value="EVERGOING">Evergoing Events</option>
+              </select>
+              <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary pointer-events-none group-focus-within:text-primary transition-colors" />
+            </div>
           </div>
         </div>
 
@@ -110,35 +169,19 @@ export default function EventsPage() {
           </div>
         ) : (
           <div className="space-y-24">
-            {upcomingEvents.length > 0 && (
+            {sortedEvents.length > 0 ? (
               <div className="space-y-12">
                 <div className="flex items-center gap-4">
-                  <h2 className="text-3xl font-bold tracking-tight">Upcoming Events</h2>
-                  <div className="h-px flex-1 bg-border dark:bg-border-dark" />
+                  <h2 className="text-3xl font-bold tracking-tight text-primary">Events</h2>
+                  <div className="h-px flex-1 bg-primary/20" />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {upcomingEvents.map((event, i) => (
+                  {sortedEvents.map((event, i) => (
                     <EventCard key={event.id} event={event} index={i} fallbackImage={settings?.default_event_cover} />
                   ))}
                 </div>
               </div>
-            )}
-
-            {pastEvents.length > 0 && (
-              <div className="space-y-12">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-3xl font-bold tracking-tight text-text-secondary">Past Events</h2>
-                  <div className="h-px flex-1 bg-border dark:bg-border-dark" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {pastEvents.map((event, i) => (
-                    <EventCard key={event.id} event={event} index={i} fallbackImage={settings?.default_event_cover} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {upcomingEvents.length === 0 && pastEvents.length === 0 && (
+            ) : (
               <div className="text-center py-24 glass rounded-[3rem]">
                 <p className="text-xl text-text-tertiary">No events found matching your criteria.</p>
               </div>

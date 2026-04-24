@@ -68,10 +68,16 @@ export default async function EventDetailPage({ params }) {
     }
   }
 
-  const startDate = formatDate(event.start_date)
-  const isPast = event.start_date 
-    ? new Date(event.start_date) < new Date() && event.event_type !== 'RECURRING' && event.event_type !== 'EVERGOING'
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const boundaryDateStr = event.end_date || event.start_date
+  const isPast = boundaryDateStr && event.event_type !== 'RECURRING' && event.event_type !== 'EVERGOING'
+    ? new Date(boundaryDateStr).setHours(0, 0, 0, 0) < today.getTime()
     : false
+
+  const actionDeadlineStr = event.action_deadline || event.end_date
+  const isActionActive = !actionDeadlineStr || (new Date(actionDeadlineStr).setHours(0, 0, 0, 0) >= today.getTime())
   
   // Process multiple YouTube videos with robust type checking
   const videos = Array.isArray(event.youtube_videos) 
@@ -136,10 +142,10 @@ export default async function EventDetailPage({ params }) {
             <h1 className="text-4xl md:text-6xl font-black tracking-tight">{event.title}</h1>
             
             <div className="flex flex-wrap items-center gap-6 text-text-secondary font-medium">
-              {event.show_date !== false && startDate && (
+              {event.show_date !== false && formatDate(event.start_date) && (
                 <div className="flex items-center gap-2">
                   <Calendar size={18} className="text-primary" />
-                  <span>{startDate}</span>
+                  <span>{formatDate(event.start_date)}</span>
                 </div>
               )}
               {event.location && (
@@ -152,7 +158,7 @@ export default async function EventDetailPage({ params }) {
           </div>
           
           {/* Main Action Banner */}
-          {event.action_link && event.show_action_link !== false && (
+          {event.action_link && event.show_action_link !== false && isActionActive && (
             <div className="glass p-6 md:p-8 rounded-[2rem] border-2 border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-6 bg-gradient-to-r from-primary/5 to-transparent">
               <div className="space-y-2 text-center sm:text-left">
                 <h3 className="text-xl font-bold">{event.action_title || 'Registration / Action Required'}</h3>
