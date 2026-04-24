@@ -92,19 +92,23 @@ export default function AdminTeamPage() {
       return matchesSearch && matchesStatus && matchesTenure
     })
     .sort((a, b) => {
-      // Sort by position priority first
+      // 1. Sort by position priority first
       const priRoleA = roleOrder[a.position] || 99
       const priRoleB = roleOrder[b.position] || 99
-      if (priRoleA !== priRoleB) {
-        return priRoleA - priRoleB
-      }
+      if (priRoleA !== priRoleB) return priRoleA - priRoleB
       
-      // Sort by status priority second
+      // 2. Seniority in that group (by Year)
+      const yearA = new Date(a.joined_date || 0).getFullYear()
+      const yearB = new Date(b.joined_date || 0).getFullYear()
+      if (yearA !== yearB) return yearA - yearB
+
+      // 3. Sort by status priority (within same year)
       if (statusOrder[a.status] !== statusOrder[b.status]) {
         return statusOrder[a.status] - statusOrder[b.status]
       }
-      // Then by display_order
-      return (a.display_order || 0) - (b.display_order || 0)
+
+      // 4. Alphabetical priority (within same status)
+      return (a.name || '').localeCompare(b.name || '')
     })
 
   const handleFileUpload = async (event) => {

@@ -10,8 +10,16 @@ export default function TeamPage() {
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [settings, setSettings] = useState(null)
+  const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
 
   useEffect(() => {
+    const seen = sessionStorage.getItem('min_team_hero_seen')
+    if (seen) {
+      setHasSeenAnimation(true)
+    } else {
+      sessionStorage.setItem('min_team_hero_seen', 'true')
+    }
+
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => setSettings(data))
@@ -53,15 +61,23 @@ export default function TeamPage() {
       }
 
       const sorted = Array.isArray(data) ? [...data].sort((a, b) => {
+        // 1. Role Grouping
         const priRoleA = rolePriority[a.position] || 99
         const priRoleB = rolePriority[b.position] || 99
         if (priRoleA !== priRoleB) return priRoleA - priRoleB
         
+        // 2. Seniority in that group (by Year)
+        const yearA = new Date(a.joined_date || 0).getFullYear()
+        const yearB = new Date(b.joined_date || 0).getFullYear()
+        if (yearA !== yearB) return yearA - yearB
+
+        // 3. Status Priority (within same year)
         const priStatA = statusPriority[a.status] || 99
         const priStatB = statusPriority[b.status] || 99
         if (priStatA !== priStatB) return priStatA - priStatB
 
-        return (a.display_order || 0) - (b.display_order || 0)
+        // 4. Alphabetical (within same status)
+        return (a.name || '').localeCompare(b.name || '')
       }) : []
 
       setMembers(sorted)
@@ -76,7 +92,7 @@ export default function TeamPage() {
       <section className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={hasSeenAnimation ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
           >
@@ -84,7 +100,7 @@ export default function TeamPage() {
             {settings?.team_title || "Our Team"}
           </motion.div>
           <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
+            initial={hasSeenAnimation ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold tracking-tight"
@@ -92,7 +108,7 @@ export default function TeamPage() {
             {settings?.team_subtitle || "Meet the MIN Family"}
           </motion.h1>
           <motion.p 
-            initial={{ opacity: 0, y: 20 }}
+            initial={hasSeenAnimation ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
