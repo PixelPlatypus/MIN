@@ -23,7 +23,7 @@
 supabase/.temp/
 supabase/.branches/
 supabase/migrations/
-# supabase/config.toml # Uncomment to keep config untracked
+supabase/config.toml # Uncomment to keep config untracked
 
 # Logs
 npm-debug.log*

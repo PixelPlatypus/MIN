@@ -6,8 +6,31 @@ import Link from 'next/link'
 
 export default function Error({ error, reset }) {
   useEffect(() => {
-    // Log error to Sentry or similar
+    // Log error to console
     console.error('Next.js Error:', error)
+
+    // Report error to admin via email
+    try {
+      fetch('/api/report-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          errorName: error.name,
+          errorMessage: error.message,
+          errorStack: error.stack,
+          url: window.location.href
+        })
+      }).catch(err => console.error('Failed to send error report:', err))
+    } catch (e) {
+      console.error('Error reporting logic failed:', e)
+    }
+
+    // Auto-redirect after 10 seconds
+    const timer = setTimeout(() => {
+      window.location.href = '/'
+    }, 10000)
+
+    return () => clearTimeout(timer)
   }, [error])
 
   return (

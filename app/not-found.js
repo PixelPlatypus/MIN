@@ -3,7 +3,34 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Home, ArrowLeft, AlertCircle } from 'lucide-react'
 
+import { useEffect } from 'react'
+
 export default function NotFound() {
+  useEffect(() => {
+    // Report 404 to admin via email
+    try {
+      fetch('/api/report-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          errorName: '404 Not Found',
+          errorMessage: 'User attempted to access a non-existent page',
+          errorStack: 'No stack trace (404 Error)',
+          url: window.location.href
+        })
+      }).catch(err => console.error('Failed to send 404 report:', err))
+    } catch (e) {
+      console.error('Error reporting logic failed:', e)
+    }
+
+    // Auto-redirect after 10 seconds
+    const timer = setTimeout(() => {
+      window.location.href = '/'
+    }, 10000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className="min-h-screen bg-bg dark:bg-bg-dark flex items-center justify-center p-6 transition-colors duration-500">
       <div className="max-w-md w-full text-center space-y-12">

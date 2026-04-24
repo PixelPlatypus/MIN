@@ -16,26 +16,32 @@ import EventActionLink from '@/components/public/EventActionLink'
 export const revalidate = 60
 
 export async function generateMetadata({ params }) {
-  const { slug } = await params
-  const supabase = await createClient()
-  const { data: event } = await supabase
-    .from('events')
-    .select('title, description, cover_url')
-    .eq('slug', slug)
-    .single()
+  try {
+    const { slug } = await params
+    const supabase = await createClient()
+    const { data: event, error } = await supabase
+      .from('events')
+      .select('title, description, cover_url')
+      .eq('slug', slug)
+      .single()
 
-  if (!event) return { title: 'Event Not Found' }
+    if (error || !event) return { title: 'Event Not Found' }
 
-  const plainDescription = event.description
-    ? event.description.replace(/<[^>]*>?/gm, '').substring(0, 160)
-    : 'Mathematics Initiatives in Nepal event.'
+    const description = typeof event.description === 'string' ? event.description : ''
+    const plainDescription = description
+      ? description.replace(/<[^>]*>?/gm, '').substring(0, 160)
+      : 'Mathematics Initiatives in Nepal event.'
 
-  return {
-    title: `${event.title} - MIN Events`,
-    description: plainDescription,
-    openGraph: {
-      images: [event.cover_url || '/placeholder-event.png'],
-    },
+    return {
+      title: `${event.title} - MIN Events`,
+      description: plainDescription,
+      openGraph: {
+        images: [event.cover_url || '/placeholder-event.png'],
+      },
+    }
+  } catch (err) {
+    console.error('Error generating metadata for event:', err)
+    return { title: 'MIN Events' }
   }
 }
 
@@ -55,17 +61,33 @@ export default async function EventDetailPage({ params }) {
     notFound()
   }
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return null
+    try {
+      const date = new Date(dateStr)
+      if (isNaN(date.getTime())) return null
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      })
+    } catch (e) {
+      return null
+    }
+  }
+
+  const startDate = formatDate(event.start_date)
   const isPast = event.start_date 
     ? new Date(event.start_date) < new Date() && event.event_type !== 'RECURRING' && event.event_type !== 'EVERGOING'
     : false
   
-  // Process multiple YouTube videos
-  const videos = Array.isArray(event.youtube_videos) ? event.youtube_videos : []
+  // Process multiple YouTube videos with robust type checking
+  const videos = Array.isArray(event.youtube_videos) 
+    ? event.youtube_videos.filter(v => v && typeof v === 'object' && v.url) 
+    : []
   const legacyPlaylist = event.youtube_playlist
   
   // Combine videos (handling both new format and legacy field)
   const allVideos = [...videos]
-  if (legacyPlaylist && !allVideos.find(v => v.url === legacyPlaylist)) {
+  if (legacyPlaylist && !allVideos.find(v => v?.url === legacyPlaylist)) {
     allVideos.unshift({ title: event.youtube_title || 'Playlist', url: legacyPlaylist })
   }
 
@@ -120,14 +142,10 @@ export default async function EventDetailPage({ params }) {
             <h1 className="text-4xl md:text-6xl font-black tracking-tight">{event.title}</h1>
             
             <div className="flex flex-wrap items-center gap-6 text-text-secondary font-medium">
-              {event.show_date !== false && event.start_date && (
+              {event.show_date !== false && startDate && (
                 <div className="flex items-center gap-2">
                   <Calendar size={18} className="text-primary" />
-                  <span>
-                    {new Date(event.start_date).toLocaleDateString('en-US', {
-                      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                    })}
-                  </span>
+                  <span>{startDate}</span>
                 </div>
               )}
               {event.location && (

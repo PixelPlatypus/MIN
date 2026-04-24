@@ -137,6 +137,7 @@ export default function SubmitContentPage() {
           {/* Main Content Form */}
           <div className="lg:col-span-2 space-y-8">
             <div className="glass rounded-[3rem] p-8 md:p-12 space-y-8 shadow-sm">
+              <input type="hidden" {...register('content_type')} />
               <div className="space-y-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">Content Title</label>
@@ -179,16 +180,11 @@ export default function SubmitContentPage() {
                   )}
 
                   <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary ml-1">Display Filename</label>
-                      <input 
-                        {...register('pdf_filename')}
-                        placeholder="e.g. Geometry_Notes.pdf"
-                        className="w-full bg-white dark:bg-bg-dark border border-border dark:border-border-dark rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-coral transition-all shadow-sm"
-                      />
-                    </div>
                     <ImageUploader 
-                      onUpload={(url) => setValue('pdf_url', url)}
+                      onUpload={(url, publicId, fileName) => {
+                        setValue('pdf_url', url)
+                        setValue('pdf_filename', fileName)
+                      }}
                       folder="min-website/submissions/pdfs"
                       label={pdfUrl ? 'Replace PDF' : 'Select PDF File'}
                       accept="application/pdf"
