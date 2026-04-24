@@ -321,7 +321,7 @@ export default async function EventDetailPage({ params }) {
           )}
 
           {/* Image Gallery */}
-          {event.gallery_urls && event.gallery_urls.length > 0 && (
+          {Array.isArray(event.gallery_urls) && event.gallery_urls.length > 0 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3">
                 <MapPin size={24} className="text-primary" />
