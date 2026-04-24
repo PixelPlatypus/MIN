@@ -4,12 +4,7 @@ import { sanitizeHtml } from '@/lib/sanitize'
 import { Calendar, MapPin, ArrowRight, Video, PlayCircle } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import remarkBreaks from 'remark-breaks'
-import rehypeRaw from 'rehype-raw'
-import rehypeHighlight from 'rehype-highlight'
-import 'highlight.js/styles/github-dark.css'
+import ContentRenderer from '@/components/public/ContentRenderer'
 import AnalyticsTracker from '@/components/public/AnalyticsTracker'
 import EventActionLink from '@/components/public/EventActionLink'
 
@@ -196,86 +191,7 @@ export default async function EventDetailPage({ params }) {
           {/* Description Content */}
           {event.description && (
             <div className="glass rounded-[2.5rem] p-8 md:p-12 border border-border dark:border-white/10">
-              <div className="prose prose-lg max-w-none dark:prose-invert text-left
-                prose-headings:font-black prose-headings:tracking-tight
-                prose-p:text-lg prose-p:leading-relaxed
-                prose-strong:font-bold prose-strong:text-text-primary dark:prose-strong:text-white
-              ">
-                <style>{`
-                  .event-prose h1 { 
-                    font-size: 2.25rem !important; 
-                    line-height: 1.2 !important;
-                    margin-bottom: 2rem !important;
-                    margin-top: 3rem !important;
-                    display: block !important;
-                    color: var(--text-primary) !important;
-                    font-weight: 900 !important;
-                  }
-                  .event-prose h2 { 
-                    font-size: 1.75rem !important; 
-                    line-height: 1.3 !important;
-                    margin-bottom: 1.5rem !important;
-                    margin-top: 2.5rem !important;
-                    color: var(--text-primary) !important;
-                    font-weight: 800 !important;
-                  }
-                  .event-prose h3 { 
-                    font-size: 1.4rem !important; 
-                    line-height: 1.4 !important;
-                    margin-bottom: 1rem !important;
-                    margin-top: 2rem !important;
-                    color: var(--text-primary) !important;
-                    font-weight: 700 !important;
-                  }
-                  .event-prose blockquote {
-                    border-left: 5px solid #008080 !important;
-                    background: rgba(0, 128, 128, 0.05) !important;
-                    padding: 1.5rem 2rem !important;
-                    margin: 2.5rem 0 !important;
-                    font-style: italic !important;
-                    border-radius: 0 1rem 1rem 0 !important;
-                  }
-                  .dark .event-prose h1,
-                  .dark .event-prose h2,
-                  .dark .event-prose h3 { color: white !important; }
-                  
-                  .event-prose ul { 
-                    list-style-type: disc !important; 
-                    padding-left: 2rem !important;
-                    margin-bottom: 2rem !important;
-                  }
-                  .event-prose ol { 
-                    list-style-type: decimal !important; 
-                    padding-left: 2rem !important;
-                    margin-bottom: 2rem !important;
-                  }
-                  .event-prose li {
-                    margin-bottom: 0.5rem !important;
-                    display: list-item !important;
-                  }
-                  .event-prose a {
-                    color: #008080 !important;
-                    text-decoration: underline !important;
-                    font-weight: 800 !important;
-                  }
-                  .event-prose hr {
-                    margin: 2rem 0 !important;
-                    border: none !important;
-                    border-top: 2px solid rgba(0, 128, 128, 0.2) !important;
-                  }
-                  .event-prose p {
-                    margin-bottom: 1.5rem !important;
-                  }
-                `}</style>
-                <div className="event-prose">
-                  <ReactMarkdown 
-                    remarkPlugins={[remarkGfm, remarkBreaks]} 
-                    rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                  >
-                    {event.description}
-                  </ReactMarkdown>
-                </div>
-              </div>
+              <ContentRenderer content={event.description} />
             </div>
           )}
 

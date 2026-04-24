@@ -64,6 +64,7 @@ export default function Footer() {
                 alt="MIN Logo" 
                 width={48}
                 height={48}
+                priority
                 className="h-12 w-12 transition-transform group-hover:scale-105 object-contain" 
               />
             </Link>
