@@ -101,6 +101,19 @@ export async function POST(request) {
     return Response.json({ success: true, id: data.id })
   } catch (error) {
     console.error('Join Application FATAL:', error)
+
+    // Silently report API crashes to admin
+    fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/report-error`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source: 'API_APPLICATIONS',
+        error: error.message,
+        stack: error.stack,
+        url: '/api/applications'
+      })
+    }).catch(() => {})
+
     return Response.json({ 
       error: 'CRITICAL_SERVER_ERROR', 
       message: error.message,
