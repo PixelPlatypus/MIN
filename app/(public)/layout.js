@@ -9,16 +9,16 @@ import MaintenanceView from '@/components/public/MaintenanceView'
 export default async function PublicLayout({ children }) {
   const supabase = await createClient()
   
-  // Fetch Maintenance Mode Status
-  const { data: settings } = await supabase
-    .from('site_settings')
-    .select('is_maintenance_mode')
-    .eq('id', 'main')
-    .single()
+  // Parallel fetch for settings and user
+  const [
+    { data: settings },
+    { data: { user } }
+  ] = await Promise.all([
+    supabase.from('site_settings').select('is_maintenance_mode').eq('id', 'main').single(),
+    supabase.auth.getUser()
+  ])
 
   if (settings?.is_maintenance_mode) {
-    // Check User Role for bypass
-    const { data: { user } } = await supabase.auth.getUser()
     let isAdmin = false
 
     if (user) {

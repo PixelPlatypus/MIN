@@ -2,6 +2,7 @@ import Hero from '@/components/public/Hero'
 import StatsCounter from '@/components/public/StatsCounter'
 import Mission from '@/components/public/Mission'
 import ProgramsGrid from '@/components/public/ProgramsGrid'
+import { createClient } from '@/lib/supabase/server'
 import dynamic from 'next/dynamic'
 
 const Timeline = dynamic(() => import('@/components/public/Timeline'), { ssr: true })
@@ -21,7 +22,22 @@ export const metadata = {
   },
 }
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient()
+  
+  // Parallel fetch for core data with correct table names
+  const [
+    { data: settings },
+    { data: programs },
+    { data: timeline },
+    { data: teamMembers }
+  ] = await Promise.all([
+    supabase.from('site_settings').select('*').eq('id', 'main').single(),
+    supabase.from('programs').select('*').eq('status', 'ACTIVE').order('order_index', { ascending: true }),
+    supabase.from('timeline').select('*').order('year', { ascending: true }),
+    supabase.from('team_members').select('*').eq('status', 'ACTIVE').limit(12)
+  ])
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'NGO',
@@ -51,14 +67,14 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Hero />
-      <StatsCounter />
-      <Mission />
-      <ProgramsGrid />
-      <Timeline />
-      <Recognition />
-      <TeamStrip />
-      <JoinUsCTA />
+      <Hero settings={settings} />
+      <StatsCounter settings={settings} />
+      <Mission settings={settings} />
+      <ProgramsGrid initialPrograms={programs} settings={settings} />
+      <Timeline initialEvents={timeline} />
+      <Recognition settings={settings} />
+      <TeamStrip initialTeam={teamMembers} />
+      <JoinUsCTA settings={settings} />
     </div>
   )
 }
