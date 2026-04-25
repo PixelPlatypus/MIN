@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Mail, 
   Search, 
-  Loader2, 
   Phone, 
   Calendar, 
   CheckCircle2, 
@@ -20,6 +19,7 @@ import {
   Send,
   Trash2
 } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 
 export default function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState([])
@@ -132,9 +132,7 @@ export default function AdminInquiriesPage() {
 
           <div className="glass rounded-[2.5rem] overflow-hidden border border-border dark:border-border-dark shadow-sm">
             {loading ? (
-              <div className="flex items-center justify-center py-24">
-                <Loader2 size={48} className="animate-spin text-primary" />
-              </div>
+              <TableSkeleton rows={10} cols={4} />
             ) : filtered.length > 0 ? (
               <div className="divide-y divide-border dark:divide-border-dark">
                 {filtered.map((item) => (

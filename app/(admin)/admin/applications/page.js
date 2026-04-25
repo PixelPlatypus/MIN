@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   UserPlus, 
   Search, 
-  Loader2, 
+  FileText,
   Mail, 
   Phone, 
   Calendar, 
@@ -16,8 +16,9 @@ import {
   Trash2,
   ExternalLink,
   Wrench,
-  FileText
+  Loader2
 } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 
 const typeColors = {
   VOLUNTEER: 'bg-primary/10 text-primary border-primary/20',
@@ -226,9 +227,7 @@ export default function AdminApplicationsPage() {
 
           <div className="glass rounded-[2.5rem] overflow-hidden border border-border dark:border-border-dark shadow-sm">
             {loading ? (
-              <div className="flex items-center justify-center py-24">
-                <Loader2 size={48} className="animate-spin text-primary" />
-              </div>
+              <TableSkeleton rows={8} cols={4} />
             ) : filteredApps.length > 0 ? (
               <div className="divide-y divide-border dark:divide-border-dark">
                 {filteredApps.map((app) => (

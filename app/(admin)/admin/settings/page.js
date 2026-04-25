@@ -5,8 +5,9 @@ import Link from 'next/link'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import RTOEditor from '@/components/admin/RTOEditor'
 import ImageUploader from '@/components/admin/ImageUploader'
+import { FormSkeleton } from '@/components/shared/Skeletons'
 import { 
-  Save, Loader2, AlertCircle, CheckCircle2, 
+  Save, AlertCircle, CheckCircle2, 
   Facebook, Instagram, Linkedin, Youtube, 
   Mail, Globe, Layout, Home, Users, Info,
   Type, MousePointer2, Sparkles, BarChart3, 
@@ -16,7 +17,7 @@ import {
   Send, Compass, ChevronDown, Monitor,
   Smartphone, Eye, Settings, ShieldCheck,
   Zap, Bell, ArrowRight, HelpCircle, ExternalLink,
-  Layers, Calculator, XCircle
+  Layers, Calculator, XCircle, Loader2, ArrowUp, ArrowDown
 } from 'lucide-react'
 
 // Layout/Internal Components
@@ -39,10 +40,15 @@ const SettingSection = ({ title, subtitle, icon, children }) => (
 
 const InputField = ({ label, icon, value, onChange, placeholder, type = "text", description, mono = false, rows = 1 }) => {
   const isTextArea = rows > 1
+  const id = useMemo(() => `input-${label.toLowerCase().replace(/\s+/g, '-')}-${Math.random().toString(36).substr(2, 4)}`, [label])
+  
   return (
     <div className="group space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary group-hover:text-primary transition-colors flex items-center gap-2">
+        <label 
+          htmlFor={id}
+          className="text-[10px] font-black uppercase tracking-widest text-text-tertiary group-hover:text-primary transition-colors flex items-center gap-2 cursor-pointer"
+        >
           {icon} {label}
         </label>
         {value?.length > 0 && typeof value === 'string' && (
@@ -51,6 +57,7 @@ const InputField = ({ label, icon, value, onChange, placeholder, type = "text", 
       </div>
       {isTextArea ? (
         <textarea
+          id={id}
           value={value || ''}
           onChange={onChange}
           rows={rows}
@@ -59,6 +66,7 @@ const InputField = ({ label, icon, value, onChange, placeholder, type = "text", 
         />
       ) : (
         <input
+          id={id}
           type={type}
           value={value || ''}
           onChange={onChange}
@@ -162,6 +170,10 @@ export default function SiteEditor() {
     updated_by_name: null, updated_at: null
   })
 
+  const [originalSettings, setOriginalSettings] = useState(null)
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [diff, setDiff] = useState([])
+
   // Page fields mapping for DRY rendering of subpages
   const SUBPAGE_CONFIG = {
     team: { name: 'Our Team', fields: ['team_title', 'team_subtitle', 'team_description'], icon: <Users size={20}/> },
@@ -172,6 +184,7 @@ export default function SiteEditor() {
   }
 
   const [timelineItems, setTimelineItems] = useState([])
+  const [originalTimeline, setOriginalTimeline] = useState([])
 
   useEffect(() => {
     fetchInitialData()
@@ -185,21 +198,65 @@ export default function SiteEditor() {
       const settingsData = await settingsRes.json()
       const timelineData = await timelineRes.json()
       if (settingsData) {
-        setSettings({
+        const fullSettings = {
           ...settingsData,
           dmopractice_badge: settingsData.dmopractice_badge || 'Official Practice Portal',
           dmopractice_title: settingsData.dmopractice_title || 'Master the DMO <br />',
           dmopractice_subtitle: settingsData.dmopractice_subtitle || 'One Set at a Time.',
           dmopractice_description: settingsData.dmopractice_description || 'Experience a realistic competition environment with our curated mock exams, designed to push your problem-solving boundaries.'
-        })
+        }
+        setSettings(fullSettings)
+        setOriginalSettings(fullSettings)
       }
-      if (timelineData) setTimelineItems(timelineData)
+      if (timelineData) {
+        setTimelineItems(timelineData)
+        setOriginalTimeline(JSON.parse(JSON.stringify(timelineData)))
+      }
       setLastSaved(new Date().toLocaleTimeString())
     } catch (err) {
       console.error('Failed to fetch data', err)
     } finally {
       setLoading(false)
     }
+  }
+
+  const computeDiff = () => {
+    const changes = []
+    if (!originalSettings) return []
+
+    // Check Settings
+    for (const key in settings) {
+      if (key === 'updated_at' || key === 'updated_by_name') continue
+      
+      const oldVal = originalSettings[key]
+      const newVal = settings[key]
+
+      if (typeof newVal === 'object') {
+        if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+          changes.push({ field: key.replace(/_/g, ' '), from: 'Complex Data', to: 'Updated Data' })
+        }
+      } else if (newVal !== oldVal) {
+        changes.push({ field: key.replace(/_/g, ' '), from: String(oldVal || 'None'), to: String(newVal || 'None') })
+      }
+    }
+
+    // Check Timeline
+    if (JSON.stringify(timelineItems) !== JSON.stringify(originalTimeline)) {
+      changes.push({ field: 'Organizational Timeline', from: 'Previous Order/Content', to: 'New Order/Content' })
+    }
+
+    return changes
+  }
+
+  const handleReview = () => {
+    const changes = computeDiff()
+    if (changes.length === 0) {
+      setMessage({ type: 'success', text: 'No changes detected. Site is synchronized.' })
+      setTimeout(() => setMessage(null), 3000)
+      return
+    }
+    setDiff(changes)
+    setShowConfirm(true)
   }
 
   const addTimelineItem = () => {
@@ -231,6 +288,7 @@ export default function SiteEditor() {
       }
       await fetchInitialData()
       setMessage({ type: 'success', text: 'Cloud Nexus Synchronized!' })
+      setShowConfirm(false)
       setTimeout(() => setMessage(null), 3000)
     } catch (err) {
       setMessage({ type: 'error', text: err.message })
@@ -239,12 +297,7 @@ export default function SiteEditor() {
     }
   }
 
-  if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-      <Loader2 className="w-10 h-10 animate-spin text-primary" />
-      <p className="text-xs font-black uppercase tracking-widest text-text-tertiary">Accessing Core Databases...</p>
-    </div>
-  )
+  if (loading) return <FormSkeleton />
 
   const currentTabInfo = TAB_GROUPS.flatMap(g => g.tabs).find(t => t.id === activeTab)
 
@@ -285,12 +338,12 @@ export default function SiteEditor() {
               )}
             </AnimatePresence>
             <button
-              onClick={handleSubmit}
+              onClick={handleReview}
               disabled={saving}
               className="flex-1 md:flex-none px-10 py-4 bg-primary text-white rounded-[1.5rem] font-black text-sm shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:bg-primary-dark transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-70 group"
             >
               {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} className="group-hover:rotate-12 transition-transform" />}
-              Publish Updates
+              Review & Publish
             </button>
         </div>
       </header>
@@ -949,6 +1002,78 @@ export default function SiteEditor() {
           </AnimatePresence>
         </main>
       </div>
+
+      {/* Confirmation Modal */}
+      <AnimatePresence>
+        {showConfirm && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              onClick={() => setShowConfirm(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md" 
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-2xl glass rounded-[2.5rem] shadow-2xl border border-white/20 bg-white/90 dark:bg-black/90 overflow-hidden"
+            >
+              <div className="p-10 space-y-8">
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20">
+                    <ShieldCheck size={32} />
+                  </div>
+                  <div>
+                    <h3 className="text-3xl font-black tracking-tight leading-none">Review Changes</h3>
+                    <p className="text-xs text-text-tertiary font-bold uppercase tracking-widest mt-2">Synchronization Summary</p>
+                  </div>
+                </div>
+
+                <div className="max-h-[40vh] overflow-y-auto space-y-3 pr-2 scrollbar-hide">
+                  {diff.map((item, i) => (
+                    <div key={i} className="p-5 bg-bg-secondary dark:bg-white/5 rounded-2xl border border-border/50 space-y-3 group">
+                      <div className="flex items-center justify-between">
+                         <span className="text-[10px] font-black uppercase tracking-widest text-primary">{item.field}</span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                           <span className="text-[8px] font-black uppercase text-coral/60 tracking-widest">Previous</span>
+                           <p className="text-[11px] font-mono bg-coral/5 p-3 rounded-xl border border-coral/10 text-text-secondary truncate">{item.from}</p>
+                        </div>
+                        <div className="space-y-1.5">
+                           <span className="text-[8px] font-black uppercase text-green/60 tracking-widest">New Value</span>
+                           <p className="text-[11px] font-mono bg-green/5 p-3 rounded-xl border border-green/10 text-dynamic font-bold truncate">{item.to}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                   <button 
+                    onClick={() => setShowConfirm(false)}
+                    className="flex-1 px-8 py-4 glass rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
+                   >
+                     Discard & Resume
+                   </button>
+                   <button 
+                    onClick={handleSubmit}
+                    disabled={saving}
+                    className="flex-[1.5] px-10 py-4 bg-primary text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+                   >
+                     {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                     Confirm & Publish Live
+                   </button>
+                </div>
+                <p className="text-[9px] text-center text-text-tertiary font-medium">This action will be permanently recorded in the forensic audit log.</p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
+

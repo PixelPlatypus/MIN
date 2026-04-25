@@ -6,7 +6,6 @@ import {
   Bell, 
   Plus, 
   Search, 
-  Loader2, 
   Edit3, 
   Trash2, 
   Eye, 
@@ -18,6 +17,7 @@ import {
   AlertCircle,
   Image as ImageIcon
 } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 import ImageUploader from '@/components/admin/ImageUploader'
 
 export default function AdminNoticesPage() {
@@ -121,10 +121,7 @@ export default function AdminNoticesPage() {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <Loader2 size={40} className="animate-spin text-primary" />
-          <p className="text-text-tertiary animate-pulse font-medium">Loading notices...</p>
-        </div>
+        <TableSkeleton rows={5} cols={4} />
       ) : filteredNotices.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNotices.map((notice) => (

@@ -35,7 +35,10 @@ INSERT INTO public.site_settings (
   join_description,
   contact_title,
   contact_subtitle,
-  contact_description
+  contact_description,
+  join_features,
+  join_paths,
+  join_faqs
 ) VALUES (
   'main', 
   'Empowering Students Across Nepal', 
@@ -80,8 +83,32 @@ INSERT INTO public.site_settings (
   -- Contact Page
   'Reach Out to Us',
   'Let us connect',
-  'Have questions? We are here to help.'
-) ON CONFLICT (id) DO UPDATE SET updated_at = now();
+  'Have questions? We are here to help.',
+
+  -- Join Features (The request about icons)
+  '[
+    {"title": "Purpose Driven", "desc": "Contribute to projects that directly improve how mathematics is perceived in Nepal.", "icon": "Target"},
+    {"title": "Global Network", "desc": "Collaborate with educators and innovators from across the globe through our programs.", "icon": "Globe"},
+    {"title": "Direct Influence", "desc": "Have a voice in the design and execution of high-impact workshops and competitions.", "icon": "Zap"},
+    {"title": "Rich Community", "desc": "Connect with hundreds of like-minded problem solvers and community leaders.", "icon": "Users"}
+  ]',
+
+  -- Join Paths (Roles)
+  '[
+    {"id": "volunteer", "slug": "volunteer", "title": "Volunteer", "desc": "Passionate about math education? Join us to mentor students and organize events.", "icon": "Heart", "perks": ["Networking", "Skill building", "Certificates"]},
+    {"id": "ambassador", "slug": "ambassador", "title": "Campus Ambassador", "desc": "Lead the math movement in your institution. Represent MIN and grow your leadership skills.", "icon": "Flame", "perks": ["Leadership training", "Direct mentorship", "Exclusive resources"]}
+  ]',
+
+  -- Join FAQs
+  '[
+    {"question": "Who can join MIN?", "answer": "Anyone with a passion for mathematics and education is welcome to apply!"},
+    {"question": "Is it a paid position?", "answer": "Most of our roles are volunteer-based, focused on community impact and personal growth."}
+  ]'
+) ON CONFLICT (id) DO UPDATE SET 
+  updated_at = now(),
+  join_features = EXCLUDED.join_features,
+  join_paths = EXCLUDED.join_paths,
+  join_faqs = EXCLUDED.join_faqs;
 
 -- 2. Timeline Events
 INSERT INTO public.timeline_events (id, year, title, description, sort_order) VALUES

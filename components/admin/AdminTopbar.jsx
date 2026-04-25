@@ -7,6 +7,8 @@ import Link from 'next/link'
 import ThemeToggle from '@/components/shared/ThemeToggle'
 import { useSidebar } from './SidebarProvider'
 
+import AdminSearch from './AdminSearch'
+
 export default function AdminTopbar({ profile, isMaintenance }) {
   const pathname = usePathname()
   const { toggleMobile } = useSidebar()
@@ -107,14 +109,7 @@ export default function AdminTopbar({ profile, isMaintenance }) {
             <span className="text-[10px] font-black uppercase tracking-widest">Maintenance Active</span>
           </div>
         )}
-        <div className="hidden lg:flex items-center gap-2 bg-bg-secondary dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border dark:border-border-dark">
-          <Search size={16} className="text-text-tertiary" />
-          <input 
-            type="text" 
-            placeholder="Search dashboard..." 
-            className="bg-transparent border-none text-xs focus:outline-none w-48 placeholder:text-text-tertiary"
-          />
-        </div>
+        <AdminSearch />
       </div>
 
       <div className="flex items-center gap-4">

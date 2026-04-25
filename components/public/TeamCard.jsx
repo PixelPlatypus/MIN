@@ -66,8 +66,8 @@ export default function TeamCard({ member, index, fallbackImage }) {
 
           {/* Social Links */}
           <div className="flex items-center justify-center gap-3 mt-auto">
-            {Object.entries(social_links).map(([platform, url]) => (
-              url && (
+            {Object.entries(social_links || {}).map(([platform, url]) => (
+              typeof url === 'string' && url.trim() !== '' && (
                 <a 
                   key={platform} 
                   href={platform.toLowerCase() === 'email' ? `mailto:${url}` : url} 

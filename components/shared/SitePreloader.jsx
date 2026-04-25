@@ -3,12 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const MATH_FACTS = [
-  "Constructing geometric excellence...",
-  "Calculating precision...",
   "Defining the future of math...",
-  "Mapping innovation...",
-  "Solving for X...",
-  "Designing impact..."
 ]
 
 export default function SitePreloader() {
@@ -58,13 +53,13 @@ export default function SitePreloader() {
             scale: 1,
             transition: { duration: 0.5, ease: "easeInOut" } 
           }}
-          className="fixed inset-0 z-[1000] bg-[#02080a] flex flex-col items-center justify-center overflow-hidden"
+          className="fixed inset-0 z-[1000] bg-bg-dynamic flex flex-col items-center justify-center overflow-hidden"
         >
           {/* Minimal Grid Background */}
           <div 
-            className="absolute inset-0 opacity-[0.02] pointer-events-none" 
+            className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none" 
             style={{ 
-              backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`, 
+              backgroundImage: `linear-gradient(to right, var(--color-text-primary-dynamic) 1px, transparent 1px), linear-gradient(to bottom, var(--color-text-primary-dynamic) 1px, transparent 1px)`, 
               backgroundSize: '50px 50px' 
             }} 
           />
@@ -110,14 +105,14 @@ export default function SitePreloader() {
                       transition={{ duration: 0.5, ease: "easeOut" }}
                       className="flex flex-col items-center"
                     >
-                      <div className="text-9xl font-black tracking-tighter text-white leading-none">
+                      <div className="text-9xl font-black tracking-tighter text-text-primary-dynamic leading-none">
                         MIN
                       </div>
                       <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 0.5 }}
                         transition={{ delay: 0.2 }}
-                        className="text-[10px] text-white font-bold uppercase tracking-[1em] mt-6 ml-[1em]"
+                        className="text-[10px] text-text-primary-dynamic font-bold uppercase tracking-[1em] mt-6 ml-[1em]"
                       >
                         Nepal
                       </motion.p>
@@ -127,7 +122,7 @@ export default function SitePreloader() {
                       key="progress"
                       className="flex flex-col items-center"
                     >
-                      <span className="text-6xl font-bold tracking-tighter text-white/20 font-sans">
+                      <span className="text-6xl font-bold tracking-tighter text-text-primary-dynamic opacity-20 font-sans">
                         {Math.round(progress)}
                       </span>
                     </motion.div>
@@ -143,7 +138,7 @@ export default function SitePreloader() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 0.4 }}
                   exit={{ opacity: 0 }}
-                  className="text-[11px] text-white font-medium uppercase tracking-[0.4em] text-center"
+                  className="text-[11px] text-text-primary-dynamic font-medium uppercase tracking-[0.4em] text-center"
                 >
                   {isComplete ? "Success" : MATH_FACTS[factIndex]}
                 </motion.p>

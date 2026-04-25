@@ -8,7 +8,9 @@ import {
   ArrowUpRight, 
   ArrowDownRight,
   MoreVertical,
-  AlertCircle
+  AlertCircle,
+  ArrowRight,
+  History
 } from 'lucide-react'
 
 export default async function AdminDashboard() {
@@ -209,7 +211,9 @@ export default async function AdminDashboard() {
             {[
               { label: 'Create Content', icon: <FileText size={16} />, color: 'bg-primary', href: '/admin/content/new' },
               { label: 'New Event', icon: <Calendar size={16} />, color: 'bg-cyan', href: '/admin/events/new' },
-              { label: 'Add Team Member', icon: <Users size={16} />, color: 'bg-purple', href: '/admin/team/new' },
+              { label: 'Site Editor', icon: <TrendingUp size={16} />, color: 'bg-green', href: '/admin/settings' },
+              { label: 'Build Form', icon: <FileText size={16} />, color: 'bg-orange-500', href: '/admin/applications/builder' },
+              { label: 'Forensic Logs', icon: <History size={16} />, color: 'bg-slate-700', href: '/admin/audit' },
             ].map((action) => (
               <a 
                 href={action.href}
@@ -232,23 +236,3 @@ export default async function AdminDashboard() {
   )
 }
 
-
-function ArrowRight({ size, className }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
-  )
-}

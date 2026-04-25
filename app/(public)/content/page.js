@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import ContentCard from '@/components/public/ContentCard'
-import { Sparkles, Loader2, Library, Filter, Search } from 'lucide-react'
+import { Sparkles, Library, Filter, Search } from 'lucide-react'
+import { ContentGridSkeleton } from '@/components/shared/Skeletons'
 
 const contentTypes = [
   { label: 'All', value: 'ALL' },
@@ -125,9 +126,7 @@ export default function ContentLibraryPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <Loader2 size={48} className="animate-spin text-primary" />
-          </div>
+          <ContentGridSkeleton count={6} />
         ) : filteredContent.length > 0 ? (
           <motion.div 
             layout

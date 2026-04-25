@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Search, PlusCircle, Loader2, Shield, Trash2, Edit2, CheckCircle2, XCircle, UserCheck } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 
 const ROLES = ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER']
@@ -120,9 +121,7 @@ export default function AdminUsersPage() {
       {/* Users Table */}
       <div className="glass rounded-[2rem] overflow-hidden shadow-sm border border-border dark:border-border-dark">
         {loading ? (
-           <div className="flex items-center justify-center py-24">
-             <Loader2 size={48} className="animate-spin text-primary" />
-           </div>
+          <TableSkeleton rows={10} cols={5} />
         ) : filteredUsers.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">

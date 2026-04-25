@@ -2,10 +2,11 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { 
-  Plus, Search, Edit2, Trash2, Filter, Loader2, Layers, 
+  Plus, Search, Edit2, Trash2, Filter, Layers, 
   GripVertical, CheckCircle2, AlertCircle, Save,
   ChevronUp, ChevronDown
 } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -162,10 +163,7 @@ export default function AdminProgramsPage() {
       {/* Programs List */}
       <div className="relative">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 space-y-4">
-            <Loader2 size={48} className="animate-spin text-primary" />
-            <p className="text-xs font-black uppercase tracking-widest text-text-tertiary animate-pulse">Synchronizing Data...</p>
-          </div>
+          <TableSkeleton rows={4} cols={3} />
         ) : programs.length > 0 ? (
           <Reorder.Group 
             axis="y" 

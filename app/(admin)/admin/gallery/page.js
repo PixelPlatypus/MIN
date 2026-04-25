@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { Plus, Search, Trash2, Filter, Loader2, Image as ImageIcon, Upload, X, Save, Pencil } from 'lucide-react'
+import { Plus, Search, Trash2, Filter, Image as ImageIcon, Upload, X, Save, Pencil } from 'lucide-react'
+import { ContentGridSkeleton } from '@/components/shared/Skeletons'
 
 export default function AdminGalleryPage() {
   const [images, setImages] = useState([])
@@ -76,9 +77,7 @@ export default function AdminGalleryPage() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-24">
-          <Loader2 size={48} className="animate-spin text-primary" />
-        </div>
+        <ContentGridSkeleton count={10} />
       ) : filteredImages.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           <AnimatePresence>

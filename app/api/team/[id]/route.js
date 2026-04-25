@@ -18,6 +18,13 @@ export async function PATCH(request, { params }) {
 
   const supabaseAdmin = await createAdminClient()
   
+  // Fetch old data for logging changes
+  const { data: oldMember } = await supabaseAdmin
+    .from('team_members')
+    .select('*')
+    .eq('id', id)
+    .single()
+
   const { data, error: updateError } = await supabaseAdmin
     .from('team_members')
     .update(body)
@@ -30,13 +37,23 @@ export async function PATCH(request, { params }) {
     return Response.json({ error: updateError.message }, { status: 500 })
   }
 
+  // Compute changes
+  const changes = {}
+  if (oldMember) {
+    for (const key in body) {
+      if (JSON.stringify(body[key]) !== JSON.stringify(oldMember[key])) {
+        changes[key] = { from: oldMember[key], to: body[key] }
+      }
+    }
+  }
+
   await logAudit({
     actor_id: user.id,
     actor_name: profile.name,
     action: 'UPDATED_TEAM_MEMBER',
     entity_type: 'team_members',
     entity_id: id,
-    meta: { name: data.name }
+    meta: { name: data.name, changes }
   })
 
   return Response.json(data)

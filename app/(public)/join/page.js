@@ -4,7 +4,7 @@ import JoinForm from '@/components/public/JoinForm'
 import ContactForm from '@/components/public/ContactForm'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Heart, Sparkles, Target, Users, ArrowRight, Zap, Globe, ChevronDown, Building2 } from 'lucide-react'
+import { Heart, Sparkles, Target, Users, ArrowRight, Zap, Globe, ChevronDown, Building2, Rocket, Flame, Brain, Gem } from 'lucide-react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function JoinPage() {
@@ -37,6 +37,10 @@ export default function JoinPage() {
       case 'Target': return <Target size={28} />
       case 'Zap': return <Zap size={24} />
       case 'Users': return <Users size={24} />
+      case 'Rocket': return <Rocket size={28} />
+      case 'Flame': return <Flame size={28} />
+      case 'Brain': return <Brain size={28} />
+      case 'Gem': return <Gem size={28} />
       default: return <Sparkles size={24} />
     }
   }

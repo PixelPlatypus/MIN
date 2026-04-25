@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, Loader2, UserPlus, Clock, Info } from 'lucide-react'
+import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, UserPlus, Clock, Info } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -293,9 +294,7 @@ export default function AdminTeamPage() {
       {/* Team Table */}
       <div className="glass rounded-[2rem] overflow-hidden shadow-sm border border-border dark:border-white/10">
         {loading ? (
-          <div className="flex items-center justify-center py-32">
-            <Loader2 size={48} className="animate-spin text-primary" />
-          </div>
+          <TableSkeleton rows={10} cols={5} />
         ) : filteredMembers.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-separate border-spacing-0">

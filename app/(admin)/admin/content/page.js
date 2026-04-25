@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, Loader2, FileText, FileDown, ArrowUp, ArrowDown, Video } from 'lucide-react'
+import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, FileText, FileDown, Video, ArrowUp, ArrowDown } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -143,9 +144,7 @@ export default function AdminContentPage() {
       {/* Content Table */}
       <div className="glass rounded-[2rem] overflow-hidden shadow-sm border border-border dark:border-border-dark">
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <Loader2 size={48} className="animate-spin text-primary" />
-          </div>
+          <TableSkeleton rows={8} cols={5} />
         ) : filteredContent.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">

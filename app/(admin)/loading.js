@@ -1,14 +1,10 @@
-import { Loader2 } from 'lucide-react'
+import { PageHeaderSkeleton, TableSkeleton } from '@/components/shared/Skeletons'
 
 export default function Loading() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg-secondary dark:bg-bg-dark">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-          <Loader2 size={32} className="animate-spin text-primary" />
-        </div>
-        <p className="text-sm text-text-secondary dark:text-text-secondary-dark font-medium">Loading...</p>
-      </div>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <PageHeaderSkeleton />
+      <TableSkeleton rows={8} cols={5} />
     </div>
   )
 }

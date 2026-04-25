@@ -5,8 +5,9 @@ import {
   History, Search, Loader2, Link as LinkIcon, 
   ShieldAlert, User, Activity, Clock, Trash2, 
   Filter, ChevronRight, Eye, Smartphone, Monitor,
-  Layers, Database, FileText, Settings
+  Layers, Database, FileText, Settings, XCircle
 } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 
 export default function AuditLogPage() {
   const [logs, setLogs] = useState([])
@@ -194,10 +195,7 @@ export default function AuditLogPage() {
 
            <div className="glass rounded-[2.5rem] overflow-hidden border border-border shadow-2xl bg-white/40 dark:bg-black/20 backdrop-blur-md">
               {loading ? (
-                <div className="py-40 flex flex-col items-center justify-center gap-4">
-                   <Loader2 size={48} className="animate-spin text-primary" />
-                   <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary">Sequencing Logs...</span>
-                </div>
+                <TableSkeleton rows={10} cols={4} />
               ) : filteredLogs.length > 0 ? (
                 <div className="divide-y divide-border/50">
                    {filteredLogs.map((log) => (
@@ -355,4 +353,3 @@ export default function AuditLogPage() {
   )
 }
 
-import { XCircle } from 'lucide-react'

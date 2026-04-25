@@ -16,6 +16,8 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 })
 
+import Image from 'next/image'
+
 export default function LoginPage() {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -110,8 +112,14 @@ export default function LoginPage() {
       <div className="relative">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2 mb-4 group">
-            <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110">
-              <span className="text-secondary font-bold text-3xl">M</span>
+            <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-xl border border-border dark:border-border-dark p-2">
+              <Image 
+                src="/images/logo.png" 
+                alt="MIN Logo" 
+                width={48} 
+                height={48} 
+                className="object-contain"
+              />
             </div>
           </Link>
           <h1 className="text-2xl font-bold tracking-tight mb-2">Admin Portal</h1>

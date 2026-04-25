@@ -13,12 +13,12 @@ import {
   Mail, 
   FileText, 
   FileDown, 
-  Loader2,
   ChevronRight,
   Check,
   X,
   MessageSquare
 } from 'lucide-react'
+import { TableSkeleton } from '@/components/shared/Skeletons'
 
 export default function AdminSubmissionsPage() {
   const [submissions, setSubmissions] = useState([])
@@ -115,9 +115,7 @@ export default function AdminSubmissionsPage() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-24">
-          <Loader2 size={48} className="animate-spin text-primary" />
-        </div>
+        <TableSkeleton rows={10} cols={5} />
       ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 gap-4">
           {filtered.map((sub) => (

@@ -27,13 +27,13 @@ export async function PATCH(request, { params }) {
   const body = await request.json()
   const supabaseAdmin = await createAdminClient()
   
-  const { data, error: updateError } = await supabaseAdmin
+  const { data: oldContent, error: fetchError } = await supabaseAdmin
     .from('content')
-    .select('title')
+    .select('*')
     .eq('id', id)
     .single()
 
-  if (updateError) return Response.json({ error: updateError.message }, { status: 500 })
+  if (fetchError) return Response.json({ error: fetchError.message }, { status: 500 })
 
   const { error: patchError } = await supabaseAdmin
     .from('content')
@@ -44,13 +44,21 @@ export async function PATCH(request, { params }) {
     return Response.json({ error: patchError.message }, { status: 500 })
   }
 
+  // Compute changes
+  const changes = {}
+  for (const key in body) {
+    if (JSON.stringify(body[key]) !== JSON.stringify(oldContent[key])) {
+      changes[key] = { from: oldContent[key], to: body[key] }
+    }
+  }
+
   await logAudit({
     actor_id: user.id,
     actor_name: profile.name,
     action: 'UPDATED_CONTENT',
     entity_type: 'content',
     entity_id: id,
-    meta: { title: data.title }
+    meta: { title: oldContent.title, changes }
   })
 
   return Response.json({ success: true })
