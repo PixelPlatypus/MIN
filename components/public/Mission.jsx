@@ -3,36 +3,44 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { CheckCircle2, Award, Target, Heart } from 'lucide-react'
 import Image from 'next/image'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function Mission() {
   const [settings, setSettings] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     fetch('/api/settings')
       .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('Mission settings load error', err))
+      .then(data => {
+        setSettings(data)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.error('Mission settings load error', err)
+        setIsLoading(false)
+      })
   }, [])
 
   const features = settings ? [
     { 
-      title: settings.mission_f1_title || 'Accessible Learning', 
-      desc: settings.mission_f1_desc || 'Breaking barriers to ensure every student in Nepal has access to quality math education.',
+      title: settings.mission_f1_title, 
+      desc: settings.mission_f1_desc,
       icon: <CheckCircle2 className="text-primary" />
     },
     { 
-      title: settings.mission_f2_title || 'Engaging Programs', 
-      desc: settings.mission_f2_desc || 'From olympiads to bootcamps, we make math fun, challenging, and relevant.',
+      title: settings.mission_f2_title, 
+      desc: settings.mission_f2_desc,
       icon: <Award className="text-cyan" />
     },
     { 
-      title: settings.mission_f3_title || 'Goal Oriented', 
-      desc: settings.mission_f3_desc || 'Empowering students with problem-solving skills for their future careers.',
+      title: settings.mission_f3_title, 
+      desc: settings.mission_f3_desc,
       icon: <Target className="text-purple" />
     },
     { 
-      title: settings.mission_f4_title || 'Community First', 
-      desc: settings.mission_f4_desc || 'Building a supportive network of educators, volunteers, and math enthusiasts.',
+      title: settings.mission_f4_title, 
+      desc: settings.mission_f4_desc,
       icon: <Heart className="text-coral" />
     },
   ] : []
@@ -48,27 +56,54 @@ export default function Mission() {
           className="lg:w-1/2 space-y-8"
         >
           <div className="space-y-4">
-            <span className="text-primary font-bold uppercase tracking-widest text-sm">{settings?.mission_badge || "Our Mission"}</span>
+            <span className="text-primary font-bold uppercase tracking-widest text-sm">
+              {isLoading ? <Skeleton className="w-24 h-4" /> : settings?.mission_badge}
+            </span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-              {settings?.mission_title || "Empowering the next generation of thinkers and problem solvers."}
+              {isLoading ? (
+                <>
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-3/4 h-10" />
+                </>
+              ) : settings?.mission_title}
             </h2>
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              {settings?.mission_description || "At MIN, we believe that mathematics is more than just numbers and formulas. It's a powerful tool for understanding the world, driving innovation, and creating impact. Our mission is to inspire a love for math across Nepal."}
-            </p>
+            <div className="max-w-2xl">
+              {isLoading ? (
+                <div className="space-y-2">
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-5/6 h-4" />
+                </div>
+              ) : (
+                <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                  {settings?.mission_description}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
-            {features.map((feature) => (
-              <div key={feature.title} className="space-y-3 group">
-                <div className="w-10 h-10 rounded-xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center transition-transform group-hover:scale-110">
-                  {feature.icon}
+            {isLoading ? (
+              [...Array(4)].map((_, i) => (
+                <div key={i} className="space-y-3">
+                  <Skeleton className="w-10 h-10 rounded-xl" />
+                  <Skeleton className="w-32 h-6" />
+                  <Skeleton className="w-full h-4" />
                 </div>
-                <h4 className="font-bold text-lg">{feature.title}</h4>
-                <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-                  {feature.desc}
-                </p>
-              </div>
-            ))}
+              ))
+            ) : (
+              features.map((feature) => (
+                <div key={feature.title} className="space-y-3 group">
+                  <div className="w-10 h-10 rounded-xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center transition-transform group-hover:scale-110">
+                    {feature.icon}
+                  </div>
+                  <h4 className="font-bold text-lg">{feature.title}</h4>
+                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
+              ))
+            )}
           </div>
         </motion.div>
 
@@ -80,27 +115,37 @@ export default function Mission() {
           className="lg:w-1/2 relative"
         >
           <div className="aspect-square relative rounded-[3rem] overflow-hidden shadow-2xl min-h-[300px]">
-            <div className="absolute inset-0 bg-primary/10 mix-blend-overlay z-10" />
-            <Image 
-              src={settings?.mission_image_url || "/images/Mission.jpg"} 
-              alt="Students learning mathematics"
-              fill
-              className="object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
+            {isLoading ? (
+              <Skeleton className="w-full h-full" />
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-primary/10 mix-blend-overlay z-10" />
+                {settings?.mission_image_url && (
+                  <Image 
+                    src={settings.mission_image_url} 
+                    alt="MIN Mission" 
+                    fill
+                    className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                )}
+              </>
+            )}
           </div>
           
           {/* Decorative Elements */}
           <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-primary/20 rounded-full blur-3xl -z-10" />
           
-          <div className="absolute -bottom-6 -right-6 glass p-6 rounded-3xl shadow-xl max-w-[200px] z-20 hidden sm:block">
-            <p className="text-sm font-bold leading-tight mb-2">
-              {settings?.mission_rec_title || "Recognized Globally"}
-            </p>
-            <p className="text-xs text-text-secondary dark:text-text-secondary-dark">
-              {settings?.mission_rec_desc || "Top 100 Global Education Innovations by HundrED."}
-            </p>
-          </div>
+          {!isLoading && (
+            <div className="absolute -bottom-6 -right-6 glass p-6 rounded-3xl shadow-xl max-w-[200px] z-20 hidden sm:block">
+              <p className="text-sm font-bold leading-tight mb-2">
+                {settings?.mission_rec_title}
+              </p>
+              <p className="text-xs text-text-secondary dark:text-text-secondary-dark">
+                {settings?.mission_rec_desc}
+              </p>
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

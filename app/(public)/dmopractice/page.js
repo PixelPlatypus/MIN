@@ -15,6 +15,7 @@ import {
   History,
   ChevronDown
 } from 'lucide-react'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 
 function MathText({ text, className = '' }) {
@@ -72,32 +73,45 @@ export default function DMOPracticePage() {
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-2.5 rounded-full text-xs font-black tracking-widest uppercase shadow-sm border border-primary/5"
           >
             <ShieldCheck size={16} />
-            {settings?.dmopractice_badge || 'Official Practice Portal'}
+            {loading ? <Skeleton className="w-32 h-3" /> : settings?.dmopractice_badge}
           </motion.div>
           
           <div className="space-y-6">
-            <motion.h1 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, type: 'spring' }}
-              className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.85] text-gradient"
-            >
-              <span dangerouslySetInnerHTML={{ __html: settings?.dmopractice_title || 'Master the DMO <br />' }} />
-              {settings?.dmopractice_subtitle ? (
-                <span className="text-primary dark:text-secondary">{settings.dmopractice_subtitle}</span>
+            <div className="flex justify-center">
+              {loading ? (
+                <Skeleton className="w-[80%] h-16 md:h-24 lg:h-32" />
               ) : (
-                <span className="text-primary dark:text-secondary">One Set at a Time.</span>
+                <motion.h1 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, type: 'spring' }}
+                  className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.85] text-gradient"
+                >
+                  <span dangerouslySetInnerHTML={{ __html: settings?.dmopractice_title }} />
+                  {settings?.dmopractice_subtitle && (
+                    <span className="text-primary dark:text-secondary">{settings.dmopractice_subtitle}</span>
+                  )}
+                </motion.h1>
               )}
-            </motion.h1>
+            </div>
             
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto leading-relaxed font-medium"
-            >
-              {settings?.dmopractice_description || 'Experience a realistic competition environment with our curated mock exams, designed to push your problem-solving boundaries.'}
-            </motion.p>
+            <div className="max-w-2xl mx-auto">
+              {loading ? (
+                <div className="space-y-2">
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-5/6 h-4 mx-auto" />
+                </div>
+              ) : (
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary-dark leading-relaxed font-medium"
+                >
+                  {settings?.dmopractice_description}
+                </motion.p>
+              )}
+            </div>
           </div>
         </div>
       </section>

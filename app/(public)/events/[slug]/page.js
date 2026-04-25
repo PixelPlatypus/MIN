@@ -38,13 +38,13 @@ export async function generateMetadata({ params }) {
         description: plainDescription,
         url: `/events/${slug}`,
         type: 'article',
-        images: [event.cover_url || '/placeholder-event.png'],
+        images: event.cover_url ? [event.cover_url] : [],
       },
       twitter: {
         card: 'summary_large_image',
         title: event.title,
         description: plainDescription,
-        images: [event.cover_url || '/placeholder-event.png'],
+        images: event.cover_url ? [event.cover_url] : [],
       }
     }
   } catch (err) {
@@ -175,8 +175,8 @@ export default async function EventDetailPage({ params }) {
           {event.action_link && event.show_action_link !== false && isActionActive && (
             <div className="glass p-6 md:p-8 rounded-[2rem] border-2 border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-6 bg-gradient-to-r from-primary/5 to-transparent">
               <div className="space-y-2 text-center sm:text-left">
-                <h3 className="text-xl font-bold">{event.action_title || 'Registration / Action Required'}</h3>
-                <p className="text-sm text-text-tertiary">{event.action_description || 'Follow the link to participate or register for this event.'}</p>
+                <h3 className="text-xl font-bold">{event.action_title}</h3>
+                <p className="text-sm text-text-tertiary">{event.action_description}</p>
               </div>
               <EventActionLink
                 href={event.action_link}

@@ -4,15 +4,23 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function JoinUsCTA() {
   const [settings, setSettings] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     fetch('/api/settings')
       .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('JoinUsCTA settings load error', err))
+      .then(data => {
+        setSettings(data)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.error('JoinUsCTA settings load error', err)
+        setIsLoading(false)
+      })
   }, [])
 
   return (
@@ -28,27 +36,51 @@ export default function JoinUsCTA() {
           <div className="space-y-4">
             <span className="text-primary font-bold uppercase tracking-widest text-sm">Join the Community</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-              {settings?.join_cta_title || "Ready to make an impact in Nepal's education?"}
+              {isLoading ? (
+                <>
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-3/4 h-10" />
+                </>
+              ) : settings?.join_cta_title}
             </h2>
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              {settings?.join_cta_description || "We're always looking for passionate volunteers, educators, and collaborators to join our mission. Whether you're a student, teacher, or professional, there's a place for you at MIN."}
-            </p>
+            <div className="max-w-2xl">
+              {isLoading ? (
+                <div className="space-y-2">
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-5/6 h-4" />
+                </div>
+              ) : (
+                <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                  {settings?.join_cta_description}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-            <Link 
-              href="/join"
-              className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-[0.98] group"
-            >
-              {settings?.join_cta_btn_text || "Become a Volunteer"}
-              <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link 
-              href="/join#contact"
-              className="w-full sm:w-auto glass hover:bg-black/5 dark:hover:bg-white/5 px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all border border-primary/20"
-            >
-              Contact Us
-            </Link>
+            {isLoading ? (
+              <>
+                <Skeleton className="w-full sm:w-48 h-14 rounded-2xl" />
+                <Skeleton className="w-full sm:w-40 h-14 rounded-2xl" />
+              </>
+            ) : (
+              <>
+                <Link 
+                  href="/join"
+                  className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-[0.98] group"
+                >
+                  {settings?.join_cta_btn_text}
+                  <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
+                </Link>
+                <Link 
+                  href="/join#contact"
+                  className="w-full sm:w-auto glass hover:bg-black/5 dark:hover:bg-white/5 px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all border border-primary/20"
+                >
+                  Contact Us
+                </Link>
+              </>
+            )}
           </div>
         </motion.div>
 
@@ -60,25 +92,33 @@ export default function JoinUsCTA() {
           className="lg:w-1/2 relative"
         >
           <div className="aspect-video relative rounded-[3rem] overflow-hidden shadow-2xl group">
-            <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/10 transition-colors z-10" />
-            <Image 
-              src={settings?.join_cta_image_url || "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2098&auto=format&fit=crop"} 
-              alt="Volunteers collaborating" 
-              fill
-              className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-            
-            {(settings?.join_cta_stat_title || settings?.join_cta_stat_desc) && (
-              <div className="absolute inset-0 flex items-center justify-center z-20">
-                <div className="glass p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-6">
-                  <Sparkles className="text-primary mx-auto mb-4" size={32} />
-                  <h4 className="text-2xl font-bold mb-2">{settings?.join_cta_stat_title}</h4>
-                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
-                    {settings?.join_cta_stat_desc}
-                  </p>
-                </div>
-              </div>
+            {isLoading ? (
+              <Skeleton className="w-full h-full" />
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/10 transition-colors z-10" />
+                {settings?.join_cta_image_url && (
+                  <Image 
+                    src={settings.join_cta_image_url} 
+                    alt="Join Us" 
+                    fill
+                    className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                )}
+                
+                {(settings?.join_cta_stat_title || settings?.join_cta_stat_desc) && (
+                  <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <div className="glass p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-6">
+                      <Sparkles className="text-primary mx-auto mb-4" size={32} />
+                      <h4 className="text-2xl font-bold mb-2">{settings?.join_cta_stat_title}</h4>
+                      <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                        {settings?.join_cta_stat_desc}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
           

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Sparkles, Heart, Target, Lightbulb, Users, Award } from 'lucide-react'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 const values = [
   { 
@@ -28,12 +29,19 @@ const values = [
 
 export default function AboutPage() {
   const [settings, setSettings] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     fetch('/api/settings')
       .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('About settings load error', err))
+      .then(data => {
+        setSettings(data)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.error('About settings load error', err)
+        setIsLoading(false)
+      })
   }, [])
 
   return (
@@ -49,22 +57,37 @@ export default function AboutPage() {
             <Sparkles size={16} />
             Our Mission
           </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight"
-          >
-            {settings?.about_hero_title || "Transforming Math Education in Nepal"}
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
-          >
-            {settings?.about_hero_description || "Mathematics Initiatives in Nepal (MIN) is a non-profit organization dedicated to making mathematics accessible, engaging, and inspiring for all students across the country."}
-          </motion.p>
+          <div className="flex justify-center">
+            {isLoading ? (
+              <Skeleton className="w-[80%] h-16 md:h-20" />
+            ) : (
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-5xl md:text-7xl font-bold tracking-tight"
+              >
+                {settings?.about_hero_title}
+              </motion.h1>
+            )}
+          </div>
+          <div className="max-w-3xl mx-auto">
+            {isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-5/6 h-4 mx-auto" />
+              </div>
+            ) : (
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+              >
+                {settings?.about_hero_description}
+              </motion.p>
+            )}
+          </div>
         </div>
       </section>
 
@@ -81,9 +104,17 @@ export default function AboutPage() {
               <Target size={32} />
             </div>
             <h3 className="text-3xl font-bold">Our Vision</h3>
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              {settings?.about_vision_text || "To build a Nepal where every student is empowered with logical thinking and problem-solving skills, viewing mathematics as a tool for innovation and understanding."}
-            </p>
+            {isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-2/3 h-4" />
+              </div>
+            ) : (
+              <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                {settings?.about_vision_text}
+              </p>
+            )}
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl" />
           </motion.div>
 
@@ -97,9 +128,17 @@ export default function AboutPage() {
               <Heart size={32} />
             </div>
             <h3 className="text-3xl font-bold">Our Mission</h3>
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              {settings?.about_mission_text || "To democratize math education through innovative programs, community outreach, and high-quality digital resources that inspire curiosity and foster excellence."}
-            </p>
+            {isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-2/3 h-4" />
+              </div>
+            ) : (
+              <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                {settings?.about_mission_text}
+              </p>
+            )}
             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full -mr-16 -mt-16 blur-3xl" />
           </motion.div>
         </div>
@@ -141,28 +180,44 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto glass rounded-[3rem] p-12 md:p-24 flex flex-col md:flex-row items-center gap-16">
           <div className="flex-1 space-y-6">
             <h2 className="text-4xl font-bold tracking-tight leading-tight">
-              {settings?.about_rec_title || "Globally Recognized Innovation"}
+              {isLoading ? <Skeleton className="w-full h-10" /> : settings?.about_rec_title}
             </h2>
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-              {settings?.about_rec_description || "Our commitment to excellence was recognized by HundrED, identifying MIN as one of the Top 100 most inspiring global education innovations in 2024. This recognition fuels our drive to reach even more students across Nepal."}
-            </p>
+            <div className="max-w-xl">
+              {isLoading ? (
+                <div className="space-y-2">
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-full h-4" />
+                  <Skeleton className="w-2/3 h-4" />
+                </div>
+              ) : (
+                <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                  {settings?.about_rec_description}
+                </p>
+              )}
+            </div>
             <div className="pt-4">
               <div className="flex items-center gap-4 mb-2">
                 <div className="w-2 h-2 rounded-full bg-primary" />
-                <span className="font-bold text-primary">{settings?.about_rec_badge_title || "HundrED Top 100"}</span>
+                <span className="font-bold text-primary">
+                  {isLoading ? <Skeleton className="w-32 h-4" /> : settings?.about_rec_badge_title}
+                </span>
               </div>
-              <p className="text-sm text-text-tertiary">
-                {settings?.about_rec_badge_desc || "Global Education Innovation Award 2024"}
-              </p>
+              <div className="text-sm text-text-tertiary">
+                {isLoading ? <Skeleton className="w-48 h-4" /> : settings?.about_rec_badge_desc}
+              </div>
             </div>
           </div>
           <div className="w-64 h-64 md:w-80 md:h-80 relative flex-shrink-0">
             <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl" />
-            <img 
-              src={settings?.about_rec_image || "https://hundred-cdn.s3.amazonaws.com/uploads/innovation/image/2443/hundred_logo_full_color.png"}
-              alt="HundrED Award" 
-              className="w-full h-full object-contain relative z-10 p-8"
-            />
+            {isLoading ? (
+              <Skeleton className="w-full h-full rounded-full" />
+            ) : settings?.about_rec_image && (
+              <img 
+                src={settings.about_rec_image}
+                alt="Award" 
+                className="w-full h-full object-contain relative z-10 p-8"
+              />
+            )}
           </div>
         </div>
       </section>

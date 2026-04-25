@@ -1,62 +1,26 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-// GSAP is dynamically loaded inside useEffect to reduce main-thread work
 import { ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function Hero() {
   const [settings, setSettings] = useState(null)
-  const headlineRef = useRef(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     fetch('/api/settings')
       .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('Hero settings load error', err))
-  }, [])
-
-  useEffect(() => {
-    if (!settings) return
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    let ctx;
-    
-    // Dynamic import to keep main thread light during initial load
-    import('gsap').then(({ default: gsap }) => {
-      ctx = gsap.context(() => {
-        if (headlineRef.current) {
-          const words = headlineRef.current.querySelectorAll('.word')
-          if (prefersReducedMotion) {
-            gsap.set(words, { y: 0, opacity: 1, rotate: 0 })
-          } else {
-            gsap.fromTo(words, 
-              { y: 80, opacity: 0, rotate: 4 },
-              { 
-                y: 0, 
-                opacity: 1, 
-                rotate: 0,
-                stagger: 0.12, 
-                duration: 1.2, 
-                ease: 'power4.out',
-                delay: 0.3 
-              }
-            )
-          }
-        }
+      .then(data => {
+        setSettings(data)
+        setIsLoading(false)
       })
-    })
-
-    return () => ctx?.revert()
-  }, [settings])
-
-  const splitText = (text) => {
-    return text.split(' ').map((word, i) => (
-      <span key={i} className="inline-block mr-2 md:mr-4 py-2 overflow-visible">
-        <span className="word inline-block origin-bottom-left text-gradient pb-2">{word}</span>
-      </span>
-    ))
-  }
+      .catch(err => {
+        console.error('Hero settings load error', err)
+        setIsLoading(false)
+      })
+  }, [])
 
   return (
     <section className="relative min-h-[85vh] lg:min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-transparent border-b border-black/10 dark:border-white/10">
@@ -65,45 +29,73 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 glass px-6 py-2.5 rounded-full text-xs font-bold mb-6 shadow-xl will-change-transform"
           >
             <Sparkles size={16} className="text-secondary-dark" />
-            <span className="uppercase tracking-[0.2em]">{settings?.hero_badge || "Math's Future: Crafted in Nepal, Powered by You."}</span>
+            <span className="uppercase tracking-[0.2em]">
+              {isLoading ? (
+                <Skeleton className="w-48 h-3" />
+              ) : (
+                settings?.hero_badge
+              )}
+            </span>
           </motion.div>
 
-          <motion.h1 
-            ref={headlineRef}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="text-5xl md:text-7xl lg:text-[90px] font-black tracking-tighter mb-8 leading-[1.1] flex flex-wrap justify-center overflow-visible"
-          >
-            {splitText(settings?.hero_title || "Elevating Nepal Through Mathematics.")}
-          </motion.h1>
+          <div className="mb-8">
+            {isLoading ? (
+              <div className="flex flex-col items-center gap-4">
+                <Skeleton className="w-full max-w-2xl h-16 md:h-20" />
+                <Skeleton className="w-3/4 max-w-xl h-16 md:h-20" />
+              </div>
+            ) : (
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="text-5xl md:text-7xl lg:text-[90px] font-black tracking-tighter leading-[1.1] text-gradient pb-2 will-change-transform"
+              >
+                {settings?.hero_title}
+              </motion.h1>
+            )}
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9, ease: 'easeOut' }}
-            className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary-dark mb-10 max-w-4xl mx-auto leading-relaxed font-medium transition-all"
-          >
-            {settings?.hero_subtitle || "Igniting curiosity and fostering excellence across Nepal. We're building a future where every student views mathematics as a tool for innovation."}
-          </motion.p>
+          <div className="mb-10 max-w-4xl mx-auto">
+            {isLoading ? (
+              <div className="space-y-3">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-2/3 h-4 mx-auto" />
+              </div>
+            ) : (
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary-dark leading-relaxed font-medium will-change-transform"
+              >
+                {settings?.hero_subtitle}
+              </motion.p>
+            )}
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.1, ease: 'easeOut' }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6"
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 will-change-transform"
           >
-            <Link 
-              href={settings?.hero_cta_link || "/join"}
-              className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-12 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1.5 active:scale-[0.98] group"
-            >
-              {settings?.hero_cta_text || "Join the Movement"}
-              <ArrowRight size={22} className="transition-transform group-hover:translate-x-2" />
-            </Link>
+            {isLoading ? (
+              <Skeleton className="w-56 h-16 rounded-2xl" />
+            ) : settings?.hero_cta_link && (
+              <Link 
+                href={settings.hero_cta_link}
+                className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-12 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1.5 active:scale-[0.98] group"
+              >
+                {settings.hero_cta_text}
+                <ArrowRight size={22} className="transition-transform group-hover:translate-x-2" />
+              </Link>
+            )}
           </motion.div>
         </div>
       </div>

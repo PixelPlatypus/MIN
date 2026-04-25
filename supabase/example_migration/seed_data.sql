@@ -46,7 +46,7 @@ INSERT INTO public.site_settings (
   'The Challenge Awaits',
   'Road to Olympiad',
   'Official Practice Portal',
-  'Master the DMO <br />',
+  'Master the DMO',
   'One Set at a Time.',
   'Experience a realistic competition environment with our curated mock exams.',
   'hello@mathsinitiatives.org.np',
@@ -81,36 +81,41 @@ INSERT INTO public.site_settings (
   'Reach Out to Us',
   'Let us connect',
   'Have questions? We are here to help.'
-) ON CONFLICT (id) DO NOTHING;
+) ON CONFLICT (id) DO UPDATE SET updated_at = now();
 
 -- 2. Timeline Events
 INSERT INTO public.timeline_events (id, year, title, description, sort_order) VALUES
 (gen_random_uuid(), '2020', 'Foundation of MIN', 'Started by passionate math olympiad alumni to democratize access.', 1),
 (gen_random_uuid(), '2021', 'First ETA', 'Successfully conducted the ETA across multiple locations.', 2),
-(gen_random_uuid(), '2025', 'Digital Expansion', 'Launched the central online hub for students and volunteers.', 3);
+(gen_random_uuid(), '2025', 'Digital Expansion', 'Launched the central online hub for students and volunteers.', 3)
+ON CONFLICT (id) DO NOTHING;
 
 -- 3. Programs
-INSERT INTO public.programs (id, name, tagline, description, status) VALUES
-(gen_random_uuid(), 'District Math Olympiad (DMO)', 'The entry point', 'Open to thousands of students across districts in Nepal to test their mathematical limits.', 'ACTIVE'),
-(gen_random_uuid(), 'Provincial Math Olympiad (PMO)', 'The next stage', 'Top performers from districts compete at the provincial level.', 'ACTIVE'),
-(gen_random_uuid(), 'National Math Olympiad (NMO)', 'Elite tier competition', 'The nationwide battle deciding who gets into the central training camp.', 'INACTIVE');
+INSERT INTO public.programs (id, name, slug, tagline, description, status) VALUES
+(gen_random_uuid(), 'District Math Olympiad (DMO)', 'dmo', 'The entry point', 'Open to thousands of students across districts in Nepal to test their mathematical limits.', 'ACTIVE'),
+(gen_random_uuid(), 'Provincial Math Olympiad (PMO)', 'pmo', 'The next stage', 'Top performers from districts compete at the provincial level.', 'ACTIVE'),
+(gen_random_uuid(), 'National Math Olympiad (NMO)', 'nmo', 'Elite tier competition', 'The nationwide battle deciding who gets into the central training camp.', 'INACTIVE')
+ON CONFLICT (id) DO NOTHING;
 
 -- 4. Practice Sets (DMO Mock Exams)
-INSERT INTO public.practice_sets (id, name, time_limit) VALUES
-(gen_random_uuid(), 'DMO Official Mock Exam 1', 90),
-(gen_random_uuid(), 'DMO Official Mock Exam 2', 120);
+INSERT INTO public.practice_sets (id, name, time_limit, is_published) VALUES
+('d1111111-1111-1111-1111-111111111111', 'DMO Official Mock Exam 1', 90, true),
+('d2222222-2222-2222-2222-222222222222', 'DMO Official Mock Exam 2', 120, true)
+ON CONFLICT (id) DO NOTHING;
 
 -- 5. Notice Popups
 INSERT INTO public.popup_notices (id, title, body, cta_text, cta_url, is_active, target_pages) VALUES
-(gen_random_uuid(), 'DMO Registrations Open!', 'The 2026 District Math Olympiad is now accepting applications. Secure your spot today.', 'Register Now', '/join', true, ARRAY['ALL']);
+(gen_random_uuid(), 'DMO Registrations Open!', 'The 2026 District Math Olympiad is now accepting applications. Secure your spot today.', 'Register Now', '/join', true, ARRAY['ALL'])
+ON CONFLICT (id) DO NOTHING;
 
 -- 6. Team Members
 INSERT INTO public.team_members (id, name, position, bio, tenure, joined_date) VALUES
 (gen_random_uuid(), 'Jane Doe', 'Executive Director', 'Former IMO participant dedicated to math education in Nepal.', '2024', current_date),
-(gen_random_uuid(), 'John Smith', 'Academic Head', 'Curriculum designer for the National Camp.', '2025', current_date);
+(gen_random_uuid(), 'John Smith', 'Academic Head', 'Curriculum designer for the National Camp.', '2025', current_date)
+ON CONFLICT (id) DO NOTHING;
 
 -- 7. Local Admin Setup (Auth User)
--- Email: admin@mathsinitiatives.org.np
+-- Email: [EMAIL_ADDRESS]
 -- Username: admin
 -- Password: password123
 INSERT INTO auth.users (
@@ -130,7 +135,7 @@ INSERT INTO auth.users (
   '00000000-0000-0000-0000-000000000000',
   'authenticated',
   'authenticated',
-  'admin@mathsinitiatives.org.np',
+  'admin@example.com',
   crypt('password123', gen_salt('bf')),
   now(),
   '{"provider": "email", "providers": ["email"]}',
@@ -144,7 +149,7 @@ UPDATE public.profiles
 SET 
   role = 'ADMIN',
   username = 'admin'
-WHERE email = 'admin@mathsinitiatives.org.np';
+WHERE email = 'admin@example.com';
 
 -- 8. Sample Content (Articles, PDFs, Videos)
 INSERT INTO public.content (
@@ -198,4 +203,11 @@ INSERT INTO public.content (
   'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
   '{"video_id": "dQw4w9WgXcQ", "is_playlist": false}',
   'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
-);
+)
+ON CONFLICT (slug) DO NOTHING;
+
+-- 9. Sample Practice Questions
+INSERT INTO public.practice_questions (id, set_id, question_text, option_a, option_b, option_c, option_d, correct_option, marks, sort_order) VALUES
+(gen_random_uuid(), 'd1111111-1111-1111-1111-111111111111', 'What is the remainder when $2^{10}$ is divided by 3?', '0', '1', '2', '3', '1', 1, 1),
+(gen_random_uuid(), 'd1111111-1111-1111-1111-111111111111', 'Find the value of $x$ in $2x + 5 = 15$.', '2', '5', '10', '15', 'B', 1, 2)
+ON CONFLICT (id) DO NOTHING;

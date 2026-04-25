@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import TeamCard from '@/components/public/TeamCard'
-import { Sparkles, Loader2 } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function TeamPage() {
   const [activeTenure, setActiveTenure] = useState(null)
@@ -10,6 +11,7 @@ export default function TeamPage() {
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [settings, setSettings] = useState(null)
+  const [settingsLoading, setSettingsLoading] = useState(true)
   const [hasSeenAnimation, setHasSeenAnimation] = useState(false)
 
   useEffect(() => {
@@ -20,10 +22,17 @@ export default function TeamPage() {
       sessionStorage.setItem('min_team_hero_seen', 'true')
     }
 
+    setSettingsLoading(true)
     fetch('/api/settings')
       .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('Team settings load error', err))
+      .then(data => {
+        setSettings(data)
+        setSettingsLoading(false)
+      })
+      .catch(err => {
+        console.error('Team settings load error', err)
+        setSettingsLoading(false)
+      })
 
     async function fetchTenures() {
       try {
@@ -97,48 +106,75 @@ export default function TeamPage() {
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
           >
             <Sparkles size={16} />
-            {settings?.team_title || "Our Team"}
+            {settingsLoading ? <Skeleton className="w-24 h-4" /> : settings?.team_title}
           </motion.div>
-          <motion.h1 
-            initial={hasSeenAnimation ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight"
-          >
-            {settings?.team_subtitle || "Meet the MIN Family"}
-          </motion.h1>
-          <motion.p 
-            initial={hasSeenAnimation ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
-          >
-            {settings?.team_description || "A diverse group of educators, volunteers, and math enthusiasts working together to transform math education in Nepal."}
-          </motion.p>
+          <div className="flex justify-center">
+            {settingsLoading ? (
+              <Skeleton className="w-96 h-16 md:h-20" />
+            ) : (
+              <motion.h1 
+                initial={hasSeenAnimation ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-5xl md:text-7xl font-bold tracking-tight"
+              >
+                {settings?.team_subtitle}
+              </motion.h1>
+            )}
+          </div>
+          <div className="max-w-3xl mx-auto">
+            {settingsLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-5/6 h-4 mx-auto" />
+              </div>
+            ) : (
+              <motion.p 
+                initial={hasSeenAnimation ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+              >
+                {settings?.team_description}
+              </motion.p>
+            )}
+          </div>
         </div>
       </section>
 
       {/* Tenure Selector */}
       <section className="container mx-auto px-6">
         <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
-          {tenures.map((tenure) => (
-            <button
-              key={tenure}
-              onClick={() => setActiveTenure(tenure)}
-              className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
-                activeTenure === tenure 
-                  ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                  : 'glass border-transparent hover:border-primary/20 text-text-secondary hover:text-primary'
-              }`}
-            >
-              Tenure {tenure}
-            </button>
-          ))}
+          {tenures.length === 0 ? (
+            [...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="w-32 h-12 rounded-2xl" />
+            ))
+          ) : (
+            tenures.map((tenure) => (
+              <button
+                key={tenure}
+                onClick={() => setActiveTenure(tenure)}
+                className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
+                  activeTenure === tenure 
+                    ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
+                    : 'glass border-transparent hover:border-primary/20 text-text-secondary hover:text-primary'
+                }`}
+              >
+                Tenure {tenure}
+              </button>
+            ))
+          )}
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <Loader2 size={48} className="animate-spin text-primary" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-[4/5] rounded-3xl" />
+                <Skeleton className="w-3/4 h-6" />
+                <Skeleton className="w-1/2 h-4" />
+              </div>
+            ))}
           </div>
         ) : members.length > 0 ? (
           <motion.div 

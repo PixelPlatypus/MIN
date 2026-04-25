@@ -32,7 +32,7 @@ export default function ProgramCard({ program, index }) {
             {/* Cover Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
               <Image 
-                src={cover_url || 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2132&auto=format&fit=crop'} 
+                src={cover_url || '/images/logo.png'} 
                 alt={name}
                 fill
                 className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"

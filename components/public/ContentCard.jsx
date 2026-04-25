@@ -12,8 +12,6 @@ const typeIcons = {
   'VIDEO': <Video className="text-coral" />,
 }
 
-const DEFAULT_COVER = 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'
-
 export default function ContentCard({ item, index, fallbackImage }) {
   const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [], video_metadata = {} } = item
 
@@ -39,7 +37,7 @@ export default function ContentCard({ item, index, fallbackImage }) {
                   cover_url || 
                   (content_type === 'VIDEO' && video_metadata?.video_id ? `https://img.youtube.com/vi/${video_metadata.video_id}/hqdefault.jpg` : 
                   (content_type === 'VIDEO' && item.video_url?.includes('v=') ? `https://img.youtube.com/vi/${item.video_url.split('v=')[1]?.split('&')[0]}/hqdefault.jpg` :
-                  fallbackImage || DEFAULT_COVER))
+                  fallbackImage || '/images/logo.png'))
                 } 
                 alt={title}
                 fill
@@ -78,7 +76,7 @@ export default function ContentCard({ item, index, fallbackImage }) {
               </h3>
 
               <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed line-clamp-3 z-10">
-                {excerpt || 'Read this interesting mathematical piece shared by the MIN community.'}
+                {excerpt}
               </p>
 
               <div className="pt-4 flex flex-wrap gap-2 z-10">
@@ -95,9 +93,9 @@ export default function ContentCard({ item, index, fallbackImage }) {
                     <User size={14} />
                   </div>
                   <div className="flex flex-col mt-2">
-                    <span className="text-xs font-bold text-text dark:text-white truncate max-w-[100px]">{author_name || 'MIN Team'}</span>
+                    <span className="text-xs font-bold text-text dark:text-white truncate max-w-[100px]">{author_name}</span>
                     <span className="text-[10px] text-text-tertiary">
-                      {published_at ? new Date(published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Recently'}
+                      {published_at && new Date(published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                     </span>
                   </div>
                 </div>

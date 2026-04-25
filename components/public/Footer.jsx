@@ -59,17 +59,19 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 group mb-6">
               <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
-              <Image 
-                src={settings?.site_logo_url || "/images/logo.svg"} 
-                alt="MIN Logo" 
-                width={48}
-                height={48}
-                priority
-                className="h-12 w-12 transition-transform group-hover:scale-105 object-contain" 
-              />
+              {settings?.site_logo_url && (
+                <Image 
+                  src={settings.site_logo_url} 
+                  alt="MIN Logo" 
+                  width={48}
+                  height={48}
+                  priority
+                  className="h-12 w-12 transition-transform group-hover:scale-105 object-contain" 
+                />
+              )}
             </Link>
             <p className="text-dynamic max-w-sm mb-8 opacity-80">
-              {settings?.footer_description || "Mathematics Initiatives in Nepal (MIN) is dedicated to making mathematics accessible, engaging, and inspiring for every student in Nepal."}
+              {settings?.footer_description}
             </p>
             <div className="flex items-center gap-4">
               {socialLinks.map((social) => (
@@ -112,12 +114,14 @@ export default function Footer() {
           <div className="flex items-center gap-8">
             <Link href="/about/cookies" className="hover:text-primary transition-colors">Cookies</Link>
             <Link href="/about/legal" className="hover:text-primary transition-colors">Legal</Link>
-            <div className="flex items-center gap-2">
-              <Mail size={16} />
-                <a href={`mailto:${settings?.contact_email || 'contact@mathsinitiatives.org.np'}`} className="hover:text-primary transition-colors">
-                  {settings?.contact_email || 'contact@mathsinitiatives.org.np'}
+            {settings?.contact_email && (
+              <div className="flex items-center gap-2">
+                <Mail size={16} />
+                <a href={`mailto:${settings.contact_email}`} className="hover:text-primary transition-colors">
+                  {settings.contact_email}
                 </a>
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -51,14 +51,16 @@ export default function Navbar() {
         }`}>
           <Link href="/" className="flex items-center gap-2 group">
             <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
-            <Image 
-              src={settings?.site_logo_url || "/images/logo.svg"} 
-              alt="MIN Logo" 
-              width={40}
-              height={40}
-              priority
-              className="h-10 w-10 p-1 bg-white dark:bg-white/10 rounded-full border border-black/5 dark:border-white/10 object-contain transition-transform group-hover:scale-105" 
-            />
+            {settings?.site_logo_url && (
+              <Image 
+                src={settings.site_logo_url} 
+                alt="MIN Logo" 
+                width={40}
+                height={40}
+                priority
+                className="h-10 w-10 p-1 bg-white dark:bg-white/10 rounded-full border border-black/5 dark:border-white/10 object-contain transition-transform group-hover:scale-105" 
+              />
+            )}
           </Link>
 
           {/* Desktop Nav */}

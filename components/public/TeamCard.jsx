@@ -31,7 +31,7 @@ export default function TeamCard({ member, index, fallbackImage }) {
           {/* Profile Image Container */}
           <div className="w-40 h-40 relative mb-6 rounded-full overflow-hidden p-1.5 border-2 border-primary/10 group-hover:border-primary/40 transition-colors">
             <Image 
-              src={photo_url || fallbackImage || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop'} 
+              src={photo_url || fallbackImage || '/images/logo.png'} 
               alt={name}
               fill
               className="object-cover rounded-full grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
@@ -54,14 +54,14 @@ export default function TeamCard({ member, index, fallbackImage }) {
                   ? 'bg-coral/10 text-coral border-coral/20'
                   : 'bg-amber/10 text-amber-600 border-amber-600/20'
               }`}>
-                {member.status || 'Active'}
+                {member.status}
               </span>
             </div>
           </div>
 
           {/* Bio */}
           <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
-            {bio || 'Empowering math education in Nepal with the MIN family.'}
+            {bio}
           </p>
 
           {/* Social Links */}

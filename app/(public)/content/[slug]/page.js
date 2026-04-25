@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import ContentRenderer from '@/components/public/ContentRenderer'
 import { captureEvent } from '@/lib/analytics'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function ContentDetailPage() {
   const { slug } = useParams()
@@ -37,8 +38,22 @@ export default function ContentDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-32">
-        <Loader2 size={48} className="animate-spin text-primary" />
+      <div className="pt-32 pb-24">
+        <div className="container mx-auto px-6 max-w-5xl space-y-12">
+          <Skeleton className="w-32 h-6" />
+          <div className="space-y-6">
+            <div className="flex gap-3">
+              <Skeleton className="w-20 h-8 rounded-full" />
+              <Skeleton className="w-24 h-8 rounded-full" />
+            </div>
+            <Skeleton className="w-full h-16 md:h-24" />
+            <div className="flex gap-8">
+              <Skeleton className="w-32 h-12" />
+              <Skeleton className="w-32 h-12" />
+            </div>
+          </div>
+          <Skeleton className="w-full aspect-[21/9] rounded-[3rem]" />
+        </div>
       </div>
     )
   }
@@ -46,8 +61,8 @@ export default function ContentDetailPage() {
   if (!content) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center pt-32 space-y-8">
-        <h1 className="text-4xl font-bold">Content Not Found</h1>
-        <Link href="/content" className="text-primary font-bold hover:underline">
+        <h1 className="text-4xl font-bold text-gradient">Content Not Found</h1>
+        <Link href="/content" className="bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:-translate-y-1 transition-all shadow-lg shadow-primary/20">
           Back to Library
         </Link>
       </div>
@@ -92,7 +107,7 @@ export default function ContentDetailPage() {
                     <User size={18} />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold">{author_name || 'MIN Team'}</span>
+                    <span className="text-sm font-bold">{author_name}</span>
                     <span className="text-xs text-text-tertiary">Author</span>
                   </div>
                 </div>
@@ -112,10 +127,10 @@ export default function ContentDetailPage() {
           </div>
 
           {/* Featured Image */}
-          {content_type !== 'VIDEO' && (
+          {content_type !== 'VIDEO' && cover_url && (
             <div className="aspect-[21/9] rounded-[3rem] overflow-hidden shadow-2xl relative transition-all">
               <img 
-                src={cover_url || 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070&auto=format&fit=crop'} 
+                src={cover_url} 
                 alt={title} 
                 className="w-full h-full object-cover"
               />
@@ -220,13 +235,15 @@ export default function ContentDetailPage() {
               )}
 
               {/* Tags */}
-              <div className="pt-12 border-t border-border dark:border-border-dark flex flex-wrap gap-3">
-                {tags.map((tag) => (
-                  <span key={tag} className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-bg-secondary dark:bg-white/5 text-text-tertiary border border-border dark:border-border-dark">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
+              {tags.length > 0 && (
+                <div className="pt-12 border-t border-border dark:border-border-dark flex flex-wrap gap-3">
+                  {tags.map((tag) => (
+                    <span key={tag} className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-bg-secondary dark:bg-white/5 text-text-tertiary border border-border dark:border-border-dark">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
         </motion.div>
       </div>

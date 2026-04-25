@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import EventCard from '@/components/public/EventCard'
-import { Sparkles, Loader2, Calendar, Filter, Search, ChevronDown } from 'lucide-react'
+import { Sparkles, Calendar, Filter, Search, ChevronDown } from 'lucide-react'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function EventsPage() {
   const [events, setEvents] = useState([])
@@ -10,12 +11,20 @@ export default function EventsPage() {
   const [filter, setFilter] = useState('ALL')
   const [search, setSearch] = useState('')
   const [settings, setSettings] = useState(null)
+  const [settingsLoading, setSettingsLoading] = useState(true)
 
   useEffect(() => {
+    setSettingsLoading(true)
     fetch('/api/settings')
       .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('Events settings load error', err))
+      .then(data => {
+        setSettings(data)
+        setSettingsLoading(false)
+      })
+      .catch(err => {
+        console.error('Events settings load error', err)
+        setSettingsLoading(false)
+      })
   }, [])
 
   useEffect(() => {
@@ -31,8 +40,8 @@ export default function EventsPage() {
   }, [])
 
   const filteredEvents = events.filter(event => {
-    const matchesSearch = event.title.toLowerCase().includes(search.toLowerCase()) ||
-                          event.location?.toLowerCase().includes(search.toLowerCase())
+    const matchesSearch = (event.title || '').toLowerCase().includes(search.toLowerCase()) ||
+                          (event.location || '').toLowerCase().includes(search.toLowerCase())
     if (!matchesSearch) return false
 
     if (filter === 'ALL') return true
@@ -65,12 +74,6 @@ export default function EventsPage() {
 
   const sortedEvents = [...filteredEvents].sort((a, b) => {
     const getPriority = (e) => {
-      // Priority 1: Ongoing (Standard events that have started and not ended)
-      // Priority 2: Upcoming (Standard events that haven't started)
-      // Priority 3: Recurring
-      // Priority 4: Evergoing
-      // Priority 5: Past (Standard events that have ended)
-      
       if (e.event_type === 'RECURRING') return 3
       if (e.event_type === 'EVERGOING') return 4
       
@@ -91,7 +94,6 @@ export default function EventsPage() {
       return priorityA - priorityB
     }
 
-    // Secondary sort: By date (closest first)
     if (a.start_date && b.start_date) {
       return new Date(a.start_date) - new Date(b.start_date)
     }
@@ -109,24 +111,39 @@ export default function EventsPage() {
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
           >
             <Calendar size={16} />
-            {settings?.events_title || "Events"}
+            {settingsLoading ? <Skeleton className="w-24 h-4" /> : settings?.events_title}
           </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight"
-          >
-            {settings?.events_subtitle || "Our Events & Activities"}
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
-          >
-            {settings?.events_description || "Join us in our journey to make mathematics engaging through camps, bootcamps, workshops, and more."}
-          </motion.p>
+          <div className="flex justify-center">
+            {settingsLoading ? (
+              <Skeleton className="w-[80%] h-16 md:h-20" />
+            ) : (
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-5xl md:text-7xl font-bold tracking-tight"
+              >
+                {settings?.events_subtitle}
+              </motion.h1>
+            )}
+          </div>
+          <div className="max-w-3xl mx-auto">
+            {settingsLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-5/6 h-4 mx-auto" />
+              </div>
+            ) : (
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+              >
+                {settings?.events_description}
+              </motion.p>
+            )}
+          </div>
         </div>
       </section>
 
@@ -164,8 +181,18 @@ export default function EventsPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <Loader2 size={48} className="animate-spin text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-video rounded-3xl" />
+                <Skeleton className="w-3/4 h-8" />
+                <Skeleton className="w-1/2 h-4" />
+                <div className="flex gap-2">
+                  <Skeleton className="w-20 h-6 rounded-full" />
+                  <Skeleton className="w-20 h-6 rounded-full" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="space-y-24">

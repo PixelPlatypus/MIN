@@ -1511,3 +1511,81 @@ ALTER TABLE practice_sets ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT 
 
 -- Force a refresh of the schema cache
 NOTIFY pgrst, 'reload schema';
+-- Migration to add action_deadline to events
+ALTER TABLE events 
+ADD COLUMN IF NOT EXISTS action_deadline DATE;
+-- Security Hardening Migration
+-- 1. Hardening Audit Log Insertion
+-- Revoke direct insert on audit_log from anon and authenticated
+DROP POLICY IF EXISTS "System can insert audit log" ON public.audit_log;
+
+-- Only allow service role to insert into audit log via direct API
+-- Internal database functions (triggers) bypass RLS if they are security definer,
+-- but the record_audit function is not security definer yet.
+CREATE POLICY "Only service role can insert audit log" ON public.audit_log
+  FOR INSERT WITH CHECK (auth.role() = 'service_role');
+
+-- 2. Hardening site_settings and timeline_events
+DROP POLICY IF EXISTS "Allow authenticated users to manage site_settings" ON public.site_settings;
+DROP POLICY IF EXISTS "Allow authenticated users to manage timeline_events" ON public.timeline_events;
+
+CREATE POLICY "Admin/Manager manage site_settings" ON public.site_settings
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+
+CREATE POLICY "Admin/Manager manage timeline_events" ON public.timeline_events
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+
+-- 3. Hardening practice exams
+-- These were using auth.role() = 'authenticated' which is too permissive
+DROP POLICY IF EXISTS "Enable write for admin only" ON public.practice_sets;
+DROP POLICY IF EXISTS "Enable write for admin only" ON public.practice_questions;
+
+CREATE POLICY "Admin/Manager manage practice sets" ON public.practice_sets
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+
+CREATE POLICY "Admin/Manager manage practice questions" ON public.practice_questions
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+
+-- 4. Hardening form builder and intake reminders
+DROP POLICY IF EXISTS "Admin full access templates" ON public.email_templates;
+DROP POLICY IF EXISTS "Admin full access definitions" ON public.form_definitions;
+DROP POLICY IF EXISTS "Admin full access submissions" ON public.form_submissions;
+DROP POLICY IF EXISTS "Admin full access reminders" ON public.intake_reminders;
+
+CREATE POLICY "Admin/Manager manage email templates" ON public.email_templates
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+
+CREATE POLICY "Admin/Manager manage form definitions" ON public.form_definitions
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+
+CREATE POLICY "Admin/Manager manage form submissions" ON public.form_submissions
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+
+CREATE POLICY "Admin/Manager manage reminders" ON public.intake_reminders
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+
+-- 5. Hardening email event mappings
+ALTER TABLE public.email_event_mappings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admin manage event mappings" ON public.email_event_mappings;
+CREATE POLICY "Admin manage event mappings" ON public.email_event_mappings
+  FOR ALL USING (
+    exists (select 1 from public.profiles where id = auth.uid() and role in ('ADMIN','MANAGER','WEBSITE_MANAGER'))
+  );
+CREATE POLICY "Public read event mappings" ON public.email_event_mappings
+  FOR SELECT USING (true);

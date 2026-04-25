@@ -5,16 +5,24 @@ import ContactForm from '@/components/public/ContactForm'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Heart, Sparkles, Target, Users, ArrowRight, Zap, Globe, ChevronDown, Building2 } from 'lucide-react'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function JoinPage() {
   const formRef = useRef(null)
   const [settings, setSettings] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     fetch('/api/settings')
       .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('Join settings load error', err))
+      .then(data => {
+        setSettings(data)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.error('Join settings load error', err)
+        setIsLoading(false)
+      })
   }, [])
 
   const scrollToForm = () => {
@@ -33,46 +41,9 @@ export default function JoinPage() {
     }
   }
 
-  const values = settings?.join_features?.length > 0 ? settings.join_features : [
-    { title: 'Purpose Driven', desc: 'Contribute to projects that directly improve how mathematics is perceived in Nepal.' },
-    { title: 'Global Network', desc: 'Collaborate with educators and innovators from across the globe through our programs.' },
-    { title: 'Direct Influence', desc: 'Have a voice in the design and execution of high-impact workshops and competitions.' },
-    { title: 'Rich Community', desc: 'Connect with hundreds of like-minded problem solvers and community leaders.' },
-  ]
-
-  const roles = settings?.join_paths?.length > 0 ? settings.join_paths : [
-    {
-      id: 'volunteer',
-      title: 'Become a Volunteer',
-      desc: 'Join our core operational teams, create content, or help organize our nationwide programs.',
-      icon: 'Heart',
-      perks: ['Team Access', 'Certificate', 'Networking'],
-      slug: 'volunteer'
-    },
-    {
-      id: 'organization',
-      title: 'Scale as a Partner',
-      desc: 'Register your school or organization to collaborate on workshops and resource distribution.',
-      icon: 'Globe',
-      perks: ['Resource Kit', 'Brand Logo', 'Priority Support'],
-      slug: 'organization'
-    },
-    {
-      id: 'ambassador',
-      title: 'Join as Ambassador',
-      desc: 'Lead the movement in your local region or university and represent Mathematics Initiatives in Nepal.',
-      icon: 'Target',
-      perks: ['Leadership Role', 'Exclusive Merch', 'Direct Mentorship'],
-      slug: 'ambassador'
-    },
-  ]
-
-  const faqs = settings?.join_faqs?.length > 0 ? settings.join_faqs : [
-    { question: 'Can I join remotely?', answer: 'Yes, many of our operational and content creation roles are fully remote. We coordinate via Slack and Zoom.' },
-    { question: 'Is there a time commitment?', answer: 'It varies by role, typically ranging from 2–10 hours per week depending on the current project phase.' },
-    { question: 'Do I need a math degree?', answer: 'Not at all! We need writers, designers, and organizers as much as we need mathematicians.' },
-    { question: 'How long is the process?', answer: 'After submission, we usually perform a technical review and then invite you for a 20-minute intro call.' },
-  ]
+  const values = settings?.join_features || []
+  const roles = settings?.join_paths || []
+  const faqs = settings?.join_faqs || []
 
   return (
     <div className="pt-20 pb-32">
@@ -85,28 +56,41 @@ export default function JoinPage() {
             className="inline-flex items-center gap-2 glass px-5 py-2 rounded-full text-xs font-semibold text-primary"
           >
             <Sparkles size={14} className="text-secondary-dark" />
-            {settings?.join_title || 'Shape the Future'}
+            {isLoading ? <Skeleton className="w-24 h-3" /> : settings?.join_title}
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] text-gradient"
-          >
-            {settings?.join_subtitle || (
-              <>Become a Part<br />of MIN Nepal</>
+          <div className="flex justify-center">
+            {isLoading ? (
+              <Skeleton className="w-[80%] h-16 md:h-24 lg:h-32" />
+            ) : (
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.9] text-gradient"
+              >
+                {settings?.join_subtitle}
+              </motion.h1>
             )}
-          </motion.h1>
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto leading-relaxed"
-          >
-            {settings?.join_description || 'Join a globally recognized movement dedicated to igniting curiosity and fostering excellence across Nepal.'}
-          </motion.p>
+          <div className="max-w-2xl mx-auto">
+            {isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-5/6 h-4 mx-auto" />
+              </div>
+            ) : (
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-lg md:text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+              >
+                {settings?.join_description}
+              </motion.p>
+            )}
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -114,118 +98,149 @@ export default function JoinPage() {
             transition={{ delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button
-              onClick={scrollToForm}
-              className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-2xl font-semibold text-sm flex items-center gap-3 transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5 group"
-            >
-              Apply Now
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-            </button>
-            <button
-              onClick={scrollToForm}
-              className="glass px-8 py-4 rounded-2xl font-semibold text-sm text-text-secondary dark:text-text-secondary-dark hover:text-primary transition-all flex items-center gap-2"
-              aria-label="Explore joining opportunities"
-            >
-              Explore Opportunities
-              <ChevronDown size={16} />
-            </button>
+            {isLoading ? (
+              <>
+                <Skeleton className="w-full sm:w-40 h-14 rounded-2xl" />
+                <Skeleton className="w-full sm:w-48 h-14 rounded-2xl" />
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={scrollToForm}
+                  className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-2xl font-semibold text-sm flex items-center gap-3 transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5 group"
+                >
+                  Apply Now
+                  <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                </button>
+                <button
+                  onClick={scrollToForm}
+                  className="glass px-8 py-4 rounded-2xl font-semibold text-sm text-text-secondary dark:text-text-secondary-dark hover:text-primary transition-all flex items-center gap-2"
+                  aria-label="Explore joining opportunities"
+                >
+                  Explore Opportunities
+                  <ChevronDown size={16} />
+                </button>
+              </>
+            )}
           </motion.div>
         </div>
       </section>
 
       {/* ── Values ── */}
-      <section className="container mx-auto px-6 mb-32">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {values.map((item, i) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="glass rounded-3xl p-7 group hover:shadow-xl transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                {getIcon(item.icon)}
-              </div>
-              <h3 className="text-base font-bold tracking-tight mb-2">{item.title}</h3>
-              <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-                {item.desc}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {values.length > 0 && (
+        <section className="container mx-auto px-6 mb-32">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {values.map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="glass rounded-3xl p-7 group hover:shadow-xl transition-all duration-300"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  {getIcon(item.icon)}
+                </div>
+                <h3 className="text-base font-bold tracking-tight mb-2">{item.title}</h3>
+                <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── Role Selection ── */}
       <section ref={formRef} className="container mx-auto px-6 max-w-6xl pb-32 scroll-mt-24">
         <div className="text-center space-y-3 mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">{settings?.join_badge || 'Identify Your Path'}</h2>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+            {isLoading ? <Skeleton className="w-64 h-10 mx-auto" /> : settings?.join_badge}
+          </h2>
           <p className="text-text-secondary dark:text-text-secondary-dark max-w-xl mx-auto">
             Choose how you want to contribute to the mathematical revolution in Nepal.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {roles.map((role, idx) => (
-            <motion.div
-              key={role.id || idx}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="group"
-            >
-              <div className="glass rounded-3xl p-8 flex flex-col h-full hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  {getIcon(role.icon)}
+          {isLoading ? (
+            [...Array(3)].map((_, i) => (
+              <div key={i} className="glass rounded-3xl p-8 space-y-6">
+                <Skeleton className="w-14 h-14 rounded-2xl" />
+                <Skeleton className="w-48 h-8" />
+                <Skeleton className="w-full h-4" />
+                <div className="space-y-2">
+                  <Skeleton className="w-24 h-3" />
+                  <Skeleton className="w-32 h-3" />
+                  <Skeleton className="w-28 h-3" />
                 </div>
-
-                <h3 className="text-xl font-bold tracking-tight mb-2">{role.title}</h3>
-                <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6">
-                  {role.desc}
-                </p>
-
-                <ul className="space-y-2.5 flex-1 mb-8">
-                  {(role.perks || role.features || []).map(f => (
-                    <li key={f} className="flex items-center gap-2.5 text-xs font-medium text-text-secondary dark:text-text-secondary-dark">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href={`/join/${role.slug || role.id}`}
-                  className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
-                >
-                  Apply Now
-                  <ArrowRight size={18} />
-                </Link>
+                <Skeleton className="w-full h-12 rounded-2xl" />
               </div>
-            </motion.div>
-          ))}
+            ))
+          ) : (
+            roles.map((role, idx) => (
+              <motion.div
+                key={role.id || idx}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="group"
+              >
+                <div className="glass rounded-3xl p-8 flex flex-col h-full hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    {getIcon(role.icon)}
+                  </div>
+
+                  <h3 className="text-xl font-bold tracking-tight mb-2">{role.title}</h3>
+                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6">
+                    {role.desc}
+                  </p>
+
+                  <ul className="space-y-2.5 flex-1 mb-8">
+                    {(role.perks || role.features || []).map(f => (
+                      <li key={f} className="flex items-center gap-2.5 text-xs font-medium text-text-secondary dark:text-text-secondary-dark">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href={`/join/${role.slug || role.id}`}
+                    className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+                  >
+                    Apply Now
+                    <ArrowRight size={18} />
+                  </Link>
+                </div>
+              </motion.div>
+            ))
+          )}
         </div>
       </section>
 
       {/* ── FAQ ── */}
-      <section className="container mx-auto px-6 py-24">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center space-y-3 mb-14">
-            <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Common Questions</h3>
-            <p className="text-sm text-text-secondary dark:text-text-secondary-dark">Everything you need to know before applying</p>
-          </div>
+      {faqs.length > 0 && (
+        <section className="container mx-auto px-6 py-24">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center space-y-3 mb-14">
+              <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Common Questions</h3>
+              <p className="text-sm text-text-secondary dark:text-text-secondary-dark">Everything you need to know before applying</p>
+            </div>
 
-          <div className="divide-y divide-border dark:divide-border-dark">
-            {faqs.map((faq, i) => (
-              <div key={i} className="py-7 first:pt-0 last:pb-0">
-                <h4 className="text-base font-bold text-primary mb-2">{faq.question || faq.q}</h4>
-                <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">{faq.answer || faq.a}</p>
-              </div>
-            ))}
+            <div className="divide-y divide-border dark:divide-border-dark">
+              {faqs.map((faq, i) => (
+                <div key={i} className="py-7 first:pt-0 last:pb-0">
+                  <h4 className="text-base font-bold text-primary mb-2">{faq.question || faq.q}</h4>
+                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">{faq.answer || faq.a}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── Contact ── */}
       <section id="contact" className="container mx-auto px-6 pb-32 scroll-mt-24">

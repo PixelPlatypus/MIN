@@ -1,13 +1,14 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Image as ImageIcon, Loader2, Filter, Maximize2 } from 'lucide-react'
+import { Image as ImageIcon, Filter, Maximize2 } from 'lucide-react'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 // Lightbox is dynamically loaded to reduce main-thread work
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
 import 'yet-another-react-lightbox/styles.css'
 import { captureEvent } from '@/lib/analytics'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function GalleryPage() {
   const [images, setImages] = useState([])
@@ -16,12 +17,20 @@ export default function GalleryPage() {
   const [activeTag, setActiveTag] = useState('ALL')
   const [index, setIndex] = useState(-1)
   const [settings, setSettings] = useState(null)
+  const [settingsLoading, setSettingsLoading] = useState(true)
 
   useEffect(() => {
+    setSettingsLoading(true)
     fetch('/api/settings')
       .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('Gallery settings load error', err))
+      .then(data => {
+        setSettings(data)
+        setSettingsLoading(false)
+      })
+      .catch(err => {
+        console.error('Gallery settings load error', err)
+        setSettingsLoading(false)
+      })
   }, [])
 
   useEffect(() => {
@@ -54,24 +63,39 @@ export default function GalleryPage() {
             className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
           >
             <ImageIcon size={16} />
-            {settings?.gallery_title || "Gallery"}
+            {settingsLoading ? <Skeleton className="w-24 h-4" /> : settings?.gallery_title}
           </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight"
-          >
-            {settings?.gallery_subtitle || "Captured Moments"}
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
-          >
-            {settings?.gallery_description || "A visual journey through our camps, workshops, and the vibrant MIN community."}
-          </motion.p>
+          <div className="flex justify-center">
+            {settingsLoading ? (
+              <Skeleton className="w-96 h-16 md:h-20" />
+            ) : (
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-5xl md:text-7xl font-bold tracking-tight"
+              >
+                {settings?.gallery_subtitle}
+              </motion.h1>
+            )}
+          </div>
+          <div className="max-w-3xl mx-auto">
+            {settingsLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-5/6 h-4 mx-auto" />
+              </div>
+            ) : (
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+              >
+                {settings?.gallery_description}
+              </motion.p>
+            )}
+          </div>
         </div>
       </section>
 
@@ -79,41 +103,55 @@ export default function GalleryPage() {
       <section className="container mx-auto px-6 space-y-8">
         {/* Album Filter */}
         <div className="flex flex-wrap items-center justify-center gap-4">
-          {albums.map((album) => (
-            <button
-              key={album}
-              onClick={() => setActiveAlbum(album)}
-              className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
-                activeAlbum === album 
-                  ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                  : 'glass border-transparent hover:border-primary/20 text-text-secondary hover:text-primary'
-              }`}
-            >
-              {album === 'ALL' ? 'All Albums' : album}
-            </button>
-          ))}
+          {loading && albums.length === 1 ? (
+            [...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="w-32 h-12 rounded-2xl" />
+            ))
+          ) : (
+            albums.map((album) => (
+              <button
+                key={album}
+                onClick={() => setActiveAlbum(album)}
+                className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
+                  activeAlbum === album 
+                    ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
+                    : 'glass border-transparent hover:border-primary/20 text-text-secondary hover:text-primary'
+                }`}
+              >
+                {album === 'ALL' ? 'All Albums' : album}
+              </button>
+            ))
+          )}
         </div>
 
         {/* Tag Filter */}
         <div className="flex flex-wrap items-center justify-center gap-2">
-          {allTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setActiveTag(tag)}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
-                activeTag === tag 
-                  ? 'bg-text-main text-bg-main border-text-main dark:bg-white dark:text-black' 
-                  : 'glass border-transparent hover:border-text-main/20 text-text-tertiary'
-              }`}
-            >
-              #{tag}
-            </button>
-          ))}
+          {loading && allTags.length === 1 ? (
+            [...Array(6)].map((_, i) => (
+              <Skeleton key={i} className="w-20 h-8 rounded-full" />
+            ))
+          ) : (
+            allTags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setActiveTag(tag)}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
+                  activeTag === tag 
+                    ? 'bg-text-main text-bg-main border-text-main dark:bg-white dark:text-black' 
+                    : 'glass border-transparent hover:border-text-main/20 text-text-tertiary'
+                }`}
+              >
+                #{tag}
+              </button>
+            ))
+          )}
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <Loader2 size={48} className="animate-spin text-primary" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+              <Skeleton key={i} className="aspect-[4/3] rounded-[2.5rem]" />
+            ))}
           </div>
         ) : images.length > 0 ? (
           <>
@@ -150,7 +188,7 @@ export default function GalleryPage() {
                         ))}
                       </div>
                       <p className="text-white font-bold text-xl leading-tight transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        {image.caption || 'Mathematics Initiative'}
+                        {image.caption}
                       </p>
                       {image.album && (
                         <div className="flex items-center gap-2 text-secondary text-xs font-bold uppercase tracking-widest transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">

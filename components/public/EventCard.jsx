@@ -4,8 +4,6 @@ import Image from 'next/image'
 import { Calendar, MapPin, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
-const DEFAULT_EVENT_COVER = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop'
-
 export default function EventCard({ event, index, fallbackImage }) {
   const { title, slug, start_date, end_date, location, cover_url, event_type } = event
   
@@ -49,7 +47,7 @@ export default function EventCard({ event, index, fallbackImage }) {
             {/* Cover Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
               <Image 
-                src={cover_url || fallbackImage || DEFAULT_EVENT_COVER} 
+                src={cover_url || fallbackImage || '/images/logo.png'} 
                 alt={title}
                 fill
                 className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"

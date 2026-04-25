@@ -5,6 +5,7 @@ import GlobalGradients from '@/components/shared/GlobalGradients'
 import { ClientProviders } from './providers'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import SitePreloader from '@/components/shared/SitePreloader'
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -17,7 +18,7 @@ const jetBrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
   display: 'swap',
-  preload: false, // Prevents "preloaded but not used" warning if not used immediately
+  preload: false,
 })
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np'
@@ -73,7 +74,7 @@ export const metadata = {
     description: 'Empowering students across Nepal to excel globally through innovative mathematics education.',
     images: [
       {
-        url: '/images/logo.png', // Make sure this exists or replace with a default
+        url: '/images/logo.png',
         width: 500,
         height: 500,
         alt: 'MIN | Mathematics Initiatives in Nepal',
@@ -88,20 +89,19 @@ export const metadata = {
   }
 }
 
-import { SmoothScroll } from '@/components/shared/SmoothScroll'
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen">
-        <ClientProviders>
-          <ThemeProvider>
+      <body className="min-h-screen" suppressHydrationWarning>
+        <ThemeProvider>
+          <ClientProviders>
+            <SitePreloader />
             <GlobalGradients />
             {children}
             <Analytics />
             <SpeedInsights />
-          </ThemeProvider>
-        </ClientProviders>
+          </ClientProviders>
+        </ThemeProvider>
       </body>
     </html>
   )
