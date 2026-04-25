@@ -1589,3 +1589,16 @@ CREATE POLICY "Admin manage event mappings" ON public.email_event_mappings
   );
 CREATE POLICY "Public read event mappings" ON public.email_event_mappings
   FOR SELECT USING (true);
+
+-- Onboarding System
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name='profiles' AND column_name='has_completed_onboarding') THEN
+        ALTER TABLE public.profiles ADD COLUMN has_completed_onboarding BOOLEAN DEFAULT FALSE;
+    END IF;
+END $$;
+
+DROP POLICY IF EXISTS "Users can update their own onboarding status" ON public.profiles;
+CREATE POLICY "Users can update their own onboarding status" ON public.profiles
+  FOR UPDATE USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);

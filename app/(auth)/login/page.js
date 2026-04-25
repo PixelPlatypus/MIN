@@ -112,13 +112,13 @@ export default function LoginPage() {
       <div className="relative">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2 mb-4 group">
-            <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-xl border border-border dark:border-border-dark p-2">
+            <div className="w-20 h-20 bg-white dark:bg-white/5 rounded-full flex items-center justify-center transition-transform group-hover:scale-110 shadow-xl border border-border dark:border-border-dark overflow-hidden">
               <Image 
                 src="/images/logo.png" 
                 alt="MIN Logo" 
-                width={48} 
-                height={48} 
-                className="object-contain"
+                width={80} 
+                height={80} 
+                className="w-full h-full object-cover"
               />
             </div>
           </Link>

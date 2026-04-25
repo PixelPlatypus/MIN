@@ -1,6 +1,7 @@
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import AdminTopbar from '@/components/admin/AdminTopbar'
 import AdminLayoutClient from '@/components/admin/AdminLayoutClient'
+import OnboardingTour from '@/components/admin/OnboardingTour'
 import { SidebarProvider } from '@/components/admin/SidebarProvider'
 import NetworkResilience from '@/components/shared/NetworkResilience'
 import { createClient } from '@/lib/supabase/server'
@@ -28,7 +29,7 @@ export default async function AdminLayout({ children }) {
   // Fetch full profile from the database
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('*')
+    .select('*, has_completed_onboarding')
     .eq('id', user.id)
     .single()
 
@@ -47,6 +48,9 @@ export default async function AdminLayout({ children }) {
   return (
     <SidebarProvider>
       <NetworkResilience />
+      {!profile.has_completed_onboarding && (
+        <OnboardingTour role={profile.role} profileName={profile.name} />
+      )}
       <AdminLayoutClient 
         sidebar={<AdminSidebar profile={profile} isMaintenance={settings?.is_maintenance_mode} />}
         topbar={<AdminTopbar profile={profile} isMaintenance={settings?.is_maintenance_mode} />}
