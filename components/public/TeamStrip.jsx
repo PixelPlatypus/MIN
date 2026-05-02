@@ -7,8 +7,8 @@ import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function TeamStrip({ initialTeam = [] }) {
-  const [team, setTeam] = useState(initialTeam)
-  const [isLoading, setIsLoading] = useState(!initialTeam?.length)
+  const [team, setTeam] = useState(initialTeam || [])
+  const [isLoading, setIsLoading] = useState(!(initialTeam && initialTeam.length > 0))
 
   useEffect(() => {
     if (initialTeam?.length) {

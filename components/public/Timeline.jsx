@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 export default function Timeline({ initialEvents = [] }) {
-  const [events, setEvents] = useState(initialEvents)
+  const [events, setEvents] = useState(initialEvents || [])
   const containerRef = useRef(null)
 
   useEffect(() => {
-    if (initialEvents?.length) {
+    if (initialEvents && initialEvents.length > 0) {
       setEvents(initialEvents)
       return
     }
@@ -22,7 +22,7 @@ export default function Timeline({ initialEvents = [] }) {
   // Use events.length (a primitive number) as the dep — keeps dep array always [number],
   // never changes size, avoids React hook size-mismatch error from HMR or SSR hydration.
   useEffect(() => {
-    if (events.length === 0) return
+    if (!events || events.length === 0) return
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isMobile = window.matchMedia('(max-width: 767px)').matches
 

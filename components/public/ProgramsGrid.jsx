@@ -7,8 +7,8 @@ import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function ProgramsGrid({ initialPrograms = [], settings: initialSettings = null }) {
   const [settings, setSettings] = useState(initialSettings)
-  const [programs, setPrograms] = useState(initialPrograms)
-  const [loading, setLoading] = useState(!initialPrograms?.length || !initialSettings)
+  const [programs, setPrograms] = useState(initialPrograms || [])
+  const [loading, setLoading] = useState(!(initialPrograms && initialPrograms.length > 0) || !initialSettings)
 
   useEffect(() => {
     if (initialPrograms?.length && initialSettings) {
