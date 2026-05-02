@@ -59,7 +59,7 @@ export default function TeamView({ initialTenures, initialMembers, initialTenure
             <Skeleton key={i} className="w-32 h-12 rounded-2xl" />
           ))
         ) : (
-          tenures.map((tenure) => (
+          [...tenures, 'Alumni', 'Advisors'].map((tenure) => (
             <button
               key={tenure}
               onClick={() => setActiveTenure(tenure)}
@@ -69,7 +69,7 @@ export default function TeamView({ initialTenures, initialMembers, initialTenure
                   : 'glass border-transparent hover:border-primary/20 text-text-secondary hover:text-primary'
               }`}
             >
-              Tenure {tenure}
+              {tenure === 'Alumni' || tenure === 'Advisors' ? tenure : `Tenure ${tenure}`}
             </button>
           ))
         )}
@@ -97,6 +97,7 @@ export default function TeamView({ initialTenures, initialMembers, initialTenure
                 member={member} 
                 index={i}
                 fallbackImage={fallbackImage}
+                activeTab={activeTenure}
               />
             ))}
           </AnimatePresence>

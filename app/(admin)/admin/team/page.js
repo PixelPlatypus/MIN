@@ -1,8 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, UserPlus, Clock, Info } from 'lucide-react'
+import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, UserPlus, Clock, Info, LayoutGrid, Table as TableIcon } from 'lucide-react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
+import TeamExcelView from '@/components/admin/TeamExcelView'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -15,8 +16,8 @@ const statusColors = {
 
 const statusOrder = {
   ACTIVE: 1,
-  ALUMNI: 2,
-  INACTIVE: 3,
+  INACTIVE: 2,
+  ALUMNI: 3,
   REMOVED: 4
 }
 
@@ -34,6 +35,7 @@ export default function AdminTeamPage() {
   const [tenureFilter, setTenureFilter] = useState('all')
   const [uploading, setUploading] = useState(false)
   const [settings, setSettings] = useState(null)
+  const [excelMode, setExcelMode] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -93,22 +95,22 @@ export default function AdminTeamPage() {
       return matchesSearch && matchesStatus && matchesTenure
     })
     .sort((a, b) => {
-      // 1. Sort by position priority first
+      // 1. Sort by Status priority first (ACTIVE > INACTIVE > ALUMNI)
+      if (statusOrder[a.status] !== statusOrder[b.status]) {
+        return (statusOrder[a.status] || 99) - (statusOrder[b.status] || 99)
+      }
+
+      // 2. Sort by Position priority (President > Manager > MINion)
       const priRoleA = roleOrder[a.position] || 99
       const priRoleB = roleOrder[b.position] || 99
       if (priRoleA !== priRoleB) return priRoleA - priRoleB
       
-      // 2. Seniority in that group (by Year)
+      // 3. Seniority (Oldest joined first)
       const yearA = new Date(a.joined_date || 0).getFullYear()
       const yearB = new Date(b.joined_date || 0).getFullYear()
       if (yearA !== yearB) return yearA - yearB
 
-      // 3. Sort by status priority (within same year)
-      if (statusOrder[a.status] !== statusOrder[b.status]) {
-        return statusOrder[a.status] - statusOrder[b.status]
-      }
-
-      // 4. Alphabetical priority (within same status)
+      // 4. Alphabetical priority
       return (a.name || '').localeCompare(b.name || '')
     })
 
@@ -147,7 +149,13 @@ export default function AdminTeamPage() {
             status: (obj.status || 'ACTIVE').toUpperCase(),
             photo_url: photo,
             bio: obj.bio || '',
-            display_order: parseInt(obj.display_order) || 0
+            display_order: parseInt(obj.display_order) || 0,
+            slug: obj.slug || null,
+            is_advisor: obj.is_advisor?.toLowerCase() === 'true' || obj.is_advisor === '1' || obj.is_advisor?.toLowerCase() === 'yes',
+            social_links: {
+              certificate_url: obj.certificate_url || '',
+              role_history: []
+            }
           }
         })
 
@@ -215,16 +223,32 @@ export default function AdminTeamPage() {
                   <li><span className="text-primary">position</span>: Role (e.g. President, Manager, MINion)</li>
                   <li><span className="text-primary">tenure</span>: Period (e.g. 2025)</li>
                   <li><span className="text-primary">joined_date</span>: YYYY-MM-DD</li>
+                  <li><span className="text-secondary-dark">slug</span> (opt): Unique identifier (e.g. john-doe)</li>
+                  <li><span className="text-secondary-dark">is_advisor</span> (opt): true/false</li>
                   <li><span className="text-secondary-dark">status</span> (opt): ACTIVE, ALUMNI, INACTIVE, REMOVED</li>
+                  <li><span className="text-secondary-dark">certificate_url</span> (opt): Link to certificate</li>
                   <li><span className="text-secondary-dark">farewell_date</span> (opt): YYYY-MM-DD</li>
                   <li><span className="text-secondary-dark">bio</span> (opt): Description</li>
                   <li><span className="text-secondary-dark">photo_url</span> (opt): Image Link</li>
+                  <li><span className="text-secondary-dark">display_order</span> (opt): Sort priority (e.g. 1)</li>
                 </ul>
               </div>
             </details>
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setExcelMode(!excelMode)}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest border transition-all active:scale-95 ${
+              excelMode 
+                ? 'bg-primary/10 text-primary border-primary/20 shadow-inner' 
+                : 'bg-bg-secondary dark:bg-white/5 text-text-main dark:text-white border-border dark:border-white/10'
+            }`}
+          >
+            {excelMode ? <LayoutGrid size={18} /> : <TableIcon size={18} />}
+            {excelMode ? 'Grid View' : 'Excel Mode'}
+          </button>
+
           <label className="cursor-pointer bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 text-text-main dark:text-white px-5 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest border border-border dark:border-white/10 transition-all active:scale-95 flex items-center gap-2">
             <Plus size={18} />
             {uploading ? 'Processing...' : 'Bulk Import (CSV)'}
@@ -246,130 +270,134 @@ export default function AdminTeamPage() {
         </div>
       </div>
 
-      {/* Filters & Search */}
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="flex-1 glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-white/10 focus-within:border-primary transition-all shadow-sm">
-          <Search size={18} className="text-text-tertiary" />
-          <input 
-            suppressHydrationWarning
-            type="text" 
-            placeholder="Search by name or position..." 
-            className="bg-transparent border-none text-sm font-bold focus:outline-none w-full placeholder:text-text-tertiary"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 glass px-4 py-2.5 rounded-2xl border border-border dark:border-white/10">
-            <Filter size={18} className="text-text-tertiary" />
-            <select 
-              className="bg-transparent text-[10px] font-black uppercase tracking-widest focus:outline-none cursor-pointer"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            >
-              <option value="all">Every Status</option>
-              <option value="active">Active</option>
-              <option value="alumni">Alumni</option>
-              <option value="inactive">Inactive</option>
-              <option value="removed">Removed</option>
-            </select>
-          </div>
-          
-          <div className="flex items-center gap-2 glass px-4 py-2.5 rounded-2xl border border-border dark:border-white/10">
-            <Clock size={18} className="text-text-tertiary" />
-            <select 
-              className="bg-transparent text-[10px] font-black uppercase tracking-widest focus:outline-none cursor-pointer"
-              value={tenureFilter}
-              onChange={(e) => setTenureFilter(e.target.value)}
-            >
-              <option value="all">Every Tenure</option>
-              {uniqueTenures.map(t => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Team Table */}
-      <div className="glass rounded-[2rem] overflow-hidden shadow-sm border border-border dark:border-white/10">
-        {loading ? (
-          <TableSkeleton rows={10} cols={5} />
-        ) : filteredMembers.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-separate border-spacing-0">
-              <thead>
-                <tr className="bg-bg-secondary dark:bg-white/5 text-text-tertiary dark:text-text-tertiary-dark text-[10px] uppercase tracking-[0.2em] font-black">
-                  <th className="px-8 py-5 border-b border-border dark:border-white/10">Member</th>
-                  <th className="px-8 py-5 border-b border-border dark:border-white/10">Position</th>
-                  <th className="px-8 py-5 border-b border-border dark:border-white/10">Tenure</th>
-                  <th className="px-8 py-5 border-b border-border dark:border-white/10">Status</th>
-                  <th className="px-8 py-5 border-b border-border dark:border-white/10 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border dark:divide-white/5">
-                {filteredMembers.map((member) => (
-                  <tr key={member.id} className="group hover:bg-primary/[0.02] dark:hover:bg-primary/[0.05] transition-all">
-                    <td className="px-8 py-5">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl overflow-hidden bg-primary/10 border border-primary/20 shadow-inner">
-                          <img 
-                            src={member.photo_url || settings?.default_team_photo || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop'} 
-                            alt={member.name} 
-                            className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110"
-                          />
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-black truncate text-text-main dark:text-white">{member.name}</span>
-                          <span className="text-[10px] font-bold text-text-tertiary uppercase tracking-wider tabular-nums">Joined {new Date(member.joined_date).getFullYear()}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-5">
-                      <span className="text-sm font-medium text-text-secondary dark:text-text-tertiary">{member.position}</span>
-                    </td>
-                    <td className="px-8 py-5">
-                      <span className="inline-flex items-center justify-center text-xs font-black text-primary px-4 py-1.5 rounded-full bg-primary/10 border border-primary/10 shadow-sm tabular-nums">
-                        {member.tenure}
-                      </span>
-                    </td>
-                    <td className="px-8 py-5">
-                      <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border ${statusColors[member.status]}`}>
-                        {member.status}
-                      </span>
-                    </td>
-                    <td className="px-8 py-5 text-right">
-                      <div className="flex items-center justify-end gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
-                        <button 
-                          onClick={() => handleEdit(member.id)}
-                          title="Edit Member"
-                          className="p-2.5 rounded-xl text-text-tertiary hover:text-primary hover:bg-primary/10 transition-all active:scale-95"
-                        >
-                          <Edit2 size={18} />
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(member.id, member.name)}
-                          title="Delete Member"
-                          className="p-2.5 rounded-xl text-text-tertiary hover:text-coral hover:bg-coral/10 transition-all active:scale-95"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="text-center py-32 flex flex-col items-center gap-4">
-            <div className="w-16 h-16 bg-bg-secondary dark:bg-white/5 rounded-3xl flex items-center justify-center text-text-tertiary">
-              <Search size={32} />
+      {/* Team Content */}
+      {excelMode ? (
+        <TeamExcelView members={members} onRefresh={fetchInitialData} />
+      ) : (
+        <>
+          {/* Filters & Search */}
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1 glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-white/10 focus-within:border-primary transition-all shadow-sm">
+              <Search size={18} className="text-text-tertiary" />
+              <input 
+                suppressHydrationWarning
+                type="text" 
+                placeholder="Search by name or position..." 
+                className="bg-transparent border-none text-sm font-bold focus:outline-none w-full placeholder:text-text-tertiary"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
-            <p className="text-sm font-bold text-text-tertiary">No team members found matching your search.</p>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2 glass px-4 py-2.5 rounded-2xl border border-border dark:border-white/10">
+                <Filter size={18} className="text-text-tertiary" />
+                <select 
+                  className="bg-transparent text-[10px] font-black uppercase tracking-widest focus:outline-none cursor-pointer"
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                >
+                  <option value="all">Every Status</option>
+                  <option value="active">Active</option>
+                  <option value="alumni">Alumni</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="removed">Removed</option>
+                </select>
+              </div>
+              
+              <div className="flex items-center gap-2 glass px-4 py-2.5 rounded-2xl border border-border dark:border-white/10">
+                <Clock size={18} className="text-text-tertiary" />
+                <select 
+                  className="bg-transparent text-[10px] font-black uppercase tracking-widest focus:outline-none cursor-pointer"
+                  value={tenureFilter}
+                  onChange={(e) => setTenureFilter(e.target.value)}
+                >
+                  <option value="all">Every Tenure</option>
+                  {uniqueTenures.map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+
+          <div className="glass rounded-[2rem] overflow-hidden shadow-sm border border-border dark:border-white/10">
+            {filteredMembers.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-separate border-spacing-0">
+                  <thead>
+                    <tr className="bg-bg-secondary dark:bg-white/5 text-text-tertiary dark:text-text-tertiary-dark text-[10px] uppercase tracking-[0.2em] font-black">
+                      <th className="px-8 py-5 border-b border-border dark:border-white/10">Member</th>
+                      <th className="px-8 py-5 border-b border-border dark:border-white/10">Position</th>
+                      <th className="px-8 py-5 border-b border-border dark:border-white/10">Tenure</th>
+                      <th className="px-8 py-5 border-b border-border dark:border-white/10">Status</th>
+                      <th className="px-8 py-5 border-b border-border dark:border-white/10 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border dark:divide-white/5">
+                    {filteredMembers.map((member) => (
+                      <tr key={member.id} className="group hover:bg-primary/[0.02] dark:hover:bg-primary/[0.05] transition-all">
+                        <td className="px-8 py-5">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-primary/10 border border-primary/20 shadow-inner">
+                              <img 
+                                src={member.photo_url || settings?.default_team_photo || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop'} 
+                                alt={member.name} 
+                                className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110"
+                              />
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-sm font-black truncate text-text-main dark:text-white">{member.name}</span>
+                              <span className="text-[10px] font-bold text-text-tertiary uppercase tracking-wider tabular-nums">Joined {new Date(member.joined_date).getFullYear()}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-8 py-5">
+                          <span className="text-sm font-medium text-text-secondary dark:text-text-tertiary">{member.position}</span>
+                        </td>
+                        <td className="px-8 py-5">
+                          <span className="inline-flex items-center justify-center text-xs font-black text-primary px-4 py-1.5 rounded-full bg-primary/10 border border-primary/10 shadow-sm tabular-nums">
+                            {member.tenure}
+                          </span>
+                        </td>
+                        <td className="px-8 py-5">
+                          <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border ${statusColors[member.status]}`}>
+                            {member.status}
+                          </span>
+                        </td>
+                        <td className="px-8 py-5 text-right">
+                          <div className="flex items-center justify-end gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => handleEdit(member.id)}
+                              title="Edit Member"
+                              className="p-2.5 rounded-xl text-text-tertiary hover:text-primary hover:bg-primary/10 transition-all active:scale-95"
+                            >
+                              <Edit2 size={18} />
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(member.id, member.name)}
+                              title="Delete Member"
+                              className="p-2.5 rounded-xl text-text-tertiary hover:text-coral hover:bg-coral/10 transition-all active:scale-95"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="text-center py-32 flex flex-col items-center gap-4">
+                <div className="w-16 h-16 bg-bg-secondary dark:bg-white/5 rounded-3xl flex items-center justify-center text-text-tertiary">
+                  <Search size={32} />
+                </div>
+                <p className="text-sm font-bold text-text-tertiary">No team members found matching your search.</p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   )
 }

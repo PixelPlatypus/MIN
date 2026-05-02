@@ -364,7 +364,24 @@ export default function AdminApplicationsPage() {
                     </button>
                   </div>
 
-                  {selectedApp.status === 'EMAIL_SENT' ? (
+                  {selectedApp.status === 'PENDING' ? (
+                    <div className="space-y-4">
+                      <div className="bg-orange/5 rounded-2xl p-6 border border-orange/10 text-center">
+                        <p className="text-[10px] font-black text-orange uppercase tracking-[0.2em] flex items-center justify-center gap-2">
+                          <Clock size={16} /> New Submission
+                        </p>
+                        <p className="text-[10px] text-text-tertiary mt-2">
+                          Please review the details above and mark as read to enable processing options.
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => handleUpdateStatus(selectedApp.id, 'REVIEWED')}
+                        className="w-full flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all bg-primary text-white shadow-xl shadow-primary/20 hover:bg-primary-dark"
+                      >
+                        <CheckCircle2 size={16} /> Mark as Read
+                      </button>
+                    </div>
+                  ) : selectedApp.status === 'EMAIL_SENT' ? (
                     <div className="bg-purple-500/5 rounded-2xl p-6 border border-purple-500/10 text-center">
                        <p className="text-xs font-black text-purple-500 uppercase tracking-widest flex items-center justify-center gap-2">
                           <Mail size={16} /> Outreach Email Sent
@@ -376,33 +393,41 @@ export default function AdminApplicationsPage() {
                   ) : (
                     <div className="grid grid-cols-2 gap-3">
                       <button 
+                        disabled={['ACCEPTED', 'REJECTED'].includes(selectedApp.status)}
                         onClick={() => handleUpdateStatus(selectedApp.id, 'ACCEPTED')}
                         className={`flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${
                           selectedApp.status === 'ACCEPTED' 
-                            ? 'bg-green text-white shadow-xl shadow-green/20' 
-                            : 'bg-green/10 text-green hover:bg-green/100 hover:text-white'
+                            ? 'bg-green text-white shadow-xl shadow-green/20 opacity-100' 
+                            : 'bg-green/10 text-green hover:bg-green hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
                         }`}
                       >
-                        <CheckCircle2 size={16} /> Accept
+                        <CheckCircle2 size={16} /> {selectedApp.status === 'ACCEPTED' ? 'Accepted' : 'Accept'}
                       </button>
                       <button 
+                        disabled={['ACCEPTED', 'REJECTED'].includes(selectedApp.status)}
                         onClick={() => handleUpdateStatus(selectedApp.id, 'REJECTED')}
                         className={`flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${
                           selectedApp.status === 'REJECTED' 
-                            ? 'bg-coral text-white shadow-xl shadow-coral/20' 
-                            : 'bg-coral/10 text-coral hover:bg-coral/100 hover:text-white'
+                            ? 'bg-coral text-white shadow-xl shadow-coral/20 opacity-100' 
+                            : 'bg-coral/10 text-coral hover:bg-coral hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
                         }`}
                       >
-                        <XCircle size={16} /> Reject
+                        <XCircle size={16} /> {selectedApp.status === 'REJECTED' ? 'Rejected' : 'Reject'}
                       </button>
 
-                      {['ORGANIZATION', 'PARTNERSHIP'].includes(selectedApp.type) && (
+                      {['ORGANIZATION', 'PARTNERSHIP'].includes(selectedApp.type) && !['ACCEPTED', 'REJECTED'].includes(selectedApp.status) && (
                         <button 
                           onClick={() => handleUpdateStatus(selectedApp.id, 'EMAIL_SENT')}
                           className="col-span-2 flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white"
                         >
                           <Mail size={16} /> Mark as Emailed
                         </button>
+                      )}
+
+                      {['ACCEPTED', 'REJECTED'].includes(selectedApp.status) && (
+                        <p className="col-span-2 text-center text-[10px] font-black uppercase tracking-widest text-text-tertiary mt-2">
+                          Decision finalized. Status cannot be changed.
+                        </p>
                       )}
                     </div>
                   )}

@@ -13,7 +13,7 @@ const JoinUsCTA = dynamic(() => import('@/components/public/JoinUsCTA'), { ssr: 
 export const metadata = {
   metadataBase: new URL('https://mathsinitiatives.org.np'),
   title: 'Mathematics Initiatives in Nepal (MIN)',
-  description: 'MIN is a nonprofit making mathematics accessible, engaging, and inspiring for all students in Nepal. HundrED Top 100 Global Education Innovations 2024.',
+  description: 'MIN is a nonprofit making mathematics accessible, engaging, and inspiring for all students in Nepal. HundrED Top 100 Global Education Innovations 2025.',
   openGraph: {
     title: 'Mathematics Initiatives in Nepal (MIN)',
     description: 'Making mathematics accessible for all students in Nepal.',
@@ -57,7 +57,7 @@ export default async function Home() {
       'https://www.instagram.com/minnepal',
       'https://www.youtube.com/@mathsinitiatives',
     ],
-    award: 'HundrED Top 100 Global Education Innovations 2024',
+    award: 'HundrED Top 100 Global Education Innovations 2025',
     email: 'contact@mathsinitiatives.org.np',
   }
 

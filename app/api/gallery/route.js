@@ -11,6 +11,7 @@ export async function GET(request) {
   let query = supabase
     .from('gallery')
     .select('*')
+    .order('display_order', { ascending: true })
     .order('created_at', { ascending: false })
 
   if (album && album !== 'ALL') {
@@ -80,4 +81,45 @@ export async function POST(request) {
   })
 
   return Response.json(result.data)
+}
+
+export async function PATCH(request) {
+  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  if (error) return Response.json({ error: error.message }, { status: error.status })
+
+  const body = await request.json()
+  const items = Array.isArray(body) ? body : [body]
+  const supabaseAdmin = await createAdminClient()
+
+  // Prepare updates: Only include id and display_order to avoid overwriting other fields
+  const updates = items
+    .filter(item => item.id)
+    .map(item => ({
+      id: item.id,
+      image_url: item.image_url,
+      display_order: item.display_order
+    }))
+
+  if (updates.length === 0) {
+    return Response.json({ error: 'No valid items to update' }, { status: 400 })
+  }
+
+  const { error: updateError } = await supabaseAdmin
+    .from('gallery')
+    .upsert(updates, { onConflict: 'id' })
+
+  if (updateError) {
+    console.error('API Gallery Reorder Error:', updateError)
+    return Response.json({ error: updateError.message }, { status: 500 })
+  }
+
+  await logAudit({
+    actor_id: user.id,
+    actor_name: profile.name,
+    action: 'REORDERED_GALLERY',
+    entity_type: 'gallery',
+    meta: { count: items.length }
+  })
+
+  return Response.json({ success: true, count: updates.length })
 }

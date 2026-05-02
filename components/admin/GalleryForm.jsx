@@ -28,7 +28,8 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
     caption: initialData?.caption || '',
     album: initialData?.album || '',
     tags: Array.isArray(initialData?.tags) ? initialData.tags.join(', ') : (initialData?.tags || ''),
-    image_url: initialData?.image_url || initialData?.url || ''
+    image_url: initialData?.image_url || initialData?.url || '',
+    display_order: initialData?.display_order || 0
   })
 
   useEffect(() => {
@@ -280,6 +281,20 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
                   </div>
                 )}
                 <p className="text-[10px] text-text-tertiary px-2 italic">Separate with commas</p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-text-tertiary ml-1">
+                  <Tag size={14} />
+                  <label className="text-[10px] font-black uppercase tracking-widest">Display Order</label>
+                </div>
+                <input 
+                  type="number" 
+                  placeholder="0"
+                  className="w-full bg-black/5 dark:bg-white/5 border-none rounded-2xl py-4 px-6 text-sm font-medium focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                  value={formData.display_order}
+                  onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value) || 0})}
+                />
               </div>
             </div>
 

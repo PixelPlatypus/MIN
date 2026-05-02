@@ -30,7 +30,8 @@ export async function PATCH(request, { params }) {
       caption: json.caption,
       album: json.album,
       tags: json.tags,
-      image_url: json.image_url
+      image_url: json.image_url,
+      display_order: json.display_order
     })
     .eq('id', id)
 

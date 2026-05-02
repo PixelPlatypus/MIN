@@ -18,6 +18,7 @@ const teamSchema = z.object({
   farewell_date: z.string().optional().nullable(),
   photo_url: z.string().optional().nullable(),
   display_order: z.number().int().default(0),
+  is_advisor: z.boolean().default(false),
   status: z.enum(['ACTIVE', 'ALUMNI', 'INACTIVE', 'REMOVED']).default('ACTIVE'),
   social_links: z.object({
     social_media: z.string().url().or(z.literal('')).optional(),
@@ -26,6 +27,7 @@ const teamSchema = z.object({
     linkedin: z.string().url().or(z.literal('')).optional(),
     email: z.string().email().or(z.literal('')).optional(),
     github: z.string().url().or(z.literal('')).optional(),
+    certificate_url: z.string().url().or(z.literal('')).optional(),
     role_history: z.array(z.object({
       year: z.string().min(4, "Year must be 4 digits"),
       position: z.string().min(1, "Position is required")
@@ -61,6 +63,20 @@ export default function TeamForm({ initialData = null }) {
       .catch(err => console.error('Profile load error:', err))
   }, [])
 
+  let parsedSocialLinks = {
+    social_media: '', facebook: '', instagram: '', linkedin: '', email: '', github: '', certificate_url: '', role_history: []
+  };
+  if (initialData?.social_links) {
+    if (typeof initialData.social_links === 'string') {
+      try { 
+        const parsed = JSON.parse(initialData.social_links); 
+        parsedSocialLinks = { ...parsedSocialLinks, ...parsed };
+      } catch(e) { /* ignore */ }
+    } else if (typeof initialData.social_links === 'object') {
+      parsedSocialLinks = { ...parsedSocialLinks, ...initialData.social_links };
+    }
+  }
+
   const {
     register,
     handleSubmit,
@@ -69,32 +85,80 @@ export default function TeamForm({ initialData = null }) {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(teamSchema),
-    defaultValues: initialData || {
-      name: '',
-      position: 'MINion',
-      bio: '',
-      tenure: new Date().getFullYear().toString(),
-      joined_date: new Date().toISOString().split('T')[0],
-      farewell_date: null,
-      photo_url: '',
-      display_order: 0,
-      status: 'ACTIVE',
-      social_links: {
-        social_media: '',
-        facebook: '',
-        instagram: '',
-        linkedin: '',
-        email: '',
-        github: '',
-      },
+    defaultValues: {
+      ...(initialData || {
+        name: '',
+        position: 'MINion',
+        bio: '',
+        tenure: new Date().getFullYear().toString(),
+        photo_url: '',
+        display_order: 0,
+        is_advisor: false,
+        status: 'ACTIVE',
+      }),
+      joined_date: initialData?.joined_date ? initialData.joined_date.substring(0, 7) : new Date().getFullYear().toString(),
+      farewell_date: initialData?.farewell_date ? initialData.farewell_date.substring(0, 7) : '',
+      social_links: parsedSocialLinks,
     },
   })
+
+  const currentJoinedDate = watch('joined_date')
+  
+  // Auto-populate MINion role in UI when joined date is provided
+  useEffect(() => {
+    if (currentJoinedDate && currentJoinedDate.length >= 4) {
+      const year = currentJoinedDate.split('-')[0]
+      if (year.length === 4) {
+        const history = watch('social_links.role_history') || []
+        if (!history.some(r => r.year === year)) {
+          setValue('social_links.role_history', [...history, { year, position: 'MINion' }])
+        }
+      }
+    }
+  }, [currentJoinedDate, setValue, watch])
 
   const photoUrl = watch('photo_url')
 
   async function onSubmit(data) {
     setLoading(true)
     setError(null)
+
+    // Auto-derive data based on user requests
+    if (data.joined_date) {
+      const parts = data.joined_date.split('-')
+      const year = parts[0]
+      const month = parts[1] || '01'
+      const day = parts[2] || '01'
+      
+      data.joined_date = `${year}-${month}-${day}`
+      data.tenure = year
+
+      // Automatically inject MINion role for their joining year (fallback backup)
+      if (!data.social_links) data.social_links = {}
+      if (!data.social_links.role_history) data.social_links.role_history = []
+      
+      const hasJoinedYearRole = data.social_links.role_history.some(r => r.year === data.tenure)
+      if (!hasJoinedYearRole) {
+        data.social_links.role_history.push({ year: data.tenure, position: 'MINion' })
+      }
+    }
+    
+    if (data.farewell_date && data.farewell_date.trim() !== '') {
+      const parts = data.farewell_date.split('-')
+      const year = parts[0]
+      const month = parts[1] || '01'
+      const day = parts[2] || '01'
+      data.farewell_date = `${year}-${month}-${day}`
+    } else {
+      data.farewell_date = null
+    }
+
+    if (data.social_links?.role_history?.length > 0) {
+      const history = [...data.social_links.role_history].sort((a,b) => parseInt(b.year) - parseInt(a.year))
+      data.position = history[0].position
+    } else {
+      data.position = 'MINion'
+    }
 
     // Fun randomized photo selection if empty
     if (!data.photo_url && settings?.team_identity_assets?.length > 0) {
@@ -205,39 +269,17 @@ export default function TeamForm({ initialData = null }) {
                   </select>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Role / Position</label>
-                  <select 
-                    {...register('position')}
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 appearance-none cursor-pointer"
-                  >
-                    <option value="MINion">MINion</option>
-                    {(currentUser?.role === 'ADMIN' || initialData?.position === 'President') && (
-                      <option value="President">President</option>
-                    )}
-                    <option value="Manager">Manager</option>
-                  </select>
-                  {errors.position && <p className="text-xs text-coral ml-1">{errors.position.message}</p>}
-                </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Tenure Year</label>
-                  <input 
-                    {...register('tenure')}
-                    placeholder="e.g. 2025"
-                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
-                      errors.tenure ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
-                    }`}
-                  />
-                </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">Joined Date</label>
                   <input 
                     {...register('joined_date')}
-                    type="date"
+                    type="text"
+                    placeholder="YYYY or YYYY-MM"
                     className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
+                  {errors.joined_date && <p className="text-xs text-coral ml-1">{errors.joined_date.message}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -247,6 +289,20 @@ export default function TeamForm({ initialData = null }) {
                     type="number"
                     className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
+                </div>
+
+                <div className="col-span-1 sm:col-span-2 mt-2">
+                  <label className="flex items-center gap-3 cursor-pointer p-4 rounded-2xl border border-border dark:border-border-dark bg-white dark:bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                    <input 
+                      type="checkbox" 
+                      {...register('is_advisor')}
+                      className="w-5 h-5 rounded border-border dark:border-border-dark text-primary focus:ring-primary/20 cursor-pointer"
+                    />
+                    <div>
+                      <div className="text-sm font-bold">Mark as Advisor</div>
+                      <div className="text-xs text-text-tertiary">Advisors have special visibility and filtering on the public team page.</div>
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -264,7 +320,8 @@ export default function TeamForm({ initialData = null }) {
                 <label className="text-sm font-bold ml-1">Farewell Date (Optional)</label>
                 <input 
                   {...register('farewell_date')}
-                  type="date"
+                  type="text"
+                  placeholder="YYYY or YYYY-MM"
                   className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
                     errors.farewell_date ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
                   }`}
@@ -329,6 +386,49 @@ export default function TeamForm({ initialData = null }) {
                     </button>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Certificate Section */}
+            <div className="glass rounded-[2rem] p-8 space-y-6">
+              <h3 className="text-lg font-bold tracking-tight">Certificate</h3>
+              <p className="text-sm text-text-tertiary">
+                Upload a certificate image or document (will be displayed on the member's profile page).
+              </p>
+              
+              <div className="space-y-4">
+                {watch('social_links.certificate_url') && (
+                  <div className="p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4">
+                    <div className="w-16 h-16 relative bg-white/10 rounded-xl overflow-hidden flex items-center justify-center shrink-0">
+                      {watch('social_links.certificate_url').endsWith('.pdf') ? (
+                        <div className="text-xs font-bold uppercase tracking-widest text-primary">PDF</div>
+                      ) : (
+                        <img src={watch('social_links.certificate_url')} alt="Certificate" className="object-cover w-full h-full" />
+                      )}
+                    </div>
+                    <div className="flex-1 truncate">
+                      <a href={watch('social_links.certificate_url')} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline truncate block">
+                        View Certificate
+                      </a>
+                    </div>
+                    <button 
+                      type="button" 
+                      onClick={() => setValue('social_links.certificate_url', '')}
+                      className="p-2 text-coral bg-coral/10 hover:bg-coral hover:text-white rounded-xl transition-colors shrink-0"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
+                
+                {!watch('social_links.certificate_url') && (
+                  <ImageUploader 
+                    onUpload={(url) => setValue('social_links.certificate_url', url)} 
+                    folder="min-website/certificates"
+                    label="Upload Certificate"
+                    accept="image/*,application/pdf"
+                  />
+                )}
               </div>
             </div>
 

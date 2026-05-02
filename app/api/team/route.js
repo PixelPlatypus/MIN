@@ -26,6 +26,13 @@ export async function GET(request) {
 
   // Intelligent Tenure Propagation Logic (Server-side)
   if (tenure) {
+    if (tenure === 'Alumni') {
+      return Response.json(data.filter(m => m.status === 'ALUMNI'))
+    }
+    if (tenure === 'Advisors') {
+      return Response.json(data.filter(m => m.is_advisor === true))
+    }
+
     const filterYear = parseInt(tenure)
     const filtered = data
       .filter(member => {
@@ -53,12 +60,19 @@ export async function GET(request) {
         // Apply role_history override: if this member has a past role for this exact year,
         // override the displayed position with that historical role
         const roleHistory = member.social_links?.role_history
+        const joinedYear = parseInt(member.tenure)
         if (Array.isArray(roleHistory) && roleHistory.length > 0) {
           const historicalRole = roleHistory.find(h => parseInt(h.year) === filterYear)
           if (historicalRole?.position) {
             return { ...member, position: historicalRole.position }
           }
         }
+        
+        // If the requested year is the year they joined, and no explicit role history was found, default to MINion
+        if (filterYear === joinedYear) {
+          return { ...member, position: 'MINion' }
+        }
+
         return member
       })
 
@@ -106,4 +120,31 @@ export async function POST(request) {
   })
 
   return Response.json(isArray ? data : data[0])
+}
+
+export async function PATCH(request) {
+  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  if (error) return Response.json({ error: error.message }, { status: error.status })
+
+  const body = await request.json()
+  const items = Array.isArray(body) ? body : [body]
+
+  const { data, error: updateError } = await supabase
+    .from('team_members')
+    .upsert(items, { onConflict: 'id' })
+    .select()
+
+  if (updateError) {
+    return Response.json({ error: updateError.message }, { status: 500 })
+  }
+
+  await logAudit({
+    actor_id: user.id,
+    actor_name: profile.name,
+    action: 'BULK_UPDATED_TEAM_MEMBERS',
+    entity_type: 'team_members',
+    meta: { count: items.length }
+  })
+
+  return Response.json(data)
 }

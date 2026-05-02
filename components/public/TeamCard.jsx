@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Facebook, Instagram, Linkedin, Github, Mail, Globe, ExternalLink } from 'lucide-react'
 
 const socialIcons = {
@@ -13,8 +14,11 @@ const socialIcons = {
   social_media: <Globe size={18} />,
 }
 
-export default function TeamCard({ member, index, fallbackImage }) {
-  const { name, position, bio, photo_url, social_links = {}, tenure } = member
+export default function TeamCard({ member, index, fallbackImage, activeTab }) {
+  const { name, position, bio, photo_url, social_links = {}, tenure, slug, joined_date, farewell_date } = member
+
+  const isAlumniTab = activeTab === 'Alumni'
+  const isAdvisorTab = activeTab === 'Advisors'
 
   return (
     <motion.div
@@ -26,38 +30,52 @@ export default function TeamCard({ member, index, fallbackImage }) {
       className="group relative h-full"
     >
       <div className="relative glass rounded-[2.5rem] p-6 flex flex-col items-center text-center h-full hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 group overflow-hidden">
+        
+        {/* Background Clickable Link (Avoids nested <a> tags) */}
+        <Link href={`/team/${slug || member.id}`} className="absolute inset-0 z-0 outline-none" aria-label={`View ${name}'s profile`} />
+        
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
-        <div className="relative z-10 flex flex-col items-center h-full w-full">
-          {/* Profile Image Container */}
-          <div className="w-40 h-40 relative mb-6 rounded-full overflow-hidden p-1.5 border-2 border-primary/10 group-hover:border-primary/40 transition-colors">
-            <Image 
-              src={photo_url || fallbackImage || '/images/logo.png'} 
-              alt={name}
-              fill
-              className="object-cover rounded-full grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
-              sizes="160px"
-            />
-          </div>
-
-          {/* Name & Position */}
-          <div className="space-y-1 mb-4 flex-grow">
-            <h3 className="text-xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary transition-colors">{name}</h3>
-            <p className="text-sm font-semibold text-primary">{position}</p>
-            <div className="flex items-center justify-center gap-2 mt-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/10">
-                {tenure}
-              </span>
-              <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
-                member.status === 'ACTIVE' 
-                  ? 'bg-green/10 text-green border-green/20' 
-                  : member.status === 'ALUMNI'
-                  ? 'bg-coral/10 text-coral border-coral/20'
-                  : 'bg-amber/10 text-amber-600 border-amber-600/20'
-              }`}>
-                {member.status}
-              </span>
+        <div className="relative z-10 flex flex-col items-center h-full w-full pointer-events-none">
+            {/* Profile Image Container */}
+            <div className="w-40 h-40 relative mb-6 rounded-full overflow-hidden p-1.5 border-2 border-primary/10 group-hover:border-primary/40 transition-colors">
+              <Image 
+                src={photo_url || fallbackImage || '/images/logo.png'} 
+                alt={name}
+                fill
+                className="object-cover rounded-full grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+                sizes="160px"
+              />
             </div>
-          </div>
+
+            {/* Name & Position */}
+            <div className="space-y-1 mb-4 flex-grow">
+              <h3 className="text-xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary transition-colors">{name}</h3>
+              
+              {!isAdvisorTab && !isAlumniTab && (
+                <p className="text-sm font-semibold text-primary">{position}</p>
+              )}
+
+
+
+              <div className="flex items-center justify-center gap-2 mt-2">
+                {!isAdvisorTab && (
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/10">
+                    {tenure}
+                  </span>
+                )}
+                <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                  isAdvisorTab 
+                    ? 'bg-purple-500/10 text-purple-500 border-purple-500/20'
+                    : member.status === 'ACTIVE' 
+                    ? 'bg-green/10 text-green border-green/20' 
+                    : member.status === 'ALUMNI'
+                    ? 'bg-coral/10 text-coral border-coral/20'
+                    : 'bg-amber/10 text-amber-600 border-amber-600/20'
+                }`}>
+                  {isAdvisorTab ? 'ADVISOR' : member.status}
+                </span>
+              </div>
+            </div>
 
           {/* Bio */}
           <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
@@ -65,9 +83,9 @@ export default function TeamCard({ member, index, fallbackImage }) {
           </p>
 
           {/* Social Links */}
-          <div className="flex items-center justify-center gap-3 mt-auto">
+          <div className="flex items-center justify-center gap-3 mt-auto pointer-events-auto">
             {Object.entries(social_links || {}).map(([platform, url]) => (
-              typeof url === 'string' && url.trim() !== '' && (
+              platform !== 'certificate_url' && typeof url === 'string' && url.trim() !== '' && (
                 <a 
                   key={platform} 
                   href={platform.toLowerCase() === 'email' ? `mailto:${url}` : url} 
@@ -81,7 +99,7 @@ export default function TeamCard({ member, index, fallbackImage }) {
               )
             ))}
           </div>
-        </div>
+          </div>
       </div>
     </motion.div>
   )

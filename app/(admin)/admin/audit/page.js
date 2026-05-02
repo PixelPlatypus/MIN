@@ -80,7 +80,6 @@ export default function AuditLogPage() {
     { id: 'popup_notices', name: 'Notices', icon: <Settings size={12}/> },
     { id: 'gallery', name: 'Gallery', icon: <Database size={12}/> },
     { id: 'form_submissions', name: 'Intake Submissions', icon: <Database size={12}/> },
-    { id: 'join_applications', name: 'Legacy Intake', icon: <Database size={12}/> },
   ]
 
   return (
