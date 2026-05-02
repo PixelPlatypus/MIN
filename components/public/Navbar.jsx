@@ -17,10 +17,11 @@ const navLinks = [
   { name: 'Join Us', href: '/join' },
 ]
 
-export default function Navbar() {
+export default function Navbar({ settings: initialSettings = null }) {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const [settings, setSettings] = useState(initialSettings)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,14 +31,17 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const [settings, setSettings] = useState(null)
-  
   useEffect(() => {
+    if (initialSettings) {
+      setSettings(initialSettings)
+      return
+    }
+
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => setSettings(data))
       .catch(err => console.error('Navbar settings load error', err))
-  }, [])
+  }, [initialSettings])
 
   return (
     <nav 

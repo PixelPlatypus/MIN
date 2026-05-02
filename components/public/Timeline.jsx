@@ -3,16 +3,21 @@ import { useEffect, useRef, useState } from 'react'
 // GSAP and ScrollTrigger are dynamically loaded inside useEffect to reduce main-thread work
 import { motion } from 'framer-motion'
 
-export default function Timeline() {
-  const [events, setEvents] = useState([])
+export default function Timeline({ initialEvents = [] }) {
+  const [events, setEvents] = useState(initialEvents)
   const containerRef = useRef(null)
 
   useEffect(() => {
+    if (initialEvents?.length) {
+      setEvents(initialEvents)
+      return
+    }
+
     fetch('/api/timeline')
       .then(res => res.json())
       .then(data => setEvents(data || []))
       .catch(err => console.error('Timeline load error', err))
-  }, [])
+  }, [initialEvents])
 
   // Use events.length (a primitive number) as the dep — keeps dep array always [number],
   // never changes size, avoids React hook size-mismatch error from HMR or SSR hydration.

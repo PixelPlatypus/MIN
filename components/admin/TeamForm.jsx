@@ -160,6 +160,21 @@ export default function TeamForm({ initialData = null }) {
       data.position = 'MINion'
     }
 
+    // Generate slug from name if it doesn't exist
+    const slugify = (text) => {
+      return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '')
+        .replace(/--+/g, '-')
+    }
+    
+    if (!isEditing || !initialData.slug) {
+      data.slug = slugify(data.name)
+    }
+
     // Fun randomized photo selection if empty
     if (!data.photo_url && settings?.team_identity_assets?.length > 0) {
       const assets = settings.team_identity_assets

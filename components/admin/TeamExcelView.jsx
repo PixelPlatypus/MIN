@@ -44,15 +44,27 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
     }
   }, [members])
 
-  const slugify = (text) => {
-    if (!text) return `member-${Math.random().toString(36).substr(2, 5)}`
-    return text
+  const generateUniqueSlug = (name, currentId, currentData) => {
+    if (!name) return `member-${Math.random().toString(36).substr(2, 5)}`
+    
+    const baseSlug = name
       .toString()
       .toLowerCase()
       .trim()
       .replace(/\s+/g, '-')
       .replace(/[^\w-]+/g, '')
       .replace(/--+/g, '-')
+    
+    let finalSlug = baseSlug
+    let counter = 1
+    
+    // Check for collisions within the provided data set
+    while (currentData.some(row => row.slug === finalSlug && row.id !== currentId)) {
+      finalSlug = `${baseSlug}-${counter}`
+      counter++
+    }
+    
+    return finalSlug
   }
 
   const mapMemberToRow = (m) => {
@@ -105,7 +117,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
       let updatedRow = { ...row, [field]: value }
       
       // Track changes for highlighting
-      setChangedIds(prev => new Set(prev).add(id))
+      setChangedIds(ids => new Set(ids).add(id))
       
       // Auto-fill Role History if joined_date is set and history is empty
       if (field === 'joined_date' && value && !updatedRow.role_history) {
@@ -117,7 +129,8 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
 
       // Sync slug if name is changed and it's a new row
       if (field === 'name' && updatedRow._isNew) {
-        updatedRow.slug = slugify(value)
+        // Use prev data to detect collisions accurately
+        updatedRow.slug = generateUniqueSlug(value, id, prev)
       }
       
       return updatedRow
@@ -146,8 +159,8 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
           .filter(rh => rh.year && rh.position)
 
         // Ensure baseline MINion entry exists for their joining year
-        const hasBaseline = roleHistory.some(rh => rh.year === joinedYear)
-        if (!hasBaseline) {
+        const hasJoinedYearRole = roleHistory.some(rh => rh.year === joinedYear)
+        if (!hasJoinedYearRole) {
           roleHistory.push({ year: joinedYear, position: 'MINion' })
         }
 
@@ -161,7 +174,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
 
         const payload = {
           name: row.name || 'New Member',
-          slug: row.slug || slugify(row.name),
+          slug: row.slug || generateUniqueSlug(row.name, row.id, data),
           position: latestRole.position || 'MINion',
           status: row.status.toUpperCase(),
           joined_date: row.joined_date || new Date().toISOString().split('T')[0],
@@ -195,7 +208,11 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
         onRefresh()
       } else {
         const err = await res.json()
-        alert(`Failed to save: ${err.error}`)
+        let errorMessage = err.error || 'Something went wrong'
+        if (errorMessage.includes('duplicate key value violates unique constraint')) {
+          errorMessage = 'Duplicate URL detected. Please ensure all names are unique or add a number to the name (e.g. John Doe 2).'
+        }
+        alert(`Failed to save: ${errorMessage}`)
       }
     } catch (err) {
       console.error(err)

@@ -34,15 +34,20 @@ const footerLinks = [
   },
 ]
 
-export default function Footer() {
-  const [settings, setSettings] = useState(null)
+export default function Footer({ settings: initialSettings = null }) {
+  const [settings, setSettings] = useState(initialSettings)
 
   useEffect(() => {
+    if (initialSettings) {
+      setSettings(initialSettings)
+      return
+    }
+
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => setSettings(data))
       .catch(err => console.error('Footer settings load error', err))
-  }, [])
+  }, [initialSettings])
 
   const socialLinks = settings ? [
     { name: 'Facebook', icon: <Facebook size={20} />, href: settings.facebook_url },

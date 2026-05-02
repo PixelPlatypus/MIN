@@ -5,12 +5,19 @@ import { ArrowRight, BookOpen, GraduationCap, Laptop, Sparkles, Trophy, Users, L
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
 
-export default function ProgramsGrid() {
-  const [settings, setSettings] = useState(null)
-  const [programs, setPrograms] = useState([])
-  const [loading, setLoading] = useState(true)
+export default function ProgramsGrid({ initialPrograms = [], settings: initialSettings = null }) {
+  const [settings, setSettings] = useState(initialSettings)
+  const [programs, setPrograms] = useState(initialPrograms)
+  const [loading, setLoading] = useState(!initialPrograms?.length || !initialSettings)
 
   useEffect(() => {
+    if (initialPrograms?.length && initialSettings) {
+      setPrograms(initialPrograms)
+      setSettings(initialSettings)
+      setLoading(false)
+      return
+    }
+
     Promise.all([
       fetch('/api/settings').then(res => res.json()),
       fetch('/api/programs?status=ACTIVE').then(res => res.json())
@@ -22,7 +29,7 @@ export default function ProgramsGrid() {
       console.error('Programs data load error', err)
       setLoading(false)
     })
-  }, [])
+  }, [initialPrograms, initialSettings])
 
   const getIcon = (slug) => {
     const icons = {

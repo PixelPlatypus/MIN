@@ -6,11 +6,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
 
-export default function JoinUsCTA() {
-  const [settings, setSettings] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+export default function JoinUsCTA({ settings: initialSettings = null }) {
+  const [settings, setSettings] = useState(initialSettings)
+  const [isLoading, setIsLoading] = useState(!initialSettings)
 
   useEffect(() => {
+    if (initialSettings) {
+      setSettings(initialSettings)
+      setIsLoading(false)
+      return
+    }
+
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => {
@@ -21,7 +27,7 @@ export default function JoinUsCTA() {
         console.error('JoinUsCTA settings load error', err)
         setIsLoading(false)
       })
-  }, [])
+  }, [initialSettings])
 
   return (
     <section className="container mx-auto px-6 py-24 relative overflow-hidden">

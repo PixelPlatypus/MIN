@@ -82,13 +82,58 @@ export async function GET(request) {
   return Response.json(data)
 }
 
+async function generateServerSlug(supabase, name, currentId = null, existingSlugs = []) {
+  const baseSlug = name
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+  
+  let finalSlug = baseSlug
+  let counter = 1
+  
+  while (true) {
+    // Check if it's in the current batch we are processing
+    if (existingSlugs.includes(finalSlug)) {
+       finalSlug = `${baseSlug}-${counter}`
+       counter++
+       continue
+    }
+
+    let query = supabase
+      .from('team_members')
+      .select('id')
+      .eq('slug', finalSlug)
+    
+    if (currentId) query = query.neq('id', currentId)
+    
+    const { data } = await query.maybeSingle()
+    
+    if (!data) break
+    
+    finalSlug = `${baseSlug}-${counter}`
+    counter++
+  }
+  
+  return finalSlug
+}
+
 export async function POST(request) {
-  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
-  if (error) return Response.json({ error: error.message }, { status: error.status })
+  const { user, profile, supabase, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const body = await request.json()
   const isArray = Array.isArray(body)
   const items = isArray ? body : [body]
+
+  // Automatically handle slugs for each item
+  const usedSlugs = []
+  for (const item of items) {
+    item.slug = await generateServerSlug(supabase, item.name, null, usedSlugs)
+    usedSlugs.push(item.slug)
+  }
 
   // Role Restriction: Only ADMIN can assign 'President' role
   if (profile.role !== 'ADMIN') {
@@ -103,7 +148,7 @@ export async function POST(request) {
 
   const { data, error: insertError } = await supabase
     .from('team_members')
-    .insert(isArray ? body : [body])
+    .insert(items)
     .select()
 
   if (insertError) {
@@ -123,11 +168,20 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
-  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
-  if (error) return Response.json({ error: error.message }, { status: error.status })
+  const { user, profile, supabase, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const body = await request.json()
   const items = Array.isArray(body) ? body : [body]
+
+  // Automatically handle slugs for updates if name changed or slug missing
+  const patchedSlugs = []
+  for (const item of items) {
+     if (item.name) {
+        item.slug = await generateServerSlug(supabase, item.name, item.id, patchedSlugs)
+        patchedSlugs.push(item.slug)
+     }
+  }
 
   const { data, error: updateError } = await supabase
     .from('team_members')

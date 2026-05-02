@@ -5,11 +5,17 @@ import { CheckCircle2, Award, Target, Heart } from 'lucide-react'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/Skeleton'
 
-export default function Mission() {
-  const [settings, setSettings] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+export default function Mission({ settings: initialSettings = null }) {
+  const [settings, setSettings] = useState(initialSettings)
+  const [isLoading, setIsLoading] = useState(!initialSettings)
 
   useEffect(() => {
+    if (initialSettings) {
+      setSettings(initialSettings)
+      setIsLoading(false)
+      return
+    }
+
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => {
@@ -20,7 +26,7 @@ export default function Mission() {
         console.error('Mission settings load error', err)
         setIsLoading(false)
       })
-  }, [])
+  }, [initialSettings])
 
   const features = settings ? [
     { 

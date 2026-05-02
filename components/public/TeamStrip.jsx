@@ -6,20 +6,24 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
 
-export default function TeamStrip() {
-  const [team, setTeam] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+export default function TeamStrip({ initialTeam = [] }) {
+  const [team, setTeam] = useState(initialTeam)
+  const [isLoading, setIsLoading] = useState(!initialTeam?.length)
 
   useEffect(() => {
+    if (initialTeam?.length) {
+      setTeam(initialTeam)
+      setIsLoading(false)
+      return
+    }
+
     async function fetchTeam() {
       try {
         setIsLoading(true)
         const res = await fetch('/api/team')
         if (res.ok) {
           const data = await res.json()
-          // Only show people with images and filter for a "highlight" if needed, 
-          // but for now just show all current members
-          setTeam(data.filter(m => m.is_current))
+          setTeam(data.filter(m => m.status === 'ACTIVE'))
         }
       } catch (err) {
         console.error('Failed to fetch team for strip:', err)
@@ -28,7 +32,7 @@ export default function TeamStrip() {
       }
     }
     fetchTeam()
-  }, [])
+  }, [initialTeam])
 
   if (!isLoading && team.length === 0) return null
 
@@ -71,18 +75,22 @@ export default function TeamStrip() {
                 className="w-64 flex-shrink-0 group cursor-pointer"
               >
                 <div className="relative aspect-[4/5] rounded-3xl overflow-hidden mb-4 shadow-xl">
-                  {member.image_url ? (
+                  {member.photo_url ? (
                     <Image 
-                      src={member.image_url} 
+                      src={member.photo_url} 
                       alt={member.name}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                       sizes="256px"
                     />
                   ) : (
-                    <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary/20">
-                      <span className="text-4xl font-black">{member.name[0]}</span>
-                    </div>
+                    <Image 
+                      src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1931&auto=format&fit=crop"
+                      alt={member.name}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-50 grayscale"
+                      sizes="256px"
+                    />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>

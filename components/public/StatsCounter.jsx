@@ -5,12 +5,18 @@ import { motion } from 'framer-motion'
 import { Users, Trophy, BookOpen, Clock } from 'lucide-react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
-export default function StatsCounter() {
-  const [settings, setSettings] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+export default function StatsCounter({ settings: initialSettings = null }) {
+  const [settings, setSettings] = useState(initialSettings)
+  const [isLoading, setIsLoading] = useState(!initialSettings)
   const containerRef = useRef(null)
 
   useEffect(() => {
+    if (initialSettings) {
+      setSettings(initialSettings)
+      setIsLoading(false)
+      return
+    }
+
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => {
@@ -21,7 +27,7 @@ export default function StatsCounter() {
         console.error('Stats settings load error', err)
         setIsLoading(false)
       })
-  }, [])
+  }, [initialSettings])
 
   const dynamicStats = [
     { label: 'Students Reached', value: settings?.stat_students_count, suffix: '', icon: <Users size={28} />, theme: 'primary' },
