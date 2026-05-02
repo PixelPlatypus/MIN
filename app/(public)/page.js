@@ -35,8 +35,24 @@ export default async function Home() {
     supabase.from('site_settings').select('*').eq('id', 'main').single(),
     supabase.from('programs').select('*').eq('status', 'ACTIVE').order('order_index', { ascending: true }),
     supabase.from('timeline').select('*').order('year', { ascending: true }),
-    supabase.from('team_members').select('*').eq('status', 'ACTIVE').limit(12)
+    supabase.from('team_members').select('*').neq('status', 'REMOVED')
   ])
+
+  // Refined sorting logic to match TeamPage
+  const sortedTeam = (teamMembers || [])
+    .filter(m => m.status === 'ACTIVE')
+    .sort((a, b) => {
+      const rolePriority = { 'President': 1, 'Manager': 2, 'MINion': 3 }
+      const priRoleA = rolePriority[a.position] || 99
+      const priRoleB = rolePriority[b.position] || 99
+      if (priRoleA !== priRoleB) return priRoleA - priRoleB
+      
+      const yearA = new Date(a.joined_date || 0).getTime()
+      const yearB = new Date(b.joined_date || 0).getTime()
+      if (yearA !== yearB) return yearA - yearB
+      
+      return (a.name || '').localeCompare(b.name || '')
+    })
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -73,7 +89,7 @@ export default async function Home() {
       <ProgramsGrid initialPrograms={programs} settings={settings} />
       <Timeline initialEvents={timeline} />
       <Recognition settings={settings} />
-      <TeamStrip initialTeam={teamMembers} />
+      <TeamStrip initialTeam={sortedTeam} />
       <JoinUsCTA settings={settings} />
     </div>
   )
