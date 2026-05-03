@@ -2,10 +2,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { 
-  Plus, Search, Edit2, Trash2, Filter, Layers, 
-  GripVertical, CheckCircle2, AlertCircle, Save,
-  ChevronUp, ChevronDown
-} from 'lucide-react'
+  Plus, MagnifyingGlass as Search, PencilSimple as Edit2, Trash as Trash2, Funnel as Filter, Stack as Layers, 
+  DotsSixVertical as GripVertical, CheckCircle as CheckCircle2, WarningCircle as AlertCircle, FloppyDisk as Save,
+  CaretUp as ChevronUp, CaretDown as ChevronDown, CircleNotch as Loader2
+} from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -100,7 +100,7 @@ export default function AdminProgramsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-1">
           <h2 className="text-4xl font-black tracking-tight text-dynamic">Programs</h2>
-          <p className="text-text-tertiary text-lg font-medium">Drag and drop to reorder homepage initiatives.</p>
+          <p className="text-auto-tertiary text-lg font-medium">Drag and drop to reorder homepage initiatives.</p>
         </div>
         
         <div className="flex items-center gap-3">
@@ -127,7 +127,7 @@ export default function AdminProgramsPage() {
             <Plus size={16} />
             Add New Program
           </Link>
-          <div className="hidden md:flex bg-bg-secondary dark:bg-white/5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary items-center gap-2 border border-border dark:border-border-dark h-[44px]">
+          <div className="hidden md:flex bg-bg-secondary dark:bg-white/5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-auto-tertiary items-center gap-2 border border-border dark:border-border-dark h-[44px]">
             <Layers size={14} />
             {programs.length} Seeded
           </div>
@@ -137,17 +137,17 @@ export default function AdminProgramsPage() {
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark group-focus-within:border-primary transition-all shadow-sm">
-          <Search size={20} className="text-text-tertiary" />
+          <Search size={20} className="text-auto-tertiary" />
           <input 
             type="text" 
             placeholder="Search programs..." 
-            className="bg-transparent border-none text-base focus:outline-none w-full placeholder:text-text-tertiary font-medium"
+            className="bg-transparent border-none text-base focus:outline-none w-full placeholder:text-auto-tertiary font-medium"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-3 px-2">
-          <Filter size={18} className="text-text-tertiary" />
+          <Filter size={18} className="text-auto-tertiary" />
           <select 
             className="glass px-6 py-3 rounded-2xl text-sm font-bold border border-border dark:border-border-dark focus:outline-none focus:border-primary transition-all bg-transparent cursor-pointer"
             value={filter}
@@ -188,18 +188,18 @@ export default function AdminProgramsPage() {
                         <button 
                           onClick={() => moveItem(index, -1)}
                           disabled={index === 0}
-                          className="p-1.5 hover:bg-primary/10 text-text-tertiary hover:text-primary rounded-lg transition-all disabled:opacity-0"
+                          className="p-1.5 hover:bg-primary/10 text-auto-tertiary hover:text-primary rounded-lg transition-all disabled:opacity-0"
                           title="Move Up"
                         >
                           <ChevronUp size={16} />
                         </button>
-                        <div className="cursor-grab active:cursor-grabbing p-1.5 text-text-tertiary hover:text-primary transition-colors bg-bg-secondary dark:bg-white/5 rounded-lg">
+                        <div className="cursor-grab active:cursor-grabbing p-1.5 text-auto-tertiary hover:text-primary transition-colors bg-bg-secondary dark:bg-white/5 rounded-lg">
                           <GripVertical size={20} />
                         </div>
                         <button 
                           onClick={() => moveItem(index, 1)}
                           disabled={index === programs.length - 1}
-                          className="p-1.5 hover:bg-primary/10 text-text-tertiary hover:text-primary rounded-lg transition-all disabled:opacity-0"
+                          className="p-1.5 hover:bg-primary/10 text-auto-tertiary hover:text-primary rounded-lg transition-all disabled:opacity-0"
                           title="Move Down"
                         >
                           <ChevronDown size={16} />
@@ -212,15 +212,15 @@ export default function AdminProgramsPage() {
                             <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
                                 program.status === 'ACTIVE' 
                                 ? 'bg-green/10 text-green border-green/10' 
-                                : 'bg-text-tertiary/10 text-text-tertiary border-text-tertiary/10'
+                                : 'bg-text-tertiary/10 text-auto-tertiary border-text-tertiary/10'
                             }`}>
                                 {program.status}
                             </span>
                         </div>
-                        <p className="text-sm text-text-tertiary font-medium">
+                        <p className="text-sm text-auto-tertiary font-medium">
                           {program.tagline || 'No tagline assigned.'}
                         </p>
-                        <p className="text-[10px] font-mono text-text-tertiary opacity-0 group-hover:opacity-100 transition-opacity">
+                        <p className="text-[10px] font-mono text-auto-tertiary opacity-0 group-hover:opacity-100 transition-opacity">
                             Redirects to: {program.learn_more_link || '/events'}
                         </p>
                       </div>
@@ -229,14 +229,14 @@ export default function AdminProgramsPage() {
                     <div className="flex items-center gap-3 pl-12 md:pl-0">
                       <Link 
                         href={`/admin/programs/${program.id}`}
-                        className="p-3 bg-bg-secondary dark:bg-white/5 text-text-tertiary hover:text-primary hover:bg-primary/10 rounded-2xl transition-all"
+                        className="p-3 bg-bg-secondary dark:bg-white/5 text-auto-tertiary hover:text-primary hover:bg-primary/10 rounded-2xl transition-all"
                         title="Edit Details"
                       >
                         <Edit2 size={20} />
                       </Link>
                       <button 
                         onClick={() => handleDelete(program.id)}
-                        className="p-3 bg-bg-secondary dark:bg-white/5 text-text-tertiary hover:text-coral hover:bg-coral/10 rounded-2xl transition-all"
+                        className="p-3 bg-bg-secondary dark:bg-white/5 text-auto-tertiary hover:text-coral hover:bg-coral/10 rounded-2xl transition-all"
                         title="Delete Program"
                       >
                         <Trash2 size={20} />
@@ -249,9 +249,9 @@ export default function AdminProgramsPage() {
           </Reorder.Group>
         ) : (
           <div className="glass rounded-[3rem] py-32 text-center border border-dashed border-border">
-            <Layers className="mx-auto mb-6 text-text-tertiary/20" size={64} />
-            <p className="text-lg font-bold text-text-tertiary">No initiatives found.</p>
-            <p className="text-sm text-text-tertiary/60">Ready to start? Create your first program.</p>
+            <Layers className="mx-auto mb-6 text-auto-tertiary/20" size={64} />
+            <p className="text-lg font-bold text-auto-tertiary">No initiatives found.</p>
+            <p className="text-sm text-auto-tertiary/60">Ready to start? Create your first program.</p>
           </div>
         )}
       </div>

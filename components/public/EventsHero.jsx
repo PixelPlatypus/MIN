@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Calendar } from 'lucide-react'
+import { Calendar } from '@phosphor-icons/react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function EventsHero({ settings, loading }) {
@@ -40,7 +40,7 @@ export default function EventsHero({ settings, loading }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+              className="text-xl text-auto-secondary leading-relaxed"
             >
               {settings?.events_description}
             </motion.p>

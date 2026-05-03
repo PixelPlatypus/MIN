@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, CalendarPlus } from 'lucide-react'
+import { Plus, MagnifyingGlass as Search, DotsThreeVertical as MoreVertical, PencilSimple as Edit2, Trash as Trash2, Funnel as Filter, CalendarPlus } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -45,7 +45,7 @@ export default function AdminEventsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">Events Management</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Manage your events, schedules, and locations.
           </p>
         </div>
@@ -61,17 +61,17 @@ export default function AdminEventsPage() {
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 glass px-4 py-2 rounded-xl flex items-center gap-3 border border-border dark:border-border-dark group-focus-within:border-primary transition-all">
-          <Search size={18} className="text-text-tertiary" />
+          <Search size={18} className="text-auto-tertiary" />
           <input 
             type="text" 
             placeholder="Search events..." 
-            className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary"
+            className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
-          <Filter size={18} className="text-text-tertiary" />
+          <Filter size={18} className="text-auto-tertiary" />
           <select 
             className="glass px-4 py-2 rounded-xl text-sm font-medium border border-border dark:border-border-dark focus:outline-none focus:border-primary transition-all bg-transparent"
             value={filter}
@@ -93,7 +93,7 @@ export default function AdminEventsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-bg-secondary dark:bg-white/5 text-text-tertiary dark:text-text-tertiary-dark text-[10px] uppercase tracking-widest font-bold">
+                <tr className="bg-bg-secondary dark:bg-white/5 text-auto-tertiary text-[10px] uppercase tracking-widest font-bold">
                   <th className="px-6 py-4">Event</th>
                   <th className="px-6 py-4">Date</th>
                   <th className="px-6 py-4">Location</th>
@@ -114,17 +114,17 @@ export default function AdminEventsPage() {
                               className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all"
                             />
                           ) : (
-                            <CalendarPlus size={18} className="text-text-tertiary opacity-50" />
+                            <CalendarPlus size={18} className="text-auto-tertiary opacity-50" />
                           )}
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="text-sm font-bold truncate">{event.title}</span>
-                          <span className="text-xs text-text-tertiary truncate">{event.slug}</span>
+                          <span className="text-xs text-auto-tertiary truncate">{event.slug}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-text-secondary dark:text-text-secondary-dark font-medium">
+                      <span className="text-sm text-auto-secondary font-medium">
                         {new Date(event.start_date).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -133,7 +133,7 @@ export default function AdminEventsPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-text-secondary dark:text-text-secondary-dark">{event.location || 'N/A'}</span>
+                      <span className="text-sm text-auto-secondary">{event.location || 'N/A'}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
@@ -141,7 +141,7 @@ export default function AdminEventsPage() {
                           ? 'bg-green/10 text-green border-green/10' 
                           : event.status === 'DRAFT'
                             ? 'bg-primary/10 text-primary border-primary/10'
-                            : 'bg-text-tertiary/10 text-text-tertiary border-text-tertiary/10'
+                            : 'bg-text-tertiary/10 text-auto-tertiary border-text-tertiary/10'
                       }`}>
                         {event.status}
                       </span>
@@ -150,13 +150,13 @@ export default function AdminEventsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link 
                           href={`/admin/events/${event.id}`}
-                          className="p-2 rounded-xl text-text-tertiary hover:text-primary hover:bg-primary/10 transition-all"
+                          className="p-2 rounded-xl text-auto-tertiary hover:text-primary hover:bg-primary/10 transition-all"
                         >
                           <Edit2 size={18} />
                         </Link>
                         <button 
                           onClick={() => handleDelete(event.id)}
-                          className="p-2 rounded-xl text-text-tertiary hover:text-coral hover:bg-coral/10 transition-all"
+                          className="p-2 rounded-xl text-auto-tertiary hover:text-coral hover:bg-coral/10 transition-all"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -169,7 +169,7 @@ export default function AdminEventsPage() {
           </div>
         ) : (
           <div className="text-center py-24">
-            <p className="text-text-tertiary">No events found.</p>
+            <p className="text-auto-tertiary">No events found.</p>
           </div>
         )}
       </div>

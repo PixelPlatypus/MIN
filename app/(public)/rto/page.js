@@ -2,10 +2,10 @@
 import { motion } from 'framer-motion'
 import { 
   Trophy, BookOpen, Compass, Target, 
-  ChevronRight, Calculator, Globe, 
-  Users, Library, FileText, ArrowRight,
-  MapPin, Flag, Award, Sparkles
-} from 'lucide-react'
+  CaretRight as ChevronRight, Calculator, Globe, 
+  Users, Books as Library, FileText, ArrowRight,
+  MapPin, Flag, Medal as Award, RocketLaunch as Sparkles
+} from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -13,6 +13,9 @@ import { Skeleton } from '@/components/ui/Skeleton'
 const ICON_MAP = {
   MapPin, Flag, Award, Users, Globe, Library, FileText
 }
+
+// Safelist for dynamic Tailwind classes from database to ensure they are compiled
+const SAFELIST = "from-blue-500/20 to-cyan-500/20 text-blue-500 border-blue-500/30 from-emerald-500/20 to-teal-500/20 text-emerald-500 border-emerald-500/30 from-purple-500/20 to-fuchsia-500/20 text-purple-500 border-purple-500/30 from-coral/20 to-orange-500/20 text-coral border-coral/30"
 
 export default function RTOPage() {
   const [settings, setSettings] = useState(null)
@@ -74,7 +77,7 @@ export default function RTOPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary-dark leading-relaxed font-medium"
+                className="text-xl md:text-2xl text-auto-secondary leading-relaxed font-medium"
               >
                 {settings?.rto_description}
               </motion.p>
@@ -88,7 +91,7 @@ export default function RTOPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl font-black tracking-tight">Olympiad Selection Process</h2>
-            <p className="text-text-secondary dark:text-text-tertiary text-lg max-w-2xl mx-auto">
+            <p className="text-auto-secondary text-lg max-w-2xl mx-auto">
               The journey to the International Mathematical Olympiad (IMO) in Nepal involves several stages, designed to identify and nurture the most talented young mathematicians.
             </p>
           </div>
@@ -123,8 +126,8 @@ export default function RTOPage() {
                         <Icon size={32} />
                       </div>
                       <h3 className="font-black text-xl mb-3 tracking-tight">{stage.id}</h3>
-                      <h4 className="text-sm font-bold text-text-secondary dark:text-text-tertiary mb-4 leading-tight min-h-[40px]">{stage.name}</h4>
-                      <p className="text-xs text-text-tertiary leading-relaxed mt-auto">
+                      <h4 className="text-sm font-bold text-auto-secondary mb-4 leading-tight min-h-[40px]">{stage.name}</h4>
+                      <p className="text-xs text-auto-tertiary leading-relaxed mt-auto">
                         {stage.desc}
                       </p>
                     </motion.div>
@@ -151,7 +154,7 @@ export default function RTOPage() {
                 <Target size={32} />
               </div>
               <h2 className="text-4xl font-black tracking-tight">DMO Practice Questions</h2>
-              <p className="text-lg text-text-secondary dark:text-text-tertiary leading-relaxed">
+              <p className="text-lg text-auto-secondary leading-relaxed">
                 Sharpen your problem-solving skills with a diverse set of District Mathematical Olympiad practice questions. Each set is designed to challenge and prepare you for the real competition.
               </p>
             </div>
@@ -171,7 +174,7 @@ export default function RTOPage() {
         <section className="container mx-auto px-6">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl font-black tracking-tight">Roadmap: Beginner to IMO</h2>
-            <p className="text-text-secondary dark:text-text-tertiary text-lg">Follow this structured path to master Olympiad mathematics step-by-step.</p>
+            <p className="text-auto-secondary text-lg">Follow this structured path to master Olympiad mathematics step-by-step.</p>
           </div>
 
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -191,7 +194,7 @@ export default function RTOPage() {
                       {phase.timeline}
                     </span>
                     <h3 className="text-3xl font-black tracking-tight mb-2">{phase.phase}</h3>
-                    <p className="text-sm font-bold text-text-secondary dark:text-text-tertiary">Goal: {phase.goal}</p>
+                    <p className="text-sm font-bold text-auto-secondary">Goal: {phase.goal}</p>
                   </div>
                 </div>
 
@@ -203,7 +206,7 @@ export default function RTOPage() {
                       </div>
                       <div>
                         <h4 className="font-bold text-sm mb-1">{item.label}</h4>
-                        <p className="text-xs text-text-tertiary leading-relaxed">{item.desc}</p>
+                        <p className="text-xs text-auto-tertiary leading-relaxed">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -220,7 +223,7 @@ export default function RTOPage() {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 space-y-4">
               <h2 className="text-4xl font-black tracking-tight">Essential Resources</h2>
-              <p className="text-text-secondary dark:text-text-tertiary text-lg">Curated materials to accelerate your math journey.</p>
+              <p className="text-auto-secondary text-lg">Curated materials to accelerate your math journey.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -235,7 +238,7 @@ export default function RTOPage() {
                     transition={{ delay: idx * 0.1 }}
                     className="glass rounded-[2rem] p-8 border border-border dark:border-white/10 flex flex-col h-full bg-white/30 dark:bg-[#111111]/30 hover:border-text-tertiary/30 transition-colors"
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-text-secondary dark:text-text-tertiary mb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-auto-secondary mb-6">
                       <Icon size={24} />
                     </div>
                     <h3 className="text-xl font-black mb-6 tracking-tight">{category.title}</h3>
@@ -252,8 +255,8 @@ export default function RTOPage() {
                               rel="noopener noreferrer"
                               className={`text-sm leading-tight font-medium transition-all duration-300 ${
                                 url !== '#' 
-                                  ? 'text-text-secondary-dynamic group-hover:text-primary' 
-                                  : 'text-text-tertiary-dynamic opacity-50'
+                                  ? 'text-auto-secondary-dynamic group-hover:text-primary' 
+                                  : 'text-auto-tertiary-dynamic opacity-50'
                               }`}
                             >
                               {name}

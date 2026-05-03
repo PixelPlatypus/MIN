@@ -2,21 +2,25 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import {
-  FilePlus, Settings, CheckCircle2, XCircle,
-  Loader2, Layout, Plus, Save, Activity, Layers,
-  Map, Trash2, GripVertical, Calendar, ChevronRight, X
-} from 'lucide-react'
+  FilePlus, Gear as Settings, CheckCircle as CheckCircle2, XCircle,
+  CircleNotch as Loader2, Layout, Plus, FloppyDisk as Save, Pulse as Activity, Stack as Layers,
+  MapTrifold as Map, Trash as Trash2, DotsSixVertical as GripVertical, Calendar, CaretRight as ChevronRight, X
+} from '@phosphor-icons/react'
 
 const FIELD_TYPES = [
-  { value: 'text', label: 'Text' },
+  { value: 'text', label: 'Short Text' },
   { value: 'email', label: 'Email' },
   { value: 'phone', label: 'Phone' },
   { value: 'link', label: 'Link / URL' },
   { value: 'textarea', label: 'Long Text' },
+  { value: 'number', label: 'Number' },
+  { value: 'date', label: 'Date' },
+  { value: 'time', label: 'Time' },
   { value: 'select', label: 'Dropdown' },
   { value: 'radio', label: 'Radio' },
   { value: 'checkbox', label: 'Checkbox' },
   { value: 'file', label: 'File Upload' },
+  { value: 'social', label: 'Social Media Link' },
 ]
 
 const CATEGORIES = [
@@ -74,16 +78,53 @@ export default function FormBuilderPage() {
   function addField() {
     setForm(prev => ({
       ...prev,
-      fields: [...prev.fields, { id: `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, label: '', type: 'text', required: true, options: [] }],
+      fields: [...prev.fields, { 
+        id: `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, 
+        label: '', 
+        type: 'text', 
+        required: true, 
+        placeholder: '',
+        description: '',
+        min_words: null,
+        max_words: null,
+        options: [] 
+      }],
     }))
   }
 
   function updateField(i, key, val) {
     setForm(prev => {
       const fields = [...prev.fields]
-      fields[i] = { ...fields[i], [key]: val }
+      let updatedField = { ...fields[i], [key]: val }
+
+      // Auto-placeholder generation logic (now synchronized with public renderer)
+      if (key === 'label' && (!updatedField.placeholder || updatedField.placeholder.startsWith('e.g.'))) {
+        const placeholder = getAutoPlaceholder(updatedField)
+        if (placeholder && placeholder.startsWith('e.g.')) {
+          updatedField.placeholder = placeholder
+        }
+      }
+
+      fields[i] = updatedField
       return { ...prev, fields }
     })
+  }
+
+  function getAutoPlaceholder(field) {
+    if (!field.label) return ''
+    const label = field.label.toLowerCase()
+    
+    if (label.includes('name')) return 'e.g. John Doe'
+    if (label.includes('email')) return 'e.g. john@example.com'
+    if (label.includes('phone')) return 'e.g. +977 98XXXXXXXX'
+    if (label.includes('link') || label.includes('url')) return 'e.g. https://github.com/...'
+    if (label.includes('social')) return 'e.g. facebook.com/profile'
+    if (label.includes('address')) return 'e.g. Kathmandu, Nepal'
+    if (label.includes('why') || label.includes('describe') || field.type === 'textarea') return `Tell us about ${label}...`
+    if (label.includes('date')) return 'Select date'
+    if (label.includes('age') || label.includes('count')) return 'e.g. 21'
+    
+    return `Your ${label}...`
   }
 
   function removeField(i) {
@@ -218,7 +259,7 @@ export default function FormBuilderPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">Form Builder</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Create and manage intake forms for your public application pages.
           </p>
         </div>
@@ -253,16 +294,18 @@ export default function FormBuilderPage() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-bold text-sm tracking-tight truncate">{f.title}</h3>
-                  <ChevronRight size={16} className="text-text-tertiary group-hover:text-primary transition-colors shrink-0" />
+                  <ChevronRight size={16} className="text-auto-tertiary group-hover:text-primary transition-colors shrink-0" />
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  {!f.is_active && (
+                  {f.is_active ? (
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-green/15 text-green">Active</span>
+                  ) : (
                     <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-coral/15 text-coral">Inactive</span>
                   )}
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-bg-secondary dark:bg-white/5 text-text-tertiary">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-bg-secondary dark:bg-white/5 text-auto-tertiary">
                     /join/{f.slug}
                   </span>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-bg-secondary dark:bg-white/5 text-text-tertiary">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-bg-secondary dark:bg-white/5 text-auto-tertiary">
                     {f.category}
                   </span>
                 </div>
@@ -272,8 +315,8 @@ export default function FormBuilderPage() {
 
           {forms.length === 0 && (
             <div className="glass rounded-2xl p-12 text-center">
-              <FilePlus size={32} className="mx-auto text-text-tertiary mb-3 opacity-40" />
-              <p className="text-sm text-text-tertiary font-medium">No forms yet. Create your first blueprint.</p>
+              <FilePlus size={32} className="mx-auto text-auto-tertiary mb-3 opacity-40" />
+              <p className="text-sm text-auto-tertiary font-medium">No forms yet. Create your first blueprint.</p>
             </div>
           )}
         </div>
@@ -296,13 +339,13 @@ export default function FormBuilderPage() {
                     <h3 className="text-lg font-bold mb-1">
                       {form.id ? 'Edit Blueprint' : 'New Blueprint'}
                     </h3>
-                    <p className="text-xs text-text-tertiary">
+                    <p className="text-xs text-auto-tertiary">
                       {form.id ? `ID: ${String(form.id).substring(0, 8)}…` : 'Unsaved draft'}
                     </p>
                   </div>
                   <button
                     onClick={close}
-                    className="w-9 h-9 rounded-xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-text-tertiary hover:text-text-primary transition-colors"
+                    className="w-9 h-9 rounded-xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-auto-tertiary hover:text-text-primary transition-colors"
                   >
                     <X size={18} />
                   </button>
@@ -312,36 +355,36 @@ export default function FormBuilderPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                   {/* title — full width */}
                   <div className="md:col-span-2">
-                    <label className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider mb-1.5 block">
+                    <label className="text-xs font-medium text-auto-secondary uppercase tracking-wider mb-1.5 block">
                       Form Title
                     </label>
                     <input
                       value={form.title}
                       onChange={e => setForm({ ...form, title: e.target.value })}
                       placeholder="e.g. Content Writer Application"
-                      className="w-full bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-3 text-sm font-semibold text-dynamic outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-tertiary/50"
+                      className="w-full bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-3 text-sm font-semibold text-dynamic outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-auto-tertiary/50"
                     />
                   </div>
 
                   {/* slug */}
                   <div>
-                    <label className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider mb-1.5 block">
+                    <label className="text-xs font-medium text-auto-secondary uppercase tracking-wider mb-1.5 block">
                       URL Slug
                     </label>
                     <div className="flex items-center bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-                      <span className="shrink-0 px-3 text-xs font-semibold text-text-tertiary border-r border-border dark:border-border-dark bg-bg-tertiary dark:bg-white/5 h-full py-3">/join/</span>
+                      <span className="shrink-0 px-3 text-xs font-semibold text-auto-tertiary border-r border-border dark:border-border-dark bg-bg-tertiary dark:bg-white/5 h-full py-3">/join/</span>
                       <input
                         value={form.slug}
                         onChange={e => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') })}
                         placeholder="engineering"
-                        className="w-full bg-transparent px-3 py-3 text-sm font-semibold text-dynamic outline-none placeholder:text-text-tertiary/50"
+                        className="w-full bg-transparent px-3 py-3 text-sm font-semibold text-dynamic outline-none placeholder:text-auto-tertiary/50"
                       />
                     </div>
                   </div>
 
                   {/* category */}
                   <div>
-                    <label className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider mb-1.5 block">
+                    <label className="text-xs font-medium text-auto-secondary uppercase tracking-wider mb-1.5 block">
                       Category
                     </label>
                     <select
@@ -355,20 +398,20 @@ export default function FormBuilderPage() {
 
                   {/* batch */}
                   <div>
-                    <label className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider mb-1.5 block">
+                    <label className="text-xs font-medium text-auto-secondary uppercase tracking-wider mb-1.5 block">
                       Batch Name
                     </label>
                     <input
                       value={form.batch_name}
                       onChange={e => setForm({ ...form, batch_name: e.target.value })}
                       placeholder="Q3 2026 Intake"
-                      className="w-full bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-3 text-sm font-semibold text-dynamic outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-tertiary/50"
+                      className="w-full bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-3 text-sm font-semibold text-dynamic outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-auto-tertiary/50"
                     />
                   </div>
 
                   {/* deadline */}
                   <div>
-                    <label className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider mb-1.5 block flex items-center gap-1.5">
+                    <label className="text-xs font-medium text-auto-secondary uppercase tracking-wider mb-1.5 block flex items-center gap-1.5">
                       <Calendar size={12} /> Deadline
                     </label>
                     <input
@@ -377,12 +420,12 @@ export default function FormBuilderPage() {
                       onChange={e => setForm({ ...form, deadline: e.target.value ? new Date(e.target.value).toISOString() : null })}
                       className="w-full bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-3 text-sm font-semibold text-dynamic outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                     />
-                    <p className="text-[10px] text-text-tertiary mt-1.5 ml-1">Form auto-closes after this date.</p>
+                    <p className="text-[10px] text-auto-tertiary mt-1.5 ml-1">Form auto-closes after this date.</p>
                   </div>
 
                   {/* description — full width */}
                   <div className="md:col-span-2">
-                    <label className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider mb-1.5 block">
+                    <label className="text-xs font-medium text-auto-secondary uppercase tracking-wider mb-1.5 block">
                       Public Description
                     </label>
                     <textarea
@@ -390,7 +433,7 @@ export default function FormBuilderPage() {
                       onChange={e => setForm({ ...form, description: e.target.value })}
                       rows={3}
                       placeholder="Briefly describe this role to applicants…"
-                      className="w-full bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-3 text-sm text-dynamic outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none placeholder:text-text-tertiary/50"
+                      className="w-full bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-3 text-sm text-dynamic outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none placeholder:text-auto-tertiary/50"
                     />
                   </div>
                 </div>
@@ -400,7 +443,7 @@ export default function FormBuilderPage() {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h4 className="text-sm font-bold">Form Fields</h4>
-                      <p className="text-xs text-text-tertiary">{form.fields.length} field{form.fields.length !== 1 ? 's' : ''} configured</p>
+                      <p className="text-xs text-auto-tertiary">{form.fields.length} field{form.fields.length !== 1 ? 's' : ''} configured</p>
                     </div>
                     <button
                       onClick={addField}
@@ -412,8 +455,8 @@ export default function FormBuilderPage() {
 
                   {form.fields.length === 0 ? (
                     <div className="rounded-2xl border-2 border-dashed border-border dark:border-border-dark p-10 text-center">
-                      <Layout size={24} className="mx-auto text-text-tertiary opacity-40 mb-2" />
-                      <p className="text-sm text-text-tertiary font-medium">No fields yet. Add your first field to start building.</p>
+                      <Layout size={24} className="mx-auto text-auto-tertiary opacity-40 mb-2" />
+                      <p className="text-sm text-auto-tertiary font-medium">No fields yet. Add your first field to start building.</p>
                     </div>
                   ) : (
                     <Reorder.Group
@@ -429,7 +472,7 @@ export default function FormBuilderPage() {
                           className="bg-bg-secondary dark:bg-white/5 rounded-2xl p-5 border border-border dark:border-border-dark transition-all hover:border-primary/30 cursor-grab active:cursor-grabbing"
                         >
                           <div className="flex items-start gap-4">
-                            <div className="pt-1 text-text-tertiary opacity-40">
+                            <div className="pt-1 text-auto-tertiary opacity-40">
                               <GripVertical size={16} />
                             </div>
 
@@ -439,7 +482,7 @@ export default function FormBuilderPage() {
                                   value={field.label}
                                   onChange={e => updateField(i, 'label', e.target.value)}
                                   placeholder="Field label (e.g. Phone Number)"
-                                  className="flex-1 bg-transparent border-b-2 border-border/50 dark:border-border-dark focus:border-primary outline-none py-1.5 text-sm font-semibold text-dynamic transition-colors placeholder:text-text-tertiary/50"
+                                  className="flex-1 bg-transparent border-b-2 border-border/50 dark:border-border-dark focus:border-primary outline-none py-1.5 text-sm font-semibold text-dynamic transition-colors placeholder:text-auto-tertiary/50"
                                 />
                                 <select
                                   value={field.type}
@@ -449,6 +492,56 @@ export default function FormBuilderPage() {
                                   {FIELD_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                                 </select>
                               </div>
+                              
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">
+                                    Placeholder <span className="lowercase font-medium opacity-60">(Optional)</span>
+                                  </label>
+                                  <input
+                                    value={field.placeholder || ''}
+                                    onChange={e => updateField(i, 'placeholder', e.target.value)}
+                                    placeholder={getAutoPlaceholder(field)}
+                                    className="w-full bg-black/5 dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-2 text-xs font-medium outline-none focus:ring-1 focus:ring-primary/30 transition-all"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">
+                                    Field Description <span className="lowercase font-medium opacity-60">(Optional)</span>
+                                  </label>
+                                  <input
+                                    value={field.description || ''}
+                                    onChange={e => updateField(i, 'description', e.target.value)}
+                                    placeholder="Explain this field..."
+                                    className="w-full bg-black/5 dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-2 text-xs font-medium outline-none focus:ring-1 focus:ring-primary/30 transition-all"
+                                  />
+                                </div>
+                              </div>
+                              
+                              {['text', 'textarea'].includes(field.type) && (
+                                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border/10 dark:border-white/5">
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Min Words <span className="lowercase font-medium opacity-60">(Optional)</span></label>
+                                    <input
+                                      type="number"
+                                      value={field.min_words || ''}
+                                      onChange={e => updateField(i, 'min_words', e.target.value ? parseInt(e.target.value) : null)}
+                                      placeholder="0"
+                                      className="w-full bg-black/5 dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-2 text-xs font-medium outline-none focus:ring-1 focus:ring-primary/30 transition-all"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Max Words <span className="lowercase font-medium opacity-60">(Optional)</span></label>
+                                    <input
+                                      type="number"
+                                      value={field.max_words || ''}
+                                      onChange={e => updateField(i, 'max_words', e.target.value ? parseInt(e.target.value) : null)}
+                                      placeholder="500"
+                                      className="w-full bg-black/5 dark:bg-white/5 border border-border dark:border-border-dark rounded-xl px-4 py-2 text-xs font-medium outline-none focus:ring-1 focus:ring-primary/30 transition-all"
+                                    />
+                                  </div>
+                                </div>
+                              )}
 
                               <div className="flex items-center gap-4">
                                 <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -461,7 +554,7 @@ export default function FormBuilderPage() {
                                     />
                                     <CheckCircle2 size={12} className="absolute text-white left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none" />
                                   </div>
-                                  <span className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark">Required</span>
+                                  <span className="text-xs font-medium text-auto-secondary">Required</span>
                                 </label>
                               </div>
 
@@ -469,7 +562,7 @@ export default function FormBuilderPage() {
                               {['select', 'radio', 'checkbox'].includes(field.type) && (
                                 <div className="pt-3 border-t border-border dark:border-border-dark space-y-3">
                                   <div className="flex items-center justify-between">
-                                    <span className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark flex items-center gap-1.5">
+                                    <span className="text-xs font-medium text-auto-secondary flex items-center gap-1.5">
                                       <Settings size={12} /> Options
                                     </span>
                                     <button
@@ -489,11 +582,11 @@ export default function FormBuilderPage() {
                                           value={opt}
                                           onChange={e => updateOption(i, oi, e.target.value)}
                                           placeholder="Option…"
-                                          className="bg-transparent outline-none text-xs font-medium text-dynamic w-24 placeholder:text-text-tertiary/50"
+                                          className="bg-transparent outline-none text-xs font-medium text-dynamic w-24 placeholder:text-auto-tertiary/50"
                                         />
                                         <button
                                           onClick={() => removeOption(i, oi)}
-                                          className="p-1 rounded text-text-tertiary hover:text-coral transition-colors"
+                                          className="p-1 rounded text-auto-tertiary hover:text-coral transition-colors"
                                         >
                                           <XCircle size={14} />
                                         </button>
@@ -506,7 +599,7 @@ export default function FormBuilderPage() {
 
                             <button
                               onClick={() => removeField(i)}
-                              className="p-2 rounded-lg text-text-tertiary hover:text-coral hover:bg-coral/10 transition-all"
+                              className="p-2 rounded-lg text-auto-tertiary hover:text-coral hover:bg-coral/10 transition-all"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -574,7 +667,7 @@ export default function FormBuilderPage() {
                     <Layers size={36} />
                   </div>
                   <h4 className="text-lg font-bold">Select a Blueprint</h4>
-                  <p className="text-sm text-text-tertiary font-medium">
+                  <p className="text-sm text-auto-tertiary font-medium">
                     Choose an existing form from the sidebar or create a new one to get started.
                   </p>
                 </div>

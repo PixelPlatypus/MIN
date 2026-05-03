@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, FileDown, Loader2, CheckCircle2, AlertCircle, Sparkles, User, Mail, Plus, X } from 'lucide-react'
+import { PaperPlaneTilt as Send, FileArrowDown as FileDown, CircleNotch as Loader2, CheckCircle as CheckCircle2, WarningCircle as AlertCircle, RocketLaunch as Sparkles, User, Envelope as Mail, Plus, X } from '@phosphor-icons/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -86,7 +86,7 @@ export default function SubmitContentPage() {
             <CheckCircle2 size={64} />
           </div>
           <h1 className="text-4xl font-bold tracking-tight">Submission Received!</h1>
-          <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+          <p className="text-lg text-auto-secondary leading-relaxed">
             Thank you for contributing to the MIN knowledge base. Our editorial team 
             will review your submission and notify you via email once it's approved.
           </p>
@@ -126,7 +126,7 @@ export default function SubmitContentPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+            className="text-xl text-auto-secondary leading-relaxed"
           >
             Found an interesting problem or written an insightful article? 
             Submit it to the MIN Library and help students across Nepal.
@@ -157,7 +157,7 @@ export default function SubmitContentPage() {
                       <FileDown size={32} />
                     </div>
                     <h4 className="font-bold">Upload PDF Document</h4>
-                    <p className="text-xs text-text-tertiary">Max size: 10MB. Document will be hosted on Cloudinary.</p>
+                    <p className="text-xs text-auto-tertiary">Max size: 10MB. Document will be hosted on Cloudinary.</p>
                   </div>
                   
                   {pdfUrl && (
@@ -172,7 +172,7 @@ export default function SubmitContentPage() {
                           setValue('pdf_url', '')
                           setValue('pdf_filename', '')
                         }}
-                        className="text-text-tertiary hover:text-coral transition-colors"
+                        className="text-auto-tertiary hover:text-coral transition-colors"
                       >
                         <X size={18} />
                       </button>
@@ -204,7 +204,7 @@ export default function SubmitContentPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">Full Name</label>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary transition-colors group-focus-within:text-primary">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-auto-tertiary transition-colors group-focus-within:text-primary">
                       <User size={18} />
                     </div>
                     <input 
@@ -221,7 +221,7 @@ export default function SubmitContentPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">Email Address</label>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary transition-colors group-focus-within:text-primary">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-auto-tertiary transition-colors group-focus-within:text-primary">
                       <Mail size={18} />
                     </div>
                     <input 
@@ -271,7 +271,7 @@ export default function SubmitContentPage() {
                 )}
               </button>
 
-              <p className="text-[10px] text-text-tertiary leading-relaxed text-center px-4">
+              <p className="text-[10px] text-auto-tertiary leading-relaxed text-center px-4">
                 By submitting, you agree to the MIN Terms of Use and grant us permission 
                 to publish this content for educational purposes.
               </p>

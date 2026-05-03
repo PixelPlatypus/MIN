@@ -44,7 +44,7 @@ export default function TeamStrip({ initialTeam = [] }) {
       <div className="container mx-auto px-6 mb-12 flex items-end justify-between">
         <div className="space-y-2">
           <h2 className="text-3xl font-black tracking-tight">Our Brilliant Team</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-lg font-medium">The minds driving innovation across Nepal.</p>
+          <p className="text-auto-secondary text-lg font-medium">The minds driving innovation across Nepal.</p>
         </div>
         <Link 
           href="/team" 
@@ -95,7 +95,7 @@ export default function TeamStrip({ initialTeam = [] }) {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
                 <h4 className="font-bold text-lg">{member.name}</h4>
-                <p className="text-sm text-text-tertiary dark:text-text-tertiary-dark uppercase tracking-widest font-bold">{member.role_title}</p>
+                <p className="text-sm text-auto-tertiary uppercase tracking-widest font-bold">{member.role_title}</p>
               </div>
             ))}
           </div>

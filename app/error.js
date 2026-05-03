@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { RefreshCcw, AlertCircle, ArrowLeft, Home } from 'lucide-react'
+import { ArrowsClockwise as RefreshCcw, WarningCircle as AlertCircle, ArrowLeft, House as Home } from '@phosphor-icons/react'
 import Link from 'next/link'
 
 export default function Error({ error, reset }) {
@@ -47,7 +47,7 @@ export default function Error({ error, reset }) {
         className="max-w-xl w-full glass bg-bg-secondary-dynamic/40 border-border-dynamic backdrop-blur-3xl rounded-[3.5rem] p-10 md:p-16 text-center space-y-10 relative z-10 shadow-2xl"
       >
         {/* Branding inside the box */}
-        <div className="text-text-tertiary-dynamic text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-80">
+        <div className="text-auto-tertiary-dynamic text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-80">
           Mathematics Initiatives in Nepal
         </div>
 
@@ -70,7 +70,7 @@ export default function Error({ error, reset }) {
             Something <br /> 
             <span className="text-coral">Went Wrong</span>
           </h1>
-          <p className="text-text-secondary-dynamic text-base font-medium leading-relaxed max-w-sm mx-auto">
+          <p className="text-auto-secondary-dynamic text-base font-medium leading-relaxed max-w-sm mx-auto">
             An unexpected error occurred. Don't worry, it's not you, it's us. Our team has been notified.
           </p>
         </div>
@@ -93,7 +93,7 @@ export default function Error({ error, reset }) {
         </div>
 
         <div className="pt-10 border-t border-border-dynamic">
-           <p className="text-[10px] text-text-tertiary-dynamic font-black uppercase tracking-[0.3em]">
+           <p className="text-[10px] text-auto-tertiary-dynamic font-black uppercase tracking-[0.3em]">
              Redirecting to home shortly...
            </p>
         </div>

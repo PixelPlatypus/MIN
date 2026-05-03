@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Award, ArrowRight } from 'lucide-react'
+import { Trophy as Award, ArrowRight } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -117,7 +117,7 @@ export default function Recognition({ settings: initialSettings = null }) {
             {!isLoading && settings?.about_rec_badge_title && (
               <div className="absolute -bottom-6 -right-6 glass p-8 rounded-3xl shadow-2xl z-20 hidden lg:block border border-white/20 hover:scale-105 transition-transform">
                 <p className="text-3xl font-black text-primary mb-1 tracking-tighter">{settings.about_rec_badge_title}</p>
-                <p className="text-[10px] text-text-secondary dark:text-text-secondary-dark font-black uppercase tracking-[0.2em]">{settings.about_rec_badge_desc}</p>
+                <p className="text-[10px] text-auto-secondary font-black uppercase tracking-[0.2em]">{settings.about_rec_badge_desc}</p>
               </div>
             )}
           </div>

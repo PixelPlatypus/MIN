@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Sparkles, Library } from 'lucide-react'
+import { PencilLine as Sparkles, Books as Library } from '@phosphor-icons/react'
 
 export default function ContentLibraryHero() {
   return (
@@ -27,7 +27,7 @@ export default function ContentLibraryHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed max-w-3xl mx-auto"
+          className="text-xl text-auto-secondary leading-relaxed max-w-3xl mx-auto"
         >
           Discover a wealth of mathematical articles, challenging problems, 
           and educational resources curated for students and teachers.

@@ -1,17 +1,17 @@
 'use client'
 import { motion } from 'framer-motion'
-import { ArrowRight, BookOpen, GraduationCap, Laptop, Sparkles, Trophy, Users } from 'lucide-react'
+import { ArrowRight, BookOpen, GraduationCap, Monitor as Laptop, Megaphone, Lightbulb, Trophy, Users } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 const programIcons = {
-  'eta-campaigns': <Sparkles className="text-primary" />,
+  'eta-campaigns': <Megaphone className="text-primary" />,
   'jmoc': <Trophy className="text-cyan" />,
   'm3-bootcamp': <Laptop className="text-purple" />,
   'women-in-mathematics': <GraduationCap className="text-coral" />,
   'road-to-olympiad': <BookOpen className="text-orange" />,
   'digital-content': <Users className="text-green" />,
-  'minspire': <Sparkles className="text-primary" />,
+  'minspire': <Lightbulb className="text-primary" />,
 }
 
 export default function ProgramCard({ program, index }) {
@@ -53,7 +53,7 @@ export default function ProgramCard({ program, index }) {
               <h3 className="text-xl font-bold tracking-tight mb-3 text-text dark:text-white group-hover:text-primary transition-colors z-10">
                 {name}
               </h3>
-              <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed line-clamp-2 z-10">
+              <p className="text-sm text-auto-secondary leading-relaxed line-clamp-2 z-10">
                 {tagline}
               </p>
             </div>

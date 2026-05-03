@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { Calendar, MapPin, ArrowRight } from 'lucide-react'
+import { Calendar, MapPin, ArrowRight } from '@phosphor-icons/react'
 import Link from 'next/link'
 
 export default function EventCard({ event, index, fallbackImage }) {
@@ -81,7 +81,7 @@ export default function EventCard({ event, index, fallbackImage }) {
 
               <div className="space-y-2 z-10">
                 {event.show_date !== false && (
-                  <div className="flex items-center gap-3 text-sm text-text-secondary dark:text-text-secondary-dark font-medium">
+                  <div className="flex items-center gap-3 text-sm text-auto-secondary font-medium">
                     <Calendar size={16} className="text-primary" />
                     {event_type === 'EVERGOING' ? 'Ongoing Program' : new Date(start_date).toLocaleDateString('en-US', {
                       month: 'long',
@@ -91,7 +91,7 @@ export default function EventCard({ event, index, fallbackImage }) {
                   </div>
                 )}
                 {location && (
-                  <div className="flex items-center gap-3 text-sm text-text-secondary dark:text-text-secondary-dark font-medium">
+                  <div className="flex items-center gap-3 text-sm text-auto-secondary font-medium">
                     <MapPin size={16} className="text-primary" />
                     {location}
                   </div>

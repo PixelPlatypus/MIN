@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Hammer, ShieldCheck, ArrowRight, Zap, Calculator } from 'lucide-react'
+import { Hammer, ShieldCheck, ArrowRight, Zap, Calculator } from '@phosphor-icons/react'
 import Link from 'next/link'
 
 export default function MaintenanceView() {

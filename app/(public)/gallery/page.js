@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Image as ImageIcon, Filter, Maximize2 } from 'lucide-react'
+import { Image as ImageIcon, Funnel as Filter, CornersOut as Maximize2 } from '@phosphor-icons/react'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 // Lightbox is dynamically loaded to reduce main-thread work
@@ -18,6 +18,8 @@ export default function GalleryPage() {
   const [index, setIndex] = useState(-1)
   const [settings, setSettings] = useState(null)
   const [settingsLoading, setSettingsLoading] = useState(true)
+  const [availableAlbums, setAvailableAlbums] = useState(['ALL'])
+  const [availableTags, setAvailableTags] = useState(['ALL'])
 
   useEffect(() => {
     setSettingsLoading(true)
@@ -30,6 +32,18 @@ export default function GalleryPage() {
       .catch(err => {
         console.error('Gallery settings load error', err)
         setSettingsLoading(false)
+      })
+
+    // Fetch all unique albums and tags for the filters initially
+    fetch('/api/gallery')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const uniqueAlbums = ['ALL', ...new Set(data.map(img => img.album).filter(Boolean))]
+          const uniqueTags = ['ALL', ...new Set(data.flatMap(img => img.tags || []).filter(Boolean))]
+          setAvailableAlbums(uniqueAlbums)
+          setAvailableTags(uniqueTags)
+        }
       })
   }, [])
 
@@ -49,8 +63,7 @@ export default function GalleryPage() {
     captureEvent('gallery_filter_changed', { album: activeAlbum, tag: activeTag })
   }, [activeAlbum, activeTag])
 
-  const albums = ['ALL', ...new Set(images.map(img => img.album).filter(Boolean))]
-  const allTags = ['ALL', ...new Set(images.flatMap(img => img.tags || []).filter(Boolean))]
+  // Removed derived filters to prevent they disappearing when filtered
 
   return (
     <div className="pt-32 pb-24 space-y-24">
@@ -90,7 +103,7 @@ export default function GalleryPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+                className="text-xl text-auto-secondary leading-relaxed"
               >
                 {settings?.gallery_description}
               </motion.p>
@@ -103,19 +116,19 @@ export default function GalleryPage() {
       <section className="container mx-auto px-6 space-y-8">
         {/* Album Filter */}
         <div className="flex flex-wrap items-center justify-center gap-4">
-          {loading && albums.length === 1 ? (
+          {loading && availableAlbums.length === 1 ? (
             [...Array(4)].map((_, i) => (
               <Skeleton key={i} className="w-32 h-12 rounded-2xl" />
             ))
           ) : (
-            albums.map((album) => (
+            availableAlbums.map((album) => (
               <button
                 key={album}
                 onClick={() => setActiveAlbum(album)}
                 className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
                   activeAlbum === album 
                     ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                    : 'glass border-transparent hover:border-primary/20 text-text-secondary hover:text-primary'
+                    : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary'
                 }`}
               >
                 {album === 'ALL' ? 'All Albums' : album}
@@ -126,19 +139,19 @@ export default function GalleryPage() {
 
         {/* Tag Filter */}
         <div className="flex flex-wrap items-center justify-center gap-2">
-          {loading && allTags.length === 1 ? (
+          {loading && availableTags.length === 1 ? (
             [...Array(6)].map((_, i) => (
               <Skeleton key={i} className="w-20 h-8 rounded-full" />
             ))
           ) : (
-            allTags.map((tag) => (
+            availableTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => setActiveTag(tag)}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
                   activeTag === tag 
-                    ? 'bg-text-main text-bg-main border-text-main dark:bg-white dark:text-black' 
-                    : 'glass border-transparent hover:border-text-main/20 text-text-tertiary'
+                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 dark:bg-white dark:text-bg-dark dark:border-white' 
+                    : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary dark:hover:text-secondary'
                 }`}
               >
                 #{tag}
@@ -214,7 +227,7 @@ export default function GalleryPage() {
           </>
         ) : (
           <div className="text-center py-24 glass rounded-[3rem]">
-            <p className="text-xl text-text-tertiary">No images found matching your selection.</p>
+            <p className="text-xl text-auto-tertiary">No images found matching your selection.</p>
           </div>
         )}
       </section>

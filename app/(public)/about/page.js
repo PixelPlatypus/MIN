@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkles, Heart, Target, Lightbulb, Users, Award } from 'lucide-react'
+import { Lightning as Sparkles, Heart, Target, Lightbulb, Users, Trophy as Award } from '@phosphor-icons/react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 const values = [
@@ -82,7 +82,7 @@ export default function AboutPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+                className="text-xl text-auto-secondary leading-relaxed"
               >
                 {settings?.about_hero_description}
               </motion.p>
@@ -111,7 +111,7 @@ export default function AboutPage() {
                 <Skeleton className="w-2/3 h-4" />
               </div>
             ) : (
-              <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+              <p className="text-lg text-auto-secondary leading-relaxed">
                 {settings?.about_vision_text}
               </p>
             )}
@@ -135,7 +135,7 @@ export default function AboutPage() {
                 <Skeleton className="w-2/3 h-4" />
               </div>
             ) : (
-              <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+              <p className="text-lg text-auto-secondary leading-relaxed">
                 {settings?.about_mission_text}
               </p>
             )}
@@ -166,7 +166,7 @@ export default function AboutPage() {
                   {value.icon}
                 </div>
                 <h4 className="text-xl font-bold mb-3">{value.title}</h4>
-                <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                <p className="text-sm text-auto-secondary leading-relaxed">
                   {value.desc}
                 </p>
               </motion.div>
@@ -190,7 +190,7 @@ export default function AboutPage() {
                   <Skeleton className="w-2/3 h-4" />
                 </div>
               ) : (
-                <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                <p className="text-lg text-auto-secondary leading-relaxed">
                   {settings?.about_rec_description}
                 </p>
               )}
@@ -202,7 +202,7 @@ export default function AboutPage() {
                   {isLoading ? <Skeleton className="w-32 h-4" /> : settings?.about_rec_badge_title}
                 </span>
               </div>
-              <div className="text-sm text-text-tertiary">
+              <div className="text-sm text-auto-tertiary">
                 {isLoading ? <Skeleton className="w-48 h-4" /> : settings?.about_rec_badge_desc}
               </div>
             </div>

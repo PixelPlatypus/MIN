@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Facebook, Instagram, Linkedin, Youtube, Mail } from 'lucide-react'
+import { FacebookLogo, InstagramLogo, LinkedinLogo, YoutubeLogo, Envelope } from '@phosphor-icons/react'
 
 const footerLinks = [
   {
@@ -50,10 +50,10 @@ export default function Footer({ settings: initialSettings = null }) {
   }, [initialSettings])
 
   const socialLinks = settings ? [
-    { name: 'Facebook', icon: <Facebook size={20} />, href: settings.facebook_url },
-    { name: 'Instagram', icon: <Instagram size={20} />, href: settings.instagram_url },
-    { name: 'LinkedIn', icon: <Linkedin size={20} />, href: settings.linkedin_url },
-    { name: 'YouTube', icon: <Youtube size={20} />, href: settings.youtube_url },
+    { name: 'Facebook', icon: <FacebookLogo size={20} />, href: settings.facebook_url },
+    { name: 'Instagram', icon: <InstagramLogo size={20} />, href: settings.instagram_url },
+    { name: 'LinkedIn', icon: <LinkedinLogo size={20} />, href: settings.linkedin_url },
+    { name: 'YouTube', icon: <YoutubeLogo size={20} />, href: settings.youtube_url },
   ].filter(s => !!s.href) : []
 
   return (
@@ -121,7 +121,7 @@ export default function Footer({ settings: initialSettings = null }) {
             <Link href="/about/legal" className="hover:text-primary transition-colors">Legal</Link>
             {settings?.contact_email && (
               <div className="flex items-center gap-2">
-                <Mail size={16} />
+                <Envelope size={16} />
                 <a href={`mailto:${settings.contact_email}`} className="hover:text-primary transition-colors">
                   {settings.contact_email}
                 </a>

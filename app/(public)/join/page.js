@@ -4,7 +4,7 @@ import JoinForm from '@/components/public/JoinForm'
 import ContactForm from '@/components/public/ContactForm'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Heart, Sparkles, Target, Users, ArrowRight, Zap, Globe, ChevronDown, Building2, Rocket, Flame, Brain, Gem } from 'lucide-react'
+import { Heart, Lightning as Sparkles, Target, Users, ArrowRight, Lightning as Zap, Globe, CaretDown as ChevronDown, Buildings as Building2, Rocket, Flame, Brain, Diamond as Gem } from '@phosphor-icons/react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function JoinPage() {
@@ -30,17 +30,18 @@ export default function JoinPage() {
   }
 
   const getIcon = (type) => {
-    switch(type) {
-      case 'Heart': return <Heart size={28} />
-      case 'Building2': return <Building2 size={28} />
-      case 'Globe': return <Globe size={28} />
-      case 'Target': return <Target size={28} />
-      case 'Zap': return <Zap size={24} />
-      case 'Users': return <Users size={24} />
-      case 'Rocket': return <Rocket size={28} />
-      case 'Flame': return <Flame size={28} />
-      case 'Brain': return <Brain size={28} />
-      case 'Gem': return <Gem size={28} />
+    const normalizedType = type?.toLowerCase() || '';
+    switch(normalizedType) {
+      case 'heart': return <Heart size={28} />
+      case 'building2': return <Building2 size={28} />
+      case 'globe': return <Globe size={28} />
+      case 'target': return <Target size={28} />
+      case 'zap': return <Zap size={24} />
+      case 'users': return <Users size={24} />
+      case 'rocket': return <Rocket size={28} />
+      case 'flame': return <Flame size={28} />
+      case 'brain': return <Brain size={28} />
+      case 'gem': return <Gem size={28} />
       default: return <Sparkles size={24} />
     }
   }
@@ -89,7 +90,7 @@ export default function JoinPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-lg md:text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+                className="text-lg md:text-xl text-auto-secondary dark:text-auto-secondary-dark leading-relaxed"
               >
                 {settings?.join_description}
               </motion.p>
@@ -118,7 +119,7 @@ export default function JoinPage() {
                 </button>
                 <button
                   onClick={scrollToForm}
-                  className="glass px-8 py-4 rounded-2xl font-semibold text-sm text-text-secondary dark:text-text-secondary-dark hover:text-primary transition-all flex items-center gap-2"
+                  className="glass px-8 py-4 rounded-2xl font-semibold text-sm text-auto-secondary dark:text-auto-secondary-dark hover:text-primary transition-all flex items-center gap-2"
                   aria-label="Explore joining opportunities"
                 >
                   Explore Opportunities
@@ -147,7 +148,7 @@ export default function JoinPage() {
                   {getIcon(item.icon)}
                 </div>
                 <h3 className="text-base font-bold tracking-tight mb-2">{item.title}</h3>
-                <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                <p className="text-sm text-auto-secondary dark:text-auto-secondary-dark leading-relaxed">
                   {item.desc}
                 </p>
               </motion.div>
@@ -162,7 +163,7 @@ export default function JoinPage() {
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
             {isLoading ? <Skeleton className="w-64 h-10 mx-auto" /> : settings?.join_badge}
           </h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark max-w-xl mx-auto">
+          <p className="text-auto-secondary dark:text-auto-secondary-dark max-w-xl mx-auto">
             Choose how you want to contribute to the mathematical revolution in Nepal.
           </p>
         </div>
@@ -198,13 +199,13 @@ export default function JoinPage() {
                   </div>
 
                   <h3 className="text-xl font-bold tracking-tight mb-2">{role.title}</h3>
-                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6">
+                  <p className="text-sm text-auto-secondary dark:text-auto-secondary-dark leading-relaxed mb-6">
                     {role.desc}
                   </p>
 
                   <ul className="space-y-2.5 flex-1 mb-8">
                     {(role.perks || role.features || []).map(f => (
-                      <li key={f} className="flex items-center gap-2.5 text-xs font-medium text-text-secondary dark:text-text-secondary-dark">
+                      <li key={f} className="flex items-center gap-2.5 text-xs font-medium text-auto-secondary dark:text-auto-secondary-dark">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                         {f}
                       </li>
@@ -231,14 +232,14 @@ export default function JoinPage() {
           <div className="max-w-3xl mx-auto">
             <div className="text-center space-y-3 mb-14">
               <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Common Questions</h3>
-              <p className="text-sm text-text-secondary dark:text-text-secondary-dark">Everything you need to know before applying</p>
+              <p className="text-sm text-auto-secondary dark:text-auto-secondary-dark">Everything you need to know before applying</p>
             </div>
 
             <div className="divide-y divide-border dark:divide-border-dark">
               {faqs.map((faq, i) => (
                 <div key={i} className="py-7 first:pt-0 last:pb-0">
                   <h4 className="text-base font-bold text-primary mb-2">{faq.question || faq.q}</h4>
-                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">{faq.answer || faq.a}</p>
+                  <p className="text-sm text-auto-secondary dark:text-auto-secondary-dark leading-relaxed">{faq.answer || faq.a}</p>
                 </div>
               ))}
             </div>
@@ -251,7 +252,7 @@ export default function JoinPage() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12 space-y-3">
             <h2 className="text-3xl font-bold tracking-tight">Still have questions?</h2>
-            <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+            <p className="text-auto-secondary dark:text-auto-secondary-dark text-sm">
               If your inquiry doesn't fit an application, message us directly.
             </p>
           </div>

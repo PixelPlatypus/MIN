@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { List, X } from '@phosphor-icons/react'
 import Image from 'next/image'
 import ThemeToggle from '@/components/shared/ThemeToggle'
 
@@ -94,7 +94,7 @@ export default function Navbar({ settings: initialSettings = null }) {
               aria-label={isOpen ? "Close menu" : "Open menu"}
               aria-expanded={isOpen}
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={24} /> : <List size={24} />}
             </button>
           </div>
         </div>

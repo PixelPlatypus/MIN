@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ContentCard from '@/components/public/ContentCard'
-import { Search } from 'lucide-react'
+import { MagnifyingGlass as Search } from '@phosphor-icons/react'
 import { ContentGridSkeleton } from '@/components/shared/Skeletons'
 
 const contentTypes = [
@@ -53,11 +53,11 @@ export default function ContentLibraryView({ initialContent, initialType = 'ALL'
     <section className="container mx-auto px-6">
       <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto mb-16">
         <div className="flex-1 glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-primary/10 group-focus-within:border-primary transition-all shadow-sm">
-          <Search size={20} className="text-text-tertiary" />
+          <Search size={20} className="text-auto-tertiary" />
           <input 
             type="text" 
             placeholder="Search by title, excerpt, or tags..." 
-            className="bg-transparent border-none text-base focus:outline-none w-full placeholder:text-text-tertiary"
+            className="bg-transparent border-none text-base focus:outline-none w-full placeholder:text-auto-tertiary"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -72,7 +72,7 @@ export default function ContentLibraryView({ initialContent, initialType = 'ALL'
             className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
               activeType === type.value 
                 ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                : 'glass border-transparent hover:border-primary/20 text-text-secondary hover:text-primary'
+                : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary'
             }`}
           >
             {type.label}
@@ -95,7 +95,7 @@ export default function ContentLibraryView({ initialContent, initialType = 'ALL'
         </motion.div>
       ) : (
         <div className="text-center py-24 glass rounded-[3rem]">
-          <p className="text-xl text-text-tertiary">No content found matching your criteria.</p>
+          <p className="text-xl text-auto-tertiary">No content found matching your criteria.</p>
         </div>
       )}
     </section>

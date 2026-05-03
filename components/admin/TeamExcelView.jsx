@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Save, Download, Filter, Search, X, Loader2, AlertCircle, Plus, Clock, User } from 'lucide-react'
+import { FloppyDisk as Save, DownloadSimple as Download, Funnel as Filter, MagnifyingGlass as Search, X, CircleNotch as Loader2, WarningCircle as AlertCircle, Plus, Clock, User } from '@phosphor-icons/react'
 
 export default function TeamExcelView({ members, onSave, onRefresh }) {
   const [data, setData] = useState([])
@@ -240,7 +240,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
         `"${row.slug || ''}"`,
         `"${row.is_advisor === 'YES'}"`,
         `"${row.status || ''}"`,
-        `"${m.certificate_url || ''}"`,
+        `"${row.certificate_url || ''}"`,
         `"${row.farewell_date || ''}"`,
         `"${m.bio || ''}"`,
         `"${m.photo_url || ''}"`,
@@ -295,7 +295,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
         <div className="flex flex-col gap-2">
            <div className="flex items-center gap-4 flex-1 min-w-[300px]">
             <div className="flex-1 glass px-4 py-2 rounded-xl flex items-center gap-2 border border-border dark:border-white/10 focus-within:border-primary">
-              <Search size={16} className="text-text-tertiary" />
+              <Search size={16} className="text-auto-tertiary" />
               <input 
                 type="text" 
                 placeholder="Search spreadsheet..."
@@ -306,7 +306,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
             </div>
             <div className="flex items-center gap-2">
               <div className="glass px-3 py-2 rounded-xl flex items-center gap-2 border border-border dark:border-white/10">
-                <Filter size={16} className="text-text-tertiary" />
+                <Filter size={16} className="text-auto-tertiary" />
                 <select 
                   className="bg-transparent text-[10px] font-black uppercase tracking-widest focus:outline-none cursor-pointer"
                   value={filterStatus}
@@ -319,7 +319,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
                 </select>
               </div>
               <div className="glass px-3 py-2 rounded-xl flex items-center gap-2 border border-border dark:border-white/10">
-                <Clock size={16} className="text-text-tertiary" />
+                <Clock size={16} className="text-auto-tertiary" />
                 <select 
                   className="bg-transparent text-[10px] font-black uppercase tracking-widest focus:outline-none cursor-pointer"
                   value={filterYear}
@@ -334,7 +334,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
             </div>
           </div>
           {lastUpdate && (
-            <p className="text-[9px] font-black uppercase tracking-widest text-text-tertiary flex items-center gap-2 ml-1">
+            <p className="text-[9px] font-black uppercase tracking-widest text-auto-tertiary flex items-center gap-2 ml-1">
               <User size={12} className="text-primary" />
               Last Modified by <span className="text-primary">{lastUpdate.actor_name}</span> • {new Date(lastUpdate.created_at).toLocaleString()}
             </p>
@@ -362,7 +362,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
       <div className="glass rounded-2xl overflow-hidden border border-border dark:border-white/10 shadow-sm overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[1000px]">
           <thead>
-            <tr className="bg-bg-secondary dark:bg-white/5 text-[10px] font-black uppercase tracking-widest text-text-tertiary border-b border-border dark:border-white/10">
+            <tr className="bg-bg-secondary dark:bg-white/5 text-[10px] font-black uppercase tracking-widest text-auto-tertiary border-b border-border dark:border-white/10">
               <th className="px-4 py-4 w-48">Full Name</th>
               <th className="px-4 py-4 w-32">Status</th>
               <th className="px-4 py-4 w-32">Joined Date</th>
@@ -421,7 +421,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
                    <button 
                     onClick={() => handleCellChange(row.id, 'is_advisor', row.is_advisor === 'YES' ? 'NO' : 'YES')}
                     className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                      row.is_advisor === 'YES' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-bg-secondary text-text-tertiary'
+                      row.is_advisor === 'YES' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'bg-bg-secondary text-auto-tertiary'
                     }`}
                    >
                      {row.is_advisor}
@@ -443,7 +443,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
               <td colSpan="6" className="p-0">
                 <button 
                   onClick={addNewRow}
-                  className="w-full py-4 bg-bg-secondary/30 dark:bg-white/[0.02] hover:bg-primary/[0.05] text-text-tertiary hover:text-primary transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] group"
+                  className="w-full py-4 bg-bg-secondary/30 dark:bg-white/[0.02] hover:bg-primary/[0.05] text-auto-tertiary hover:text-primary transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] group"
                 >
                   <Plus size={14} className="group-hover:scale-125 transition-transform" />
                   Add New Member Row
@@ -460,7 +460,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
         </div>
         <div className="space-y-1">
            <p className="text-xs font-black uppercase tracking-widest text-text-primary-dynamic">Excel Mode Active</p>
-           <p className="text-[10px] font-bold text-text-tertiary leading-relaxed">
+           <p className="text-[10px] font-bold text-auto-tertiary leading-relaxed">
              You are in spreadsheet mode. Copy and paste work naturally between cells. 
              Remember to hit <strong>Save Changes</strong> to sync with the database.
              <br />

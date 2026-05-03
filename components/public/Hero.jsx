@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, Rocket } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
 
@@ -16,7 +16,7 @@ export default function Hero({ settings }) {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 glass px-6 py-2.5 rounded-full text-xs font-bold mb-6 shadow-xl will-change-transform"
           >
-            <Sparkles size={16} className="text-secondary-dark" />
+            <Rocket size={16} weight="fill" className="text-secondary-dark" />
             <span className="uppercase tracking-[0.2em]">
               {settings?.hero_badge}
             </span>
@@ -38,7 +38,7 @@ export default function Hero({ settings }) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary-dark leading-relaxed font-medium will-change-transform"
+              className="text-xl md:text-2xl text-auto-secondary leading-relaxed font-medium will-change-transform"
             >
               {settings?.hero_subtitle}
             </motion.p>

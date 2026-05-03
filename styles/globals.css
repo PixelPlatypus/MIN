@@ -37,8 +37,8 @@
   --color-border-strong:  rgba(0,0,0,0.12);
   
   --color-text-primary:   #111111;   /* High contrast charcoal */
-  --color-text-secondary: #444446;   /* Accessible secondary text */
-  --color-text-tertiary:  #66666B;   /* Accessible tertiary text */
+  --color-text-secondary: #333336;   /* Accessible secondary text — Darkened for better contrast */
+  --color-text-tertiary:  #55555A;   /* Accessible tertiary text — Darkened for better contrast */
 
   /* === Apple-style Neutrals (Dark Mode) === */
   --color-bg-dark:             #0B0B0F;   /* Charcoal base */
@@ -50,8 +50,8 @@
   --color-border-strong-dark:  rgba(255,255,255,0.15);
 
   --color-text-primary-dark:   #FFFFFF;   /* Pure white on charcoal */
-  --color-text-secondary-dark: #B0B0B5;   /* Soft gray */
-  --color-text-tertiary-dark:  #909095;   /* Muted gray */
+  --color-text-secondary-dark: #E2E2E7;   /* Bright silver — matches Apple secondary */
+  --color-text-tertiary-dark:  #A1A1A6;   /* Medium silver — matches Apple tertiary */
 
   /* === Typography === */
   /* --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", ui-sans-serif, system-ui, sans-serif; */
@@ -201,6 +201,12 @@
   .text-tertiary-dynamic {
     color: var(--color-text-tertiary-dynamic);
   }
+  .text-auto-secondary {
+    color: var(--color-text-secondary-dynamic);
+  }
+  .text-auto-tertiary {
+    color: var(--color-text-tertiary-dynamic);
+  }
 
   .gradient-hero-light {
     background:
@@ -262,16 +268,12 @@
     display: flex;
     align-items: center;
     gap: 0;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--color-border);
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     overflow: hidden;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .PhoneInput:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 4px rgba(22, 85, 109, 0.08);
+    transition: all 0.2s;
   }
 
   .dark .PhoneInput {
@@ -279,8 +281,15 @@
     border-color: var(--color-border-dark);
   }
 
+  .PhoneInput:focus-within {
+    border-color: var(--color-primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(22, 85, 109, 0.08);
+  }
+
   .dark .PhoneInput:focus-within {
     border-color: var(--color-secondary);
+    background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 0 0 4px rgba(246, 240, 148, 0.08);
   }
 
@@ -291,7 +300,7 @@
     gap: 0.25rem;
     border-right: 1px solid var(--color-border);
     align-self: stretch;
-    background: var(--color-bg-secondary);
+    background: rgba(0, 0, 0, 0.02);
     cursor: pointer;
   }
 

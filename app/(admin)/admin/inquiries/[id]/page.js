@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Loader2, ArrowLeft, Mail, Calendar, MessageSquare, CheckCircle2 } from 'lucide-react'
+import { CircleNotch as Loader2, ArrowLeft, Envelope as Mail, Calendar, ChatTeardropText as MessageSquare, CheckCircle as CheckCircle2 } from '@phosphor-icons/react'
 
 export default function InquiryDetailPage() {
   const { id } = useParams()
@@ -48,7 +48,7 @@ export default function InquiryDetailPage() {
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <button 
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-text-tertiary hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]"
+        className="flex items-center gap-2 text-auto-tertiary hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]"
       >
         <ArrowLeft size={16} /> Back
       </button>
@@ -74,7 +74,7 @@ export default function InquiryDetailPage() {
                 <Mail size={24} />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Sender Email</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Sender Email</p>
                 <p className="font-bold">{inquiry.email}</p>
               </div>
             </div>
@@ -83,7 +83,7 @@ export default function InquiryDetailPage() {
                 <Calendar size={24} />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Received Date</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Received Date</p>
                 <p className="font-bold">{new Date(inquiry.created_at).toLocaleString()}</p>
               </div>
             </div>

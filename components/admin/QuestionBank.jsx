@@ -2,12 +2,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Plus, Trash2, Edit3, Save, X, 
-  ChevronRight, Calculator, Clock, 
-  Eye, CheckCircle2, AlertCircle, Loader2,
-  ListOrdered, Image as ImageIcon,
-  Upload, XCircle, ArrowUp, ArrowDown
-} from 'lucide-react'
+  Plus, Trash as Trash2, PencilSimple as Edit3, FloppyDisk as Save, X, 
+  CaretRight as ChevronRight, Calculator, Clock, 
+  Eye, CheckCircle as CheckCircle2, WarningCircle as AlertCircle, CircleNotch as Loader2,
+  ListNumbers as ListOrdered, Image as ImageIcon,
+  UploadSimple as Upload, XCircle, ArrowUp, ArrowDown
+} from '@phosphor-icons/react'
 import 'katex/dist/katex.min.css'
 import { InlineMath, BlockMath } from 'react-katex'
 
@@ -221,7 +221,7 @@ export default function QuestionBank() {
             >
               <div className="flex items-center justify-between mb-1">
                  <h5 className="text-[10px] font-black uppercase tracking-widest text-primary">{editingSet ? 'Rename Set' : 'Initialize Set'}</h5>
-                 <button onClick={() => { setIsAddingSet(false); setEditingSet(null); }} className="text-text-tertiary hover:text-coral transition-colors">
+                 <button onClick={() => { setIsAddingSet(false); setEditingSet(null); }} className="text-auto-tertiary hover:text-coral transition-colors">
                     <X size={14} />
                  </button>
               </div>
@@ -232,7 +232,7 @@ export default function QuestionBank() {
                 className="w-full bg-white dark:bg-white/5 border border-border rounded-xl px-4 py-3 text-sm font-bold focus:border-primary transition-all outline-none"
               />
               <div className="flex items-center gap-3">
-                <Clock size={16} className="text-text-tertiary" />
+                <Clock size={16} className="text-auto-tertiary" />
                 <input 
                   type="number"
                   placeholder="Mins"
@@ -240,7 +240,7 @@ export default function QuestionBank() {
                   onChange={e => setNewSetTime(e.target.value)}
                   className="w-full bg-white dark:bg-white/5 border border-border rounded-xl px-4 py-3 text-sm font-bold focus:border-primary transition-all outline-none"
                 />
-                <span className="text-[10px] text-text-tertiary font-black uppercase tracking-widest">Minutes</span>
+                <span className="text-[10px] text-auto-tertiary font-black uppercase tracking-widest">Minutes</span>
               </div>
               <div className="flex gap-2 pt-2">
                 <button 
@@ -249,7 +249,7 @@ export default function QuestionBank() {
                 >
                   {editingSet ? 'Update' : 'Create'}
                 </button>
-                <button onClick={() => { setIsAddingSet(false); setEditingSet(null); }} className="flex-1 bg-bg-secondary dark:bg-white/5 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-text-tertiary">Cancel</button>
+                <button onClick={() => { setIsAddingSet(false); setEditingSet(null); }} className="flex-1 bg-bg-secondary dark:bg-white/5 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-auto-tertiary">Cancel</button>
               </div>
             </motion.div>
           )}
@@ -264,12 +264,12 @@ export default function QuestionBank() {
                 className={`w-full text-left p-5 rounded-3xl border transition-all flex items-center justify-between ${
                   activeSet?.id === set.id 
                     ? 'bg-primary text-white border-primary shadow-xl shadow-primary/20 scale-[1.02]' 
-                    : 'glass border-border hover:border-primary/50 text-text-secondary hover:translate-x-1'
+                    : 'glass border-border hover:border-primary/50 text-auto-secondary hover:translate-x-1'
                 }`}
               >
                 <div className="flex flex-col gap-1 pr-14">
                   <span className="font-bold tracking-tight line-clamp-1">{set.name}</span>
-                  <div className={`flex items-center gap-3 text-[10px] font-black uppercase tracking-widest ${activeSet?.id === set.id ? 'text-white/70' : 'text-text-tertiary'}`}>
+                  <div className={`flex items-center gap-3 text-[10px] font-black uppercase tracking-widest ${activeSet?.id === set.id ? 'text-white/70' : 'text-auto-tertiary'}`}>
                     <span className="flex items-center gap-1"><Clock size={10}/> {set.time_limit}m</span>
                     <span className="flex items-center gap-1"><ListOrdered size={10}/> {set.practice_questions?.[0]?.count || 0} Qs</span>
                   </div>
@@ -335,7 +335,7 @@ export default function QuestionBank() {
             </div>
           ))}
           {sets.length === 0 && !loading && (
-            <div className="py-12 text-center text-text-tertiary glass rounded-3xl border border-dashed border-border">
+            <div className="py-12 text-center text-auto-tertiary glass rounded-3xl border border-dashed border-border">
               <Calculator size={32} className="mx-auto mb-3 opacity-20" />
               <p className="text-xs font-bold uppercase tracking-widest">No sets found</p>
             </div>
@@ -352,7 +352,7 @@ export default function QuestionBank() {
                   <ChevronRight size={40} className="-rotate-90" />
                 </div>
                 <h4 className="text-xl font-black text-dynamic">Select a set to manage questions</h4>
-                <p className="text-text-tertiary text-sm max-w-xs mx-auto">Click a practice set on the left to add, edit or remove competitive math questions.</p>
+                <p className="text-auto-tertiary text-sm max-w-xs mx-auto">Click a practice set on the left to add, edit or remove competitive math questions.</p>
              </div>
           </div>
         ) : (
@@ -409,7 +409,7 @@ export default function QuestionBank() {
                   <div className="space-y-6">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Question (LaTeX Supported)</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Question (LaTeX Supported)</label>
                         <span className="text-[10px] font-bold text-primary px-2 py-0.5 bg-primary/10 rounded-md">Tip: Use $...$ for inline and $$...$$ for block math</span>
                       </div>
 
@@ -440,7 +440,7 @@ export default function QuestionBank() {
                                   <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
                                     <ImageIcon size={20} />
                                   </div>
-                                  <p className="text-[10px] font-black uppercase text-text-tertiary">Add Figure</p>
+                                  <p className="text-[10px] font-black uppercase text-auto-tertiary">Add Figure</p>
                                   <input 
                                     type="file" 
                                     accept="image/*"
@@ -460,7 +460,7 @@ export default function QuestionBank() {
                                 </div>
                               )}
                            </div>
-                           <p className="text-[8px] text-text-tertiary text-center leading-relaxed font-bold uppercase tracking-widest">Optional figure for geometry or diagrams</p>
+                           <p className="text-[8px] text-auto-tertiary text-center leading-relaxed font-bold uppercase tracking-widest">Optional figure for geometry or diagrams</p>
                         </div>
                       </div>
 
@@ -482,7 +482,7 @@ export default function QuestionBank() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {['A', 'B', 'C', 'D'].map(opt => (
                         <div key={opt} className="space-y-2">
-                          <label className={`text-[10px] font-black uppercase tracking-widest ${questionForm.correct_option === opt ? 'text-primary' : 'text-text-tertiary'}`}>Option {opt}</label>
+                          <label className={`text-[10px] font-black uppercase tracking-widest ${questionForm.correct_option === opt ? 'text-primary' : 'text-auto-tertiary'}`}>Option {opt}</label>
                           <div className="relative group">
                              <input 
                               value={questionForm[`option_${opt.toLowerCase()}`]}
@@ -495,7 +495,7 @@ export default function QuestionBank() {
                             <button 
                               onClick={() => setQuestionForm({...questionForm, correct_option: opt})}
                               className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all ${
-                                questionForm.correct_option === opt ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-black/5 dark:hover:bg-white/5'
+                                questionForm.correct_option === opt ? 'bg-primary text-white' : 'text-auto-tertiary hover:bg-black/5 dark:hover:bg-white/5'
                               }`}
                             >
                               <CheckCircle2 size={16} />
@@ -546,7 +546,7 @@ export default function QuestionBank() {
                   animate={{ opacity: 1, x: 0 }}
                   className="glass p-6 rounded-[2rem] border border-border group hover:border-primary/20 transition-all flex gap-6"
                 >
-                  <div className="w-10 h-10 rounded-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center shrink-0 font-black text-text-tertiary text-xs border border-border">
+                  <div className="w-10 h-10 rounded-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center shrink-0 font-black text-auto-tertiary text-xs border border-border">
                     {idx + 1}
                   </div>
                   <div className="flex-1 min-w-0 space-y-4">
@@ -582,8 +582,8 @@ export default function QuestionBank() {
                   </div>
                   <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="flex items-center justify-between gap-1 bg-black/5 dark:bg-white/5 rounded-xl p-1 mb-1">
-                      <button onClick={() => handleReorderQuestion(idx, 'up')} disabled={idx === 0} className={`p-1 rounded-md transition-all ${idx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/50 dark:hover:bg-black/50 text-text-secondary'}`}><ArrowUp size={14} /></button>
-                      <button onClick={() => handleReorderQuestion(idx, 'down')} disabled={idx === questions.length - 1} className={`p-1 rounded-md transition-all ${idx === questions.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/50 dark:hover:bg-black/50 text-text-secondary'}`}><ArrowDown size={14} /></button>
+                      <button onClick={() => handleReorderQuestion(idx, 'up')} disabled={idx === 0} className={`p-1 rounded-md transition-all ${idx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/50 dark:hover:bg-black/50 text-auto-secondary'}`}><ArrowUp size={14} /></button>
+                      <button onClick={() => handleReorderQuestion(idx, 'down')} disabled={idx === questions.length - 1} className={`p-1 rounded-md transition-all ${idx === questions.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/50 dark:hover:bg-black/50 text-auto-secondary'}`}><ArrowDown size={14} /></button>
                     </div>
                     <button 
                       onClick={() => {
@@ -622,7 +622,7 @@ export default function QuestionBank() {
                     <Plus size={32} />
                   </div>
                   <h4 className="text-lg font-black text-dynamic">No questions in this set yet</h4>
-                  <p className="text-text-tertiary text-sm">Click the button above or here to create your first question.</p>
+                  <p className="text-auto-tertiary text-sm">Click the button above or here to create your first question.</p>
                 </div>
               )}
             </div>

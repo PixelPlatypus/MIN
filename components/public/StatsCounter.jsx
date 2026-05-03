@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 // GSAP and ScrollTrigger are dynamically loaded inside useEffect
-import { Users, Trophy, BookOpen, Clock } from 'lucide-react'
+import { Users, Trophy, BookOpen, Clock } from '@phosphor-icons/react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function StatsCounter({ settings: initialSettings = null }) {
@@ -50,6 +50,7 @@ export default function StatsCounter({ settings: initialSettings = null }) {
       gsap.registerPlugin(ScrollTrigger)
       
       ctx = gsap.context(() => {
+        if (!containerRef.current) return
         const counts = containerRef.current.querySelectorAll('.stat-value')
         
         counts.forEach((count, i) => {
@@ -105,7 +106,7 @@ export default function StatsCounter({ settings: initialSettings = null }) {
               <Skeleton className="w-3/4 h-4 mx-auto" />
             </div>
           ) : (
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark">
+            <p className="text-lg text-auto-secondary">
               {settings?.stats_subtitle}
             </p>
           )}
@@ -142,7 +143,7 @@ export default function StatsCounter({ settings: initialSettings = null }) {
                   <h3 className="text-4xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary transition-colors">
                     <span className="stat-value">0</span>{stat.suffix}
                   </h3>
-                  <p className="text-sm font-semibold text-text-tertiary dark:text-text-tertiary-dark uppercase tracking-widest group-hover:text-text-secondary transition-colors">
+                  <p className="text-sm font-semibold text-auto-tertiary uppercase tracking-widest group-hover:text-auto-secondary transition-colors">
                     {stat.label}
                   </p>
                 </div>

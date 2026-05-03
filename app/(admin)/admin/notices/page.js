@@ -5,18 +5,18 @@ import Link from 'next/link'
 import { 
   Bell, 
   Plus, 
-  Search, 
-  Edit3, 
-  Trash2, 
+  MagnifyingGlass as Search, 
+  PencilSimple as Edit3, 
+  Trash as Trash2, 
   Eye, 
-  EyeOff, 
+  EyeSlash as EyeOff, 
   Calendar, 
   Link as LinkIcon,
   X,
-  CheckCircle2,
-  AlertCircle,
+  CheckCircle as CheckCircle2,
+  WarningCircle as AlertCircle,
   Image as ImageIcon
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import ImageUploader from '@/components/admin/ImageUploader'
 
@@ -94,7 +94,7 @@ export default function AdminNoticesPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black tracking-tight mb-2">Popup Notices</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Manage global alerts, announcements, and modal popups.
           </p>
         </div>
@@ -109,11 +109,11 @@ export default function AdminNoticesPage() {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-grow glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:ring-2 ring-primary/20 transition-all">
-          <Search size={18} className="text-text-tertiary" />
+          <Search size={18} className="text-auto-tertiary" />
           <input 
             type="text" 
             placeholder="Search notices by title or content..." 
-            className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary"
+            className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -137,14 +137,14 @@ export default function AdminNoticesPage() {
                        <img src={notice.image_url} alt="Notice" className="w-full h-full object-cover" />
                     </div>
                   ) : (
-                    <div className={`p-2.5 rounded-2xl ${notice.is_active ? 'bg-green/10 text-green' : 'bg-text-tertiary/10 text-text-tertiary'}`}>
+                    <div className={`p-2.5 rounded-2xl ${notice.is_active ? 'bg-green/10 text-green' : 'bg-text-tertiary/10 text-auto-tertiary'}`}>
                       <Bell size={20} />
                     </div>
                   )}
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Link 
                       href={`/admin/notices/${notice.id}`}
-                      className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl text-text-secondary transition-colors"
+                      className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl text-auto-secondary transition-colors"
                     >
                       <Edit3 size={16} />
                     </Link>
@@ -159,7 +159,7 @@ export default function AdminNoticesPage() {
 
                 <div>
                   <h3 className="text-lg font-bold truncate mb-1">{notice.title}</h3>
-                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark line-clamp-3 leading-relaxed">
+                  <p className="text-sm text-auto-secondary line-clamp-3 leading-relaxed">
                     {notice.body}
                   </p>
                 </div>
@@ -170,7 +170,7 @@ export default function AdminNoticesPage() {
                       <CheckCircle2 size={10} /> Active
                     </span>
                   ) : (
-                    <span className="px-2.5 py-1 rounded-full bg-text-tertiary/10 text-text-tertiary border border-text-tertiary/20 flex items-center gap-1">
+                    <span className="px-2.5 py-1 rounded-full bg-text-tertiary/10 text-auto-tertiary border border-text-tertiary/20 flex items-center gap-1">
                       <AlertCircle size={10} /> Inactive
                     </span>
                   )}
@@ -183,7 +183,7 @@ export default function AdminNoticesPage() {
               </div>
 
               <div className="mt-8 pt-6 border-t border-border dark:border-border-dark flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs text-text-tertiary">
+                <div className="flex items-center gap-2 text-xs text-auto-tertiary">
                   <Calendar size={14} />
                   <span>{new Date(notice.created_at).toLocaleDateString()}</span>
                 </div>
@@ -202,11 +202,11 @@ export default function AdminNoticesPage() {
         </div>
       ) : (
         <div className="text-center py-24 glass rounded-[3rem] border border-dashed border-border dark:border-border-dark">
-          <div className="inline-flex p-6 rounded-[2rem] bg-bg-secondary dark:bg-white/5 text-text-tertiary mb-6">
+          <div className="inline-flex p-6 rounded-[2rem] bg-bg-secondary dark:bg-white/5 text-auto-tertiary mb-6">
             <Bell size={48} />
           </div>
           <h3 className="text-xl font-bold mb-2">No notices found</h3>
-          <p className="text-text-tertiary">Start by creating your first popup announcement.</p>
+          <p className="text-auto-tertiary">Start by creating your first popup announcement.</p>
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, HandHeart as Sparkles } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -57,7 +57,7 @@ export default function JoinUsCTA({ settings: initialSettings = null }) {
                   <Skeleton className="w-5/6 h-4" />
                 </div>
               ) : (
-                <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                <p className="text-lg text-auto-secondary leading-relaxed">
                   {settings?.join_cta_description}
                 </p>
               )}
@@ -118,7 +118,7 @@ export default function JoinUsCTA({ settings: initialSettings = null }) {
                     <div className="glass p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-6">
                       <Sparkles className="text-primary mx-auto mb-4" size={32} />
                       <h4 className="text-2xl font-bold mb-2">{settings?.join_cta_stat_title}</h4>
-                      <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                      <p className="text-sm text-auto-secondary">
                         {settings?.join_cta_stat_desc}
                       </p>
                     </div>

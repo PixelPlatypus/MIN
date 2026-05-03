@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Bell, X, ExternalLink, ArrowRight } from 'lucide-react'
+import { Bell, X, ArrowSquareOut as ExternalLink, ArrowRight } from '@phosphor-icons/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -23,7 +23,10 @@ export default function NoticePopup() {
         const res = await fetch('/api/notices/public')
         if (!res.ok) return
         
-        const notices = await res.json()
+        const text = await res.text()
+        if (!text || text.trim() === '') return
+        
+        const notices = JSON.parse(text)
         if (!Array.isArray(notices)) return
 
         const eligibleNotices = notices.filter(n => {
@@ -146,7 +149,7 @@ export default function NoticePopup() {
                     <h3 className="text-2xl font-black text-text-primary dark:text-white leading-tight font-sans tracking-tight">
                       {notice.title}
                     </h3>
-                    <p className="text-text-secondary dark:text-white/70 text-base leading-relaxed line-clamp-4">
+                    <p className="text-auto-secondary dark:text-white/70 text-base leading-relaxed line-clamp-4">
                       {notice.body}
                     </p>
                   </div>
@@ -172,7 +175,7 @@ export default function NoticePopup() {
                     
                     <button 
                       onClick={dismissPermanently}
-                      className="text-text-tertiary dark:text-white/40 hover:text-text-secondary dark:hover:text-white/60 text-[10px] font-bold uppercase tracking-widest transition-colors w-full text-center py-2"
+                      className="text-auto-tertiary dark:text-white/40 hover:text-auto-secondary dark:hover:text-white/60 text-[10px] font-bold uppercase tracking-widest transition-colors w-full text-center py-2"
                     >
                       Don't show this again
                     </button>

@@ -66,7 +66,7 @@ export default function TeamView({ initialTenures, initialMembers, initialTenure
               className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
                 activeTenure === tenure 
                   ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                  : 'glass border-transparent hover:border-primary/20 text-text-secondary hover:text-primary'
+                  : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary'
               }`}
             >
               {tenure === 'Alumni' || tenure === 'Advisors' ? tenure : `Tenure ${tenure}`}
@@ -104,7 +104,7 @@ export default function TeamView({ initialTenures, initialMembers, initialTenure
         </motion.div>
       ) : (
         <div className="text-center py-24 glass rounded-[3rem]">
-          <p className="text-xl text-text-tertiary">No team members found for this tenure.</p>
+          <p className="text-xl text-auto-tertiary">No team members found for this tenure.</p>
         </div>
       )}
     </section>

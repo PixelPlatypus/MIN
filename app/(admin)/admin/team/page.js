@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, UserPlus, Clock, Info, LayoutGrid, Table as TableIcon } from 'lucide-react'
+import { Plus, MagnifyingGlass as Search, DotsThreeVertical as MoreVertical, PencilSimple as Edit2, Trash as Trash2, Funnel as Filter, UserPlus, Clock, Info, SquaresFour as LayoutGrid, Table as TableIcon, ArrowSquareOut as ExternalLink, CaretUp as ChevronUp, CaretDown as ChevronDown, CircleNotch as Loader2 } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import TeamExcelView from '@/components/admin/TeamExcelView'
 import Link from 'next/link'
@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 const statusColors = {
   ACTIVE: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
   ALUMNI: 'bg-orange/10 text-orange border-orange/20',
-  INACTIVE: 'bg-text-tertiary/10 text-text-tertiary border-text-tertiary/20',
+  INACTIVE: 'bg-text-tertiary/10 text-auto-tertiary border-text-tertiary/20',
   REMOVED: 'bg-coral/10 text-coral border-coral/20',
 }
 
@@ -151,9 +151,9 @@ export default function AdminTeamPage() {
             bio: obj.bio || '',
             display_order: parseInt(obj.display_order) || 0,
             slug: obj.slug || null,
+            certificate_url: obj.certificate_url || null,
             is_advisor: obj.is_advisor?.toLowerCase() === 'true' || obj.is_advisor === '1' || obj.is_advisor?.toLowerCase() === 'yes',
             social_links: {
-              certificate_url: obj.certificate_url || '',
               role_history: []
             }
           }
@@ -209,10 +209,10 @@ export default function AdminTeamPage() {
         <div>
           <h2 className="text-2xl font-black tracking-tighter mb-1 text-dynamic uppercase">Team Management</h2>
           <div className="flex flex-col gap-1">
-            <p className="text-text-secondary dark:text-text-tertiary text-sm font-bold opacity-60">
+            <p className="text-auto-secondary dark:text-auto-tertiary text-sm font-bold opacity-60">
               Orchestrate your human capital, roles, and historical tenures.
             </p>
-            <details className="text-[9px] text-text-tertiary font-bold group cursor-pointer">
+            <details className="text-[9px] text-auto-tertiary font-bold group cursor-pointer">
               <summary className="hover:text-primary transition-colors uppercase tracking-widest list-none flex items-center gap-1">
                 <Info size={10} /> View CSV Import Format
               </summary>
@@ -278,19 +278,19 @@ export default function AdminTeamPage() {
           {/* Filters & Search */}
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1 glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-white/10 focus-within:border-primary transition-all shadow-sm">
-              <Search size={18} className="text-text-tertiary" />
+              <Search size={18} className="text-auto-tertiary" />
               <input 
                 suppressHydrationWarning
                 type="text" 
                 placeholder="Search by name or position..." 
-                className="bg-transparent border-none text-sm font-bold focus:outline-none w-full placeholder:text-text-tertiary"
+                className="bg-transparent border-none text-sm font-bold focus:outline-none w-full placeholder:text-auto-tertiary"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 glass px-4 py-2.5 rounded-2xl border border-border dark:border-white/10">
-                <Filter size={18} className="text-text-tertiary" />
+                <Filter size={18} className="text-auto-tertiary" />
                 <select 
                   className="bg-transparent text-[10px] font-black uppercase tracking-widest focus:outline-none cursor-pointer"
                   value={filter}
@@ -305,7 +305,7 @@ export default function AdminTeamPage() {
               </div>
               
               <div className="flex items-center gap-2 glass px-4 py-2.5 rounded-2xl border border-border dark:border-white/10">
-                <Clock size={18} className="text-text-tertiary" />
+                <Clock size={18} className="text-auto-tertiary" />
                 <select 
                   className="bg-transparent text-[10px] font-black uppercase tracking-widest focus:outline-none cursor-pointer"
                   value={tenureFilter}
@@ -325,7 +325,7 @@ export default function AdminTeamPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-separate border-spacing-0">
                   <thead>
-                    <tr className="bg-bg-secondary dark:bg-white/5 text-text-tertiary dark:text-text-tertiary-dark text-[10px] uppercase tracking-[0.2em] font-black">
+                    <tr className="bg-bg-secondary dark:bg-white/5 text-auto-tertiary text-[10px] uppercase tracking-[0.2em] font-black">
                       <th className="px-8 py-5 border-b border-border dark:border-white/10">Member</th>
                       <th className="px-8 py-5 border-b border-border dark:border-white/10">Position</th>
                       <th className="px-8 py-5 border-b border-border dark:border-white/10">Tenure</th>
@@ -347,12 +347,12 @@ export default function AdminTeamPage() {
                             </div>
                             <div className="flex flex-col min-w-0">
                               <span className="text-sm font-black truncate text-text-main dark:text-white">{member.name}</span>
-                              <span className="text-[10px] font-bold text-text-tertiary uppercase tracking-wider tabular-nums">Joined {new Date(member.joined_date).getFullYear()}</span>
+                              <span className="text-[10px] font-bold text-auto-tertiary uppercase tracking-wider tabular-nums">Joined {new Date(member.joined_date).getFullYear()}</span>
                             </div>
                           </div>
                         </td>
                         <td className="px-8 py-5">
-                          <span className="text-sm font-medium text-text-secondary dark:text-text-tertiary">{member.position}</span>
+                          <span className="text-sm font-medium text-auto-secondary dark:text-auto-tertiary">{member.position}</span>
                         </td>
                         <td className="px-8 py-5">
                           <span className="inline-flex items-center justify-center text-xs font-black text-primary px-4 py-1.5 rounded-full bg-primary/10 border border-primary/10 shadow-sm tabular-nums">
@@ -369,14 +369,14 @@ export default function AdminTeamPage() {
                             <button 
                               onClick={() => handleEdit(member.id)}
                               title="Edit Member"
-                              className="p-2.5 rounded-xl text-text-tertiary hover:text-primary hover:bg-primary/10 transition-all active:scale-95"
+                              className="p-2.5 rounded-xl text-auto-tertiary hover:text-primary hover:bg-primary/10 transition-all active:scale-95"
                             >
                               <Edit2 size={18} />
                             </button>
                             <button 
                               onClick={() => handleDelete(member.id, member.name)}
                               title="Delete Member"
-                              className="p-2.5 rounded-xl text-text-tertiary hover:text-coral hover:bg-coral/10 transition-all active:scale-95"
+                              className="p-2.5 rounded-xl text-auto-tertiary hover:text-coral hover:bg-coral/10 transition-all active:scale-95"
                             >
                               <Trash2 size={18} />
                             </button>
@@ -389,10 +389,10 @@ export default function AdminTeamPage() {
               </div>
             ) : (
               <div className="text-center py-32 flex flex-col items-center gap-4">
-                <div className="w-16 h-16 bg-bg-secondary dark:bg-white/5 rounded-3xl flex items-center justify-center text-text-tertiary">
+                <div className="w-16 h-16 bg-bg-secondary dark:bg-white/5 rounded-3xl flex items-center justify-center text-auto-tertiary">
                   <Search size={32} />
                 </div>
-                <p className="text-sm font-bold text-text-tertiary">No team members found matching your search.</p>
+                <p className="text-sm font-bold text-auto-tertiary">No team members found matching your search.</p>
               </div>
             )}
           </div>

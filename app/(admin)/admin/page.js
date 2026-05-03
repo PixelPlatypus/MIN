@@ -3,15 +3,15 @@ import {
   Users, 
   Calendar, 
   FileText, 
-  TrendingUp, 
+  TrendUp, 
   Clock, 
   ArrowUpRight, 
   ArrowDownRight,
-  MoreVertical,
-  AlertCircle,
+  DotsThreeVertical,
+  WarningCircle,
   ArrowRight,
-  History
-} from 'lucide-react'
+  ClockCounterClockwise as History
+} from '@phosphor-icons/react/dist/ssr'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -42,7 +42,7 @@ export default async function AdminDashboard() {
     supabase.from('team_members').select('*', { count: 'exact', head: true }).eq('is_active', true).gt('created_at', dateStr),
     supabase.from('join_applications').select('*', { count: 'exact', head: true }).eq('status', 'PENDING'),
     supabase.from('join_applications').select('*', { count: 'exact', head: true }).eq('status', 'PENDING').gt('created_at', dateStr),
-    supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(5),
+    supabase.from('audit_log').select('*').eq('actor_id', user.id).order('created_at', { ascending: false }).limit(5),
     supabase.from('site_settings').select('is_maintenance_mode').eq('id', 'main').single()
   ])
 
@@ -94,7 +94,7 @@ export default async function AdminDashboard() {
       value: applicationsCount || 0, 
       change: appTrend.change, 
       trend: appTrend.trend, 
-      icon: <TrendingUp className="text-green" />,
+      icon: <TrendUp className="text-green" />,
       color: 'bg-green/10'
     },
   ]
@@ -104,7 +104,7 @@ export default async function AdminDashboard() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">Welcome back, {user?.email?.split('@')[0]}</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Here's what's happening with MIN this week.
           </p>
         </div>
@@ -117,7 +117,7 @@ export default async function AdminDashboard() {
         <div className="p-6 rounded-[2.5rem] bg-rose-500/10 border border-rose-500/20 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-rose-500/5 animate-in slide-in-from-top-4 duration-500">
            <div className="flex items-center gap-5">
               <div className="w-14 h-14 bg-rose-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-rose-500/20 animate-pulse">
-                 <AlertCircle size={32} />
+                 <WarningCircle size={32} />
               </div>
               <div className="space-y-1">
                  <h3 className="text-xl font-black text-rose-600">Site Maintenance Active</h3>
@@ -140,18 +140,18 @@ export default async function AdminDashboard() {
               <div className={`w-12 h-12 ${stat.color} rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110`}>
                 {stat.icon}
               </div>
-              <button className="text-text-tertiary hover:text-text-primary transition-colors">
-                <MoreVertical size={18} />
+              <button className="text-auto-tertiary hover:text-text-primary transition-colors">
+                <DotsThreeVertical size={18} />
               </button>
             </div>
             <div className="space-y-1">
-              <p className="text-xs font-medium text-text-tertiary dark:text-text-tertiary-dark uppercase tracking-wider">
+              <p className="text-xs font-medium text-auto-tertiary uppercase tracking-wider">
                 {stat.label}
               </p>
               <div className="flex items-end gap-3">
                 <h3 className="text-3xl font-bold tracking-tight">{stat.value}</h3>
                 <div className={`flex items-center gap-0.5 text-xs font-bold mb-1 ${
-                  stat.trend === 'up' ? 'text-green' : stat.trend === 'down' ? 'text-coral' : 'text-text-tertiary'
+                  stat.trend === 'up' ? 'text-green' : stat.trend === 'down' ? 'text-coral' : 'text-auto-tertiary'
                 }`}>
                   {stat.trend === 'up' && <ArrowUpRight size={14} />}
                   {stat.trend === 'down' && <ArrowDownRight size={14} />}
@@ -167,30 +167,30 @@ export default async function AdminDashboard() {
         <div className="lg:col-span-2 glass rounded-3xl p-8 shadow-sm">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="text-lg font-bold mb-1">Recent Activity</h3>
-              <p className="text-xs text-text-tertiary">Latest actions across the platform</p>
+              <h3 className="text-lg font-bold mb-1">Your Recent Activity</h3>
+              <p className="text-xs text-auto-tertiary">Your latest actions on the platform</p>
             </div>
             <button className="text-xs font-semibold text-primary hover:underline">View All</button>
           </div>
           
           <div className="space-y-6">
             {!recentAudit || recentAudit.length === 0 ? (
-              <p className="text-xs text-text-tertiary py-8 text-center">No recent activity found.</p>
+              <p className="text-xs text-auto-tertiary py-8 text-center">No recent activity found.</p>
             ) : (
               recentAudit.map((log) => (
                 <div key={log.id} className="flex items-start gap-4 group">
                   <div className="w-10 h-10 rounded-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center flex-shrink-0">
-                    <Clock size={18} className="text-text-tertiary" />
+                    <Clock size={18} className="text-auto-tertiary" />
                   </div>
                   <div className="flex-1 border-b border-border dark:border-border-dark pb-6 group-last:border-none group-last:pb-0">
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-sm font-bold">{log.action.replace(/_/g, ' ')}</p>
-                      <span className="text-[10px] text-text-tertiary">
+                      <span className="text-[10px] text-auto-tertiary">
                         {new Date(log.created_at).toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-xs text-text-secondary dark:text-text-secondary-dark">
-                      <span className="font-semibold text-primary">{log.actor_name || 'System'}</span> performed an action on {log.entity_type}.
+                    <p className="text-xs text-auto-secondary">
+                      You performed an action on <span className="font-semibold text-primary">{log.entity_type}</span>.
                     </p>
                   </div>
                 </div>
@@ -203,7 +203,7 @@ export default async function AdminDashboard() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-lg font-bold mb-1">Quick Actions</h3>
-              <p className="text-xs text-text-tertiary">Commonly used tasks</p>
+              <p className="text-xs text-auto-tertiary">Commonly used tasks</p>
             </div>
           </div>
           
@@ -211,7 +211,7 @@ export default async function AdminDashboard() {
             {[
               { label: 'Create Content', icon: <FileText size={16} />, color: 'bg-primary', href: '/admin/content/new' },
               { label: 'New Event', icon: <Calendar size={16} />, color: 'bg-cyan', href: '/admin/events/new' },
-              { label: 'Site Editor', icon: <TrendingUp size={16} />, color: 'bg-green', href: '/admin/settings' },
+              { label: 'Site Editor', icon: <TrendUp size={16} />, color: 'bg-green', href: '/admin/settings' },
               { label: 'Build Form', icon: <FileText size={16} />, color: 'bg-orange-500', href: '/admin/applications/builder' },
               { label: 'Forensic Logs', icon: <History size={16} />, color: 'bg-slate-700', href: '/admin/audit' },
             ].map((action) => (
@@ -226,7 +226,7 @@ export default async function AdminDashboard() {
                   </div>
                   <span className="text-sm font-semibold">{action.label}</span>
                 </div>
-                <ArrowRight size={16} className="text-text-tertiary transition-transform group-hover:translate-x-1" />
+                <ArrowRight size={16} className="text-auto-tertiary transition-transform group-hover:translate-x-1" />
               </a>
             ))}
           </div>

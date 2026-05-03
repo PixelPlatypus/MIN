@@ -2,11 +2,11 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  History, Search, Loader2, Link as LinkIcon, 
-  ShieldAlert, User, Activity, Clock, Trash2, 
-  Filter, ChevronRight, Eye, Smartphone, Monitor,
-  Layers, Database, FileText, Settings, XCircle
-} from 'lucide-react'
+  ClockCounterClockwise as History, MagnifyingGlass as Search, CircleNotch as Loader2, Link as LinkIcon, 
+  ShieldWarning as ShieldAlert, User, Activity, Clock, Trash as Trash2, 
+  Funnel as Filter, CaretRight as ChevronRight, Eye, Smartphone, Monitor,
+  Stack as Layers, Database, FileText, Gear as Settings, XCircle
+} from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 
 export default function AuditLogPage() {
@@ -93,7 +93,7 @@ export default function AuditLogPage() {
            <div>
              <h2 className="text-4xl font-black tracking-tighter text-dynamic leading-none">Forensic Stream</h2>
              <div className="flex items-center gap-3 mt-2">
-                <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+                <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
                    <Clock size={12} /> 30-Day Retention Active
                 </span>
                 <span className="w-1 h-1 rounded-full bg-border" />
@@ -118,7 +118,7 @@ export default function AuditLogPage() {
         {/* Management Rail */}
         <aside className="lg:w-80 space-y-8 flex-shrink-0">
            <div className="space-y-6">
-              <h5 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary/60">Forensic Filters</h5>
+              <h5 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-auto-tertiary/60">Forensic Filters</h5>
               
               <div className="glass p-6 rounded-[2.5rem] border border-border space-y-6 shadow-sm">
                  {/* Actor Filter */}
@@ -146,7 +146,7 @@ export default function AuditLogPage() {
                          <button
                             key={act}
                             onClick={() => setFilters({...filters, action: filters.action === act ? '' : act})}
-                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${filters.action === act ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-bg-secondary text-text-tertiary hover:text-primary border border-transparent hover:border-primary/20'}`}
+                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${filters.action === act ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-bg-secondary text-auto-tertiary hover:text-primary border border-transparent hover:border-primary/20'}`}
                          >
                            {act}
                          </button>
@@ -162,7 +162,7 @@ export default function AuditLogPage() {
                          <button
                             key={cat.id}
                             onClick={() => setFilters({...filters, entity_type: filters.entity_type === cat.id ? '' : cat.id})}
-                            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${filters.entity_type === cat.id ? 'bg-primary/10 text-primary border-primary shadow-sm' : 'bg-transparent text-text-tertiary border-border hover:border-primary/50 hover:text-primary'}`}
+                            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${filters.entity_type === cat.id ? 'bg-primary/10 text-primary border-primary shadow-sm' : 'bg-transparent text-auto-tertiary border-border hover:border-primary/50 hover:text-primary'}`}
                          >
                            {cat.icon}
                            {cat.name}
@@ -174,15 +174,15 @@ export default function AuditLogPage() {
            </div>
 
            <div className="p-8 glass rounded-[2.5rem] border border-dashed border-border flex flex-col items-center text-center space-y-4">
-              <ShieldAlert size={40} className="text-text-tertiary/20" />
-              <p className="text-[11px] text-text-tertiary font-bold leading-relaxed px-4">Cryptographic integrity verified. Logs represent absolute source of truth.</p>
+              <ShieldAlert size={40} className="text-auto-tertiary/20" />
+              <p className="text-[11px] text-auto-tertiary font-bold leading-relaxed px-4">Cryptographic integrity verified. Logs represent absolute source of truth.</p>
            </div>
         </aside>
 
         {/* Audit Stream */}
         <div className="flex-1 space-y-6">
            <div className="glass px-6 py-4 rounded-2xl flex items-center gap-4 border border-border shadow-sm focus-within:border-primary transition-all">
-              <Search size={20} className="text-text-tertiary" />
+              <Search size={20} className="text-auto-tertiary" />
               <input 
                 type="text" 
                 placeholder="Search the forensic stream..." 
@@ -218,7 +218,7 @@ export default function AuditLogPage() {
                                     {log.action}
                                  </span>
                               </div>
-                              <div className="flex items-center gap-2 text-[10px] font-bold text-text-tertiary">
+                              <div className="flex items-center gap-2 text-[10px] font-bold text-auto-tertiary">
                                  <span className="flex items-center gap-1"><History size={10}/> {new Date(log.created_at).toLocaleDateString()}</span>
                                  <span className="opacity-30">•</span>
                                  <span className="font-mono bg-text-tertiary/5 px-1.5 rounded uppercase text-[9px] tracking-tight">{log.entity_type}</span>
@@ -226,9 +226,9 @@ export default function AuditLogPage() {
                            </div>
                         </div>
                         <div className="text-right flex-shrink-0">
-                           <p className="text-[10px] font-black text-text-tertiary uppercase tracking-widest mb-1">{new Date(log.created_at).toLocaleTimeString()}</p>
+                           <p className="text-[10px] font-black text-auto-tertiary uppercase tracking-widest mb-1">{new Date(log.created_at).toLocaleTimeString()}</p>
                            <div className="flex justify-end">
-                              <ChevronRight size={18} className={`text-text-tertiary transition-transform ${selectedLog?.id === log.id ? 'rotate-90 text-primary' : 'group-hover:translate-x-1'}`} />
+                              <ChevronRight size={18} className={`text-auto-tertiary transition-transform ${selectedLog?.id === log.id ? 'rotate-90 text-primary' : 'group-hover:translate-x-1'}`} />
                            </div>
                         </div>
                      </div>
@@ -237,11 +237,11 @@ export default function AuditLogPage() {
               ) : (
                 <div className="py-40 text-center space-y-6">
                    <div className="w-20 h-20 bg-bg-secondary dark:bg-white/5 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                      <ShieldAlert size={40} className="text-text-tertiary/20" />
+                      <ShieldAlert size={40} className="text-auto-tertiary/20" />
                    </div>
                    <div className="space-y-1">
-                      <p className="text-xs font-black uppercase tracking-[0.2em] text-text-secondary">No incidents detected.</p>
-                      <p className="text-[10px] text-text-tertiary font-medium">Try broadening your forensic parameters.</p>
+                      <p className="text-xs font-black uppercase tracking-[0.2em] text-auto-secondary">No incidents detected.</p>
+                      <p className="text-[10px] text-auto-tertiary font-medium">Try broadening your forensic parameters.</p>
                    </div>
                 </div>
               )}
@@ -261,10 +261,10 @@ export default function AuditLogPage() {
                    <div className="flex justify-between items-start mb-10">
                       <div>
                          <h3 className="text-2xl font-black tracking-tight mb-1 leading-none">Payload Analysis</h3>
-                         <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary mt-2">UUID: <span className="font-mono">{selectedLog.id.slice(0,12)}...</span></p>
+                         <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mt-2">UUID: <span className="font-mono">{selectedLog.id.slice(0,12)}...</span></p>
                       </div>
                       <button onClick={() => setSelectedLog(null)} className="p-2 hover:bg-bg-secondary dark:hover:bg-white/10 rounded-xl transition-all">
-                         <XCircle size={24} className="text-text-tertiary hover:text-coral transition-colors" />
+                         <XCircle size={24} className="text-auto-tertiary hover:text-coral transition-colors" />
                       </button>
                    </div>
 
@@ -274,7 +274,7 @@ export default function AuditLogPage() {
                             <Monitor size={16} className="text-primary" />
                             <span className="text-[10px] font-black uppercase tracking-widest">Client Signature</span>
                          </div>
-                         <p className="text-[11px] font-mono leading-relaxed text-text-tertiary break-all line-clamp-3">
+                         <p className="text-[11px] font-mono leading-relaxed text-auto-tertiary break-all line-clamp-3">
                             {selectedLog.meta?.browser || 'System/Server-Level Execution'}
                          </p>
                       </div>
@@ -287,26 +287,26 @@ export default function AuditLogPage() {
                             <div className="space-y-3">
                                {Object.entries(selectedLog.meta.changes).map(([key, changeData]) => (
                                  <div key={key} className="bg-bg-secondary dark:bg-white/5 rounded-3xl p-5 border border-border shadow-inner">
-                                    <span className="text-[10px] font-black uppercase tracking-[0.1em] text-text-tertiary mb-3 block border-b border-border/50 pb-2">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.1em] text-auto-tertiary mb-3 block border-b border-border/50 pb-2">
                                        {key.replace(/_/g, ' ')}
                                     </span>
                                     {changeData?.from !== undefined && changeData?.to !== undefined ? (
                                       <div className="grid grid-cols-2 gap-4">
                                          <div className="space-y-2">
                                             <span className="inline-block text-[8px] font-black text-coral uppercase tracking-widest bg-coral/10 px-2 py-0.5 rounded leading-none">Previous</span>
-                                            <p className="text-[10px] font-mono text-text-secondary break-all bg-black/5 dark:bg-black/40 p-3 rounded-2xl border border-coral/10">
+                                            <p className="text-[10px] font-mono text-auto-secondary break-all bg-black/5 dark:bg-black/40 p-3 rounded-2xl border border-coral/10">
                                                {changeData.from ? String(changeData.from) : 'NULL'}
                                             </p>
                                          </div>
                                          <div className="space-y-2">
                                             <span className="inline-block text-[8px] font-black text-green uppercase tracking-widest bg-green/10 px-2 py-0.5 rounded leading-none">Current</span>
-                                            <p className="text-[10px] font-mono text-text-secondary break-all bg-black/5 dark:bg-black/40 p-3 rounded-2xl border border-green/10 hidden-scrollbar overflow-x-auto">
+                                            <p className="text-[10px] font-mono text-auto-secondary break-all bg-black/5 dark:bg-black/40 p-3 rounded-2xl border border-green/10 hidden-scrollbar overflow-x-auto">
                                                {changeData.to ? String(changeData.to) : 'NULL'}
                                             </p>
                                          </div>
                                       </div>
                                     ) : (
-                                      <p className="text-[10px] font-mono text-text-secondary bg-black/5 dark:bg-black/40 p-3 rounded-2xl">
+                                      <p className="text-[10px] font-mono text-auto-secondary bg-black/5 dark:bg-black/40 p-3 rounded-2xl">
                                          {String(changeData)}
                                       </p>
                                     )}
@@ -318,7 +318,7 @@ export default function AuditLogPage() {
 
                       <div className="space-y-4">
                          <div className="flex items-center justify-between border-b border-border pb-2">
-                            <h5 className="text-[10px] font-black uppercase tracking-widest text-text-tertiary flex items-center gap-2">
+                            <h5 className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary flex items-center gap-2">
                                <Layers size={14}/> Raw Payload
                             </h5>
                             <button 
@@ -332,13 +332,13 @@ export default function AuditLogPage() {
                             </button>
                          </div>
                          <div className="bg-black/5 dark:bg-black/40 p-6 rounded-3xl border border-border shadow-inner overflow-hidden relative group">
-                            <pre className="text-[10px] font-mono text-text-secondary leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-[250px] scrollbar-hide">
+                            <pre className="text-[10px] font-mono text-auto-secondary leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-[250px] scrollbar-hide">
                                {JSON.stringify(selectedLog.meta, null, 2)}
                             </pre>
                          </div>
                       </div>
 
-                      <div className="pt-6 border-t border-border/50 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+                      <div className="pt-6 border-t border-border/50 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
                          <span>RELATION_KEY</span>
                          <span className="font-mono text-dynamic bg-bg-secondary dark:bg-white/5 px-2 py-1 rounded truncate max-w-[200px]">{selectedLog.entity_id || 'NULL'}</span>
                       </div>

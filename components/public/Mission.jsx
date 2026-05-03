@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { CheckCircle2, Award, Target, Heart } from 'lucide-react'
+import { CheckCircle, Trophy, Target, Heart } from '@phosphor-icons/react'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/Skeleton'
 
@@ -32,22 +32,22 @@ export default function Mission({ settings: initialSettings = null }) {
     { 
       title: settings.mission_f1_title, 
       desc: settings.mission_f1_desc,
-      icon: <CheckCircle2 className="text-primary" />
+      icon: <CheckCircle size={24} weight="fill" className="text-primary" />
     },
     { 
       title: settings.mission_f2_title, 
       desc: settings.mission_f2_desc,
-      icon: <Award className="text-cyan" />
+      icon: <Trophy size={24} weight="fill" className="text-cyan" />
     },
     { 
       title: settings.mission_f3_title, 
       desc: settings.mission_f3_desc,
-      icon: <Target className="text-purple" />
+      icon: <Target size={24} weight="fill" className="text-purple" />
     },
     { 
       title: settings.mission_f4_title, 
       desc: settings.mission_f4_desc,
-      icon: <Heart className="text-coral" />
+      icon: <Heart size={24} weight="fill" className="text-coral" />
     },
   ] : []
 
@@ -81,7 +81,7 @@ export default function Mission({ settings: initialSettings = null }) {
                   <Skeleton className="w-5/6 h-4" />
                 </div>
               ) : (
-                <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                <p className="text-lg text-auto-secondary leading-relaxed">
                   {settings?.mission_description}
                 </p>
               )}
@@ -104,7 +104,7 @@ export default function Mission({ settings: initialSettings = null }) {
                     {feature.icon}
                   </div>
                   <h4 className="font-bold text-lg">{feature.title}</h4>
-                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                  <p className="text-sm text-auto-secondary leading-relaxed">
                     {feature.desc}
                   </p>
                 </div>
@@ -147,7 +147,7 @@ export default function Mission({ settings: initialSettings = null }) {
               <p className="text-sm font-bold leading-tight mb-2">
                 {settings?.mission_rec_title}
               </p>
-              <p className="text-xs text-text-secondary dark:text-text-secondary-dark">
+              <p className="text-xs text-auto-secondary">
                 {settings?.mission_rec_desc}
               </p>
             </div>

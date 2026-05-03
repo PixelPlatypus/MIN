@@ -1,28 +1,12 @@
 'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Home, ArrowLeft, AlertCircle } from 'lucide-react'
+import { House as Home, ArrowLeft, WarningCircle as AlertCircle } from '@phosphor-icons/react'
 
 import { useEffect } from 'react'
 
 export default function NotFound() {
   useEffect(() => {
-    // Report 404 to admin via email
-    try {
-      fetch('/api/report-error', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          errorName: '404 Not Found',
-          errorMessage: 'User attempted to access a non-existent page',
-          errorStack: 'No stack trace (404 Error)',
-          url: window.location.href
-        })
-      }).catch(err => console.error('Failed to send 404 report:', err))
-    } catch (e) {
-      console.error('Error reporting logic failed:', e)
-    }
-
     // Auto-redirect after 10 seconds
     const timer = setTimeout(() => {
       window.location.href = '/'
@@ -45,7 +29,7 @@ export default function NotFound() {
         className="max-w-xl w-full glass bg-bg-secondary-dynamic/40 border-border-dynamic backdrop-blur-3xl rounded-[3.5rem] p-10 md:p-16 text-center space-y-10 relative z-10 shadow-2xl"
       >
         {/* Branding inside the box */}
-        <div className="text-text-tertiary-dynamic text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-80">
+        <div className="text-auto-tertiary-dynamic text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-80">
           Mathematics Initiatives in Nepal
         </div>
 
@@ -68,7 +52,7 @@ export default function NotFound() {
             Lost in <br /> 
             <span className="text-secondary">the Universe</span>
           </h1>
-          <p className="text-text-secondary-dynamic text-base font-medium leading-relaxed max-w-sm mx-auto">
+          <p className="text-auto-secondary-dynamic text-base font-medium leading-relaxed max-w-sm mx-auto">
             The page you're looking for doesn't exist. Maybe it was an irrational number or just a rounding error.
           </p>
         </div>
@@ -91,7 +75,7 @@ export default function NotFound() {
         </div>
 
         <div className="pt-10 border-t border-border-dynamic">
-           <p className="text-[10px] text-text-tertiary-dynamic font-black uppercase tracking-[0.3em]">
+           <p className="text-[10px] text-auto-tertiary-dynamic font-black uppercase tracking-[0.3em]">
              Redirecting to home shortly...
            </p>
         </div>

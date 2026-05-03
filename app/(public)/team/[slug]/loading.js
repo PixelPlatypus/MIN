@@ -48,11 +48,6 @@ export default function TeamProfileLoading() {
               </div>
             </div>
 
-            {/* Certificate */}
-            <div className="space-y-6">
-              <div className="h-6 w-32 bg-bg-secondary dark:bg-white/5 rounded animate-pulse" />
-              <div className="h-96 rounded-[3rem] bg-bg-secondary dark:bg-white/5 animate-pulse border border-white/5" />
-            </div>
           </div>
         </div>
       </div>

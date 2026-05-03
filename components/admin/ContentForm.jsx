@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Save, ArrowLeft, Loader2, AlertCircle, ImageIcon, FileText, FileDown, Plus, X, Video } from 'lucide-react'
+import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle, Image as ImageIcon, FileText, DownloadSimple as FileDown, Plus, X, Video } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -130,7 +130,7 @@ export default function ContentForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/content" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-text-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
           >
             <ArrowLeft size={20} />
           </Link>
@@ -159,7 +159,7 @@ export default function ContentForm({ initialData = null }) {
                     className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold transition-all ${
                       watch('content_type') === mode 
                         ? 'bg-white dark:bg-white/10 shadow-sm text-primary' 
-                        : 'text-text-tertiary hover:text-text-secondary'
+                        : 'text-auto-tertiary hover:text-auto-secondary'
                     }`}
                   >
                     {mode === 'RICHTEXT' ? 'Rich Text Editor' : mode === 'PDF' ? 'PDF Document' : 'Video Content'}
@@ -216,7 +216,7 @@ export default function ContentForm({ initialData = null }) {
                       <FileDown size={32} />
                     </div>
                     <h4 className="font-bold">Upload PDF Document</h4>
-                    <p className="text-xs text-text-tertiary">Max size: 10MB. Document will be hosted on Cloudinary.</p>
+                    <p className="text-xs text-auto-tertiary">Max size: 10MB. Document will be hosted on Cloudinary.</p>
                   </div>
                   
                   {pdfUrl && (
@@ -231,7 +231,7 @@ export default function ContentForm({ initialData = null }) {
                           setValue('pdf_url', '')
                           setValue('pdf_filename', '')
                         }}
-                        className="text-text-tertiary hover:text-coral transition-colors"
+                        className="text-auto-tertiary hover:text-coral transition-colors"
                       >
                         <X size={18} />
                       </button>
@@ -259,11 +259,11 @@ export default function ContentForm({ initialData = null }) {
                       <Video size={32} />
                     </div>
                     <h4 className="font-bold">YouTube Video / Playlist</h4>
-                    <p className="text-xs text-text-tertiary">Enter a YouTube link to automatically fetch thumbnail and data.</p>
+                    <p className="text-xs text-auto-tertiary">Enter a YouTube link to automatically fetch thumbnail and data.</p>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary ml-1">YouTube URL</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-auto-tertiary ml-1">YouTube URL</label>
                     <input 
                       {...register('video_url')}
                       placeholder="https://www.youtube.com/watch?v=... or https://youtube.com/playlist?list=..."
@@ -306,7 +306,7 @@ export default function ContentForm({ initialData = null }) {
 
                   {watch('video_metadata')?.is_playlist && (
                     <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary ml-1">Number of Videos in Playlist</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-auto-tertiary ml-1">Number of Videos in Playlist</label>
                       <input 
                         type="number"
                         placeholder="e.g. 12"
@@ -372,7 +372,7 @@ export default function ContentForm({ initialData = null }) {
                 {coverUrl ? (
                   <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-text-tertiary">
+                  <div className="w-full h-full flex items-center justify-center text-auto-tertiary">
                     <ImageIcon size={48} />
                   </div>
                 )}
@@ -447,7 +447,7 @@ export default function ContentForm({ initialData = null }) {
               </button>
               <Link 
                 href="/admin/content"
-                className="w-full px-8 py-4 rounded-2xl text-sm font-bold text-text-secondary text-center hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
+                className="w-full px-8 py-4 rounded-2xl text-sm font-bold text-auto-secondary text-center hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
               >
                 Cancel
               </Link>

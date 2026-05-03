@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Users, Search, PlusCircle, Loader2, Shield, Trash2, Edit2, CheckCircle2, XCircle, UserCheck } from 'lucide-react'
+import { Users, MagnifyingGlass as Search, PlusCircle, CircleNotch as Loader2, Shield, Trash as Trash2, PencilSimple as Edit2, CheckCircle as CheckCircle2, XCircle, UserCheck } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 
@@ -94,7 +94,7 @@ export default function AdminUsersPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">User Management</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Manage admin, manager, and writer accounts.
           </p>
         </div>
@@ -108,11 +108,11 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="flex-1 glass px-4 py-2 rounded-xl flex items-center gap-3 border border-border dark:border-border-dark group-focus-within:border-primary transition-all max-w-md">
-        <Search size={18} className="text-text-tertiary" />
+        <Search size={18} className="text-auto-tertiary" />
         <input 
           type="text" 
           placeholder="Search by name or email..." 
-          className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary"
+          className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -126,7 +126,7 @@ export default function AdminUsersPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-bg-secondary dark:bg-white/5 text-text-tertiary dark:text-text-tertiary-dark text-[10px] uppercase tracking-widest font-bold">
+                <tr className="bg-bg-secondary dark:bg-white/5 text-auto-tertiary text-[10px] uppercase tracking-widest font-bold">
                   <th className="px-6 py-4">Name / Email</th>
                   <th className="px-6 py-4">Role</th>
                   <th className="px-6 py-4">Joined</th>
@@ -150,7 +150,7 @@ export default function AdminUsersPage() {
                               </span>
                             )}
                           </div>
-                          <span className="text-xs text-text-tertiary truncate">{user.email}</span>
+                          <span className="text-xs text-auto-tertiary truncate">{user.email}</span>
                         </div>
                       </div>
                     </td>
@@ -159,14 +159,14 @@ export default function AdminUsersPage() {
                         user.role === 'ADMIN' ? 'bg-coral/10 text-coral border-coral/20' :
                         user.role === 'MANAGER' ? 'bg-purple-500/10 text-purple-500 border-purple-500/20' :
                         user.role === 'WEBSITE_MANAGER' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
-                        'bg-text-tertiary/10 text-text-secondary border-text-tertiary/20'
+                        'bg-text-tertiary/10 text-auto-secondary border-text-tertiary/20'
                       }`}>
                         {user.role === 'ADMIN' && <Shield size={10} />}
                         {user.role.replace('_', ' ')}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-text-secondary">
+                      <span className="text-sm text-auto-secondary">
                         {new Date(user.created_at).toLocaleDateString()}
                       </span>
                     </td>
@@ -192,7 +192,7 @@ export default function AdminUsersPage() {
                       </div>
                       <Link
                         href={`/admin/users/${user.id}`}
-                        className="text-text-tertiary hover:text-primary hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
+                        className="text-auto-tertiary hover:text-primary hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
                         title="Edit User"
                       >
                         <Edit2 size={16} />
@@ -213,7 +213,7 @@ export default function AdminUsersPage() {
           </div>
         ) : (
           <div className="text-center py-24">
-            <p className="text-text-tertiary">No users found.</p>
+            <p className="text-auto-tertiary">No users found.</p>
           </div>
         )}
       </div>

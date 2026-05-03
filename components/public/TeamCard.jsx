@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Facebook, Instagram, Linkedin, Github, Mail, Globe, ExternalLink } from 'lucide-react'
+import { FacebookLogo as Facebook, InstagramLogo as Instagram, LinkedinLogo as Linkedin, GithubLogo as Github, Envelope as Mail, Globe, ArrowSquareOut as ExternalLink } from '@phosphor-icons/react'
 
 const socialIcons = {
   facebook: <Facebook size={18} />,
@@ -78,20 +78,20 @@ export default function TeamCard({ member, index, fallbackImage, activeTab }) {
             </div>
 
           {/* Bio */}
-          <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
+          <p className="text-sm text-auto-secondary leading-relaxed mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
             {bio}
           </p>
 
           {/* Social Links */}
           <div className="flex items-center justify-center gap-3 mt-auto pointer-events-auto">
             {Object.entries(social_links || {}).map(([platform, url]) => (
-              platform !== 'certificate_url' && typeof url === 'string' && url.trim() !== '' && (
+              platform !== 'role_history' && typeof url === 'string' && url.trim() !== '' && (
                 <a 
                   key={platform} 
                   href={platform.toLowerCase() === 'email' ? `mailto:${url}` : url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-text-secondary hover:text-primary dark:text-text-secondary-dark dark:hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1 z-20"
+                  className="w-9 h-9 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-auto-secondary hover:text-primary dark:text-auto-secondary-dark dark:hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1 z-20"
                   aria-label={`${name}'s ${platform}`}
                 >
                   {socialIcons[platform.toLowerCase()] || <ExternalLink size={18} />}

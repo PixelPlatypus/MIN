@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import Link from 'next/link'
-import { Plus, Search, Trash2, Filter, Image as ImageIcon, Upload, X, Save, Pencil, GripVertical, Check } from 'lucide-react'
+import { Plus, MagnifyingGlass as Search, Trash as Trash2, Funnel as Filter, Image as ImageIcon, UploadSimple as Upload, X, FloppyDisk as Save, PencilSimple as Pencil, DotsSixVertical as GripVertical, Check } from '@phosphor-icons/react'
 import { ContentGridSkeleton } from '@/components/shared/Skeletons'
 
 export default function AdminGalleryPage() {
@@ -77,7 +77,7 @@ export default function AdminGalleryPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">Gallery Management</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             {isSorting ? 'Drag images vertically to set the new order.' : 'Upload and organize photos from MIN events and programs.'}
           </p>
         </div>
@@ -112,17 +112,17 @@ export default function AdminGalleryPage() {
       {!isSorting && (
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:ring-2 ring-primary/20 transition-all">
-            <Search size={18} className="text-text-tertiary" />
+            <Search size={18} className="text-auto-tertiary" />
             <input 
               type="text" 
               placeholder="Search by caption or album..." 
-              className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary"
+              className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter size={18} className="text-text-tertiary" />
+            <Filter size={18} className="text-auto-tertiary" />
             <select 
               className="glass px-5 py-3 rounded-2xl text-sm font-bold border border-border dark:border-border-dark outline-none bg-transparent cursor-pointer"
               value={albumFilter}
@@ -148,7 +148,7 @@ export default function AdminGalleryPage() {
                 value={img}
                 className="bg-white dark:bg-white/5 border border-border dark:border-white/10 p-4 rounded-3xl flex items-center gap-6 cursor-grab active:cursor-grabbing shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="text-text-tertiary">
+                <div className="text-auto-tertiary">
                   <GripVertical size={20} />
                 </div>
                 <div className="w-20 h-20 rounded-2xl overflow-hidden border border-border dark:border-white/10 shrink-0">
@@ -206,11 +206,11 @@ export default function AdminGalleryPage() {
         )
       ) : (
         <div className="text-center py-24 glass rounded-[3rem] border border-dashed border-border dark:border-border-dark">
-          <div className="inline-flex p-6 rounded-[2rem] bg-bg-secondary dark:bg-white/5 text-text-tertiary mb-6">
+          <div className="inline-flex p-6 rounded-[2rem] bg-bg-secondary dark:bg-white/5 text-auto-tertiary mb-6">
             <ImageIcon size={48} />
           </div>
           <h3 className="text-xl font-bold mb-2">Empty Gallery</h3>
-          <p className="text-text-tertiary">No images found for this category.</p>
+          <p className="text-auto-tertiary">No images found for this category.</p>
         </div>
       )}
     </div>

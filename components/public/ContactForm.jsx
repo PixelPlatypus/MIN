@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, CheckCircle2, Loader2, Mail, MessageSquare } from 'lucide-react'
+import { PaperPlaneTilt as Send, CheckCircle as CheckCircle2, CircleNotch as Loader2, Envelope as Mail, ChatTeardropText as MessageSquare } from '@phosphor-icons/react'
 
 export default function ContactForm() {
   const [loading, setLoading] = useState(false)
@@ -52,7 +52,7 @@ export default function ContactForm() {
           <CheckCircle2 size={32} />
         </div>
         <h3 className="text-2xl font-black">Message Sent!</h3>
-        <p className="text-text-secondary font-medium">We'll get back to you as soon as possible.</p>
+        <p className="text-auto-secondary font-medium">We'll get back to you as soon as possible.</p>
       </motion.div>
     )
   }
@@ -65,13 +65,13 @@ export default function ContactForm() {
         </div>
         <div>
           <h3 className="text-2xl font-black tracking-tight">Send a Message</h3>
-          <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-widest leading-none">General inquiries & feedback</p>
+          <p className="text-[10px] font-bold text-auto-tertiary uppercase tracking-widest leading-none">General inquiries & feedback</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-3">
-          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Name <span className="text-coral">*</span></label>
+          <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Name <span className="text-coral">*</span></label>
           <input 
             suppressHydrationWarning
             required
@@ -83,7 +83,7 @@ export default function ContactForm() {
           />
         </div>
         <div className="space-y-3">
-          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Email <span className="text-coral">*</span></label>
+          <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Email <span className="text-coral">*</span></label>
           <input 
             suppressHydrationWarning
             required
@@ -97,7 +97,7 @@ export default function ContactForm() {
       </div>
 
       <div className="space-y-3">
-        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Subject <span className="text-coral">*</span></label>
+        <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Subject <span className="text-coral">*</span></label>
         <input 
           suppressHydrationWarning
           required
@@ -110,7 +110,7 @@ export default function ContactForm() {
       </div>
 
       <div className="space-y-3">
-        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Message <span className="text-coral">*</span></label>
+        <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Message <span className="text-coral">*</span></label>
         <textarea 
           suppressHydrationWarning
           required

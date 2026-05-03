@@ -2,18 +2,18 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Send, 
+  PaperPlaneTilt as Send, 
   Heart, 
-  CheckCircle2, 
-  Building2, 
+  CheckCircle as CheckCircle2, 
+  Buildings as Building2, 
   Handshake, 
-  ChevronLeft, 
-  Sparkles, 
-  Loader2, 
+  CaretLeft as ChevronLeft, 
+  HandHeart as Sparkles, 
+  CircleNotch as Loader2, 
   Wrench,
   Plus,
-  AlertCircle
-} from 'lucide-react'
+  WarningCircle as AlertCircle
+} from '@phosphor-icons/react'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
 import 'react-phone-number-input/style.css'
@@ -188,7 +188,7 @@ export default function JoinForm() {
       const isUploaded = !!formQuestions[field.id || field.label]
       return (
         <div key={field.id} className="space-y-4">
-          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+          <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
             {field.label} {field.required && <span className="text-coral">*</span>}
           </label>
           <div className={`relative group transition-all duration-300 ${
@@ -206,7 +206,7 @@ export default function JoinForm() {
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-bold text-green">CV Uploaded Successfully</p>
-                  <p className="text-[10px] font-medium text-text-tertiary">File is ready for review</p>
+                  <p className="text-[10px] font-medium text-auto-tertiary">File is ready for review</p>
                 </div>
                 <button 
                   type="button" 
@@ -223,7 +223,7 @@ export default function JoinForm() {
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-bold">Select PDF Document</p>
-                  <p className="text-[10px] text-text-tertiary font-medium">Click or drag & drop (Max 5MB)</p>
+                  <p className="text-[10px] text-auto-tertiary font-medium">Click or drag & drop (Max 5MB)</p>
                 </div>
                 <input 
                   type="file" 
@@ -247,7 +247,7 @@ export default function JoinForm() {
 
     return (
       <div key={field.id} className="space-y-2">
-        <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+        <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
           {field.label} {field.required && <span className="text-coral">*</span>}
         </label>
         {field.type === 'textarea' ? (
@@ -269,7 +269,7 @@ export default function JoinForm() {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black transition-all ${
                 step >= num 
                   ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                  : 'bg-black/5 dark:bg-white/5 text-text-tertiary border border-border'
+                  : 'bg-black/5 dark:bg-white/5 text-auto-tertiary border border-border'
               }`}>
                 {num}
               </div>
@@ -296,7 +296,7 @@ export default function JoinForm() {
                 <CheckCircle2 size={48} />
               </div>
               <h2 className="text-5xl font-black tracking-tight mb-4 text-text dark:text-white">Submission Successful!</h2>
-              <p className="text-xl font-bold text-text-tertiary max-w-xl mx-auto leading-relaxed">
+              <p className="text-xl font-bold text-auto-tertiary max-w-xl mx-auto leading-relaxed">
                 Thank you for reaching out to MIN Nepal. We've received your {type.toLowerCase()} application and sent a confirmation to <span className="text-primary font-black uppercase tracking-tight">{formData.email}</span>.
               </p>
             </div>
@@ -309,7 +309,7 @@ export default function JoinForm() {
                   setFormData({ name: '', email: '', phone: '' })
                   setFormQuestions({})
                 }}
-                className="px-12 py-5 rounded-2xl bg-black/5 dark:bg-white/5 text-text-tertiary hover:text-primary font-black text-xs uppercase tracking-widest transition-all border border-border"
+                className="px-12 py-5 rounded-2xl bg-black/5 dark:bg-white/5 text-auto-tertiary hover:text-primary font-black text-xs uppercase tracking-widest transition-all border border-border"
               >
                 Submit another application
               </button>
@@ -335,7 +335,7 @@ export default function JoinForm() {
                     {cat.icon}
                   </div>
                   <h3 className={`text-3xl font-black mb-3 text-text dark:text-white transition-colors ${cat.hoverText}`}>{cat.label}</h3>
-                  <p className="text-sm font-bold opacity-70 leading-relaxed max-w-[200px] text-text-secondary dark:text-text-secondary-dark">
+                  <p className="text-sm font-bold opacity-70 leading-relaxed max-w-[200px] text-auto-secondary">
                     {cat.desc}
                   </p>
                 </div>
@@ -355,7 +355,7 @@ export default function JoinForm() {
               <button 
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-text-tertiary hover:text-primary transition-all group"
+                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-auto-tertiary hover:text-primary transition-all group"
               >
                 <ChevronLeft size={20} className="transition-transform group-hover:-translate-x-1" />
                 Change Category
@@ -370,10 +370,10 @@ export default function JoinForm() {
               <div className="space-y-8">
                 <div className="border-l-4 border-primary pl-4 mb-10">
                   <h4 className="text-3xl font-black tracking-tight">Identity</h4>
-                  <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-widest">How should we address you?</p>
+                  <p className="text-[10px] font-bold text-auto-tertiary uppercase tracking-widest">How should we address you?</p>
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Full Name <span className="text-coral">*</span></label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Full Name <span className="text-coral">*</span></label>
                   <input 
                     required 
                     type="text" 
@@ -384,7 +384,7 @@ export default function JoinForm() {
                   />
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Email Address <span className="text-coral">*</span></label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Email Address <span className="text-coral">*</span></label>
                   <input 
                     required 
                     type="email" 
@@ -395,7 +395,7 @@ export default function JoinForm() {
                   />
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-2">Phone Number</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Phone Number</label>
                   <PhoneInput 
                     international
                     defaultCountry="NP"
@@ -410,7 +410,7 @@ export default function JoinForm() {
               <div className="space-y-8">
                 <div className="border-l-4 border-secondary-dark pl-4 mb-10">
                   <h4 className="text-3xl font-black tracking-tight">Context</h4>
-                  <p className="text-[10px] font-bold text-text-tertiary uppercase tracking-widest">What brings you to MIN?</p>
+                  <p className="text-[10px] font-bold text-auto-tertiary uppercase tracking-widest">What brings you to MIN?</p>
                 </div>
                 <div className="space-y-6">
                   {schemas[type]?.fields.map(renderField)}

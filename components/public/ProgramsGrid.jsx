@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, BookOpen, GraduationCap, Laptop, Sparkles, Trophy, Users, Layers } from 'lucide-react'
+import { ArrowRight, BookOpen, GraduationCap, Monitor as Laptop, Megaphone, Lightbulb, Trophy, Users, Stack as Layers } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
 
@@ -33,12 +33,13 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
 
   const getIcon = (slug) => {
     const icons = {
-      'eta-campaigns': <Sparkles className="text-primary" />,
+      'eta-campaigns': <Megaphone className="text-primary" />,
       'jmoc': <Trophy className="text-cyan" />,
       'm3-bootcamp': <Laptop className="text-purple" />,
       'women-in-mathematics': <GraduationCap className="text-coral" />,
       'road-to-olympiad': <BookOpen className="text-orange" />,
       'digital-content': <Users className="text-green" />,
+      'minspire': <Lightbulb className="text-primary" />,
     }
     return icons[slug] || <Layers className="text-primary" />
   }
@@ -69,7 +70,7 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
               <Skeleton className="w-3/4 h-4 mx-auto" />
             </div>
           ) : (
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark">
+            <p className="text-lg text-auto-secondary">
               {settings?.programs_subtitle}
             </p>
           )}
@@ -105,7 +106,7 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
                     {getIcon(program.slug)}
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-text dark:text-white group-hover:text-primary transition-colors">{program.name}</h3>
-                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6 flex-grow">
+                  <p className="text-sm text-auto-secondary leading-relaxed mb-6 flex-grow">
                     {program.tagline}
                   </p>
                   {program.learn_more_link && (

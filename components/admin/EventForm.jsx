@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Save, ArrowLeft, Loader2, AlertCircle, ImageIcon, Calendar, X, Plus, Trash2, Video } from 'lucide-react'
+import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle, Image as ImageIcon, Calendar, X, Plus, Trash as Trash2, VideoCamera as Video } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm, useFieldArray } from 'react-hook-form'
@@ -169,7 +169,7 @@ export default function EventForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/events" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-text-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
           >
             <ArrowLeft size={20} />
           </Link>
@@ -220,7 +220,7 @@ export default function EventForm({ initialData = null }) {
 
             <div className="glass rounded-[2rem] p-8 space-y-6">
               <h3 className="text-lg font-bold tracking-tight">Gallery</h3>
-              <p className="text-sm text-text-tertiary mb-4">Add images to the event gallery.</p>
+              <p className="text-sm text-auto-tertiary mb-4">Add images to the event gallery.</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {watch('gallery_urls').map((url, i) => (
                   <div key={i} className="aspect-square relative rounded-2xl overflow-hidden group shadow-sm">
@@ -273,14 +273,14 @@ export default function EventForm({ initialData = null }) {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="absolute top-4 right-4 p-2 text-text-tertiary hover:text-coral transition-colors"
+                      className="absolute top-4 right-4 p-2 text-auto-tertiary hover:text-coral transition-colors"
                     >
                       <Trash2 size={16} />
                     </button>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary">Video Title</label>
+                        <label className="text-xs font-bold uppercase tracking-widest text-auto-tertiary">Video Title</label>
                         <input
                           {...register(`youtube_videos.${index}.title`)}
                           placeholder="e.g. Workshop Session 1"
@@ -288,7 +288,7 @@ export default function EventForm({ initialData = null }) {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-widest text-text-tertiary">Video/Playlist URL</label>
+                        <label className="text-xs font-bold uppercase tracking-widest text-auto-tertiary">Video/Playlist URL</label>
                         <input
                           {...register(`youtube_videos.${index}.url`)}
                           placeholder="https://youtu.be/..."
@@ -304,8 +304,8 @@ export default function EventForm({ initialData = null }) {
                 
                 {fields.length === 0 && (
                   <div className="py-12 text-center border-2 border-dashed border-border dark:border-border-dark rounded-[2rem]">
-                    <Video size={32} className="mx-auto text-text-tertiary mb-2 opacity-50" />
-                    <p className="text-sm text-text-tertiary font-medium">No videos added yet.</p>
+                    <Video size={32} className="mx-auto text-auto-tertiary mb-2 opacity-50" />
+                    <p className="text-sm text-auto-tertiary font-medium">No videos added yet.</p>
                   </div>
                 )}
               </div>
@@ -416,7 +416,7 @@ export default function EventForm({ initialData = null }) {
               </div>
 
               <div className="space-y-4 pt-4 border-t border-border dark:border-border-dark">
-                <h4 className="text-xs font-black uppercase tracking-widest text-text-tertiary">Action Button Customization</h4>
+                <h4 className="text-xs font-black uppercase tracking-widest text-auto-tertiary">Action Button Customization</h4>
                 
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">Section Title</label>
@@ -462,10 +462,10 @@ export default function EventForm({ initialData = null }) {
                     type="date"
                     className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
-                  <p className="text-[10px] text-text-tertiary ml-1 italic">If not provided, the event's End Date will be used as the deadline.</p>
+                  <p className="text-[10px] text-auto-tertiary ml-1 italic">If not provided, the event's End Date will be used as the deadline.</p>
                 </div>
 
-                <h4 className="text-xs font-black uppercase tracking-widest text-text-tertiary pt-4">YouTube Section Settings</h4>
+                <h4 className="text-xs font-black uppercase tracking-widest text-auto-tertiary pt-4">YouTube Section Settings</h4>
 
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">YouTube Section Header</label>
@@ -493,7 +493,7 @@ export default function EventForm({ initialData = null }) {
                 {coverUrl ? (
                   <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-text-tertiary gap-2">
+                  <div className="w-full h-full flex flex-col items-center justify-center text-auto-tertiary gap-2">
                     <ImageIcon size={48} className="opacity-20" />
                     <span className="text-xs font-medium">No cover image</span>
                   </div>
@@ -536,7 +536,7 @@ export default function EventForm({ initialData = null }) {
               </button>
               <Link 
                 href="/admin/events"
-                className="w-full px-8 py-4 rounded-2xl text-sm font-bold text-text-secondary text-center hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
+                className="w-full px-8 py-4 rounded-2xl text-sm font-bold text-auto-secondary text-center hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
               >
                 Cancel
               </Link>

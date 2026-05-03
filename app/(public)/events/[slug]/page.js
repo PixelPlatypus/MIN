@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { Calendar, MapPin, ArrowRight, Video, PlayCircle } from 'lucide-react'
+import { Calendar, MapPin, ArrowRight, Video, PlayCircle } from '@phosphor-icons/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import ContentRenderer from '@/components/public/ContentRenderer'
@@ -132,7 +132,7 @@ export default async function EventDetailPage({ params }) {
       {/* Hero Section */}
       <section className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto space-y-8">
-          <Link href="/events" className="inline-flex items-center gap-2 text-sm font-bold text-text-tertiary hover:text-primary transition-colors">
+          <Link href="/events" className="inline-flex items-center gap-2 text-sm font-bold text-auto-tertiary hover:text-primary transition-colors">
             ← Back to Events
           </Link>
           
@@ -147,7 +147,7 @@ export default async function EventDetailPage({ params }) {
                 {event.event_type}
               </span>
               {isPast && event.show_date !== false && (
-                <span className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-text-tertiary/10 text-text-secondary border border-text-tertiary/20">
+                <span className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-text-tertiary/10 text-auto-secondary border border-text-tertiary/20">
                   Past Event
                 </span>
               )}
@@ -155,7 +155,7 @@ export default async function EventDetailPage({ params }) {
             
             <h1 className="text-4xl md:text-6xl font-black tracking-tight">{event.title}</h1>
             
-            <div className="flex flex-wrap items-center gap-6 text-text-secondary font-medium">
+            <div className="flex flex-wrap items-center gap-6 text-auto-secondary font-medium">
               {event.show_date !== false && formatDate(event.start_date) && (
                 <div className="flex items-center gap-2">
                   <Calendar size={18} className="text-primary" />
@@ -176,7 +176,7 @@ export default async function EventDetailPage({ params }) {
             <div className="glass p-6 md:p-8 rounded-[2rem] border-2 border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-6 bg-gradient-to-r from-primary/5 to-transparent">
               <div className="space-y-2 text-center sm:text-left">
                 <h3 className="text-xl font-bold">{event.action_title}</h3>
-                <p className="text-sm text-text-tertiary">{event.action_description}</p>
+                <p className="text-sm text-auto-tertiary">{event.action_description}</p>
               </div>
               <EventActionLink
                 href={event.action_link}
@@ -233,7 +233,7 @@ export default async function EventDetailPage({ params }) {
                     <div key={idx} className="space-y-4">
                       {vid.title && (
                         <h4 className="text-lg font-bold flex items-center gap-2">
-                          <Video size={18} className="text-text-tertiary" />
+                          <Video size={18} className="text-auto-tertiary" />
                           {vid.title}
                         </h4>
                       )}

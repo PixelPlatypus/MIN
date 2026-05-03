@@ -2,18 +2,18 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Mail, 
-  Trash2, 
-  Search, 
-  Loader2, 
+  Envelope as Mail, 
+  Trash as Trash2, 
+  MagnifyingGlass as Search, 
+  CircleNotch as Loader2, 
   Bell, 
-  Filter, 
+  Funnel as Filter, 
   UserPlus,
   Clock,
-  Send,
-  CheckCircle2,
-  AlertCircle
-} from 'lucide-react'
+  PaperPlaneTilt as Send,
+  CheckCircle as CheckCircle2,
+  WarningCircle as AlertCircle
+} from '@phosphor-icons/react'
 
 export default function WaitlistPage() {
   const [emails, setEmails] = useState([])
@@ -65,7 +65,7 @@ export default function WaitlistPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black tracking-tight mb-1 uppercase">Intake Alert List</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Manage users who are waiting for admission programs to reopen.
           </p>
         </div>
@@ -75,11 +75,11 @@ export default function WaitlistPage() {
         <div className="lg:col-span-12 space-y-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-grow glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:border-primary transition-all shadow-sm">
-              <Search size={18} className="text-text-tertiary" />
+              <Search size={18} className="text-auto-tertiary" />
               <input 
                 type="text" 
                 placeholder="Search by email..." 
-                className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary font-bold"
+                className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary font-bold"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -93,7 +93,7 @@ export default function WaitlistPage() {
                   className={`shrink-0 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
                     categoryFilter === c 
                       ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' 
-                      : 'bg-bg-secondary dark:bg-white/5 text-text-tertiary border-border dark:border-white/5 hover:border-primary/50'
+                      : 'bg-bg-secondary dark:bg-white/5 text-auto-tertiary border-border dark:border-white/5 hover:border-primary/50'
                   }`}
                 >
                   {c}
@@ -112,10 +112,10 @@ export default function WaitlistPage() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-border dark:border-border-dark">
-                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary">Email Address</th>
-                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary">Category</th>
-                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary">Signed Up</th>
-                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-tertiary text-right">Actions</th>
+                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Email Address</th>
+                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Category</th>
+                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Signed Up</th>
+                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-auto-tertiary text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border dark:divide-border-dark">
@@ -134,13 +134,13 @@ export default function WaitlistPage() {
                             {item.category}
                           </span>
                         </td>
-                        <td className="px-8 py-5 text-xs text-text-tertiary font-medium">
+                        <td className="px-8 py-5 text-xs text-auto-tertiary font-medium">
                           {new Date(item.created_at).toLocaleDateString()}
                         </td>
                         <td className="px-8 py-5 text-right">
                           <button 
                             onClick={() => handleDelete(item.id)}
-                            className="p-2 text-text-tertiary hover:text-coral transition-all"
+                            className="p-2 text-auto-tertiary hover:text-coral transition-all"
                             title="Remove from list"
                           >
                             <Trash2 size={18} />
@@ -152,7 +152,7 @@ export default function WaitlistPage() {
                 </table>
               </div>
             ) : (
-              <div className="text-center py-24 text-text-tertiary space-y-4">
+              <div className="text-center py-24 text-auto-tertiary space-y-4">
                 <Bell size={48} className="mx-auto opacity-20" />
                 <p className="font-bold uppercase tracking-widest text-xs">No active alerts for this criteria</p>
               </div>

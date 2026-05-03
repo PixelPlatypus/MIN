@@ -91,7 +91,7 @@ export default function Timeline({ initialEvents = [] }) {
       <div className="text-center mb-12 space-y-4">
         <span className="block text-primary font-bold uppercase tracking-widest text-sm">Our Journey</span>
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Timeline of Impact</h2>
-        <p className="text-lg text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto">
+        <p className="text-lg text-auto-secondary max-w-2xl mx-auto">
           From humble beginnings to global recognition, here's how we've grown.
         </p>
       </div>
@@ -116,7 +116,7 @@ export default function Timeline({ initialEvents = [] }) {
                 }`}>
                   <span className="text-primary font-bold text-2xl mb-2 block tracking-tight">{event.year}</span>
                   <h3 className="text-xl font-bold mb-3">{event.title}</h3>
-                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                  <p className="text-sm text-auto-secondary leading-relaxed">
                     {event.description || event.desc}
                   </p>
 

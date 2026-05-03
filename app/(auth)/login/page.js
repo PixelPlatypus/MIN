@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { createClient } from '@/lib/supabase/client'
 import { motion } from 'framer-motion'
-import { Mail, Lock, Loader2, AlertCircle, ArrowRight } from 'lucide-react'
+import { Envelope as Mail, Lock, CircleNotch as Loader2, WarningCircle as AlertCircle, ArrowRight } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { loginAction } from './actions'
 import { captureEvent, identifyUser } from '@/lib/analytics'
@@ -123,7 +123,7 @@ export default function LoginPage() {
             </div>
           </Link>
           <h1 className="text-2xl font-bold tracking-tight mb-2">Admin Portal</h1>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Sign in to manage MIN website content
           </p>
         </div>
@@ -154,7 +154,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <label className="text-sm font-medium ml-1">Username or Email</label>
             <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary transition-colors group-focus-within:text-primary">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-auto-tertiary transition-colors group-focus-within:text-primary">
                 <Mail size={18} />
               </div>
               <input
@@ -186,7 +186,7 @@ export default function LoginPage() {
               </button>
             </div>
             <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary transition-colors group-focus-within:text-primary">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-auto-tertiary transition-colors group-focus-within:text-primary">
                 <Lock size={18} />
               </div>
               <input
@@ -224,7 +224,7 @@ export default function LoginPage() {
         <div className="mt-8 text-center">
           <Link 
             href="/" 
-            className="text-sm text-text-tertiary hover:text-primary transition-colors inline-flex items-center gap-1"
+            className="text-sm text-auto-tertiary hover:text-primary transition-colors inline-flex items-center gap-1"
           >
             ← Back to homepage
           </Link>

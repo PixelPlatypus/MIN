@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { FileText, FileDown, ArrowRight, User, Tag, Video, LayoutList } from 'lucide-react'
+import { FileText, FileArrowDown as FileDown, ArrowRight, User, Tag, Video, List as LayoutList } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -75,13 +75,13 @@ export default function ContentCard({ item, index, fallbackImage }) {
                 {title}
               </h3>
 
-              <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed line-clamp-3 z-10">
+              <p className="text-sm text-auto-secondary leading-relaxed line-clamp-3 z-10">
                 {excerpt}
               </p>
 
               <div className="pt-4 flex flex-wrap gap-2 z-10">
                 {tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="text-[10px] font-bold px-2 py-1 rounded-lg bg-bg-secondary dark:bg-white/5 text-text-tertiary border border-border dark:border-border-dark">
+                  <span key={tag} className="text-[10px] font-bold px-2 py-1 rounded-lg bg-bg-secondary dark:bg-white/5 text-auto-tertiary border border-border dark:border-border-dark">
                     #{tag}
                   </span>
                 ))}
@@ -94,12 +94,12 @@ export default function ContentCard({ item, index, fallbackImage }) {
                   </div>
                   <div className="flex flex-col mt-2">
                     <span className="text-xs font-bold text-text dark:text-white truncate max-w-[100px]">{author_name}</span>
-                    <span className="text-[10px] text-text-tertiary">
+                    <span className="text-[10px] text-auto-tertiary">
                       {published_at && new Date(published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                     </span>
                   </div>
                 </div>
-                <ArrowRight size={18} className="text-text-tertiary transition-transform mt-2 group-hover:translate-x-2 group-hover:text-primary" />
+                <ArrowRight size={18} className="text-auto-tertiary transition-transform mt-2 group-hover:translate-x-2 group-hover:text-primary" />
               </div>
             </div>
           </div>

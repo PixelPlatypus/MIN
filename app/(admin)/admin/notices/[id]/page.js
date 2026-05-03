@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, use } from 'react'
-import { Loader2 } from 'lucide-react'
+import { CircleNotch as Loader2 } from '@phosphor-icons/react'
 import NoticeForm from '@/components/admin/NoticeForm'
 
 export default function EditNoticePage({ params: paramsPromise }) {
@@ -31,7 +31,7 @@ export default function EditNoticePage({ params: paramsPromise }) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Loader2 size={40} className="animate-spin text-primary" />
-        <p className="text-text-tertiary animate-pulse font-medium">Fetching notice details...</p>
+        <p className="text-auto-tertiary animate-pulse font-medium">Fetching notice details...</p>
       </div>
     )
   }

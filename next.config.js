@@ -86,7 +86,7 @@ const nextConfig = {
   // Experimental performance flags
   experimental: {
     optimizePackageImports: [
-      'lucide-react', 
+      '@phosphor-icons/react', 
       'framer-motion',
     ],
   },

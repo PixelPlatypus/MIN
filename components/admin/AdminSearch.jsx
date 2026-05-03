@@ -1,7 +1,25 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, X, ChevronRight, LayoutDashboard, Library, Send, PlusCircle, Layers, Calendar, Calculator, Users, ImageIcon, UserPlus, Mail, Bell, Globe, History } from 'lucide-react'
+import { 
+  MagnifyingGlass as Search, 
+  X, 
+  CaretRight as ChevronRight, 
+  Layout as LayoutDashboard, 
+  Books as Library, 
+  PaperPlaneTilt as Send, 
+  PlusCircle, 
+  Layers, 
+  Calendar, 
+  Calculator, 
+  Users, 
+  Image as ImageIcon, 
+  UserPlus, 
+  Envelope as Mail, 
+  Bell, 
+  Globe, 
+  History 
+} from '@phosphor-icons/react'
 import { useRouter } from 'next/navigation'
 
 const SEARCH_ITEMS = [
@@ -86,10 +104,10 @@ export default function AdminSearch() {
         onClick={() => setIsOpen(true)}
         className="hidden lg:flex items-center gap-2 bg-bg-secondary dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border dark:border-border-dark cursor-pointer hover:border-primary/50 transition-all group"
       >
-        <Search size={16} className="text-text-tertiary group-hover:text-primary transition-colors" />
+        <Search size={16} className="text-auto-tertiary group-hover:text-primary transition-colors" />
         <div className="flex items-center justify-between w-48">
-          <span className="text-xs text-text-tertiary select-none">Search dashboard...</span>
-          <kbd className="hidden xl:inline-flex h-5 items-center gap-1 rounded border border-border bg-white/50 dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-text-tertiary opacity-100">
+          <span className="text-xs text-auto-tertiary select-none">Search dashboard...</span>
+          <kbd className="hidden xl:inline-flex h-5 items-center gap-1 rounded border border-border bg-white/50 dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-auto-tertiary opacity-100">
             <span className="text-xs">⌘</span>K
           </kbd>
         </div>
@@ -118,14 +136,14 @@ export default function AdminSearch() {
                   ref={inputRef}
                   type="text" 
                   placeholder="Search pages, actions, settings..." 
-                  className="flex-1 bg-transparent border-none outline-none text-base font-medium placeholder:text-text-tertiary"
+                  className="flex-1 bg-transparent border-none outline-none text-base font-medium placeholder:text-auto-tertiary"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                 />
                 <button 
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 hover:bg-bg-secondary dark:hover:bg-white/5 rounded-lg text-text-tertiary transition-all"
+                  className="p-1.5 hover:bg-bg-secondary dark:hover:bg-white/5 rounded-lg text-auto-tertiary transition-all"
                 >
                   <X size={18} />
                 </button>
@@ -142,7 +160,7 @@ export default function AdminSearch() {
                         className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${
                           selectedIndex === index 
                             ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' 
-                            : 'hover:bg-bg-secondary dark:hover:bg-white/5 text-text-secondary dark:text-text-secondary-dark'
+                            : 'hover:bg-bg-secondary dark:hover:bg-white/5 text-auto-secondary'
                         }`}
                       >
                         <div className="flex items-center gap-4">
@@ -164,16 +182,16 @@ export default function AdminSearch() {
                   </div>
                 ) : (
                   <div className="py-20 text-center space-y-4">
-                    <div className="w-16 h-16 bg-bg-secondary dark:bg-white/5 rounded-[2rem] flex items-center justify-center mx-auto text-text-tertiary">
+                    <div className="w-16 h-16 bg-bg-secondary dark:bg-white/5 rounded-[2rem] flex items-center justify-center mx-auto text-auto-tertiary">
                       <Search size={32} />
                     </div>
-                    <p className="text-sm font-bold text-text-tertiary">No results found for "{query}"</p>
+                    <p className="text-sm font-bold text-auto-tertiary">No results found for "{query}"</p>
                   </div>
                 )}
               </div>
 
               <div className="px-6 py-4 border-t border-border dark:border-border-dark flex items-center justify-between bg-bg-secondary/50 dark:bg-black/20">
-                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
                   <span className="flex items-center gap-1"><span className="bg-white dark:bg-white/10 px-1.5 py-0.5 rounded border border-border shadow-sm">↵</span> to select</span>
                   <span className="flex items-center gap-1"><span className="bg-white dark:bg-white/10 px-1.5 py-0.5 rounded border border-border shadow-sm">↑↓</span> to navigate</span>
                 </div>

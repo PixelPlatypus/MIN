@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, X, Loader2, AlertCircle, Save, ArrowLeft, Image as ImageIcon } from 'lucide-react'
+import { UploadSimple as Upload, X, CircleNotch as Loader2, WarningCircle as AlertCircle, FloppyDisk as Save, ArrowLeft, Image as ImageIcon } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -20,6 +20,7 @@ const teamSchema = z.object({
   display_order: z.number().int().default(0),
   is_advisor: z.boolean().default(false),
   status: z.enum(['ACTIVE', 'ALUMNI', 'INACTIVE', 'REMOVED']).default('ACTIVE'),
+  certificate_url: z.string().url().or(z.literal('')).optional().nullable(),
   social_links: z.object({
     social_media: z.string().url().or(z.literal('')).optional(),
     facebook: z.string().url().or(z.literal('')).optional(),
@@ -27,7 +28,6 @@ const teamSchema = z.object({
     linkedin: z.string().url().or(z.literal('')).optional(),
     email: z.string().email().or(z.literal('')).optional(),
     github: z.string().url().or(z.literal('')).optional(),
-    certificate_url: z.string().url().or(z.literal('')).optional(),
     role_history: z.array(z.object({
       year: z.string().min(4, "Year must be 4 digits"),
       position: z.string().min(1, "Position is required")
@@ -64,7 +64,7 @@ export default function TeamForm({ initialData = null }) {
   }, [])
 
   let parsedSocialLinks = {
-    social_media: '', facebook: '', instagram: '', linkedin: '', email: '', github: '', certificate_url: '', role_history: []
+    social_media: '', facebook: '', instagram: '', linkedin: '', email: '', github: '', role_history: []
   };
   if (initialData?.social_links) {
     if (typeof initialData.social_links === 'string') {
@@ -95,6 +95,7 @@ export default function TeamForm({ initialData = null }) {
         display_order: 0,
         is_advisor: false,
         status: 'ACTIVE',
+        certificate_url: '',
       }),
       joined_date: initialData?.joined_date ? initialData.joined_date.substring(0, 7) : new Date().getFullYear().toString(),
       farewell_date: initialData?.farewell_date ? initialData.farewell_date.substring(0, 7) : '',
@@ -210,7 +211,7 @@ export default function TeamForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/team" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-text-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
           >
             <ArrowLeft size={20} />
           </Link>
@@ -225,7 +226,7 @@ export default function TeamForm({ initialData = null }) {
           {/* Photo Upload Column */}
           <div className="md:col-span-1 space-y-4">
             <div className="glass rounded-[2rem] p-6 space-y-4 text-center">
-              <label className="text-sm font-bold uppercase tracking-widest text-text-tertiary block mb-4">
+              <label className="text-sm font-bold uppercase tracking-widest text-auto-tertiary block mb-4">
                 Profile Photo
               </label>
               
@@ -233,7 +234,7 @@ export default function TeamForm({ initialData = null }) {
                 {photoUrl ? (
                   <img src={photoUrl} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-text-tertiary">
+                  <div className="w-full h-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-auto-tertiary">
                     <ImageIcon size={48} />
                   </div>
                 )}
@@ -249,7 +250,7 @@ export default function TeamForm({ initialData = null }) {
                   label={photoUrl ? 'Change Photo' : 'Upload Photo'}
                 />
               </div>
-              <p className="text-[10px] text-text-tertiary leading-relaxed">
+              <p className="text-[10px] text-auto-tertiary leading-relaxed">
                 Recommended: Square image, max 2MB. Optimized automatically by Cloudinary.
               </p>
             </div>
@@ -315,7 +316,7 @@ export default function TeamForm({ initialData = null }) {
                     />
                     <div>
                       <div className="text-sm font-bold">Mark as Advisor</div>
-                      <div className="text-xs text-text-tertiary">Advisors have special visibility and filtering on the public team page.</div>
+                      <div className="text-xs text-auto-tertiary">Advisors have special visibility and filtering on the public team page.</div>
                     </div>
                   </label>
                 </div>
@@ -360,7 +361,7 @@ export default function TeamForm({ initialData = null }) {
                   + Add Past Role
                 </button>
               </div>
-              <p className="text-sm text-text-tertiary">
+              <p className="text-sm text-auto-tertiary">
                 If this person was promoted, add their past roles here. They will automatically show up as their past role in those specific tenure years.
               </p>
               
@@ -368,7 +369,7 @@ export default function TeamForm({ initialData = null }) {
                 {(watch('social_links.role_history') || []).map((historyItem, index) => (
                   <div key={index} className="flex items-center gap-4 bg-bg-secondary dark:bg-white/5 p-4 rounded-2xl border border-black/5 dark:border-white/5 relative group">
                     <div className="space-y-1 flex-1">
-                      <label className="text-xs font-bold text-text-tertiary ml-1">Year</label>
+                      <label className="text-xs font-bold text-auto-tertiary ml-1">Year</label>
                       <input 
                         {...register(`social_links.role_history.${index}.year`)}
                         placeholder="e.g. 2022"
@@ -376,7 +377,7 @@ export default function TeamForm({ initialData = null }) {
                       />
                     </div>
                     <div className="space-y-1 flex-1">
-                      <label className="text-xs font-bold text-text-tertiary ml-1">Position</label>
+                      <label className="text-xs font-bold text-auto-tertiary ml-1">Position</label>
                       <select 
                         {...register(`social_links.role_history.${index}.position`)}
                         className="w-full bg-white dark:bg-[#1a1a1a] border border-border dark:border-border-dark rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-primary appearance-none cursor-pointer"
@@ -404,31 +405,33 @@ export default function TeamForm({ initialData = null }) {
               </div>
             </div>
 
+
+
             {/* Certificate Section */}
             <div className="glass rounded-[2rem] p-8 space-y-6">
               <h3 className="text-lg font-bold tracking-tight">Certificate</h3>
-              <p className="text-sm text-text-tertiary">
+              <p className="text-sm text-auto-tertiary">
                 Upload a certificate image or document (will be displayed on the member's profile page).
               </p>
               
               <div className="space-y-4">
-                {watch('social_links.certificate_url') && (
+                {watch('certificate_url') && (
                   <div className="p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4">
                     <div className="w-16 h-16 relative bg-white/10 rounded-xl overflow-hidden flex items-center justify-center shrink-0">
-                      {watch('social_links.certificate_url').endsWith('.pdf') ? (
+                      {(watch('certificate_url') || '').endsWith('.pdf') ? (
                         <div className="text-xs font-bold uppercase tracking-widest text-primary">PDF</div>
                       ) : (
-                        <img src={watch('social_links.certificate_url')} alt="Certificate" className="object-cover w-full h-full" />
+                        <img src={watch('certificate_url')} alt="Certificate" className="object-cover w-full h-full" />
                       )}
                     </div>
                     <div className="flex-1 truncate">
-                      <a href={watch('social_links.certificate_url')} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline truncate block">
+                      <a href={watch('certificate_url')} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline truncate block">
                         View Certificate
                       </a>
                     </div>
                     <button 
                       type="button" 
-                      onClick={() => setValue('social_links.certificate_url', '')}
+                      onClick={() => setValue('certificate_url', '')}
                       className="p-2 text-coral bg-coral/10 hover:bg-coral hover:text-white rounded-xl transition-colors shrink-0"
                     >
                       <X size={16} />
@@ -436,9 +439,9 @@ export default function TeamForm({ initialData = null }) {
                   </div>
                 )}
                 
-                {!watch('social_links.certificate_url') && (
+                {!watch('certificate_url') && (
                   <ImageUploader 
-                    onUpload={(url) => setValue('social_links.certificate_url', url)} 
+                    onUpload={(url) => setValue('certificate_url', url)} 
                     folder="min-website/certificates"
                     label="Upload Certificate"
                     accept="image/*,application/pdf"
@@ -488,7 +491,7 @@ export default function TeamForm({ initialData = null }) {
             <div className="flex items-center justify-end gap-4 pt-4">
               <Link 
                 href="/admin/team"
-                className="px-8 py-3.5 rounded-2xl text-sm font-bold text-text-secondary hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
+                className="px-8 py-3.5 rounded-2xl text-sm font-bold text-auto-secondary hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
               >
                 Cancel
               </Link>

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
+import { UsersFour } from '@phosphor-icons/react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function TeamHero({ settings: initialSettings }) {
@@ -39,7 +39,7 @@ export default function TeamHero({ settings: initialSettings }) {
           animate={{ opacity: 1, y: 0 }}
           className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
         >
-          <Sparkles size={16} />
+          <UsersFour size={16} />
           {loading ? <Skeleton className="w-24 h-4" /> : settings?.team_title}
         </motion.div>
         <div className="flex justify-center">
@@ -67,7 +67,7 @@ export default function TeamHero({ settings: initialSettings }) {
               initial={hasSeenAnimation ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
+              className="text-xl text-auto-secondary leading-relaxed"
             >
               {settings?.team_description}
             </motion.p>

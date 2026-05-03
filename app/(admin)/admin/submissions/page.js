@@ -2,22 +2,24 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Inbox, 
-  Search, 
-  Filter, 
-  CheckCircle2, 
+  Tray as Inbox, 
+  MagnifyingGlass as Search, 
+  Funnel as Filter, 
+  CheckCircle as CheckCircle2, 
   XCircle, 
-  ExternalLink, 
+  ArrowSquareOut as ExternalLink, 
   Clock, 
   User, 
-  Mail, 
+  Envelope as Mail, 
   FileText, 
-  FileDown, 
-  ChevronRight,
+  FileArrowDown as FileDown, 
+  CaretRight as ChevronRight,
   Check,
   X,
-  MessageSquare
-} from 'lucide-react'
+  ChatTeardropText as MessageSquare,
+  CircleNotch as Loader2,
+  ClockCounterClockwise as History
+} from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 
 export default function AdminSubmissionsPage() {
@@ -81,7 +83,7 @@ export default function AdminSubmissionsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">Content Submissions</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Review and approve user-contributed articles, problems, and resources.
           </p>
         </div>
@@ -90,17 +92,17 @@ export default function AdminSubmissionsPage() {
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:ring-2 ring-primary/20 transition-all">
-          <Search size={18} className="text-text-tertiary" />
+          <Search size={18} className="text-auto-tertiary" />
           <input 
             type="text" 
             placeholder="Search by title or author..." 
-            className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary"
+            className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
-          <Filter size={18} className="text-text-tertiary" />
+          <Filter size={18} className="text-auto-tertiary" />
           <select 
             className="glass px-5 py-3 rounded-2xl text-sm font-bold border border-border dark:border-border-dark outline-none bg-transparent cursor-pointer"
             value={statusFilter}
@@ -136,7 +138,7 @@ export default function AdminSubmissionsPage() {
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-bold text-lg group-hover:text-primary transition-colors">{sub.title}</h4>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-auto-tertiary">
                     <span className="flex items-center gap-1.5"><User size={12} /> {sub.submitter_name}</span>
                     <span className="flex items-center gap-1.5"><Clock size={12} /> {new Date(sub.created_at).toLocaleDateString()}</span>
                     <span className={`font-black uppercase tracking-widest text-[8px] px-2 py-0.5 rounded-full ${
@@ -148,17 +150,17 @@ export default function AdminSubmissionsPage() {
                   </div>
                 </div>
               </div>
-              <ChevronRight size={20} className="text-text-tertiary group-hover:translate-x-1 transition-transform" />
+              <ChevronRight size={20} className="text-auto-tertiary group-hover:translate-x-1 transition-transform" />
             </motion.div>
           ))}
         </div>
       ) : (
         <div className="text-center py-24 glass rounded-[3rem] border border-dashed border-border dark:border-border-dark">
-          <div className="inline-flex p-6 rounded-[2rem] bg-bg-secondary dark:bg-white/5 text-text-tertiary mb-6">
+          <div className="inline-flex p-6 rounded-[2rem] bg-bg-secondary dark:bg-white/5 text-auto-tertiary mb-6">
             <Inbox size={48} />
           </div>
           <h3 className="text-xl font-bold mb-2">No Submissions Found</h3>
-          <p className="text-text-tertiary">All caught up! There are no new submissions to review.</p>
+          <p className="text-auto-tertiary">All caught up! There are no new submissions to review.</p>
         </div>
       )}
 
@@ -184,7 +186,7 @@ export default function AdminSubmissionsPage() {
                 <div className="flex items-center justify-between mb-8">
                   <div className="space-y-1">
                     <h3 className="text-3xl font-black tracking-tight">{selectedSubmission.title}</h3>
-                    <div className="flex items-center gap-4 text-sm text-text-tertiary font-medium">
+                    <div className="flex items-center gap-4 text-sm text-auto-tertiary font-medium">
                       <span className="flex items-center gap-1.5"><Mail size={14} /> {selectedSubmission.submitter_email}</span>
                       <span>•</span>
                       <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">{selectedSubmission.type}</span>
@@ -192,7 +194,7 @@ export default function AdminSubmissionsPage() {
                   </div>
                   <button 
                     onClick={() => setSelectedSubmission(null)}
-                    className="w-12 h-12 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-text-tertiary hover:bg-coral/20 hover:text-coral transition-all"
+                    className="w-12 h-12 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-auto-tertiary hover:bg-coral/20 hover:text-coral transition-all"
                   >
                     <X size={24} />
                   </button>
@@ -208,7 +210,7 @@ export default function AdminSubmissionsPage() {
                       </div>
                       <div className="space-y-2">
                         <h5 className="font-bold text-xl">{selectedSubmission.pdf_filename || 'PDF Document'}</h5>
-                        <p className="text-sm text-text-tertiary">External link or uploaded file provided by the submitter.</p>
+                        <p className="text-sm text-auto-tertiary">External link or uploaded file provided by the submitter.</p>
                       </div>
                       <a 
                         href={selectedSubmission.pdf_url}
@@ -222,10 +224,10 @@ export default function AdminSubmissionsPage() {
                     </div>
                   )}
 
-                  {selectedSubmission.status === 'PENDING' && (
+                  {selectedSubmission.status === 'PENDING' ? (
                     <div className="space-y-6 pt-10 border-t border-border dark:border-border-dark">
                       <div className="space-y-3">
-                        <div className="flex items-center gap-2 text-text-tertiary ml-1">
+                        <div className="flex items-center gap-2 text-auto-tertiary ml-1">
                           <MessageSquare size={14} />
                           <label className="text-[10px] font-black uppercase tracking-widest">Internal Review Notes (Optional)</label>
                         </div>
@@ -255,6 +257,40 @@ export default function AdminSubmissionsPage() {
                           {processingId === selectedSubmission.id ? <Loader2 size={18} className="animate-spin" /> : <X size={18} />}
                           Reject Submission
                         </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-6 pt-10 border-t border-border dark:border-border-dark">
+                      <div className="glass bg-bg-secondary-dynamic/30 rounded-[2rem] p-8 border border-border dark:border-border-dark space-y-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedSubmission.status === 'APPROVED' ? 'bg-green/10 text-green' : 'bg-coral/10 text-coral'}`}>
+                              {selectedSubmission.status === 'APPROVED' ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-auto-tertiary">Review Status</p>
+                              <p className="font-bold">{selectedSubmission.status}</p>
+                            </div>
+                          </div>
+                          {selectedSubmission.reviewed_at && (
+                            <div className="text-right">
+                              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-auto-tertiary">Reviewed On</p>
+                              <p className="font-bold text-sm">{new Date(selectedSubmission.reviewed_at).toLocaleDateString()}</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {selectedSubmission.notes && (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-auto-tertiary">
+                              <MessageSquare size={14} />
+                              <label className="text-[10px] font-black uppercase tracking-widest">Internal Review Notes</label>
+                            </div>
+                            <div className="bg-white/40 dark:bg-black/20 p-6 rounded-2xl text-sm italic text-auto-secondary leading-relaxed border border-border/50">
+                              "{selectedSubmission.notes}"
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}

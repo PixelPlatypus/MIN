@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowLeft, ExternalLink, Facebook, Github, Globe, Instagram, Linkedin, Mail } from 'lucide-react'
+import { ArrowLeft, ArrowSquareOut as ExternalLink, FacebookLogo as Facebook, GithubLogo as Github, Globe, InstagramLogo as Instagram, LinkedinLogo as Linkedin, Envelope as Mail } from '@phosphor-icons/react'
 
 const socialIcons = {
   facebook: <Facebook size={20} />,
@@ -37,7 +37,7 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="mb-12"
         >
-          <Link href="/team" className="inline-flex items-center gap-3 text-text-tertiary hover:text-primary transition-colors font-black text-xs tracking-[0.2em] uppercase group">
+          <Link href="/team" className="inline-flex items-center gap-3 text-auto-tertiary hover:text-primary transition-colors font-black text-xs tracking-[0.2em] uppercase group">
             <span className="p-2 rounded-full bg-white/5 border border-white/10 group-hover:bg-primary/20 group-hover:border-primary/30 transition-all">
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
             </span>
@@ -103,13 +103,13 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
               className="flex flex-wrap gap-3"
             >
               {Object.entries(socialLinks).map(([platform, url]) => (
-                platform !== 'role_history' && platform !== 'certificate_url' && typeof url === 'string' && url.trim() !== '' && (
+                platform !== 'role_history' && typeof url === 'string' && url.trim() !== '' && (
                   <a 
                     key={platform} 
                     href={platform.toLowerCase() === 'email' ? `mailto:${url}` : url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="w-14 h-14 rounded-2xl glass border border-white/10 flex items-center justify-center text-text-tertiary hover:text-white hover:bg-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)] hover:-translate-y-1"
+                    className="w-14 h-14 rounded-2xl glass border border-white/10 flex items-center justify-center text-auto-tertiary hover:text-white hover:bg-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)] hover:-translate-y-1"
                     aria-label={`${member.name}'s ${platform}`}
                   >
                     {socialIcons[platform.toLowerCase()] || <ExternalLink size={20} />}
@@ -134,7 +134,7 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
                 <h2 className="text-sm font-black uppercase tracking-[0.3em] text-primary">Biography</h2>
                 <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
               </div>
-              <p className="text-lg md:text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed font-medium whitespace-pre-wrap">
+              <p className="text-lg md:text-xl text-auto-secondary leading-relaxed font-medium whitespace-pre-wrap">
                 {member.bio || "Biography details are currently being updated."}
               </p>
             </motion.section>
@@ -149,7 +149,7 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
             >
               <div className="glass p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-tertiary mb-3">Joined</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-auto-tertiary mb-3">Joined</p>
                 <p className="text-2xl md:text-3xl font-black text-text-main dark:text-white tracking-tighter">
                   {member.joined_date ? new Date(member.joined_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : 'Unknown'}
                 </p>
@@ -158,7 +158,7 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
               {member.farewell_date && (
                 <div className="glass p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-br from-coral/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-text-tertiary mb-3">Farewell</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-auto-tertiary mb-3">Farewell</p>
                   <p className="text-2xl md:text-3xl font-black text-text-main dark:text-white tracking-tighter">
                     {new Date(member.farewell_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
                   </p>
@@ -192,7 +192,7 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
                       <span className="text-xl md:text-2xl font-black text-text-main dark:text-white tracking-tight group-hover:text-primary transition-colors">
                         {history.position}
                       </span>
-                      <span className="text-sm font-black text-text-tertiary tracking-[0.2em] bg-white/5 px-4 py-2 rounded-xl">
+                      <span className="text-sm font-black text-auto-tertiary tracking-[0.2em] bg-white/5 px-4 py-2 rounded-xl">
                         {history.year}
                       </span>
                     </motion.div>
@@ -202,7 +202,7 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
             )}
 
             {/* Official Certification */}
-            {socialLinks.certificate_url && (
+            {member.certificate_url && (
               <motion.section 
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -215,12 +215,12 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
                   <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
                 </div>
                 <div className="w-full aspect-[1/1.4] md:aspect-[1.4/1] bg-black/20 dark:bg-black/40 rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl relative group">
-                  {socialLinks.certificate_url.toLowerCase().endsWith('.pdf') ? (
-                    <iframe src={`${socialLinks.certificate_url}#toolbar=0&navpanes=0&scrollbar=0`} className="w-full h-full border-none opacity-80 group-hover:opacity-100 transition-opacity duration-500" title={`${member.name} Certificate`} />
+                  {(member.certificate_url || '').toLowerCase().endsWith('.pdf') ? (
+                    <iframe src={`${member.certificate_url}#toolbar=0&navpanes=0&scrollbar=0`} className="w-full h-full border-none opacity-80 group-hover:opacity-100 transition-opacity duration-500" title={`${member.name} Certificate`} />
                   ) : (
-                    <img src={socialLinks.certificate_url} alt="Certificate" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
+                    <img src={member.certificate_url} alt="Certificate" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
                   )}
-                  <a href={socialLinks.certificate_url} target="_blank" rel="noopener noreferrer" className="absolute bottom-6 right-6 px-6 py-3 bg-black/50 hover:bg-primary backdrop-blur-xl border border-white/10 rounded-2xl text-white font-bold tracking-wide flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)] translate-y-4 group-hover:translate-y-0">
+                  <a href={member.certificate_url} target="_blank" rel="noopener noreferrer" className="absolute bottom-6 right-6 px-6 py-3 bg-black/50 hover:bg-primary backdrop-blur-xl border border-white/10 rounded-2xl text-white font-bold tracking-wide flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)] translate-y-4 group-hover:translate-y-0">
                     View Full Size <ExternalLink size={18} />
                   </a>
                 </div>

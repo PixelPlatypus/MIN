@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { ArrowLeft, User, Calendar, FileDown, Video, LayoutList } from 'lucide-react'
+import { ArrowLeft, User, Calendar, DownloadSimple as FileDown, Video, List as LayoutList } from '@phosphor-icons/react'
 import Link from 'next/link'
 import ContentRenderer from '@/components/public/ContentRenderer'
 import { captureEvent } from '@/lib/analytics'
@@ -35,7 +35,7 @@ export default function ContentDetailView({ content }) {
           <div className="space-y-8">
             <Link 
               href="/content" 
-              className="inline-flex items-center gap-2 text-text-tertiary hover:text-primary transition-colors font-bold text-sm group"
+              className="inline-flex items-center gap-2 text-auto-tertiary hover:text-primary transition-colors font-bold text-sm group"
             >
               <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
               Back to Library
@@ -60,18 +60,18 @@ export default function ContentDetailView({ content }) {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold">{author_name}</span>
-                    <span className="text-xs text-text-tertiary">Author</span>
+                    <span className="text-xs text-auto-tertiary">Author</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-text-tertiary">
+                  <div className="w-10 h-10 rounded-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-auto-tertiary">
                     <Calendar size={18} />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold">
                       {published_at ? new Date(published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently'}
                     </span>
-                    <span className="text-xs text-text-tertiary">Published</span>
+                    <span className="text-xs text-auto-tertiary">Published</span>
                   </div>
                 </div>
               </div>
@@ -110,7 +110,7 @@ export default function ContentDetailView({ content }) {
                     </div>
                     <div className="space-y-4">
                       <h2 className="text-3xl font-bold">Download Resource</h2>
-                      <p className="text-text-secondary dark:text-text-secondary-dark text-lg max-w-md mx-auto">
+                      <p className="text-auto-secondary text-lg max-w-md mx-auto">
                         Need to keep this for later? You can download the full PDF document to your device.
                       </p>
                     </div>
@@ -150,7 +150,7 @@ export default function ContentDetailView({ content }) {
                           <Video size={24} />
                           <h3 className="text-xl font-bold">Video Summary / Excerpt</h3>
                         </div>
-                        <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
+                        <p className="text-lg text-auto-secondary leading-relaxed">
                           {excerpt}
                         </p>
                      </div>
@@ -162,7 +162,7 @@ export default function ContentDetailView({ content }) {
               {tags.length > 0 && (
                 <div className="pt-12 border-t border-border dark:border-border-dark flex flex-wrap gap-3">
                   {tags.map((tag) => (
-                    <span key={tag} className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-bg-secondary dark:bg-white/5 text-text-tertiary border border-border dark:border-border-dark">
+                    <span key={tag} className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-bg-secondary dark:bg-white/5 text-auto-tertiary border border-border dark:border-border-dark">
                       #{tag}
                     </span>
                   ))}

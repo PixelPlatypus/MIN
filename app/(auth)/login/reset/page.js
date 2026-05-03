@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { motion } from 'framer-motion'
-import { Lock, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
+import { Lock, CircleNotch as Loader2, WarningCircle as AlertCircle, CheckCircle } from '@phosphor-icons/react'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
@@ -48,7 +48,7 @@ export default function ResetPasswordPage() {
       
       <div className="relative text-center mb-8">
         <h1 className="text-2xl font-bold tracking-tight mb-2">Set New Password</h1>
-        <p className="text-text-secondary text-sm">Create a new secure password for your account.</p>
+        <p className="text-auto-secondary text-sm">Create a new secure password for your account.</p>
       </div>
 
       {error && (
@@ -77,7 +77,7 @@ export default function ResetPasswordPage() {
           <div className="space-y-2 text-left">
             <label className="text-sm font-medium ml-1">New Password</label>
             <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-auto-tertiary">
                 <Lock size={18} />
               </div>
               <input

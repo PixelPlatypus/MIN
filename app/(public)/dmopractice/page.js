@@ -7,14 +7,14 @@ import Link from 'next/link'
 import { 
   Calculator, 
   Clock, 
-  ListOrdered, 
-  ChevronRight, 
-  Sparkles,
+  ListNumbers as ListOrdered, 
+  CaretRight as ChevronRight, 
+  RocketLaunch as Sparkles,
   ArrowRight,
   ShieldCheck,
-  History,
-  ChevronDown
-} from 'lucide-react'
+  ClockCounterClockwise as History,
+  CaretDown as ChevronDown
+} from '@phosphor-icons/react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 
@@ -106,7 +106,7 @@ export default function DMOPracticePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary-dark leading-relaxed font-medium"
+                  className="text-xl md:text-2xl text-auto-secondary leading-relaxed font-medium"
                 >
                   {settings?.dmopractice_description}
                 </motion.p>
@@ -153,10 +153,10 @@ export default function DMOPracticePage() {
                           </div>
                           <h3 className="text-2xl font-black tracking-tight leading-tight">{set.name}</h3>
                           <div className="flex flex-wrap gap-4 pt-2">
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
                                <Clock size={14} className="text-primary" /> {set.time_limit} Minutes
                             </div>
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-text-tertiary">
+                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
                                <ListOrdered size={14} className="text-secondary" /> {set.practice_questions?.[0]?.count || 0} Questions
                             </div>
                           </div>
@@ -174,7 +174,7 @@ export default function DMOPracticePage() {
                 {sets.length === 0 && (
                   <div className="col-span-full py-24 text-center glass rounded-[3rem] border border-dashed border-border">
                      <Calculator size={48} className="mx-auto mb-4 opacity-10" />
-                     <p className="text-xl font-bold text-text-tertiary">New practice sets coming soon!</p>
+                     <p className="text-xl font-bold text-auto-tertiary">New practice sets coming soon!</p>
                   </div>
                 )}
               </div>
@@ -221,14 +221,14 @@ export default function DMOPracticePage() {
                         >
                           <div className="min-w-0 flex-1">
                             <p className="text-sm font-bold truncate">{entry.setName}</p>
-                            <p className="text-[10px] text-text-tertiary font-bold uppercase">{new Date(entry.date).toLocaleDateString()}</p>
+                            <p className="text-[10px] text-auto-tertiary font-bold uppercase">{new Date(entry.date).toLocaleDateString()}</p>
                           </div>
                           <div className="text-right flex items-center gap-3">
                             <div>
                               <p className="text-lg font-black text-primary leading-tight">{entry.score}/{entry.total}</p>
-                              <p className="text-[10px] text-text-tertiary font-bold uppercase">Marks</p>
+                              <p className="text-[10px] text-auto-tertiary font-bold uppercase">Marks</p>
                             </div>
-                            <ChevronDown size={16} className={`text-text-tertiary transition-transform ${expandedHistory === idx ? 'rotate-180' : ''}`} />
+                            <ChevronDown size={16} className={`text-auto-tertiary transition-transform ${expandedHistory === idx ? 'rotate-180' : ''}`} />
                           </div>
                         </button>
                         

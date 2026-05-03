@@ -1,22 +1,28 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Bell, Search, Settings, User, Clock, ChevronRight, AlertCircle, Menu } from 'lucide-react'
+import { Bell, MagnifyingGlass, Gear, User, Clock, CaretRight, WarningCircle, List, SignOut } from '@phosphor-icons/react'
 import Link from 'next/link'
 import ThemeToggle from '@/components/shared/ThemeToggle'
 import { useSidebar } from './SidebarProvider'
 
 import AdminSearch from './AdminSearch'
-
 export default function AdminTopbar({ profile, isMaintenance }) {
   const pathname = usePathname()
   const { toggleMobile } = useSidebar()
+  const router = useRouter()
+  const supabase = createClient()
+  
   const [notifications, setNotifications] = useState([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [readNotifs, setReadNotifs] = useState([])
+  
   const dropdownRef = useRef(null)
+  const profileDropdownRef = useRef(null)
 
   useEffect(() => {
     const stored = localStorage.getItem('min_read_notifs')
@@ -31,6 +37,9 @@ export default function AdminTopbar({ profile, isMaintenance }) {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setIsOpen(false)
+      }
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(e.target)) {
+        setIsProfileOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -76,6 +85,12 @@ export default function AdminTopbar({ profile, isMaintenance }) {
     localStorage.setItem('min_read_notifs', JSON.stringify(updated))
   }
 
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
+
   const visibleNotifications = notifications.filter(n => !readNotifs.includes(n.id))
   const actualUnreadCount = visibleNotifications.length
 
@@ -98,14 +113,14 @@ export default function AdminTopbar({ profile, isMaintenance }) {
       <div className="flex items-center gap-4">
         <button 
           onClick={toggleMobile}
-          className="lg:hidden p-2 rounded-xl hover:bg-bg-secondary dark:hover:bg-white/5 text-text-secondary transition-all"
+          className="lg:hidden p-2 rounded-xl hover:bg-bg-secondary dark:hover:bg-white/5 text-auto-secondary transition-all"
         >
-          <Menu size={20} />
+          <List size={20} />
         </button>
         <h1 className="text-xl font-bold tracking-tight">{getPageTitle(pathname)}</h1>
         {isMaintenance && (
           <div className="flex items-center gap-2 bg-rose-500/10 text-rose-500 px-3 py-1.5 rounded-xl border border-rose-500/20 animate-pulse">
-            <AlertCircle size={14} />
+            <WarningCircle size={14} />
             <span className="text-[10px] font-black uppercase tracking-widest">Maintenance Active</span>
           </div>
         )}
@@ -153,21 +168,21 @@ export default function AdminTopbar({ profile, isMaintenance }) {
                         className="flex items-start gap-3 p-4 hover:bg-black/5 dark:hover:bg-white/5 transition-all group relative"
                       >
                         <div className={`mt-0.5 p-2 rounded-xl ${notif.type === 'APPLICATION' ? 'bg-green/10 text-green' : 'bg-primary/10 text-primary'}`}>
-                          <AlertCircle size={16} />
+                          <WarningCircle size={20} />
                         </div>
                         <div className="flex-1 space-y-1 pr-6">
                           <p className="text-xs font-bold leading-none">{notif.title}</p>
-                          <p className="text-[11px] text-text-secondary dark:text-text-secondary-dark line-clamp-2 leading-tight">
+                          <p className="text-[11px] text-auto-secondary line-clamp-2 leading-tight">
                             {notif.message}
                           </p>
-                          <div className="flex items-center gap-1 text-[9px] text-text-tertiary">
+                          <div className="flex items-center gap-1 text-[9px] text-auto-tertiary">
                             <Clock size={10} />
                             {new Date(notif.time).toLocaleDateString()}
                           </div>
                         </div>
                         <button 
                           onClick={(e) => markAsRead(e, notif.id)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-black/5 dark:bg-white/5 hover:bg-primary hover:text-white rounded-full text-text-tertiary opacity-0 group-hover:opacity-100 transition-all z-10"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-black/5 dark:bg-white/5 hover:bg-primary hover:text-white rounded-full text-auto-tertiary opacity-0 group-hover:opacity-100 transition-all z-10"
                           title="Mark as read"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -176,11 +191,11 @@ export default function AdminTopbar({ profile, isMaintenance }) {
                     ))
                   ) : (
                     <div className="px-6 py-12 text-center">
-                      <div className="w-12 h-12 bg-bg-secondary dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 text-text-tertiary">
+                      <div className="w-12 h-12 bg-bg-secondary dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 text-auto-tertiary">
                         <Bell size={24} />
                       </div>
                       <p className="text-xs font-bold">All caught up!</p>
-                      <p className="text-[10px] text-text-tertiary">No new notifications at the moment.</p>
+                      <p className="text-[10px] text-auto-tertiary">No new notifications at the moment.</p>
                     </div>
                   )}
                 </div>
@@ -198,11 +213,79 @@ export default function AdminTopbar({ profile, isMaintenance }) {
         </div>
 
         <div className="h-6 w-px bg-border dark:bg-border-dark mx-2" />
-        <div className="flex items-center gap-3 bg-bg-secondary dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border dark:border-border-dark">
-          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
-            {profile.name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase()}
-          </div>
-          <span className="text-xs font-bold truncate max-w-[100px]">{profile.name}</span>
+        
+        <div className="relative" ref={profileDropdownRef}>
+          <button 
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className={`flex items-center gap-3 bg-bg-secondary dark:bg-white/5 px-3 py-1.5 rounded-xl border transition-all duration-200 group ${
+              isProfileOpen ? 'ring-2 ring-primary border-primary shadow-lg shadow-primary/10' : 'border-border dark:border-border-dark hover:shadow-md'
+            }`}
+          >
+            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary group-hover:bg-primary group-hover:text-white transition-all">
+              {profile.name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase()}
+            </div>
+            <span className="text-xs font-bold truncate max-w-[100px] hidden sm:inline">{profile.name}</span>
+            <CaretRight size={14} className={`text-auto-tertiary transition-transform duration-300 ${isProfileOpen ? 'rotate-90' : ''}`} />
+          </button>
+
+          <AnimatePresence>
+            {isProfileOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                className="absolute right-0 mt-3 w-56 glass rounded-[2rem] shadow-2xl border border-border dark:border-border-dark overflow-hidden z-50 p-2"
+              >
+                <div className="p-4 border-b border-border dark:border-border-dark mb-1">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mb-1">Authenticated as</p>
+                  <p className="text-xs font-bold truncate">{profile.email}</p>
+                </div>
+
+                <div className="space-y-1">
+                  <Link
+                    href="/admin/settings/account"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-3 p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
+                  >
+                    <div className="p-2 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                      <Gear size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold leading-none">My Account</p>
+                      <p className="text-[9px] text-auto-tertiary font-medium">Profile Settings</p>
+                    </div>
+                  </Link>
+                  
+                  <Link
+                    href="/admin/settings/account#password"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-3 p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
+                  >
+                    <div className="p-2 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                      <Lock size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold leading-none">Change Password</p>
+                      <p className="text-[9px] text-auto-tertiary font-medium">Update Credentials</p>
+                    </div>
+                  </Link>
+
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-coral/10 transition-all group"
+                  >
+                    <div className="p-2 rounded-xl bg-coral/10 text-coral group-hover:bg-coral group-hover:text-white transition-all">
+                      <SignOut size={14} />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p className="text-xs font-bold leading-none text-coral">Sign Out</p>
+                      <p className="text-[9px] text-coral/60 font-medium">End Session</p>
+                    </div>
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </header>

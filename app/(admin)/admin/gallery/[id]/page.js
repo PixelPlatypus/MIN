@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import GalleryForm from '@/components/admin/GalleryForm'
-import { Loader2 } from 'lucide-react'
+import { CircleNotch as Loader2 } from '@phosphor-icons/react'
 
 export default function EditGalleryImagePage() {
   const { id } = useParams()
@@ -42,7 +42,7 @@ export default function EditGalleryImagePage() {
     return (
       <div className="text-center py-24 glass rounded-[3rem] border border-dashed border-coral/30">
         <h3 className="text-xl font-bold text-coral mb-2">Error</h3>
-        <p className="text-text-tertiary">{error || 'Image not found'}</p>
+        <p className="text-auto-tertiary">{error || 'Image not found'}</p>
       </div>
     )
   }

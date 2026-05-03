@@ -63,6 +63,16 @@ export async function POST(request) {
             contact_message: data.Message || data.message || ''
           })
         }
+        // --- NEW: Notify Admin ---
+        await sendTemplatedEmail('admin_new_application', 'website@mathsinitiatives.org.np', {
+          form_title: formDef?.title || 'Form',
+          applicant_name: name,
+          applicant_email: email || 'No email',
+          category: formDef?.category || 'General',
+          form_data_summary: Object.entries(data).map(([k, v]) => `**${k}:** ${Array.isArray(v) ? v.join(', ') : v}`).join('\n'),
+          admin_url: `${process.env.NEXT_PUBLIC_APP_URL}/admin/applications`
+        })
+        // -------------------------
       }
     } catch (err) {
       console.error('Automated Form Email Error:', err)
