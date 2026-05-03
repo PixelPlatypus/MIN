@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   ClockCounterClockwise as History, MagnifyingGlass as Search, CircleNotch as Loader2, Link as LinkIcon, 
-  ShieldWarning as ShieldAlert, User, Activity, Clock, Trash as Trash2, 
+  ShieldWarning as ShieldAlert, User, Pulse as Activity, Clock, Trash as Trash2, 
   Funnel as Filter, CaretRight as ChevronRight, Eye, Smartphone, Monitor,
   Stack as Layers, Database, FileText, Gear as Settings, XCircle
 } from '@phosphor-icons/react'

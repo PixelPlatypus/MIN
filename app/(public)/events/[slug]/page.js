@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { Calendar, MapPin, ArrowRight, Video, PlayCircle } from '@phosphor-icons/react'
+import { Calendar, MapPin, ArrowRight, Video, PlayCircle } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Image from 'next/image'
 import ContentRenderer from '@/components/public/ContentRenderer'

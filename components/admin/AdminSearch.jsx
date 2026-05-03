@@ -9,7 +9,7 @@ import {
   Books as Library, 
   PaperPlaneTilt as Send, 
   PlusCircle, 
-  Layers, 
+  Stack as Layers, 
   Calendar, 
   Calculator, 
   Users, 
@@ -18,7 +18,7 @@ import {
   Envelope as Mail, 
   Bell, 
   Globe, 
-  History 
+  ClockCounterClockwise as History 
 } from '@phosphor-icons/react'
 import { useRouter } from 'next/navigation'
 

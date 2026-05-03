@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft, ArrowSquareOut as ExternalLink, FacebookLogo as Facebook, GithubLogo as Github, Globe, InstagramLogo as Instagram, LinkedinLogo as Linkedin, Envelope as Mail } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowSquareOut as ExternalLink, FacebookLogo as Facebook, GithubLogo as Github, Globe, InstagramLogo as Instagram, LinkedinLogo as Linkedin, Envelope as Mail } from '@phosphor-icons/react/dist/ssr'
 
 const socialIcons = {
   facebook: <Facebook size={18} />,
