@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Bell, MagnifyingGlass, Gear, User, Clock, CaretRight, WarningCircle, List, SignOut } from '@phosphor-icons/react'
+import { Bell, MagnifyingGlass, Gear, User, Clock, CaretRight, WarningCircle, List, SignOut, CircleNotch, Lock } from '@phosphor-icons/react'
 import Link from 'next/link'
 import ThemeToggle from '@/components/shared/ThemeToggle'
 import { useSidebar } from './SidebarProvider'
@@ -20,6 +20,7 @@ export default function AdminTopbar({ profile, isMaintenance }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [readNotifs, setReadNotifs] = useState([])
+  const [isSigningOut, setIsSigningOut] = useState(false)
   
   const dropdownRef = useRef(null)
   const profileDropdownRef = useRef(null)
@@ -86,6 +87,7 @@ export default function AdminTopbar({ profile, isMaintenance }) {
   }
 
   async function handleSignOut() {
+    setIsSigningOut(true)
     await supabase.auth.signOut()
     router.push('/login')
     router.refresh()
@@ -272,14 +274,15 @@ export default function AdminTopbar({ profile, isMaintenance }) {
 
                   <button
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-coral/10 transition-all group"
+                    disabled={isSigningOut}
+                    className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-coral/10 transition-all group disabled:opacity-50"
                   >
                     <div className="p-2 rounded-xl bg-coral/10 text-coral group-hover:bg-coral group-hover:text-white transition-all">
-                      <SignOut size={14} />
+                      {isSigningOut ? <CircleNotch size={14} className="animate-spin" /> : <SignOut size={14} />}
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-xs font-bold leading-none text-coral">Sign Out</p>
-                      <p className="text-[9px] text-coral/60 font-medium">End Session</p>
+                      <p className="text-xs font-bold leading-none text-coral">{isSigningOut ? 'Signing Out...' : 'Sign Out'}</p>
+                      <p className="text-[9px] text-coral/60 font-medium">{isSigningOut ? 'Please wait' : 'End Session'}</p>
                     </div>
                   </button>
                 </div>

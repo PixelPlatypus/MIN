@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -8,7 +9,7 @@ import {
   SquaresFour, 
   FileText, 
   Calendar, 
-  Stack, 
+  Stack as Layers, 
   Users, 
   Image as ImageIcon, 
   PaperPlaneTilt, 
@@ -26,7 +27,8 @@ import {
   List,
   X,
   Calculator,
-  Envelope
+  Envelope,
+  CircleNotch
 } from '@phosphor-icons/react'
 
 const navGroups = [
@@ -84,8 +86,10 @@ export default function AdminSidebar({ profile, isMaintenance }) {
   const router = useRouter()
   const supabase = createClient()
   const { isCollapsed, toggleCollapse, isMobileOpen, toggleMobile } = useSidebar()
+  const [isSigningOut, setIsSigningOut] = useState(false)
 
   async function handleSignOut() {
+    setIsSigningOut(true)
     await supabase.auth.signOut()
     router.push('/login')
     router.refresh()
@@ -236,19 +240,21 @@ export default function AdminSidebar({ profile, isMaintenance }) {
             {!isCollapsed && (
               <button 
                 onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-coral bg-coral/10 hover:bg-coral/20 transition-all border border-coral/20"
+                disabled={isSigningOut}
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-coral bg-coral/10 hover:bg-coral/20 transition-all border border-coral/20 disabled:opacity-50"
               >
-                <SignOut size={14} />
-                Sign Out
+                {isSigningOut ? <CircleNotch size={14} className="animate-spin" /> : <SignOut size={14} />}
+                {isSigningOut ? 'Signing Out...' : 'Sign Out'}
               </button>
             )}
             {isCollapsed && (
                <button 
                 onClick={handleSignOut}
-                className="p-2 rounded-xl text-coral hover:bg-coral/10 transition-all mt-2"
+                disabled={isSigningOut}
+                className="p-2 rounded-xl text-coral hover:bg-coral/10 transition-all mt-2 disabled:opacity-50"
                 title="Sign Out"
               >
-                <SignOut size={18} />
+                {isSigningOut ? <CircleNotch size={18} className="animate-spin" /> : <SignOut size={18} />}
               </button>
             )}
           </div>
