@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Target, Heart, Users, Globe, Award, BookOpen, Clock } from 'lucide-react'
 import VoronoiCanvas from '@/components/shared/VoronoiCanvas'
+import Image from 'next/image'
 
 const features = [
   { icon: Target, title: 'Discover Talent', desc: 'Identify mathematically gifted students across all seven provinces through district and national olympiads.' },
@@ -41,16 +42,12 @@ export default function Hero({ settings }) {
   return (
     <section ref={sectionRef} className="relative min-h-screen flex items-center pt-20 pb-12 overflow-hidden">
       <VoronoiCanvas className="opacity-40" />
-      <div className="absolute inset-0 math-grid opacity-[0.08]" />
+      <div className="absolute inset-0 math-grid opacity-[0.06]" />
 
-      {/* Nepal flag — the only national motif, breathing animation */}
-      <svg className="absolute right-[3%] top-[18%] w-32 h-44 opacity-[0.08] pointer-events-none animate-nepal-flag" viewBox="0 0 100 140" fill="none">
-        <path d="M5 135 L5 20 L50 5 L50 65 L95 55 L95 135 Z" stroke="var(--color-marigold)" strokeWidth="2.5" fill="none" />
-        <path d="M50 25 L75 60 L50 55" stroke="var(--color-marigold)" strokeWidth="1" fill="none" opacity="0.5" />
-        <circle cx="68" cy="75" r="3" fill="var(--color-marigold)" opacity="0.4">
-          <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" repeatCount="indefinite" />
-        </circle>
-      </svg>
+      {/* Nepal flag — floating on the right side */}
+      <div className="absolute right-[5%] top-[22%] w-28 md:w-36 opacity-[0.12] pointer-events-none animate-nepal-flag z-10">
+        <Image src="/images/nepal-flag.svg" alt="" width={144} height={184} className="w-full h-auto" />
+      </div>
 
       <div className="relative z-10 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto w-full">
         <div className="max-w-4xl">
@@ -62,15 +59,9 @@ export default function Hero({ settings }) {
           </div>
 
           <h1 className={`transition-all duration-700 delay-200 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-text-primary-dynamic">
-              Elevating
-            </span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-accent">
-              Nepal
-            </span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-headline">
-              Through Mathematics.
-            </span>
+            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-text-primary-dynamic">Elevating</span>
+            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-accent">Nepal</span>
+            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-headline">Through Mathematics.</span>
           </h1>
 
           <div className={`transition-all duration-700 delay-[600ms] ${subVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>

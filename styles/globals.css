@@ -117,36 +117,29 @@
 
 /* === Ambient animated gradients — outside any layer for reliable animation === */
 @keyframes float-slow {
-  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33% { transform: translate(3%, -2%) scale(1.06) rotate(1deg); }
-  66% { transform: translate(-2%, 3%) scale(0.95) rotate(-1deg); }
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(8%, -3%) scale(1.06); }
+  50% { transform: translate(4%, 2%) scale(0.97); }
+  75% { transform: translate(-4%, -1%) scale(1.04); }
 }
 @keyframes float-slow-reverse {
-  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33% { transform: translate(-3%, 2%) scale(1.05) rotate(-1deg); }
-  66% { transform: translate(2%, -3%) scale(0.94) rotate(1deg); }
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-6%, 3%) scale(1.05); }
+  50% { transform: translate(-10%, -1%) scale(0.95); }
+  75% { transform: translate(3%, -2%) scale(1.03); }
 }
 @keyframes float-medium {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-4%, -3%) scale(1.12); }
+  50% { transform: translate(5%, -4%) scale(1.10); }
 }
-.animate-float-slow { animation: float-slow 20s ease-in-out infinite; }
-.animate-float-slow-reverse { animation: float-slow-reverse 24s ease-in-out infinite; }
-.animate-float-medium { animation: float-medium 16s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 22s ease-in-out infinite; }
+.animate-float-slow-reverse { animation: float-slow-reverse 26s ease-in-out infinite; }
+.animate-float-medium { animation: float-medium 18s ease-in-out infinite; }
 
 /* === Nepal flag — subtle breathing animation === */
 @keyframes nepal-flag {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.07; }
-  50% { transform: translateY(-4px) scale(1.03); opacity: 0.10; }
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.10; }
+  25% { transform: translateY(-6px) rotate(0.5deg); opacity: 0.14; }
+  75% { transform: translateY(3px) rotate(-0.5deg); opacity: 0.11; }
 }
-.animate-nepal-flag { animation: nepal-flag 6s ease-in-out infinite; }
-
-/* === Grain/noise overlay === */
-.grain-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: 0.04;
-  filter: url(#grain-filter);
-}
+.animate-nepal-flag { animation: nepal-flag 7s ease-in-out infinite; }
