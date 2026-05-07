@@ -1,149 +1,93 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-// GSAP and ScrollTrigger are dynamically loaded inside useEffect
-import { Users, Trophy, BookOpen, Clock } from 'lucide-react'
-import { Skeleton } from '@/components/ui/Skeleton'
+import { useEffect, useRef } from 'react'
+import { Users, BookOpen, Clock, Trophy } from 'lucide-react'
+import GridPaper from '@/components/shared/GridPaper'
 
-export default function StatsCounter() {
-  const [settings, setSettings] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+const statItems = [
+  { icon: <Users size={28} />, value: 15000, suffix: '', label: 'Students Reached' },
+  { icon: <BookOpen size={28} />, value: 120, suffix: '', label: 'Workshops Conducted' },
+  { icon: <Clock size={28} />, value: 20000, suffix: '', label: 'Volunteer Hours' },
+  { icon: <Trophy size={28} />, value: 5, suffix: '', label: 'Years of Impact' },
+]
+
+export default function StatsCounter({ settings }) {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => {
-        setSettings(data)
-        setIsLoading(false)
-      })
-      .catch(err => {
-        console.error('Stats settings load error', err)
-        setIsLoading(false)
-      })
-  }, [])
-
-  const dynamicStats = [
-    { label: 'Students Reached', value: settings?.stat_students_count, suffix: '', icon: <Users size={28} />, theme: 'primary' },
-    { label: 'Volunteers', value: settings?.stat_volunteers_count, suffix: '', icon: <Clock size={28} />, theme: 'cyan' },
-    { label: 'Programs', value: settings?.stat_programs_count, suffix: '', icon: <BookOpen size={28} />, theme: 'purple' },
-    { label: 'Years of Impact', value: settings?.stat_years_count, suffix: '', icon: <Trophy size={28} />, theme: 'coral' },
-  ]
-
-  useEffect(() => {
-    if (!settings) return
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let ctx
 
-    let ctx;
-
-    // Load GSAP dynamically to improve TBT and main-thread work
     Promise.all([
       import('gsap'),
       import('gsap/ScrollTrigger')
     ]).then(([{ default: gsap }, { ScrollTrigger }]) => {
       gsap.registerPlugin(ScrollTrigger)
-      
       ctx = gsap.context(() => {
+        if (!containerRef.current) return
         const counts = containerRef.current.querySelectorAll('.stat-value')
-        
-        counts.forEach((count, i) => {
-          const rawValue = (dynamicStats[i].value || '').toString().trim()
-          if (!rawValue) {
-            count.innerText = "0"
+
+        counts.forEach((el) => {
+          const target = parseFloat(el.dataset.value)
+          if (isNaN(target)) return
+
+          if (prefersReducedMotion) {
+            el.textContent = target.toLocaleString()
             return
           }
-          
-          // Extract numeric part and unit (e.g., "20.5" and "K+")
-          const match = rawValue.match(/^([0-9,.]+)\s*(.*)$/)
-          
-          if (prefersReducedMotion || !match) {
-            count.innerText = rawValue
-          } else {
-            const numValue = parseFloat(match[1].replace(/,/g, ''))
-            const unit = match[2] || ""
-            
-            const obj = { val: 0 }
-            gsap.to(obj, {
-              val: numValue,
-              duration: 2,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: count,
-                start: 'top 85%',
-              },
-              onUpdate: () => {
-                // Formatting back with comma if needed, or just floor
-                const current = Math.floor(obj.val)
-                count.innerText = current.toLocaleString() + unit
-              }
-            })
-          }
+
+          const obj = { val: 0 }
+          gsap.to(obj, {
+            val: target,
+            duration: 2.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+            },
+            onUpdate: () => {
+              el.textContent = Math.floor(obj.val).toLocaleString()
+            },
+          })
         })
       })
     })
 
     return () => ctx?.revert()
-  }, [settings])
+  }, [])
 
   return (
-    <section ref={containerRef} className="container mx-auto px-6 py-24 relative overflow-hidden">
-      <div className="text-center mb-16 space-y-4">
-        <span className="text-primary font-bold uppercase tracking-widest text-sm">Key Metrics</span>
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-          {isLoading ? <Skeleton className="w-64 h-12 mx-auto" /> : settings?.stats_title}
-        </h2>
-        <div className="max-w-2xl mx-auto">
-          {isLoading ? (
-            <div className="space-y-2">
-              <Skeleton className="w-full h-4" />
-              <Skeleton className="w-3/4 h-4 mx-auto" />
-            </div>
-          ) : (
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark">
-              {settings?.stats_subtitle}
-            </p>
-          )}
-        </div>
-      </div>
+    <section ref={containerRef} className="relative py-24 lg:py-32 overflow-hidden">
+      <GridPaper className="opacity-[0.08]" spacing={50} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {isLoading ? (
-          [...Array(4)].map((_, i) => (
-            <div key={i} className="glass rounded-[2.5rem] p-8 h-48 space-y-6">
-              <Skeleton className="w-16 h-16 rounded-2xl" />
-              <div className="space-y-2">
-                <Skeleton className="w-24 h-8" />
-                <Skeleton className="w-32 h-4" />
+      <div className="relative z-10 px-6 md:px-12 lg:px-20 max-w-6xl mx-auto text-center">
+        <span className="pill inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase font-institutional mb-8">
+          Impact at Scale
+        </span>
+
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-headline max-w-3xl mx-auto">
+          {settings?.stats_title || 'Numbers that represent real change.'}
+        </h2>
+
+        <p className="mt-6 text-base text-text-secondary-dynamic max-w-xl mx-auto">
+          {settings?.stats_subtitle || 'Every number reflects a life touched, a mind opened, and a future transformed.'}
+        </p>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mt-16">
+          {statItems.map((item, i) => (
+            <div key={i} className="flex flex-col items-center gap-4">
+              <div className="w-14 h-14 rounded-xl bg-marigold/10 flex items-center justify-center text-marigold">
+                {item.icon}
               </div>
+              <div className="stat-value text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-text-primary-dynamic"
+                data-value={item.value}>
+                0
+              </div>
+              <p className="text-sm text-text-tertiary-dynamic tracking-wide uppercase font-medium">
+                {item.label}
+              </p>
             </div>
-          ))
-        ) : (
-          dynamicStats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className="relative glass rounded-[2.5rem] p-8 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 overflow-hidden will-change-transform"
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br from-${stat.theme}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0`} />
-              <div className="relative z-10 flex flex-col h-full w-full">
-                <div className={`w-16 h-16 bg-${stat.theme}/10 text-${stat.theme} rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm`}>
-                  {stat.icon}
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-4xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary transition-colors">
-                    <span className="stat-value">0</span>{stat.suffix}
-                  </h3>
-                  <p className="text-sm font-semibold text-text-tertiary dark:text-text-tertiary-dark uppercase tracking-widest group-hover:text-text-secondary transition-colors">
-                    {stat.label}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          ))
-        )}
+          ))}
+        </div>
       </div>
     </section>
   )

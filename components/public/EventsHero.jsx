@@ -1,51 +1,11 @@
-'use client'
-import { motion } from 'framer-motion'
 import { Calendar } from 'lucide-react'
-import { Skeleton } from '@/components/ui/Skeleton'
-
-export default function EventsHero({ settings, loading }) {
+export default function EventsHero({ settings }) {
   return (
-    <section className="container mx-auto px-6">
-      <div className="max-w-4xl mx-auto text-center space-y-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
-        >
-          <Calendar size={16} />
-          {loading ? <Skeleton className="w-24 h-4" /> : settings?.events_title}
-        </motion.div>
-        <div className="flex justify-center">
-          {loading ? (
-            <Skeleton className="w-[80%] h-16 md:h-20" />
-          ) : (
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl font-bold tracking-tight"
-            >
-              {settings?.events_subtitle}
-            </motion.h1>
-          )}
-        </div>
-        <div className="max-w-3xl mx-auto">
-          {loading ? (
-            <div className="space-y-2">
-              <Skeleton className="w-full h-4" />
-              <Skeleton className="w-5/6 h-4 mx-auto" />
-            </div>
-          ) : (
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
-            >
-              {settings?.events_description}
-            </motion.p>
-          )}
-        </div>
+    <section className="px-6 md:px-12 lg:px-20 pt-36 pb-12">
+      <div className="max-w-3xl mx-auto text-center space-y-6">
+        <div className="pill inline-flex items-center gap-2 px-4 py-1.5"><Calendar size={14} className="text-marigold" /><span className="text-[10px] font-institutional tracking-[0.2em] text-text-tertiary-dynamic">{settings?.events_title || 'Program Overview'}</span></div>
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] text-headline">{settings?.events_subtitle || 'Our Active Initiatives'}</h1>
+        <p className="text-lg md:text-xl text-text-secondary-dynamic leading-relaxed max-w-2xl mx-auto">{settings?.events_description || 'Explore the workshops, seminars, and camps we organize throughout the year.'}</p>
       </div>
     </section>
   )

@@ -1,122 +1,105 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Award, ArrowRight } from 'lucide-react'
-import Image from 'next/image'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Skeleton } from '@/components/ui/Skeleton'
+import Image from 'next/image'
+import { Award } from 'lucide-react'
 
-export default function Recognition() {
-  const [settings, setSettings] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+export default function Recognition({ settings }) {
+  const sectionRef = useRef(null)
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => {
-        setSettings(data)
-        setIsLoading(false)
+    let ctx
+    Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger')
+    ]).then(([{ default: gsap }, { ScrollTrigger }]) => {
+      gsap.registerPlugin(ScrollTrigger)
+      ctx = gsap.context(() => {
+        if (!sectionRef.current) return
+        gsap.fromTo('.recognition-fade-in',
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 78%',
+            },
+          }
+        )
       })
-      .catch(err => {
-        console.error('Recognition settings load error', err)
-        setIsLoading(false)
-      })
+    })
+    return () => ctx?.revert()
   }, [])
 
   return (
-    <section className="container mx-auto px-6 py-24 relative overflow-hidden">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="bg-primary rounded-[3rem] p-12 md:p-24 relative overflow-hidden shadow-2xl shadow-primary/20"
-      >
-        {/* Decorative Circles */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full -ml-32 -mb-32 blur-3xl" />
+    <section ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden">
+      {/* Nepal flag motif */}
+      <svg className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[350px] opacity-[0.05] pointer-events-none" viewBox="0 0 500 350">
+        <polygon points="80,320 250,30 250,320" fill="white" />
+        <polygon points="80,320 420,320 420,140" fill="white" />
+        <polygon points="120,280 250,70 250,280" fill="white" stroke="currentColor" strokeWidth="0.5" />
+        <polygon points="120,280 380,280 380,160" fill="white" stroke="currentColor" strokeWidth="0.5" />
+      </svg>
 
-        <div className="relative flex flex-col md:flex-row items-center gap-16 lg:gap-24">
-          <div className="flex-1 space-y-8">
-            <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold border border-white/10 backdrop-blur-md">
-              <Award size={16} />
-              Global Recognition
-            </div>
-            
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight text-white">
-              {isLoading ? <Skeleton className="w-full h-12 bg-white/20" /> : settings?.about_rec_title}
-            </h2>
-            
-            <div className="space-y-3">
-              {isLoading ? (
-                <>
-                  <Skeleton className="w-full h-4 bg-white/20" />
-                  <Skeleton className="w-full h-4 bg-white/20" />
-                  <Skeleton className="w-2/3 h-4 bg-white/20" />
-                </>
-              ) : (
-                <p className="text-lg text-white/80 leading-relaxed max-w-2xl">
-                  {settings?.about_rec_description}
-                </p>
-              )}
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              {isLoading ? (
-                <>
-                  <Skeleton className="w-44 h-14 rounded-2xl bg-white/20" />
-                  <Skeleton className="w-32 h-14 rounded-2xl bg-white/20" />
-                </>
-              ) : (
-                <>
-                  {settings?.about_rec_link && (
-                    <a 
-                      href={settings.about_rec_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full sm:w-auto bg-secondary hover:bg-secondary-dark text-[#16556D] px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-secondary/20 hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-1 active:scale-[0.98]"
-                      aria-label="Explore MIN Global Recognition"
-                    >
-                      Explore Recognition
-                      <ArrowRight size={20} />
-                    </a>
-                  )}
-                  <Link 
-                    href="/about"
-                    className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all border border-white/10 backdrop-blur-md"
-                  >
-                    Our Journey
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-
-          <div className="flex-1 w-full max-w-[500px] relative group">
-            <div className="absolute inset-0 bg-white/20 rounded-[3rem] blur-2xl group-hover:blur-3xl transition-all duration-500" />
-            <div className="aspect-square relative rounded-[3rem] overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-[1.02] z-10 border border-white/10">
-              {isLoading ? (
-                <Skeleton className="w-full h-full bg-white/10" />
-              ) : settings?.recognition_image_url && (
-                <Image 
-                  src={settings.recognition_image_url} 
-                  alt="Recognition" 
-                  fill
-                  className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
-                  sizes="(max-width: 768px) 100vw, 500px"
-                />
-              )}
-            </div>
-            
-            {!isLoading && settings?.about_rec_badge_title && (
-              <div className="absolute -bottom-6 -right-6 glass p-8 rounded-3xl shadow-2xl z-20 hidden lg:block border border-white/20 hover:scale-105 transition-transform">
-                <p className="text-3xl font-black text-primary mb-1 tracking-tighter">{settings.about_rec_badge_title}</p>
-                <p className="text-[10px] text-text-secondary dark:text-text-secondary-dark font-black uppercase tracking-[0.2em]">{settings.about_rec_badge_desc}</p>
-              </div>
-            )}
-          </div>
+      <div className="relative z-10 px-6 md:px-12 lg:px-20 max-w-4xl mx-auto text-center">
+        <div className="recognition-fade-in">
+          <span className="pill inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase font-institutional mb-6">
+            <Award size={14} />
+            Global Recognition
+          </span>
         </div>
-      </motion.div>
+
+        <h2 className="recognition-fade-in text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
+          <span className="block text-accent">HundrED Top 100</span>
+          <span className="block text-headline mt-2">Global Education</span>
+          <span className="block text-text-primary-dynamic mt-2">Innovation 2024</span>
+        </h2>
+
+        <p className="recognition-fade-in mt-8 text-base md:text-lg text-text-secondary-dynamic leading-relaxed max-w-2xl mx-auto">
+          {settings?.about_rec_description || 'MIN was selected from 3,000+ innovations across 100+ countries as one of the HundrED Top 100 Global Education Innovations of 2024 — the only organization from Nepal to receive this honor.'}
+        </p>
+
+        <div className="recognition-fade-in mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            href={settings?.about_rec_link || '/about'}
+            className="inline-flex items-center gap-2 bg-headline text-bg px-8 py-4 rounded-xl font-bold text-base transition-all hover:scale-[1.02] active:scale-[0.98]"
+          >
+            Explore Recognition
+          </Link>
+          <Link
+            href="/about"
+            className="inline-flex items-center gap-2 border border-border-dynamic px-8 py-4 rounded-xl font-medium text-base text-text-secondary-dynamic transition-all hover:border-marigold/40 hover:text-text-primary-dynamic"
+          >
+            Our Journey
+          </Link>
+        </div>
+
+        {settings?.recognition_image_url && (
+          <div className="recognition-fade-in mt-16">
+            <div className="relative aspect-[16/9] max-w-lg mx-auto rounded-3xl overflow-hidden border border-border-dynamic">
+              <Image
+                src={settings.recognition_image_url}
+                alt="Recognition Award"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 500px"
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="recognition-fade-in mt-12 flex flex-wrap items-center justify-center gap-4 text-sm text-text-tertiary-dynamic tracking-wide">
+          <span>5,000+ reviewed</span>
+          <span className="w-1 h-1 rounded-full bg-marigold" />
+          <span>100+ countries</span>
+          <span className="w-1 h-1 rounded-full bg-marigold" />
+          <span>1 from Nepal</span>
+        </div>
+      </div>
     </section>
   )
 }

@@ -1,127 +1,70 @@
 'use client'
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import { Facebook, Instagram, Linkedin, Youtube, Mail } from 'lucide-react'
+import { Facebook, Instagram, Youtube, Mail } from 'lucide-react'
+import NepalBar from '@/components/shared/NepalBar'
+import GridPaper from '@/components/shared/GridPaper'
 
 const footerLinks = [
-  {
-    title: 'Organization',
-    links: [
-      { name: 'About Us', href: '/about' },
-      { name: 'Our Team', href: '/team' },
-      { name: 'Events', href: '/events' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { name: 'Content Library', href: '/content' },
-      { name: 'Gallery', href: '/gallery' },
-      { name: 'RTO Program', href: '/rto' },
-      { name: 'Submit Content', href: '/submit-content' },
-    ],
-  },
-  {
-    title: 'Support',
-    links: [
-      { name: 'Join Us', href: '/join' },
-      { name: 'Contact Us', href: '/contact' },
-      { name: 'Privacy Policy', href: '/about/privacy' },
-      { name: 'Terms of Use', href: '/about/terms' },
-    ],
-  },
+  { title: 'Organization', links: [{ name: 'About Us', href: '/about' }, { name: 'Our Team', href: '/team' }, { name: 'Events', href: '/events' }] },
+  { title: 'Resources', links: [{ name: 'Content Library', href: '/content' }, { name: 'Gallery', href: '/gallery' }, { name: 'RTO Program', href: '/rto' }, { name: 'Submit Content', href: '/submit-content' }] },
+  { title: 'Support', links: [{ name: 'Join Us', href: '/join' }, { name: 'DMO Practice', href: '/dmopractice' }, { name: 'Contact Us', href: '/join#contact' }, { name: 'Privacy Policy', href: '/about/privacy' }] },
 ]
 
-export default function Footer() {
-  const [settings, setSettings] = useState(null)
+const socialLinks = [
+  { name: 'Facebook', href: 'https://www.facebook.com/mathsinitiatives', icon: Facebook },
+  { name: 'Instagram', href: 'https://www.instagram.com/minnepal', icon: Instagram },
+  { name: 'YouTube', href: 'https://www.youtube.com/@mathsinitiatives', icon: Youtube },
+].filter(s => !!s.href)
 
-  useEffect(() => {
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error('Footer settings load error', err))
-  }, [])
-
-  const socialLinks = settings ? [
-    { name: 'Facebook', icon: <Facebook size={20} />, href: settings.facebook_url },
-    { name: 'Instagram', icon: <Instagram size={20} />, href: settings.instagram_url },
-    { name: 'LinkedIn', icon: <Linkedin size={20} />, href: settings.linkedin_url },
-    { name: 'YouTube', icon: <Youtube size={20} />, href: settings.youtube_url },
-  ].filter(s => !!s.href) : []
-
+export default function Footer({ settings }) {
   return (
-    <footer className="bg-transparent pt-24 pb-12 transition-colors border-t border-black/10 dark:border-white/10">
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
-          {/* Brand Column */}
-          <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 group mb-6">
-              <span className="sr-only">Mathematics Initiatives in Nepal Home</span>
-              {settings?.site_logo_url && (
-                <Image 
-                  src={settings.site_logo_url} 
-                  alt="MIN Logo" 
-                  width={48}
-                  height={48}
-                  priority
-                  className="h-12 w-12 transition-transform group-hover:scale-105 object-contain" 
-                />
+    <footer className="relative pt-20 pb-10 px-6 md:px-12 lg:px-20 overflow-hidden border-t border-border-dynamic">
+      <GridPaper opacity={0.10} spacing={80} />
+      <NepalBar position="left" />
+      <div className="relative max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-12 mb-16">
+          <div>
+            <Link href="/" className="inline-flex items-center gap-3 mb-6">
+              {settings?.site_logo_url ? (
+                <Image src={settings.site_logo_url} alt="MIN Logo" width={36} height={36} priority className="h-9 w-9 object-contain" />
+              ) : (
+                <div className="h-9 w-9 rounded-xl bg-text-primary-dynamic flex items-center justify-center text-bg-dynamic font-black text-xs">M</div>
               )}
+              <span className="font-bold text-lg tracking-tight">MIN</span>
             </Link>
-            <p className="text-dynamic max-w-sm mb-8 opacity-80">
-              {settings?.footer_description}
+            <p className="text-text-secondary-dynamic max-w-sm leading-relaxed text-sm mb-8">
+              {settings?.footer_description || 'Empowering students across Nepal through innovative mathematics education, resources, and events since 2020.'}
             </p>
-            <div className="flex items-center gap-4">
-              {socialLinks.map((social) => (
-                <a 
-                  key={social.name} 
-                  href={social.href} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-dynamic hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1"
-                  aria-label={social.name}
-                >
-                  {social.icon}
-                </a>
-              ))}
+            <div className="flex items-center gap-3">
+              {socialLinks.map((social) => {
+                const Icon = social.icon
+                return <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl flex items-center justify-center text-text-secondary-dynamic hover:text-headline hover:bg-headline/5 transition-colors" aria-label={social.name}><Icon size={18} /></a>
+              })}
             </div>
           </div>
-
-          {/* Links Columns */}
           {footerLinks.map((section) => (
             <div key={section.title}>
-              <h4 className="font-bold text-sm mb-6 text-dynamic tracking-tight">{section.title}</h4>
-              <ul className="space-y-4">
+              <h4 className="text-xs font-institutional tracking-[0.2em] text-text-tertiary-dynamic mb-5">{section.title}</h4>
+              <ul className="space-y-3">
                 {section.links.map((link) => (
-                  <li key={link.name}>
-                    <Link 
-                      href={link.href}
-                      className="text-dynamic opacity-70 hover:opacity-100 hover:text-primary transition-all text-sm font-medium"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
+                  <li key={link.name}><Link href={link.href} className="text-sm text-text-secondary-dynamic hover:text-headline transition-colors">{link.name}</Link></li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-
-        <div className="mt-20 pt-8 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-dynamic opacity-50">
-          <p>© {new Date().getFullYear()} Mathematics Initiatives in Nepal. All rights reserved.</p>
-          <div className="flex items-center gap-8">
-            <Link href="/about/cookies" className="hover:text-primary transition-colors">Cookies</Link>
-            <Link href="/about/legal" className="hover:text-primary transition-colors">Legal</Link>
-            {settings?.contact_email && (
-              <div className="flex items-center gap-2">
-                <Mail size={16} />
-                <a href={`mailto:${settings.contact_email}`} className="hover:text-primary transition-colors">
-                  {settings.contact_email}
-                </a>
-              </div>
-            )}
+        <div className="rule mb-8" />
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-text-tertiary-dynamic">
+          <div className="flex items-center gap-4">
+            <p>&copy; {new Date().getFullYear()} Mathematics Initiatives in Nepal. All rights reserved.</p>
+            <span className="hidden md:inline text-[10px] font-mono opacity-40">lat: 27.7&deg;N &middot; lon: 85.3&deg;E</span>
+            <span className="hidden md:inline text-xs text-text-tertiary-dynamic/50 font-institutional tracking-[0.2em]">धन्यवाद</span>
+          </div>
+          <div className="flex items-center gap-6">
+            <Link href="/about/cookies" className="hover:text-headline transition-colors">Cookies</Link>
+            <Link href="/about/legal" className="hover:text-headline transition-colors">Legal</Link>
+            {settings?.contact_email && <a href={`mailto:${settings.contact_email}`} className="hover:text-headline transition-colors flex items-center gap-1.5"><Mail size={14} />{settings.contact_email}</a>}
           </div>
         </div>
       </div>

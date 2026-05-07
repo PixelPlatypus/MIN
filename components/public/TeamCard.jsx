@@ -1,86 +1,33 @@
 'use client'
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { Facebook, Instagram, Linkedin, Github, Mail, Globe, ExternalLink } from 'lucide-react'
+import { Facebook, Instagram, Linkedin, Github, Mail, Globe } from 'lucide-react'
 
-const socialIcons = {
-  facebook: <Facebook size={18} />,
-  instagram: <Instagram size={18} />,
-  linkedin: <Linkedin size={18} />,
-  email: <Mail size={18} />,
-  github: <Github size={18} />,
-  social_media: <Globe size={18} />,
-}
+const socialIcons = { facebook: <Facebook size={16} />, instagram: <Instagram size={16} />, linkedin: <Linkedin size={16} />, email: <Mail size={16} />, github: <Github size={16} />, social_media: <Globe size={16} /> }
 
 export default function TeamCard({ member, index, fallbackImage }) {
-  const { name, position, bio, photo_url, social_links = {}, tenure } = member
+  const { name, position, bio, photo_url, social_links = {}, status, tenure } = member
+  const statusConfig = { ACTIVE: { label: 'Active', class: 'bg-marigold/10 text-marigold' }, ALUMNI: { label: 'Alumni', class: 'bg-lotus-pink/10 text-lotus-pink' }, INACTIVE: { label: 'Inactive', class: 'bg-text-tertiary-dynamic/10 text-text-tertiary-dynamic' } }
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="group relative h-full"
-    >
-      <div className="relative glass rounded-[2.5rem] p-6 flex flex-col items-center text-center h-full hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 group overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
-        <div className="relative z-10 flex flex-col items-center h-full w-full">
-          {/* Profile Image Container */}
-          <div className="w-40 h-40 relative mb-6 rounded-full overflow-hidden p-1.5 border-2 border-primary/10 group-hover:border-primary/40 transition-colors">
-            <Image 
-              src={photo_url || fallbackImage || '/images/logo.png'} 
-              alt={name}
-              fill
-              className="object-cover rounded-full grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
-              sizes="160px"
-            />
-          </div>
-
-          {/* Name & Position */}
-          <div className="space-y-1 mb-4 flex-grow">
-            <h3 className="text-xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary transition-colors">{name}</h3>
-            <p className="text-sm font-semibold text-primary">{position}</p>
-            <div className="flex items-center justify-center gap-2 mt-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/10">
-                {tenure}
-              </span>
-              <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
-                member.status === 'ACTIVE' 
-                  ? 'bg-green/10 text-green border-green/20' 
-                  : member.status === 'ALUMNI'
-                  ? 'bg-coral/10 text-coral border-coral/20'
-                  : 'bg-amber/10 text-amber-600 border-amber-600/20'
-              }`}>
-                {member.status}
-              </span>
+    <motion.div layout initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }} transition={{ duration: 0.3, delay: index * 0.04 }} className="group">
+      <div className="rounded-2xl overflow-hidden border border-border hover:border-headline/20 transition-all duration-300">
+        <div className="relative aspect-[3/4] overflow-hidden">
+          <Image src={photo_url || fallbackImage || '/images/logo.png'} alt={name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 50vw, 25vw" />
+          {status && statusConfig[status] && <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-lg text-[10px] font-bold ${statusConfig[status].class}`}>{statusConfig[status].label}</span>}
+        </div>
+        <div className="p-4 space-y-3">
+          <div><h3 className="font-bold text-sm text-headline mb-0.5">{name}</h3><p className="text-xs text-text-tertiary-dynamic">{position}</p></div>
+          {tenure && <span className="pill inline-block px-2 py-0.5 text-[9px] font-bold text-text-tertiary-dynamic">{tenure}</span>}
+          {bio && <p className="text-xs text-text-secondary-dynamic leading-relaxed line-clamp-3">{bio}</p>}
+          {Object.keys(social_links).length > 0 && (
+            <div className="flex items-center gap-2 pt-2 border-t border-border">
+              {Object.entries(social_links).map(([platform, url]) => {
+                if (typeof url !== 'string' || !url.trim()) return null
+                return <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="text-text-tertiary-dynamic hover:text-headline transition-colors" aria-label={platform}>{socialIcons[platform] || <Globe size={16} />}</a>
+              })}
             </div>
-          </div>
-
-          {/* Bio */}
-          <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed mb-6 line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
-            {bio}
-          </p>
-
-          {/* Social Links */}
-          <div className="flex items-center justify-center gap-3 mt-auto">
-            {Object.entries(social_links || {}).map(([platform, url]) => (
-              typeof url === 'string' && url.trim() !== '' && (
-                <a 
-                  key={platform} 
-                  href={platform.toLowerCase() === 'email' ? `mailto:${url}` : url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-text-secondary hover:text-primary dark:text-text-secondary-dark dark:hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1 z-20"
-                  aria-label={`${name}'s ${platform}`}
-                >
-                  {socialIcons[platform.toLowerCase()] || <ExternalLink size={18} />}
-                </a>
-              )
-            ))}
-          </div>
+          )}
         </div>
       </div>
     </motion.div>

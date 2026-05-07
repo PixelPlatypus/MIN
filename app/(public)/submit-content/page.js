@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, FileDown, Loader2, CheckCircle2, AlertCircle, Sparkles, User, Mail, Plus, X } from 'lucide-react'
+import { Send, FileDown, Loader2, CheckCircle2, AlertCircle, Sparkles, User, Mail, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -80,19 +80,19 @@ export default function SubmitContentPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="glass rounded-[3rem] p-12 md:p-24 space-y-6 shadow-2xl"
+          className="bg-surface rounded-3xl p-12 md:p-24 space-y-6 border border-border"
         >
-          <div className="w-24 h-24 bg-green/10 text-green rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
-            <CheckCircle2 size={64} />
+          <div className="w-24 h-24 rounded-xl bg-marigold/5 border border-marigold/10 flex items-center justify-center mx-auto mb-8">
+            <CheckCircle2 size={64} className="text-marigold" />
           </div>
-          <h1 className="text-4xl font-bold tracking-tight">Submission Received!</h1>
-          <p className="text-lg text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-            Thank you for contributing to the MIN knowledge base. Our editorial team 
-            will review your submission and notify you via email once it's approved.
+          <h1 className="text-headline text-4xl font-bold tracking-tight">Submission Received!</h1>
+          <p className="text-lg text-text-secondary-dynamic leading-relaxed">
+            Thank you for contributing to the MIN knowledge base. Our editorial team
+            will review your submission and notify you via email once it&apos;s approved.
           </p>
-          <button 
+          <button
             onClick={() => setSuccess(false)}
-            className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 active:scale-[0.98]"
+            className="bg-headline text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-accent transition-all"
           >
             Submit Another
           </button>
@@ -104,75 +104,59 @@ export default function SubmitContentPage() {
   return (
     <div className="pt-32 pb-24 container mx-auto px-6 max-w-5xl">
       <div className="space-y-12">
-        {/* Header */}
         <div className="max-w-3xl space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase"
-          >
-            <Sparkles size={16} />
+          <div className="inline-flex items-center gap-2 pill px-4 py-2 text-xs font-institutional tracking-[0.2em] text-text-secondary-dynamic">
+            <Sparkles size={16} className="text-marigold" />
             Contribute
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight leading-[0.9]"
-          >
+          </div>
+          <h1 className="text-headline text-5xl md:text-7xl font-bold tracking-tight leading-[0.9]">
             Share Your Knowledge
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-text-secondary dark:text-text-secondary-dark leading-relaxed"
-          >
-            Found an interesting problem or written an insightful article? 
+          </h1>
+          <p className="text-xl text-text-secondary-dynamic leading-relaxed">
+            Found an interesting problem or written an insightful article?
             Submit it to the MIN Library and help students across Nepal.
-          </motion.p>
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Content Form */}
           <div className="lg:col-span-2 space-y-8">
-            <div className="glass rounded-[3rem] p-8 md:p-12 space-y-8 shadow-sm">
+            <div className="bg-surface rounded-3xl p-8 md:p-12 space-y-8 border border-border">
               <input type="hidden" {...register('content_type')} />
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Content Title</label>
-                  <input 
+                  <label className="text-sm font-bold text-text-secondary-dynamic ml-1">Content Title</label>
+                  <input
                     {...register('title')}
                     placeholder="e.g. A Deep Dive into Plane Geometry"
-                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-4 px-6 text-lg font-bold transition-all focus:outline-none focus:ring-4 ${
-                      errors.title ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                    className={`w-full bg-bg-secondary border rounded-xl py-4 px-6 text-lg font-bold text-text-primary-dynamic transition-all focus:outline-none focus:ring-2 ${
+                      errors.title ? 'border-sari-red/50 focus:ring-sari-red/10' : 'border-border focus:border-headline focus:ring-headline/10'
                     }`}
                   />
-                  {errors.title && <p className="text-xs text-coral ml-1">{errors.title.message}</p>}
+                  {errors.title && <p className="text-xs text-sari-red ml-1">{errors.title.message}</p>}
                 </div>
 
-                <div className="space-y-6 p-8 bg-bg-secondary dark:bg-white/5 rounded-3xl border border-dashed border-coral/20">
+                <div className="space-y-6 p-8 bg-bg-secondary rounded-xl border border-dashed border-border">
                   <div className="space-y-2 text-center">
-                    <div className="w-16 h-16 bg-coral/10 text-coral rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <FileDown size={32} />
+                    <div className="w-16 h-16 rounded-xl bg-marigold/5 border border-marigold/10 flex items-center justify-center mx-auto mb-4">
+                      <FileDown size={32} className="text-marigold" />
                     </div>
-                    <h4 className="font-bold">Upload PDF Document</h4>
-                    <p className="text-xs text-text-tertiary">Max size: 10MB. Document will be hosted on Cloudinary.</p>
+                    <h4 className="text-headline font-bold">Upload PDF Document</h4>
+                    <p className="text-xs text-text-tertiary-dynamic">Max size: 10MB. Document will be hosted on Cloudinary.</p>
                   </div>
-                  
+
                   {pdfUrl && (
-                    <div className="p-4 bg-white dark:bg-bg-dark rounded-2xl flex items-center justify-between border border-border dark:border-border-dark shadow-sm">
+                    <div className="p-4 bg-surface rounded-xl flex items-center justify-between border border-border">
                       <div className="flex items-center gap-3">
-                        <FileDown className="text-coral" size={20} />
-                        <span className="text-sm font-bold truncate max-w-[200px]">{watch('pdf_filename') || 'document.pdf'}</span>
+                        <FileDown className="text-marigold" size={20} />
+                        <span className="text-sm font-bold text-text-primary-dynamic truncate max-w-[200px]">{watch('pdf_filename') || 'document.pdf'}</span>
                       </div>
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onClick={() => {
                           setValue('pdf_url', '')
                           setValue('pdf_filename', '')
                         }}
-                        className="text-text-tertiary hover:text-coral transition-colors"
+                        className="text-text-tertiary-dynamic hover:text-sari-red transition-colors"
                       >
                         <X size={18} />
                       </button>
@@ -180,7 +164,7 @@ export default function SubmitContentPage() {
                   )}
 
                   <div className="space-y-4">
-                    <ImageUploader 
+                    <ImageUploader
                       onUpload={(url, publicId, fileName) => {
                         setValue('pdf_url', url)
                         setValue('pdf_filename', fileName)
@@ -195,51 +179,50 @@ export default function SubmitContentPage() {
             </div>
           </div>
 
-          {/* Submitter Info Column */}
           <div className="space-y-8">
-            <div className="glass rounded-[2.5rem] p-8 space-y-8 shadow-sm">
-              <h3 className="text-xl font-bold tracking-tight">Your Details</h3>
-              
+            <div className="bg-surface rounded-2xl p-8 space-y-8 border border-border">
+              <h3 className="text-headline text-xl font-bold tracking-tight">Your Details</h3>
+
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Full Name</label>
-                  <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary transition-colors group-focus-within:text-primary">
+                  <label className="text-sm font-bold text-text-secondary-dynamic ml-1">Full Name</label>
+                  <div className="relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary-dynamic">
                       <User size={18} />
                     </div>
-                    <input 
+                    <input
                       {...register('submitter_name')}
                       placeholder="Jane Doe"
-                      className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 pl-12 pr-4 text-sm transition-all focus:outline-none focus:ring-4 ${
-                        errors.submitter_name ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                      className={`w-full bg-bg-secondary border rounded-xl py-3 pl-12 pr-4 text-sm text-text-primary-dynamic transition-all focus:outline-none focus:ring-2 ${
+                        errors.submitter_name ? 'border-sari-red/50 focus:ring-sari-red/10' : 'border-border focus:border-headline focus:ring-headline/10'
                       }`}
                     />
                   </div>
-                  {errors.submitter_name && <p className="text-xs text-coral ml-1">{errors.submitter_name.message}</p>}
+                  {errors.submitter_name && <p className="text-xs text-sari-red ml-1">{errors.submitter_name.message}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Email Address</label>
-                  <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary transition-colors group-focus-within:text-primary">
+                  <label className="text-sm font-bold text-text-secondary-dynamic ml-1">Email Address</label>
+                  <div className="relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary-dynamic">
                       <Mail size={18} />
                     </div>
-                    <input 
+                    <input
                       {...register('submitter_email')}
                       placeholder="jane@example.com"
-                      className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 pl-12 pr-4 text-sm transition-all focus:outline-none focus:ring-4 ${
-                        errors.submitter_email ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                      className={`w-full bg-bg-secondary border rounded-xl py-3 pl-12 pr-4 text-sm text-text-primary-dynamic transition-all focus:outline-none focus:ring-2 ${
+                        errors.submitter_email ? 'border-sari-red/50 focus:ring-sari-red/10' : 'border-border focus:border-headline focus:ring-headline/10'
                       }`}
                     />
                   </div>
-                  {errors.submitter_email && <p className="text-xs text-coral ml-1">{errors.submitter_email.message}</p>}
+                  {errors.submitter_email && <p className="text-xs text-sari-red ml-1">{errors.submitter_email.message}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-bold ml-1">Content Type</label>
-                  <select 
+                  <label className="text-sm font-bold text-text-secondary-dynamic ml-1">Content Type</label>
+                  <select
                     {...register('type')}
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm font-bold transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer"
+                    className="w-full bg-bg-secondary border border-border rounded-xl py-3 px-4 text-sm font-bold text-text-primary-dynamic transition-all focus:outline-none focus:border-headline focus:ring-2 focus:ring-headline/10 cursor-pointer"
                   >
                     <option value="ARTICLE">Article</option>
                     <option value="PROBLEM">Problem</option>
@@ -250,7 +233,7 @@ export default function SubmitContentPage() {
               </div>
 
               {error && (
-                <div className="p-4 rounded-2xl bg-coral/10 border border-coral/20 flex items-center gap-3 text-coral text-xs">
+                <div className="p-4 rounded-xl bg-sari-red/5 border border-sari-red/20 flex items-center gap-3 text-sari-red text-xs">
                   <AlertCircle size={18} />
                   <p>{error}</p>
                 </div>
@@ -259,20 +242,20 @@ export default function SubmitContentPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary-dark text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 group"
+                className="w-full bg-headline text-bg py-5 rounded-xl font-bold text-lg hover:bg-accent transition-all flex items-center justify-center gap-3 disabled:opacity-70"
               >
                 {loading ? (
                   <Loader2 size={24} className="animate-spin" />
                 ) : (
                   <>
                     Submit Content
-                    <Send size={20} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    <Send size={20} />
                   </>
                 )}
               </button>
 
-              <p className="text-[10px] text-text-tertiary leading-relaxed text-center px-4">
-                By submitting, you agree to the MIN Terms of Use and grant us permission 
+              <p className="text-[10px] text-text-tertiary-dynamic leading-relaxed text-center px-4">
+                By submitting, you agree to the MIN Terms of Use and grant us permission
                 to publish this content for educational purposes.
               </p>
             </div>

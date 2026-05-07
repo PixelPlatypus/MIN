@@ -2,15 +2,24 @@
 
 export default function GlobalGradients() {
   return (
-    <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-      {/* Top Right - Teal */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] md:w-[800px] md:h-[800px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[80px] md:blur-[160px] -mr-32 md:-mr-64 -mt-16 md:-mt-32 will-change-transform" />
-      
-      {/* Middle Left - Yellow */}
-      <div className="absolute top-1/2 left-0 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-secondary/10 dark:bg-secondary/5 rounded-full blur-[70px] md:blur-[140px] -ml-24 md:-ml-48 -translate-y-1/2 will-change-transform" />
-      
-      {/* Bottom Right - Teal */}
-      <div className="absolute bottom-0 right-0 w-[350px] h-[350px] md:w-[700px] md:h-[700px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[80px] md:blur-[160px] -mr-24 md:-mr-48 -mb-16 md:-mb-32 will-change-transform" />
-    </div>
+    <>
+      {/* Animating gradient blobs — fixed behind everything */}
+      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-primary/15 blur-[140px] animate-float-slow will-change-transform" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[50vw] h-[50vw] rounded-full bg-marigold/8 blur-[120px] animate-float-slow-reverse will-change-transform" />
+        <div className="absolute top-[40%] left-[20%] w-[30vw] h-[30vw] rounded-full bg-headline/[0.04] blur-[100px] animate-float-medium will-change-transform" />
+      </div>
+
+      {/* Grain/noise overlay — fixed, above background, below content */}
+      <div className="grain-overlay" aria-hidden="true" />
+
+      {/* Inline SVG for grain filter — rendered once, cached by browser */}
+      <svg className="sr-only" aria-hidden="true">
+        <filter id="grain-filter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+      </svg>
+    </>
   )
 }

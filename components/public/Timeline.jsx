@@ -1,134 +1,116 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-// GSAP and ScrollTrigger are dynamically loaded inside useEffect to reduce main-thread work
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 
-export default function Timeline() {
-  const [events, setEvents] = useState([])
+const fallbackEvents = [
+  { year: '2020', title: 'The Beginning', description: 'MIN was founded by a group of passionate students and educators determined to transform mathematics education in Nepal.' },
+  { year: '2021', title: 'First ETA Campaign', description: 'Launched our Empowered Teachers Alliance program, reaching 50+ teachers across Kathmandu Valley.' },
+  { year: '2022', title: 'National Expansion', description: 'Expanded programs to all 7 provinces. Launched the Road to Olympiad training pipeline.' },
+  { year: '2023', title: 'Women in Mathematics', description: 'Established dedicated programs to support and mentor women in mathematics at all levels.' },
+  { year: '2024', title: 'HundrED Top 100', description: 'Recognized as one of the top 100 global education innovations by HundrED, Finland.' },
+]
+
+export default function Timeline({ settings, events }) {
   const containerRef = useRef(null)
+  const items = (events && events.length > 0) ? events : fallbackEvents
 
   useEffect(() => {
-    fetch('/api/timeline')
-      .then(res => res.json())
-      .then(data => setEvents(data || []))
-      .catch(err => console.error('Timeline load error', err))
-  }, [])
-
-  // Use events.length (a primitive number) as the dep — keeps dep array always [number],
-  // never changes size, avoids React hook size-mismatch error from HMR or SSR hydration.
-  useEffect(() => {
-    if (events.length === 0) return
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isMobile = window.matchMedia('(max-width: 767px)').matches
-
-    let ctx;
-
+    let ctx
     Promise.all([
       import('gsap'),
       import('gsap/ScrollTrigger')
     ]).then(([{ default: gsap }, { ScrollTrigger }]) => {
       gsap.registerPlugin(ScrollTrigger)
-      
       ctx = gsap.context(() => {
         if (!containerRef.current) return
-        const items = containerRef.current.querySelectorAll('.timeline-item')
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        const isMobile = window.matchMedia('(max-width: 767px)').matches
+
+        const timelineItems = containerRef.current.querySelectorAll('.timeline-item')
 
         if (prefersReducedMotion) {
-          items.forEach(item => gsap.set(item, { opacity: 1, x: 0 }))
-          const lines = containerRef.current.querySelectorAll('.timeline-line')
-          lines.forEach(line => gsap.set(line, { scaleY: 1 }))
+          gsap.set(timelineItems, { opacity: 1, x: 0 })
+          gsap.set('.timeline-line', { scaleY: 1 })
         } else {
-          items.forEach((item, i) => {
-            const xFrom = isMobile ? 0 : (i % 2 === 0 ? -50 : 50)
+          timelineItems.forEach((item, i) => {
+            const xFrom = isMobile ? 0 : (i % 2 === 0 ? -40 : 40)
             gsap.fromTo(item,
               { opacity: 0, x: xFrom },
               {
                 opacity: 1,
                 x: 0,
-                duration: 1,
+                duration: 0.8,
                 ease: 'power3.out',
                 scrollTrigger: {
                   trigger: item,
-                  start: 'top 80%',
-                  end: 'bottom 20%',
-                  toggleActions: 'play none none reverse'
-                }
+                  start: 'top 82%',
+                  toggleActions: 'play none none none',
+                },
               }
             )
           })
 
-          const lines = containerRef.current.querySelectorAll('.timeline-line')
-          lines.forEach(line => {
-            gsap.fromTo(line,
-              { scaleY: 0 },
-              {
-                scaleY: 1,
-                duration: 2,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: containerRef.current,
-                  start: 'top 50%',
-                  end: 'bottom 50%',
-                  scrub: true
-                }
-              }
-            )
-          })
+          gsap.fromTo('.timeline-line',
+            { scaleY: 0 },
+            {
+              scaleY: 1,
+              duration: 2,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: 'top 60%',
+                end: 'bottom 60%',
+                scrub: true,
+              },
+            }
+          )
         }
       })
     })
 
     return () => ctx?.revert()
-  }, [events.length])
+  }, [])
 
   return (
-    <section ref={containerRef} className="container mx-auto px-6 pt-12 pb-16 relative">
-      <div className="text-center mb-12 space-y-4">
-        <span className="block text-primary font-bold uppercase tracking-widest text-sm">Our Journey</span>
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Timeline of Impact</h2>
-        <p className="text-lg text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto">
-          From humble beginnings to global recognition, here's how we've grown.
-        </p>
-      </div>
+    <section ref={containerRef} className="relative bg-bg-secondary/30 overflow-hidden">
+      <div className="px-6 md:px-12 lg:px-20 py-24 lg:py-32 max-w-5xl mx-auto">
+        <div className="text-center mb-20">
+          <span className="pill inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase font-institutional mb-6">
+            Our Journey
+          </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-headline">
+            {settings?.timeline_title || 'Timeline of Impact'}
+          </h2>
+          <p className="mt-4 text-base text-text-secondary-dynamic max-w-xl mx-auto">
+            From humble beginnings to global recognition.
+          </p>
+        </div>
 
-      <div className="relative max-w-5xl mx-auto py-12">
-        {/* Center line — visible on all screen sizes */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 md:w-1 bg-black/10 dark:bg-white/10 -translate-x-1/2" />
-        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 md:w-1 bg-primary -translate-x-1/2 origin-top timeline-line" />
+        <div className="relative">
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border-dynamic -translate-x-1/2" />
+          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-marigold -translate-x-1/2 origin-top timeline-line" />
 
-        <div className="space-y-12 md:space-y-24 relative">
-          {events.map((event, i) => (
-            <div
-              key={event.year}
-              className={`timeline-item flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 ${
-                i % 2 !== 0 ? 'md:flex-row-reverse' : ''
-              }`}
-            >
-              {/* Content */}
-              <div className="w-full md:w-[45%]">
-                <div className={`glass rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 relative ${
-                  i % 2 !== 0 ? 'text-left md:text-right' : 'text-left'
-                }`}>
-                  <span className="text-primary font-bold text-2xl mb-2 block tracking-tight">{event.year}</span>
-                  <h3 className="text-xl font-bold mb-3">{event.title}</h3>
-                  <p className="text-sm text-text-secondary dark:text-text-secondary-dark leading-relaxed">
-                    {event.description || event.desc}
-                  </p>
-
-                  {/* Pointer arrow for desktop */}
-                  <div className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-4 h-4 glass border-none rotate-45 -z-10 ${
-                    i % 2 !== 0 ? '-right-2' : '-left-2'
-                  }`} />
+          <div className="flex flex-col gap-12 md:gap-24">
+            {items.map((event, i) => (
+              <div key={i} className={`timeline-item flex flex-col md:flex-row items-center gap-6 md:gap-0 ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+                <div className={`w-full md:w-[42%] ${i % 2 !== 0 ? 'md:text-right' : 'md:text-left'}`}>
+                  <div className="card rounded-2xl p-6 md:p-7">
+                    <span className="text-5xl md:text-7xl font-bold tracking-tighter text-headline leading-none">{event.year}</span>
+                    <h3 className="text-lg font-bold text-text-primary-dynamic mt-4">{event.title}</h3>
+                    <p className="text-sm text-text-tertiary-dynamic mt-2 leading-relaxed">
+                      {event.description || event.desc}
+                    </p>
+                  </div>
                 </div>
+
+                <div className="w-4 h-4 rounded-full bg-marigold border-4 border-bg shrink-0 z-10 relative">
+                  <div className="absolute inset-0 rounded-full bg-marigold/30 blur-sm" />
+                </div>
+
+                <div className="hidden md:block w-[42%]" />
               </div>
-
-              {/* Center dot */}
-              <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary border-4 border-white dark:border-black shadow-xl z-10 shrink-0" />
-
-              {/* Empty space for desktop alternating layout */}
-              <div className="hidden md:block w-[45%]" />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
