@@ -5,17 +5,17 @@ import { ArrowRight, Target, Heart, Users, Globe, Award, BookOpen, Clock } from 
 import VoronoiCanvas from '@/components/shared/VoronoiCanvas'
 
 const features = [
-  { icon: <Target size={24} />, label: 'Olympiad Training', desc: 'Rigorous preparation for national and international competitions.' },
-  { icon: <Heart size={24} />, label: 'ETA Campaigns', desc: 'Empowering teachers with modern pedagogical tools.' },
-  { icon: <Users size={24} />, label: 'Women in Math', desc: 'Building inclusive pathways for future mathematicians.' },
-  { icon: <Globe size={24} />, label: 'Global Reach', desc: 'Connecting Nepali talent with the world.' },
+  { icon: Target, title: 'Discover Talent', desc: 'Identify mathematically gifted students across all seven provinces through district and national olympiads.' },
+  { icon: Heart, title: 'Train Champions', desc: 'Intensive camps, mentorship, and world-class resources to prepare students for international competition.' },
+  { icon: Users, title: 'Build Community', desc: 'A growing network of educators, alumni, and volunteers passionate about mathematics in Nepal.' },
+  { icon: Globe, title: 'Bridge the Gap', desc: 'Making world-class mathematics education accessible regardless of geography or economic background.' },
 ]
 
 const stats = [
-  { icon: <Users size={20} />, value: '15,000+', label: 'Students Reached' },
-  { icon: <Award size={20} />, value: 'HundrED', label: 'Top 100 Global' },
-  { icon: <BookOpen size={20} />, value: '7', label: 'Provinces' },
-  { icon: <Clock size={20} />, value: '2020', label: 'Founded' },
+  { icon: Users, value: '12,500+', label: 'Students Reached' },
+  { icon: BookOpen, value: '8', label: 'Active Programs' },
+  { icon: Clock, value: '200+', label: 'Volunteers' },
+  { icon: Award, value: '5+', label: 'Years of Impact' },
 ]
 
 export default function Hero({ settings }) {
@@ -23,69 +23,32 @@ export default function Hero({ settings }) {
   const [subVisible, setSubVisible] = useState(false)
   const sectionRef = useRef(null)
 
-  useEffect(() => {
-    setVisible(true)
-    const t1 = setTimeout(() => setSubVisible(true), 400)
-    return () => clearTimeout(t1)
-  }, [])
+  useEffect(() => { setVisible(true); const t = setTimeout(() => setSubVisible(true), 400); return () => clearTimeout(t) }, [])
 
   useEffect(() => {
     let ctx
-    Promise.all([
-      import('gsap'),
-      import('gsap/ScrollTrigger')
-    ]).then(([{ default: gsap }, { ScrollTrigger }]) => {
+    Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([{ default: gsap }, { ScrollTrigger }]) => {
       gsap.registerPlugin(ScrollTrigger)
       ctx = gsap.context(() => {
-        if (sectionRef.current) {
-          gsap.to(sectionRef.current, {
-            y: -30,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true,
-            },
-          })
-        }
+        if (sectionRef.current) gsap.to(sectionRef.current, { y: -30, ease: 'none', scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: 'bottom top', scrub: true } })
       })
     })
     return () => ctx?.revert()
   }, [])
+
+  const subtitle = settings?.hero_subtitle || 'Igniting curiosity and fostering excellence across Nepal. We\'re building a future where every student views mathematics as a tool for innovation.'
 
   return (
     <section ref={sectionRef} className="relative min-h-screen flex items-center pt-20 pb-12 overflow-hidden">
       <VoronoiCanvas className="opacity-40" />
       <div className="absolute inset-0 math-grid opacity-[0.08]" />
 
-      {/* Ambient glows */}
-      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-bg/80 blur-[120px] opacity-60 pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-[400px] h-[400px] bg-marigold/20 rounded-full blur-[100px] opacity-40 pointer-events-none" />
-
-      {/* Nepal flag motif */}
-      <svg className="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[400px] opacity-[0.06] pointer-events-none" viewBox="0 0 600 400">
-        <polygon points="100,380 300,20 300,380" fill="white" />
-        <polygon points="100,380 500,380 500,160" fill="white" />
-        <polygon points="140,340 300,60 300,340" fill="white" stroke="currentColor" strokeWidth="0.5" />
-        <polygon points="140,340 460,340 460,180" fill="white" stroke="currentColor" strokeWidth="0.5" />
-      </svg>
-
-      {/* Animated SVG math graph */}
-      <svg className="absolute right-12 top-1/4 w-72 h-72 opacity-[0.08] pointer-events-none" viewBox="0 0 300 300">
-        <path d="M0,150 C50,50 100,250 150,150 S250,50 300,150" fill="none" stroke="currentColor" strokeWidth="1.5"
-          strokeDasharray="600" strokeDashoffset="600">
-          <animate attributeName="stroke-dashoffset" from="600" to="0" dur="3s" fill="freeze" />
-        </path>
-        <path d="M0,180 C50,80 100,280 150,180 S250,80 300,180" fill="none" stroke="currentColor" strokeWidth="0.8" opacity="0.5"
-          strokeDasharray="600" strokeDashoffset="600">
-          <animate attributeName="stroke-dashoffset" from="600" to="0" dur="4s" fill="freeze" />
-        </path>
-        <circle cx="150" cy="150" r="3" fill="var(--color-marigold)">
-          <animate attributeName="opacity" values="0;1;1;0" dur="3s" fill="freeze" />
-        </circle>
-        <circle cx="0" cy="150" r="2" fill="var(--color-headline)">
-          <animate attributeName="opacity" values="0;1" dur="1s" fill="freeze" />
+      {/* Nepal flag — the only national motif, breathing animation */}
+      <svg className="absolute right-[3%] top-[18%] w-32 h-44 opacity-[0.08] pointer-events-none animate-nepal-flag" viewBox="0 0 100 140" fill="none">
+        <path d="M5 135 L5 20 L50 5 L50 65 L95 55 L95 135 Z" stroke="var(--color-marigold)" strokeWidth="2.5" fill="none" />
+        <path d="M50 25 L75 60 L50 55" stroke="var(--color-marigold)" strokeWidth="1" fill="none" opacity="0.5" />
+        <circle cx="68" cy="75" r="3" fill="var(--color-marigold)" opacity="0.4">
+          <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" repeatCount="indefinite" />
         </circle>
       </svg>
 
@@ -93,41 +56,37 @@ export default function Hero({ settings }) {
         <div className="max-w-4xl">
           <div className={`transition-all duration-700 delay-100 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
             <span className="pill inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase font-institutional mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-marigold" />
+              <span className="w-1.5 h-1.5 rounded-full bg-marigold animate-pulse" />
               {settings?.hero_badge || 'Mathematics Initiatives in Nepal'}
             </span>
           </div>
 
           <h1 className={`transition-all duration-700 delay-200 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-text-primary-dynamic">
+            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-text-primary-dynamic">
               Elevating
             </span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-accent">
+            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-accent">
               Nepal
             </span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-headline">
+            <span className="block text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-headline">
               Through Mathematics.
             </span>
           </h1>
 
           <div className={`transition-all duration-700 delay-[600ms] ${subVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-            <p className="mt-8 text-lg md:text-xl text-text-secondary-dynamic leading-relaxed max-w-2xl">
-              {settings?.hero_subtitle || 'We build a nationwide ecosystem of olympiad training, teacher empowerment, and digital content — making world-class mathematics accessible to every corner of Nepal.'}
-            </p>
+            <p className="mt-8 text-lg md:text-xl text-text-secondary-dynamic leading-relaxed max-w-2xl">{subtitle}</p>
           </div>
 
           <div className={`transition-all duration-700 delay-[800ms] ${subVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
             <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-              <Link
-                href={settings?.hero_cta_link || '/join'}
-                className="inline-flex items-center gap-2 bg-headline text-bg px-8 py-4 rounded-xl font-bold text-base transition-all hover:scale-[1.02] active:scale-[0.98] group"
-              >
-                {settings?.hero_cta_text || 'Join the Movement'}
+              <Link href={settings?.hero_cta_link || '/join'}
+                className="inline-flex items-center gap-2 bg-headline text-bg px-8 py-4 rounded-xl font-bold text-base transition-all hover:bg-accent hover:shadow-xl hover:shadow-accent/25 group">
+                Join the Movement
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
               </Link>
               <span className="text-sm text-text-tertiary-dynamic flex items-center gap-3">
                 <span className="w-1 h-1 rounded-full bg-marigold" />
-                Founded 2020 · HundrED Top 100 · 7 Provinces
+                Founded 2020 &middot; HundrED Top 100 &middot; 7 Provinces
               </span>
             </div>
           </div>
@@ -135,29 +94,33 @@ export default function Hero({ settings }) {
 
         <div className={`transition-all duration-700 delay-[1000ms] ${subVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-20">
-            {features.map((f, i) => (
-              <div key={i} className="bg-surface border border-border-dynamic rounded-xl p-5 flex flex-col gap-3 hover:border-marigold/40 transition-colors duration-300">
-                <div className="w-10 h-10 rounded-xl bg-marigold/10 flex items-center justify-center text-marigold">
-                  {f.icon}
+            {features.map((f) => {
+              const Icon = f.icon
+              return (
+                <div key={f.title} className="bg-surface border border-border-dynamic rounded-xl p-5 hover:border-marigold/30 transition-colors duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-marigold/5 border border-marigold/10 flex items-center justify-center mb-3">
+                    <Icon size={18} className="text-marigold" />
+                  </div>
+                  <h4 className="font-bold text-sm text-headline mb-1">{f.title}</h4>
+                  <p className="text-xs text-text-secondary-dynamic leading-relaxed">{f.desc}</p>
                 </div>
-                <div>
-                  <h4 className="font-bold text-sm text-text-primary-dynamic">{f.label}</h4>
-                  <p className="text-xs text-text-tertiary-dynamic mt-1 leading-relaxed">{f.desc}</p>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="flex items-center justify-between mt-14 pt-8 border-t border-border-dynamic flex-wrap gap-4">
-            {stats.map((s, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="text-marigold">{s.icon}</div>
-                <div>
-                  <div className="text-lg font-bold text-text-primary-dynamic">{s.value}</div>
-                  <div className="text-xs text-text-tertiary-dynamic tracking-wide uppercase">{s.label}</div>
+            {stats.map((s) => {
+              const Icon = s.icon
+              return (
+                <div key={s.label} className="flex items-center gap-3">
+                  <Icon size={18} className="text-marigold/40" />
+                  <div>
+                    <div className="text-2xl font-black tracking-tighter text-headline">{s.value}</div>
+                    <div className="text-xs text-text-tertiary-dynamic tracking-wide uppercase">{s.label}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>

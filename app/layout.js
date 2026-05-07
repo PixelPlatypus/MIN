@@ -5,7 +5,6 @@ import GlobalGradients from '@/components/shared/GlobalGradients'
 import { ClientProviders } from './providers'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import SitePreloader from '@/components/shared/SitePreloader'
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -95,7 +94,6 @@ export default function RootLayout({ children }) {
       <body className="min-h-screen" suppressHydrationWarning>
         <ThemeProvider>
           <ClientProviders>
-            <SitePreloader />
             <GlobalGradients />
             {children}
             <Analytics />

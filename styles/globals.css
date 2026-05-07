@@ -56,6 +56,17 @@
     line-height: 1.65; font-weight: 400;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse 80% 60% at 70% 10%, rgba(31,107,126,0.4) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 20% 80%, rgba(216,167,58,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 50% 50%, rgba(240,232,156,0.03) 0%, transparent 70%);
+    pointer-events: none;
   }
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700; letter-spacing: -0.03em;
@@ -102,33 +113,40 @@
 
   @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   .skeleton { background-color: var(--color-border-strong); animation: skeleton-pulse 2s ease-in-out infinite; border-radius: var(--radius-sm); }
+}
 
-  /* === Animated ambient gradients === */
-  @keyframes float-slow {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(2%, -1%) scale(1.05); }
-    66% { transform: translate(-1%, 2%) scale(0.97); }
-  }
-  @keyframes float-slow-reverse {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(-2%, 1%) scale(1.04); }
-    66% { transform: translate(1%, -2%) scale(0.96); }
-  }
-  @keyframes float-medium {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-3%, -2%) scale(1.08); }
-  }
-  .animate-float-slow { animation: float-slow 18s ease-in-out infinite; }
-  .animate-float-slow-reverse { animation: float-slow-reverse 22s ease-in-out infinite; }
-  .animate-float-medium { animation: float-medium 14s ease-in-out infinite; }
+/* === Ambient animated gradients — outside any layer for reliable animation === */
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(3%, -2%) scale(1.06) rotate(1deg); }
+  66% { transform: translate(-2%, 3%) scale(0.95) rotate(-1deg); }
+}
+@keyframes float-slow-reverse {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(-3%, 2%) scale(1.05) rotate(-1deg); }
+  66% { transform: translate(2%, -3%) scale(0.94) rotate(1deg); }
+}
+@keyframes float-medium {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-4%, -3%) scale(1.12); }
+}
+.animate-float-slow { animation: float-slow 20s ease-in-out infinite; }
+.animate-float-slow-reverse { animation: float-slow-reverse 24s ease-in-out infinite; }
+.animate-float-medium { animation: float-medium 16s ease-in-out infinite; }
 
-  /* === Grain/noise overlay === */
-  .grain-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9998;
-    pointer-events: none;
-    opacity: 0.035;
-    filter: url(#grain-filter);
-  }
+/* === Nepal flag — subtle breathing animation === */
+@keyframes nepal-flag {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.07; }
+  50% { transform: translateY(-4px) scale(1.03); opacity: 0.10; }
+}
+.animate-nepal-flag { animation: nepal-flag 6s ease-in-out infinite; }
+
+/* === Grain/noise overlay === */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.04;
+  filter: url(#grain-filter);
 }

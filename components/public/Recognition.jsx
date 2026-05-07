@@ -36,15 +36,7 @@ export default function Recognition({ settings }) {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden">
-      {/* Nepal flag motif */}
-      <svg className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[350px] opacity-[0.05] pointer-events-none" viewBox="0 0 500 350">
-        <polygon points="80,320 250,30 250,320" fill="white" />
-        <polygon points="80,320 420,320 420,140" fill="white" />
-        <polygon points="120,280 250,70 250,280" fill="white" stroke="currentColor" strokeWidth="0.5" />
-        <polygon points="120,280 380,280 380,160" fill="white" stroke="currentColor" strokeWidth="0.5" />
-      </svg>
-
+    <section ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden bg-bg-secondary/30 border-y border-border-dynamic">
       <div className="relative z-10 px-6 md:px-12 lg:px-20 max-w-4xl mx-auto text-center">
         <div className="recognition-fade-in">
           <span className="pill inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase font-institutional mb-6">
