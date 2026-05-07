@@ -136,10 +136,29 @@
 .animate-float-slow-reverse { animation: float-slow-reverse 26s ease-in-out infinite; }
 .animate-float-medium { animation: float-medium 18s ease-in-out infinite; }
 
-/* === Nepal flag — subtle breathing animation === */
-@keyframes nepal-flag {
-  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.10; }
-  25% { transform: translateY(-6px) rotate(0.5deg); opacity: 0.14; }
-  75% { transform: translateY(3px) rotate(-0.5deg); opacity: 0.11; }
+/* === Nepal flag — wavy perspective animation === */
+@keyframes flag-wave {
+  0%, 100% { transform: perspective(600px) rotateY(0deg) rotateX(0deg); }
+  25% { transform: perspective(600px) rotateY(3deg) rotateX(-1deg); }
+  50% { transform: perspective(600px) rotateY(0deg) rotateX(0deg); }
+  75% { transform: perspective(600px) rotateY(-3deg) rotateX(1deg); }
 }
-.animate-nepal-flag { animation: nepal-flag 7s ease-in-out infinite; }
+.animate-flag-wave { animation: flag-wave 8s ease-in-out infinite; }
+
+/* === Floating math glyphs === */
+@keyframes float-glyph-a {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.04; }
+  33% { transform: translate(8px, -12px) rotate(3deg); opacity: 0.06; }
+  66% { transform: translate(-4px, 6px) rotate(-2deg); opacity: 0.03; }
+}
+@keyframes float-glyph-b {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.03; }
+  50% { transform: translate(-10px, -8px) rotate(-4deg); opacity: 0.05; }
+}
+@keyframes float-glyph-c {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.03; }
+  50% { transform: translate(6px, -10px) scale(1.1); opacity: 0.05; }
+}
+.animate-float-glyph-a { animation: float-glyph-a 14s ease-in-out infinite; }
+.animate-float-glyph-b { animation: float-glyph-b 12s ease-in-out infinite; }
+.animate-float-glyph-c { animation: float-glyph-c 16s ease-in-out infinite; }
