@@ -55,13 +55,16 @@ export default function Footer({ settings }) {
           ))}
         </div>
         <div className="rule mb-8" />
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-text-tertiary-dynamic">
-          <div className="flex items-center gap-4">
-            <p>&copy; {new Date().getFullYear()} Mathematics Initiatives in Nepal. All rights reserved.</p>
-            <span className="hidden md:inline text-[10px] font-mono opacity-40">lat: 27.7&deg;N &middot; lon: 85.3&deg;E</span>
-            <span className="hidden md:inline text-xs text-text-tertiary-dynamic/50 font-institutional tracking-[0.2em]">धन्यवाद</span>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 text-sm text-text-tertiary-dynamic">
+          <p className="order-2 md:order-1">&copy; {new Date().getFullYear()} Mathematics Initiatives in Nepal. All rights reserved.</p>
+
+          <div className="order-1 md:order-2 flex items-center justify-center gap-3 text-text-secondary-dynamic">
+            <span className="text-base text-headline/80" title="Lakshya — purpose, aim">लक्ष्य</span>
+            <span className="w-1 h-1 rounded-full bg-marigold/60" />
+            <span className="text-base text-headline/80" title="Dhanyabad — thank you">धन्यवाद</span>
           </div>
-          <div className="flex items-center gap-6">
+
+          <div className="order-3 flex items-center justify-center md:justify-end gap-6 flex-wrap">
             <Link href="/about/cookies" className="hover:text-headline transition-colors">Cookies</Link>
             <Link href="/about/legal" className="hover:text-headline transition-colors">Legal</Link>
             {settings?.contact_email && <a href={`mailto:${settings.contact_email}`} className="hover:text-headline transition-colors flex items-center gap-1.5"><Mail size={14} />{settings.contact_email}</a>}
