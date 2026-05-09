@@ -45,9 +45,19 @@ export default async function RTOPage() {
           </div>
 
           <div className="relative">
-            <div className="hidden lg:block absolute top-1/2 left-0 w-full h-1 bg-marigold/20 -translate-y-1/2 rounded-xl" />
+            {/* progression bar — sits behind the icon row; visible only in inter-card gaps so it reads as flow between stages */}
+            <div className="hidden lg:block absolute top-[88px] left-[8%] right-[8%] h-[2px] bg-gradient-to-r from-marigold/15 via-marigold/70 to-marigold/15 rounded-full pointer-events-none" />
+            {[20, 40, 60, 80].map((pct) => (
+              <ChevronRight
+                key={pct}
+                size={18}
+                strokeWidth={2.5}
+                className="hidden lg:block absolute top-[80px] text-marigold pointer-events-none"
+                style={{ left: `calc(${pct}% - 9px)` }}
+              />
+            ))}
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 relative">
               {displayStages.map((stage, idx) => {
                 const Icon = ICON_MAP[stage.icon] || Award
                 return (

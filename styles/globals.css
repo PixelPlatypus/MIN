@@ -63,10 +63,35 @@
     position: fixed;
     inset: 0;
     z-index: -1;
-    background: radial-gradient(ellipse 80% 60% at 70% 10%, rgba(31,107,126,0.4) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 20% 80%, rgba(216,167,58,0.08) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 50% at 50% 50%, rgba(240,232,156,0.03) 0%, transparent 70%);
     pointer-events: none;
+    background:
+      radial-gradient(circle 22vmax at var(--rx1, 70%) var(--ry1, 15%), rgba(31,107,126,0.55) 0%, transparent 55%),
+      radial-gradient(circle 16vmax at var(--rx2, 20%) var(--ry2, 75%), rgba(216,167,58,0.14) 0%, transparent 55%),
+      radial-gradient(circle 14vmax at var(--rx3, 85%) var(--ry3, 70%), rgba(216,98,79,0.10) 0%, transparent 60%),
+      radial-gradient(circle 12vmax at var(--rx4, 35%) var(--ry4, 25%), rgba(240,232,156,0.07) 0%, transparent 60%),
+      radial-gradient(circle 10vmax at var(--rx5, 55%) var(--ry5, 55%), rgba(31,107,126,0.30) 0%, transparent 60%);
+    animation: ambient-drift 38s linear infinite;
+  }
+  @property --rx1 { syntax: '<percentage>'; inherits: false; initial-value: 70%; }
+  @property --ry1 { syntax: '<percentage>'; inherits: false; initial-value: 15%; }
+  @property --rx2 { syntax: '<percentage>'; inherits: false; initial-value: 20%; }
+  @property --ry2 { syntax: '<percentage>'; inherits: false; initial-value: 75%; }
+  @property --rx3 { syntax: '<percentage>'; inherits: false; initial-value: 85%; }
+  @property --ry3 { syntax: '<percentage>'; inherits: false; initial-value: 70%; }
+  @property --rx4 { syntax: '<percentage>'; inherits: false; initial-value: 35%; }
+  @property --ry4 { syntax: '<percentage>'; inherits: false; initial-value: 25%; }
+  @property --rx5 { syntax: '<percentage>'; inherits: false; initial-value: 55%; }
+  @property --ry5 { syntax: '<percentage>'; inherits: false; initial-value: 55%; }
+  @keyframes ambient-drift {
+    0%   { --rx1:70%; --ry1:15%; --rx2:20%; --ry2:75%; --rx3:85%; --ry3:70%; --rx4:35%; --ry4:25%; --rx5:55%; --ry5:55%; }
+    20%  { --rx1:55%; --ry1:35%; --rx2:42%; --ry2:60%; --rx3:70%; --ry3:90%; --rx4:18%; --ry4:48%; --rx5:78%; --ry5:30%; }
+    40%  { --rx1:30%; --ry1:50%; --rx2:65%; --ry2:85%; --rx3:50%; --ry3:55%; --rx4:60%; --ry4:18%; --rx5:25%; --ry5:65%; }
+    60%  { --rx1:45%; --ry1:75%; --rx2:80%; --ry2:50%; --rx3:25%; --ry3:30%; --rx4:75%; --ry4:62%; --rx5:50%; --ry5:18%; }
+    80%  { --rx1:80%; --ry1:60%; --rx2:35%; --ry2:30%; --rx3:60%; --ry3:18%; --rx4:50%; --ry4:80%; --rx5:18%; --ry5:42%; }
+    100% { --rx1:70%; --ry1:15%; --rx2:20%; --ry2:75%; --rx3:85%; --ry3:70%; --rx4:35%; --ry4:25%; --rx5:55%; --ry5:55%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body::before { animation: none; }
   }
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700; letter-spacing: -0.03em;
@@ -136,29 +161,31 @@
 .animate-float-slow-reverse { animation: float-slow-reverse 26s ease-in-out infinite; }
 .animate-float-medium { animation: float-medium 18s ease-in-out infinite; }
 
-/* === Nepal flag — wavy perspective animation === */
+/* === Nepal flag — dramatic wave like cloth in wind === */
 @keyframes flag-wave {
-  0%, 100% { transform: perspective(600px) rotateY(0deg) rotateX(0deg); }
-  25% { transform: perspective(600px) rotateY(3deg) rotateX(-1deg); }
-  50% { transform: perspective(600px) rotateY(0deg) rotateX(0deg); }
-  75% { transform: perspective(600px) rotateY(-3deg) rotateX(1deg); }
+  0%, 100% { transform: perspective(500px) rotateY(0deg) rotateX(0deg) skewY(0deg); }
+  20% { transform: perspective(500px) rotateY(8deg) rotateX(-2deg) skewY(-1.2deg); }
+  40% { transform: perspective(500px) rotateY(2deg) rotateX(2deg) skewY(0.8deg); }
+  60% { transform: perspective(500px) rotateY(-6deg) rotateX(-1deg) skewY(-0.6deg); }
+  80% { transform: perspective(500px) rotateY(-2deg) rotateX(2deg) skewY(1deg); }
 }
-.animate-flag-wave { animation: flag-wave 8s ease-in-out infinite; }
+.animate-flag-wave { animation: flag-wave 6s ease-in-out infinite; transform-origin: left center; }
 
-/* === Floating math glyphs === */
-@keyframes float-glyph-a {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.04; }
-  33% { transform: translate(8px, -12px) rotate(3deg); opacity: 0.06; }
-  66% { transform: translate(-4px, 6px) rotate(-2deg); opacity: 0.03; }
+/* === Math glyphs emit outward from flag center, fade and drift === */
+@keyframes emit-glyph {
+  0%   { transform: translate(-50%, -50%) translate(0, 0) scale(0.4); opacity: 0; }
+  15%  { opacity: var(--peak, 0.18); }
+  100% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1.1); opacity: 0; }
 }
-@keyframes float-glyph-b {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.03; }
-  50% { transform: translate(-10px, -8px) rotate(-4deg); opacity: 0.05; }
+.emit-glyph { animation: emit-glyph 9s ease-out infinite both; will-change: transform, opacity; opacity: 0; }
+.emit-glyph-1 { --tx: -120px; --ty: -90px;  --peak: 0.20; animation-delay: 0s;    animation-duration: 9s; }
+.emit-glyph-2 { --tx:  130px; --ty: -70px;  --peak: 0.16; animation-delay: 1.3s;  animation-duration: 10s; }
+.emit-glyph-3 { --tx:  -90px; --ty:  110px; --peak: 0.18; animation-delay: 2.6s;  animation-duration: 8.5s; }
+.emit-glyph-4 { --tx:  140px; --ty:  60px;  --peak: 0.14; animation-delay: 3.9s;  animation-duration: 11s; }
+.emit-glyph-5 { --tx:  -50px; --ty: -130px; --peak: 0.17; animation-delay: 5.2s;  animation-duration: 9.5s; }
+.emit-glyph-6 { --tx:  100px; --ty:  130px; --peak: 0.15; animation-delay: 6.5s;  animation-duration: 10.5s; }
+.emit-glyph-7 { --tx: -140px; --ty:  20px;  --peak: 0.16; animation-delay: 7.8s;  animation-duration: 9s; }
+@media (prefers-reduced-motion: reduce) {
+  .emit-glyph { animation: none; opacity: 0; }
+  .animate-flag-wave { animation: none; }
 }
-@keyframes float-glyph-c {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.03; }
-  50% { transform: translate(6px, -10px) scale(1.1); opacity: 0.05; }
-}
-.animate-float-glyph-a { animation: float-glyph-a 14s ease-in-out infinite; }
-.animate-float-glyph-b { animation: float-glyph-b 12s ease-in-out infinite; }
-.animate-float-glyph-c { animation: float-glyph-c 16s ease-in-out infinite; }

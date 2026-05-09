@@ -59,14 +59,36 @@ export default function Hero({ settings }) {
       <VoronoiCanvas className="opacity-35" />
       <div className="absolute inset-0 math-grid opacity-[0.06]" />
 
-      {/* Nepal flag — wavy perspective animation */}
-      <div ref={flagRef} className="absolute right-[6%] top-[20%] w-24 md:w-32 z-10 pointer-events-none will-change-transform">
-        <div className="animate-flag-wave origin-bottom-right">
-          <svg viewBox="0 0 384 491" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto opacity-[0.15]">
-            <path d="M6.22 484.57L369.32 484.56L131.66 243.55L378.27 243.84L6.24 6.22L6.22 484.57Z" fill="#D4253E" stroke="#000063" strokeWidth="12.43" />
-            <path d="M142.12 179.34L131.26 187.38L136.61 191.80C149.61 181.75 158.86 172.57 166.09 157.33C167.78 177.67 149.14 223.33 100.21 223.84C47.84 223.79 29.66 175.34 31.68 156.47C41.31 173.92 47.18 182.44 62.28 191.52L66.90 187.28L56.67 178.76L69.84 175.34L62.76 163.41L76.55 164.42L74.82 150.53L86.91 157.61L90.69 144.68L99.38 155.09L107.52 145.22L111.95 158.63L123.26 150.77L121.81 164.41L135.35 162.82L129.00 175.43L142.12 179.34Z" fill="white" />
-            <polygon points="296.98,523.24 275.95,530.38 292.40,546.25 270.24,544.79 279.37,565.75 259.46,555.93 259.87,578.78 245.23,562.08 236.86,583.36 229.73,562.33 213.86,578.78 215.31,556.62 194.36,565.75 204.18,545.84 181.32,546.25 198.02,531.61 176.75,523.24 197.78,516.11 181.32,500.24 203.48,501.69 194.36,480.74 214.27,490.56 213.86,467.70 228.50,484.40 236.86,463.13 244.00,484.16 259.87,467.70 258.41,489.86 279.37,480.74 269.55,500.65 292.40,500.24 275.70,514.88" fill="white" transform="matrix(1.2301,0,0,1.1997,-192.12,-271.36)" />
+      {/* Nepal flag with surrounding math motifs */}
+      <div ref={flagRef} className="hidden md:block absolute right-[8%] lg:right-[12%] top-[28vh] w-32 lg:w-40 z-10 pointer-events-none will-change-transform">
+        <div className="relative w-full h-full">
+          {/* Subtle orbital ring — unifies the composition */}
+          <svg className="absolute -inset-8 w-[calc(100%+4rem)] h-[calc(100%+4rem)] opacity-[0.02] pointer-events-none" viewBox="0 0 220 220">
+            <circle cx="110" cy="110" r="100" stroke="var(--color-headline)" strokeWidth="0.5" fill="none" strokeDasharray="3 9" />
           </svg>
+
+          {/* Math glyphs emit outward from the flag — math radiating from Nepal */}
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-serif italic text-headline select-none emit-glyph emit-glyph-1">∫</span>
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-serif text-headline select-none emit-glyph emit-glyph-2">∇</span>
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-mono text-headline select-none emit-glyph emit-glyph-3">ƒ</span>
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-serif italic text-headline select-none emit-glyph emit-glyph-4">π</span>
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-serif text-headline select-none emit-glyph emit-glyph-5">∑</span>
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-serif italic text-headline select-none emit-glyph emit-glyph-6">θ</span>
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-serif text-headline select-none emit-glyph emit-glyph-7">√</span>
+
+          {/* Institutional label — anchors the cluster to the org */}
+          <span className="absolute left-1/2 -bottom-10 -translate-x-1/2 whitespace-nowrap text-[0.55rem] font-institutional tracking-[0.25em] text-headline opacity-[0.04] select-none">
+            MATHEMATICS INITIATIVES IN NEPAL
+          </span>
+
+          {/* Flag */}
+          <div className="animate-flag-wave origin-bottom-right">
+            <svg viewBox="0 0 384 491" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto opacity-[0.28]">
+              <path d="M6.22 484.57L369.32 484.56L131.66 243.55L378.27 243.84L6.24 6.22L6.22 484.57Z" fill="#D4253E" stroke="#000063" strokeWidth="12.43" />
+              <path d="M142.12 179.34L131.26 187.38L136.61 191.80C149.61 181.75 158.86 172.57 166.09 157.33C167.78 177.67 149.14 223.33 100.21 223.84C47.84 223.79 29.66 175.34 31.68 156.47C41.31 173.92 47.18 182.44 62.28 191.52L66.90 187.28L56.67 178.76L69.84 175.34L62.76 163.41L76.55 164.42L74.82 150.53L86.91 157.61L90.69 144.68L99.38 155.09L107.52 145.22L111.95 158.63L123.26 150.77L121.81 164.41L135.35 162.82L129.00 175.43L142.12 179.34Z" fill="white" />
+              <polygon points="296.98,523.24 275.95,530.38 292.40,546.25 270.24,544.79 279.37,565.75 259.46,555.93 259.87,578.78 245.23,562.08 236.86,583.36 229.73,562.33 213.86,578.78 215.31,556.62 194.36,565.75 204.18,545.84 181.32,546.25 198.02,531.61 176.75,523.24 197.78,516.11 181.32,500.24 203.48,501.69 204.18,545.84 181.32,546.25 198.02,531.61 176.75,523.24 197.78,516.11 181.32,500.24 203.48,501.69 213.86,467.70 228.50,484.40 236.86,463.13 244.00,484.16 259.87,467.70 258.41,489.86 279.37,480.74 269.55,500.65 292.40,500.24 275.70,514.88" fill="white" transform="matrix(1.2301,0,0,1.1997,-192.12,-271.36)" />
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -83,11 +105,6 @@ export default function Hero({ settings }) {
         <path ref={curveRef} d="M-10,80 Q100,140 200,80 T400,40 T600,100 T800,30 T1000,70 T1210,50"
           stroke="url(#curveGrad)" strokeWidth="2" strokeDasharray="1200" strokeDashoffset="1200" />
       </svg>
-
-      {/* Floating math glyphs */}
-      <span className="absolute left-[8%] top-[60%] text-6xl md:text-8xl font-serif italic text-headline opacity-[0.04] pointer-events-none select-none animate-float-glyph-a">∫</span>
-      <span className="absolute right-[30%] top-[15%] text-7xl md:text-9xl font-serif text-headline opacity-[0.03] pointer-events-none select-none animate-float-glyph-b">∇</span>
-      <span className="absolute left-[50%] bottom-[30%] text-5xl md:text-7xl font-mono text-headline opacity-[0.03] pointer-events-none select-none animate-float-glyph-c">ƒ</span>
 
       <div className="relative z-10 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto w-full">
         <div className="max-w-4xl">

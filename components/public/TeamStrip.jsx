@@ -3,9 +3,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
-export default function TeamStrip({ team }) {
-  const hasMembers = team && team.length > 0
-  const displayTeam = hasMembers ? [...team, ...team] : []
+export default function TeamStrip({ team, initialTeam }) {
+  const members = team || initialTeam
+  const hasMembers = members && members.length > 0
+  const displayTeam = hasMembers ? [...members, ...members] : []
 
   return (
     <section className="py-20 lg:py-28 overflow-hidden">
@@ -45,9 +46,9 @@ export default function TeamStrip({ team }) {
             {displayTeam.map((member, i) => (
               <div key={`${member.id}-${i}`} className="w-48 shrink-0 group cursor-pointer">
                 <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-3 border border-border-dynamic">
-                  {member.image_url ? (
+                  {member.photo_url ? (
                     <Image
-                      src={member.image_url}
+                      src={member.photo_url}
                       alt={member.name}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -61,11 +62,11 @@ export default function TeamStrip({ team }) {
                   <div className="absolute inset-0 bg-gradient-to-t from-bg/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
                   <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-400">
                     <p className="text-xs font-bold text-text-primary-dynamic">{member.name}</p>
-                    <p className="text-[10px] text-text-tertiary-dynamic uppercase tracking-wider mt-0.5">{member.role_title}</p>
+                    <p className="text-[10px] text-text-tertiary-dynamic uppercase tracking-wider mt-0.5">{member.position}</p>
                   </div>
                 </div>
                 <h4 className="font-bold text-sm text-text-primary-dynamic truncate">{member.name}</h4>
-                <p className="text-xs text-text-tertiary-dynamic truncate mt-0.5">{member.role_title}</p>
+                <p className="text-xs text-text-tertiary-dynamic truncate mt-0.5">{member.position}</p>
               </div>
             ))}
           </div>

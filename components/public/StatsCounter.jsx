@@ -72,17 +72,17 @@ export default function StatsCounter({ settings }) {
           {settings?.stats_subtitle || 'Every number reflects a life touched, a mind opened, and a future transformed.'}
         </p>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mt-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 mt-20 lg:divide-x divide-border-dynamic">
           {statItems.map((item, i) => (
-            <div key={i} className="flex flex-col items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-marigold/10 flex items-center justify-center text-marigold">
+            <div key={i} className="flex flex-col items-center gap-5 px-4 lg:px-8 py-8">
+              <div className="w-12 h-12 rounded-xl bg-marigold/10 border border-marigold/15 flex items-center justify-center text-marigold">
                 {item.icon}
               </div>
-              <div className="stat-value text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-text-primary-dynamic"
+              <div className="stat-value text-5xl md:text-6xl font-black tracking-tight text-headline tabular-nums leading-none"
                 data-value={item.value}>
                 0
               </div>
-              <p className="text-sm text-text-tertiary-dynamic tracking-wide uppercase font-medium">
+              <p className="text-[11px] text-text-tertiary-dynamic tracking-[0.2em] uppercase font-institutional text-center">
                 {item.label}
               </p>
             </div>

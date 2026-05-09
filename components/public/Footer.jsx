@@ -1,9 +1,9 @@
 'use client'
 import Link from 'next/link'
-import Image from 'next/image'
-import { Facebook, Instagram, Youtube, Mail } from 'lucide-react'
+import { Facebook, Instagram, Youtube, Linkedin, Mail } from 'lucide-react'
 import NepalBar from '@/components/shared/NepalBar'
 import GridPaper from '@/components/shared/GridPaper'
+import { LogoMark } from '@/components/shared/Logo'
 
 const footerLinks = [
   { title: 'Organization', links: [{ name: 'About Us', href: '/about' }, { name: 'Our Team', href: '/team' }, { name: 'Events', href: '/events' }] },
@@ -15,6 +15,7 @@ const socialLinks = [
   { name: 'Facebook', href: 'https://www.facebook.com/mathsinitiatives', icon: Facebook },
   { name: 'Instagram', href: 'https://www.instagram.com/minnepal', icon: Instagram },
   { name: 'YouTube', href: 'https://www.youtube.com/@mathsinitiatives', icon: Youtube },
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/company/min-nepal/', icon: Linkedin },
 ].filter(s => !!s.href)
 
 export default function Footer({ settings }) {
@@ -25,13 +26,9 @@ export default function Footer({ settings }) {
       <div className="relative max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-12 mb-16">
           <div>
-            <Link href="/" className="inline-flex items-center gap-3 mb-6">
-              {settings?.site_logo_url ? (
-                <Image src={settings.site_logo_url} alt="MIN Logo" width={36} height={36} priority className="h-9 w-9 object-contain" />
-              ) : (
-                <div className="h-9 w-9 rounded-xl bg-text-primary-dynamic flex items-center justify-center text-bg-dynamic font-black text-xs">M</div>
-              )}
-              <span className="font-bold text-lg tracking-tight">MIN</span>
+            <Link href="/" className="inline-flex items-center gap-3 mb-6 text-headline" aria-label="MIN Home">
+              <LogoMark className="h-10 w-auto" />
+              <span className="font-bold text-lg tracking-tight text-text-primary-dynamic">MIN</span>
             </Link>
             <p className="text-text-secondary-dynamic max-w-sm leading-relaxed text-sm mb-8">
               {settings?.footer_description || 'Empowering students across Nepal through innovative mathematics education, resources, and events since 2020.'}
