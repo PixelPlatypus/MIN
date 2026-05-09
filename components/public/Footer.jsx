@@ -26,9 +26,12 @@ export default function Footer({ settings }) {
       <div className="relative max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-12 mb-16">
           <div>
-            <Link href="/" className="inline-flex items-center gap-3 mb-6 text-headline" aria-label="MIN Home">
-              <LogoMark className="h-10 w-auto" />
-              <span className="font-bold text-lg tracking-tight text-text-primary-dynamic">MIN</span>
+            <Link href="/" className="inline-flex items-start gap-3 mb-6 text-headline group" aria-label="Mathematics Initiatives in Nepal — Home">
+              <LogoMark className="h-11 w-auto shrink-0" />
+              <span className="flex flex-col leading-tight">
+                <span className="font-bold text-base tracking-tight text-text-primary-dynamic">Mathematics Initiatives</span>
+                <span className="text-xs text-text-tertiary-dynamic font-institutional tracking-[0.2em] mt-1">in Nepal</span>
+              </span>
             </Link>
             <p className="text-text-secondary-dynamic max-w-sm leading-relaxed text-sm mb-8">
               {settings?.footer_description || 'Empowering students across Nepal through innovative mathematics education, resources, and events since 2020.'}
