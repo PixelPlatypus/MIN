@@ -44,7 +44,7 @@ export default function TeamStrip({ team, initialTeam }) {
         ) : (
           <div className="flex gap-6 px-4 w-max animate-marquee will-change-transform">
             {displayTeam.map((member, i) => (
-              <div key={`${member.id}-${i}`} className="w-48 shrink-0 group cursor-pointer">
+              <Link key={`${member.id}-${i}`} href={`/team/${member.slug || member.id}`} aria-label={`View ${member.name}'s profile`} className="w-48 shrink-0 group block">
                 <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-3 border border-border-dynamic">
                   {member.photo_url ? (
                     <Image
@@ -67,7 +67,7 @@ export default function TeamStrip({ team, initialTeam }) {
                 </div>
                 <h4 className="font-bold text-sm text-text-primary-dynamic truncate">{member.name}</h4>
                 <p className="text-xs text-text-tertiary-dynamic truncate mt-0.5">{member.position}</p>
-              </div>
+              </Link>
             ))}
           </div>
         )}
