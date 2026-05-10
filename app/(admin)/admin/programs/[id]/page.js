@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import ProgramForm from '@/components/admin/ProgramForm'
-import { Loader2 } from 'lucide-react'
+import { CircleNotch as Loader2 } from '@phosphor-icons/react'
 
 export default function EditProgramPage() {
   const { id } = useParams()

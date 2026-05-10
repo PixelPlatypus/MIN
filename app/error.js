@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { RefreshCcw, AlertCircle, ArrowLeft, Home } from 'lucide-react'
+import { ArrowsClockwise as RefreshCcw, WarningCircle as AlertCircle, ArrowLeft, House as Home } from '@phosphor-icons/react'
 import Link from 'next/link'
 
 export default function Error({ error, reset }) {
@@ -34,7 +34,7 @@ export default function Error({ error, reset }) {
   }, [error])
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-bg-dynamic flex items-center justify-center p-6 relative overflow-hidden transition-colors duration-500">
       {/* Premium Mesh Gradient Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-coral/10 rounded-full blur-[120px]" />
@@ -44,16 +44,16 @@ export default function Error({ error, reset }) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="max-w-xl w-full glass bg-white/5 border-white/10 backdrop-blur-3xl rounded-[3.5rem] p-10 md:p-16 text-center space-y-10 relative z-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]"
+        className="max-w-xl w-full glass bg-bg-secondary-dynamic/40 border-border-dynamic backdrop-blur-3xl rounded-[3.5rem] p-10 md:p-16 text-center space-y-10 relative z-10 shadow-2xl"
       >
         {/* Branding inside the box */}
-        <div className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-80">
+        <div className="text-auto-tertiary-dynamic text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-80">
           Mathematics Initiatives in Nepal
         </div>
 
         <div className="relative mx-auto w-full max-w-sm">
            <div className="absolute inset-0 bg-coral/20 rounded-[2.5rem] blur-2xl animate-pulse" />
-           <div className="relative w-full aspect-video rounded-[2rem] overflow-hidden border border-white/20 shadow-2xl">
+           <div className="relative w-full aspect-video rounded-[2rem] overflow-hidden border border-border-dynamic shadow-2xl">
               <img 
                 src="/images/404page.gif" 
                 alt="System error" 
@@ -66,11 +66,11 @@ export default function Error({ error, reset }) {
         </div>
 
         <div className="space-y-4">
-          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter leading-[0.95]">
+          <h1 className="text-5xl md:text-6xl font-black text-text-primary-dynamic tracking-tighter leading-[0.95]">
             Something <br /> 
             <span className="text-coral">Went Wrong</span>
           </h1>
-          <p className="text-white/50 text-base font-medium leading-relaxed max-w-sm mx-auto">
+          <p className="text-auto-secondary-dynamic text-base font-medium leading-relaxed max-w-sm mx-auto">
             An unexpected error occurred. Don't worry, it's not you, it's us. Our team has been notified.
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function Error({ error, reset }) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
           <button 
             onClick={() => reset()}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold transition-all border border-white/10 active:scale-95"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-bg-secondary-dynamic text-text-primary-dynamic hover:bg-border-dynamic font-bold transition-all border border-border-dynamic active:scale-95"
           >
             <RefreshCcw size={18} />
             Try Again
@@ -92,8 +92,8 @@ export default function Error({ error, reset }) {
           </Link>
         </div>
 
-        <div className="pt-10 border-t border-white/5">
-           <p className="text-[10px] text-white/30 font-black uppercase tracking-[0.3em]">
+        <div className="pt-10 border-t border-border-dynamic">
+           <p className="text-[10px] text-auto-tertiary-dynamic font-black uppercase tracking-[0.3em]">
              Redirecting to home shortly...
            </p>
         </div>

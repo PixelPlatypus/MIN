@@ -1,18 +1,27 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 
 const MATH_FACTS = [
   "Defining the future of math...",
 ]
 
 export default function SitePreloader() {
+  const pathname = usePathname()
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState(0)
   const [factIndex, setFactIndex] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
 
+  // Skip preloader for admin and login routes
+  const isExcluded = pathname?.startsWith('/admin') || pathname?.startsWith('/login')
+
   useEffect(() => {
+    if (isExcluded) {
+      setLoading(false)
+      return
+    }
     // Logic to always show for now as per user preference for the entry experience
     const factInterval = setInterval(() => {
       setFactIndex(prev => (prev + 1) % MATH_FACTS.length)
@@ -40,7 +49,9 @@ export default function SitePreloader() {
       clearInterval(factInterval)
       clearInterval(progressInterval)
     }
-  }, [isComplete])
+  }, [isComplete, isExcluded])
+
+  if (isExcluded) return null
 
   return (
     <AnimatePresence mode="wait">

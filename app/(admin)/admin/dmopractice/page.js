@@ -1,7 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
-import { Calculator, Sparkles } from 'lucide-react'
+import { Calculator, RocketLaunch as Sparkles } from '@phosphor-icons/react'
 
 // Load QuestionBank without SSR to prevent hydration issues with KaTeX
 const QuestionBank = dynamic(() => import('@/components/admin/QuestionBank'), { ssr: false })
@@ -17,7 +17,7 @@ export default function AdminPracticePage() {
             </div>
             <h2 className="text-2xl font-bold tracking-tight">DMO Practice Builder</h2>
           </div>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm max-w-2xl">
+          <p className="text-auto-secondary text-sm max-w-2xl">
             Create mathematical practice sets, manage LaTeX-formatted questions, and upload diagrams for competitive exam preparation.
           </p>
         </div>

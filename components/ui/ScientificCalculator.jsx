@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { X, Delete, Eraser } from 'lucide-react'
+import { X, Backspace as Delete, Eraser } from '@phosphor-icons/react'
 import { evaluate } from 'mathjs'
 
 export default function ScientificCalculator({ onClose }) {

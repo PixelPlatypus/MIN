@@ -14,7 +14,7 @@ export default async function PublicLayout({ children }) {
     { data: settings },
     { data: { user } }
   ] = await Promise.all([
-    supabase.from('site_settings').select('is_maintenance_mode').eq('id', 'main').single(),
+    supabase.from('site_settings').select('*').eq('id', 'main').single(),
     supabase.auth.getUser()
   ])
 
@@ -45,13 +45,13 @@ export default async function PublicLayout({ children }) {
            Site Maintenance Active — Administrative Preview Only
         </div>
       )}
-      <Navbar />
+      <Navbar settings={settings} />
       <main className="flex-grow">
         <PageTransition>
           {children}
         </PageTransition>
       </main>
-      <Footer />
+      <Footer settings={settings} />
       <ScrollToTop />
     </div>
   )

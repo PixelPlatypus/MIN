@@ -4,17 +4,17 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   ArrowLeft, 
-  Upload, 
+  UploadSimple as Upload, 
   Plus,
   Image as ImageIcon, 
   X, 
-  Save, 
-  Loader2, 
-  CheckCircle2,
+  FloppyDisk as Save, 
+  CircleNotch as Loader2, 
+  CheckCircle as CheckCircle2,
   Tag,
   FolderOpen,
-  Type
-} from 'lucide-react'
+  TextT as Type
+} from '@phosphor-icons/react'
 import ImageUploader from '@/components/admin/ImageUploader'
 
 export default function GalleryForm({ initialData = null, isEditing = false }) {
@@ -28,7 +28,8 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
     caption: initialData?.caption || '',
     album: initialData?.album || '',
     tags: Array.isArray(initialData?.tags) ? initialData.tags.join(', ') : (initialData?.tags || ''),
-    image_url: initialData?.image_url || initialData?.url || ''
+    image_url: initialData?.image_url || initialData?.url || '',
+    display_order: initialData?.display_order || 0
   })
 
   useEffect(() => {
@@ -114,7 +115,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
       <div className="flex items-center justify-between">
         <button 
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-text-tertiary hover:text-text-secondary transition-colors group"
+          className="flex items-center gap-2 text-auto-tertiary hover:text-auto-secondary transition-colors group"
         >
           <div className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
             <ArrowLeft size={20} />
@@ -166,7 +167,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
                     <ImageIcon size={48} />
                   </div>
                   <h4 className="text-xl font-bold mb-2">Select a Photo</h4>
-                  <p className="text-sm text-text-tertiary max-w-xs mx-auto mb-8">
+                  <p className="text-sm text-auto-tertiary max-w-xs mx-auto mb-8">
                     Choose a high-quality image from an event or program to add to the MIN collection.
                   </p>
                   
@@ -187,7 +188,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
             </div>
             <div>
               <h5 className="font-bold text-sm mb-1">Upload Tip</h5>
-              <p className="text-xs text-text-secondary leading-relaxed">
+              <p className="text-xs text-auto-secondary leading-relaxed">
                 Images are automatically optimized for delivery. We recommend using widescreen (16:9) or square (1:1) photos for the best gallery presentation.
               </p>
             </div>
@@ -199,7 +200,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
           <form onSubmit={handleSubmit} className="glass rounded-[3rem] p-10 border border-border dark:border-border-dark space-y-8 sticky top-8">
             <div className="space-y-6">
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-text-tertiary ml-1">
+                <div className="flex items-center gap-2 text-auto-tertiary ml-1">
                   <Type size={14} />
                   <label className="text-[10px] font-black uppercase tracking-widest">Caption</label>
                 </div>
@@ -214,7 +215,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-text-tertiary ml-1">
+                <div className="flex items-center gap-2 text-auto-tertiary ml-1">
                   <FolderOpen size={14} />
                   <label className="text-[10px] font-black uppercase tracking-widest">Album / Collection</label>
                 </div>
@@ -228,7 +229,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
                 
                 {existingAlbums.length > 0 && (
                   <div className="space-y-2 px-2">
-                    <p className="text-[9px] font-bold text-text-tertiary uppercase">Suggestions from existing albums:</p>
+                    <p className="text-[9px] font-bold text-auto-tertiary uppercase">Suggestions from existing albums:</p>
                     <div className="flex flex-wrap gap-2">
                       {existingAlbums.map(album => (
                         <button
@@ -250,7 +251,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-text-tertiary ml-1">
+                <div className="flex items-center gap-2 text-auto-tertiary ml-1">
                   <Tag size={14} />
                   <label className="text-[10px] font-black uppercase tracking-widest">Tags (Keywords)</label>
                 </div>
@@ -264,7 +265,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
                 
                 {existingTags.length > 0 && (
                   <div className="space-y-2 px-2">
-                    <p className="text-[9px] font-bold text-text-tertiary uppercase">Suggestions from existing photos:</p>
+                    <p className="text-[9px] font-bold text-auto-tertiary uppercase">Suggestions from existing photos:</p>
                     <div className="flex flex-wrap gap-2">
                       {existingTags.map(tag => (
                         <button
@@ -279,7 +280,21 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
                     </div>
                   </div>
                 )}
-                <p className="text-[10px] text-text-tertiary px-2 italic">Separate with commas</p>
+                <p className="text-[10px] text-auto-tertiary px-2 italic">Separate with commas</p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-auto-tertiary ml-1">
+                  <Tag size={14} />
+                  <label className="text-[10px] font-black uppercase tracking-widest">Display Order</label>
+                </div>
+                <input 
+                  type="number" 
+                  placeholder="0"
+                  className="w-full bg-black/5 dark:bg-white/5 border-none rounded-2xl py-4 px-6 text-sm font-medium focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                  value={formData.display_order}
+                  onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value) || 0})}
+                />
               </div>
             </div>
 
@@ -311,7 +326,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
                 </span>
               </button>
               
-              <p className="text-[10px] text-center text-text-tertiary">
+              <p className="text-[10px] text-center text-auto-tertiary">
                 Your photo will be visible on the public gallery immediately.
               </p>
             </div>

@@ -3,21 +3,23 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   UserPlus, 
-  Search, 
+  MagnifyingGlass as Search, 
   FileText,
-  Mail, 
+  Envelope as Mail, 
   Phone, 
   Calendar, 
-  CheckCircle2, 
+  CheckCircle as CheckCircle2, 
   XCircle, 
   Clock, 
-  ChevronRight,
-  Filter,
-  Trash2,
-  ExternalLink,
+  CaretRight as ChevronRight,
+  Funnel as Filter,
+  Trash as Trash2,
+  ArrowSquareOut as ExternalLink,
   Wrench,
-  Loader2
-} from 'lucide-react'
+  ChatTeardropText as MessageSquare,
+  ClockCounterClockwise as History,
+  Check
+} from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 
 const typeColors = {
@@ -33,6 +35,7 @@ const statusColors = {
   REVIEWED: 'bg-cyan/10 text-cyan border-cyan/20',
   ACCEPTED: 'bg-green/10 text-green border-green/20',
   REJECTED: 'bg-coral/10 text-coral border-coral/20',
+  APPROVED: 'bg-green/10 text-green border-green/20',
   EMAIL_SENT: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
 }
 
@@ -43,6 +46,8 @@ export default function AdminApplicationsPage() {
   const [filterType, setFilterType] = useState('ALL')
   const [selectedApp, setSelectedApp] = useState(null)
   const [activeTab, setActiveTab] = useState('ALL_BATCHES')
+  const [adminNote, setAdminNote] = useState('')
+  const [processingStatus, setProcessingStatus] = useState(null)
 
   const batches = ['ALL_BATCHES', ...new Set(apps.map(a => a.batch_name).filter(Boolean))]
 
@@ -79,15 +84,22 @@ export default function AdminApplicationsPage() {
   })
 
   const handleUpdateStatus = async (id, newStatus) => {
-    const res = await fetch(`/api/applications/admin/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus }),
-    })
+    setProcessingStatus(newStatus)
+    try {
+      const res = await fetch(`/api/applications/admin/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus, notes: adminNote }),
+      })
 
-    if (res.ok) {
-      setApps(apps.map(a => a.id === id ? { ...a, status: newStatus } : a))
-      if (selectedApp?.id === id) setSelectedApp({ ...selectedApp, status: newStatus })
+      if (res.ok) {
+        const updated = await res.json()
+        setApps(apps.map(a => a.id === id ? { ...a, ...updated } : a))
+        if (selectedApp?.id === id) setSelectedApp({ ...selectedApp, ...updated })
+        setAdminNote('')
+      }
+    } finally {
+      setProcessingStatus(null)
     }
   }
 
@@ -141,7 +153,7 @@ export default function AdminApplicationsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black tracking-tight mb-1 uppercase">Intake Nexus</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary dark:text-auto-secondary-dark text-sm">
             Manage Volunteers, Ambassadors, and Partners across multiple recruitment batches.
           </p>
         </div>
@@ -180,12 +192,12 @@ export default function AdminApplicationsPage() {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-grow glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:border-primary transition-all shadow-sm">
-                <Search size={18} className="text-text-tertiary" />
+                <Search size={18} className="text-auto-tertiary" />
                 <input 
                   suppressHydrationWarning
                   type="text" 
                   placeholder="Identify applicant by name, email, or data..." 
-                  className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary font-bold"
+                  className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary font-bold"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -198,7 +210,7 @@ export default function AdminApplicationsPage() {
                     className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                       filterType === t 
                         ? 'bg-white dark:bg-primary text-primary dark:text-white shadow-xl ring-1 ring-border/50' 
-                        : 'text-text-tertiary hover:scale-105 active:scale-95'
+                        : 'text-auto-tertiary hover:scale-105 active:scale-95'
                     }`}
                   >
                     {t === 'ALL' ? 'Everything' : t === 'AMBASSADOR' ? 'AMB' : t.slice(0, 3)}
@@ -216,7 +228,7 @@ export default function AdminApplicationsPage() {
                     className={`shrink-0 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
                       activeTab === b 
                         ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' 
-                        : 'bg-bg-secondary/50 dark:bg-white/5 text-text-tertiary border-border dark:border-white/5 hover:border-primary/50'
+                        : 'bg-bg-secondary/50 dark:bg-white/5 text-auto-tertiary border-border dark:border-white/5 hover:border-primary/50'
                     }`}
                  >
                    {b === 'ALL_BATCHES' ? 'Total Intake' : `Batch: ${b}`}
@@ -249,7 +261,7 @@ export default function AdminApplicationsPage() {
                             {app.status}
                           </span>
                         </div>
-                        <div className="flex items-center gap-4 text-xs text-text-tertiary font-bold">
+                        <div className="flex items-center gap-4 text-xs text-auto-tertiary font-bold">
                           <span className="flex items-center gap-1.5"><Calendar size={14} /> {new Date(app.created_at).toLocaleDateString()}</span>
                           <span className={`flex items-center gap-1.5 px-2 py-0.5 rounded-lg border ${typeColors[app.type]}`}>
                             {app.type}
@@ -257,12 +269,12 @@ export default function AdminApplicationsPage() {
                         </div>
                       </div>
                     </div>
-                    <ChevronRight size={20} className={`text-text-tertiary opacity-40 transition-transform ${selectedApp?.id === app.id ? 'translate-x-1 opacity-100 text-primary' : ''}`} />
+                    <ChevronRight size={20} className={`text-auto-tertiary opacity-40 transition-transform ${selectedApp?.id === app.id ? 'translate-x-1 opacity-100 text-primary' : ''}`} />
                   </button>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-24 text-text-tertiary space-y-4">
+              <div className="text-center py-24 text-auto-tertiary space-y-4">
                 <Filter size={48} className="mx-auto opacity-20" />
                 <p className="font-bold">No matching applications found.</p>
               </div>
@@ -293,7 +305,7 @@ export default function AdminApplicationsPage() {
                   </div>
                   <button 
                     onClick={() => setSelectedApp(null)}
-                    className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl transition-all text-text-tertiary hover:rotate-90"
+                    className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl transition-all text-auto-tertiary hover:rotate-90"
                   >
                     <XCircle size={24} />
                   </button>
@@ -306,7 +318,7 @@ export default function AdminApplicationsPage() {
                         <Mail size={18} />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Email Address</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Email Address</p>
                         <p className="text-sm font-bold truncate">{selectedApp.email}</p>
                       </div>
                     </div>
@@ -316,7 +328,7 @@ export default function AdminApplicationsPage() {
                           <Phone size={18} />
                         </div>
                         <div>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Phone Number</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Phone Number</p>
                           <p className="text-sm font-bold">{selectedApp.phone}</p>
                         </div>
                       </div>
@@ -355,7 +367,7 @@ export default function AdminApplicationsPage() {
 
                 <div className="pt-10 border-t border-border dark:border-border-dark space-y-4 relative z-10">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Update Disposition</h4>
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Update Disposition</h4>
                     <button 
                       onClick={() => handleDeleteIndividual(selectedApp.id)}
                       className="text-coral hover:text-coral/80 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5"
@@ -364,53 +376,112 @@ export default function AdminApplicationsPage() {
                     </button>
                   </div>
 
-                  {selectedApp.status === 'EMAIL_SENT' ? (
+                  {selectedApp.status === 'PENDING' ? (
+                    <div className="space-y-4">
+                      <div className="bg-orange/5 rounded-2xl p-6 border border-orange/10 text-center">
+                        <p className="text-[10px] font-black text-orange uppercase tracking-[0.2em] flex items-center justify-center gap-2">
+                          <Clock size={16} /> New Submission
+                        </p>
+                        <p className="text-[10px] text-auto-tertiary mt-2">
+                          Please review the details above and mark as read to enable processing options.
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => handleUpdateStatus(selectedApp.id, 'REVIEWED')}
+                        className="w-full flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all bg-primary text-white shadow-xl shadow-primary/20 hover:bg-primary-dark"
+                      >
+                        <CheckCircle2 size={16} /> Mark as Read
+                      </button>
+                    </div>
+                  ) : selectedApp.status === 'EMAIL_SENT' ? (
                     <div className="bg-purple-500/5 rounded-2xl p-6 border border-purple-500/10 text-center">
                        <p className="text-xs font-black text-purple-500 uppercase tracking-widest flex items-center justify-center gap-2">
                           <Mail size={16} /> Outreach Email Sent
                        </p>
-                       <p className="text-[10px] text-text-tertiary mt-2">
+                       <p className="text-[10px] text-auto-tertiary mt-2">
                          Follow-up is in progress. Formal accept/reject is locked until status changes.
                        </p>
                     </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-3">
-                      <button 
-                        onClick={() => handleUpdateStatus(selectedApp.id, 'ACCEPTED')}
-                        className={`flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${
-                          selectedApp.status === 'ACCEPTED' 
-                            ? 'bg-green text-white shadow-xl shadow-green/20' 
-                            : 'bg-green/10 text-green hover:bg-green/100 hover:text-white'
-                        }`}
-                      >
-                        <CheckCircle2 size={16} /> Accept
-                      </button>
-                      <button 
-                        onClick={() => handleUpdateStatus(selectedApp.id, 'REJECTED')}
-                        className={`flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${
-                          selectedApp.status === 'REJECTED' 
-                            ? 'bg-coral text-white shadow-xl shadow-coral/20' 
-                            : 'bg-coral/10 text-coral hover:bg-coral/100 hover:text-white'
-                        }`}
-                      >
-                        <XCircle size={16} /> Reject
-                      </button>
+                  ) : !['ACCEPTED', 'REJECTED', 'APPROVED'].includes(selectedApp.status) ? (
+                    <div className="space-y-6 pt-6 border-t border-border dark:border-border-dark">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-auto-tertiary ml-1">
+                          <MessageSquare size={14} />
+                          <label className="text-[10px] font-black uppercase tracking-widest">Internal Review Notes (Optional)</label>
+                        </div>
+                        <textarea 
+                          placeholder="Why are you approving/rejecting this? (Internal only)"
+                          className="w-full bg-black/5 dark:bg-white/5 border-none rounded-2xl py-4 px-6 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none"
+                          rows={3}
+                          value={adminNote}
+                          onChange={(e) => setAdminNote(e.target.value)}
+                        />
+                      </div>
 
-                      {['ORGANIZATION', 'PARTNERSHIP'].includes(selectedApp.type) && (
+                      <div className="grid grid-cols-2 gap-3">
                         <button 
-                          onClick={() => handleUpdateStatus(selectedApp.id, 'EMAIL_SENT')}
-                          className="col-span-2 flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white"
+                          disabled={processingStatus}
+                          onClick={() => handleUpdateStatus(selectedApp.id, 'ACCEPTED')}
+                          className="flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all bg-green/10 text-green hover:bg-green hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
                         >
-                          <Mail size={16} /> Mark as Emailed
+                          {processingStatus === 'ACCEPTED' ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+                          Accept
                         </button>
-                      )}
+                        <button 
+                          disabled={processingStatus}
+                          onClick={() => handleUpdateStatus(selectedApp.id, 'REJECTED')}
+                          className="flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all bg-coral/10 text-coral hover:bg-coral hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                          {processingStatus === 'REJECTED' ? <Loader2 size={16} className="animate-spin" /> : <XCircle size={16} />}
+                          Reject
+                        </button>
+
+                        {['ORGANIZATION', 'PARTNERSHIP'].includes(selectedApp.type) && (
+                          <button 
+                            disabled={processingStatus}
+                            onClick={() => handleUpdateStatus(selectedApp.id, 'EMAIL_SENT')}
+                            className="col-span-2 flex items-center justify-center gap-2 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white"
+                          >
+                            {processingStatus === 'EMAIL_SENT' ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
+                            Mark as Emailed
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="pt-10 border-t border-border dark:border-border-dark space-y-6">
+                      <div className="glass bg-bg-secondary-dynamic/30 rounded-[2.5rem] p-8 border border-border dark:border-border-dark space-y-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${['ACCEPTED', 'APPROVED'].includes(selectedApp.status) ? 'bg-green/10 text-green' : 'bg-coral/10 text-coral'}`}>
+                              {['ACCEPTED', 'APPROVED'].includes(selectedApp.status) ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-auto-tertiary">Review Status</p>
+                              <p className="font-bold">{selectedApp.status}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {selectedApp.notes && (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-auto-tertiary">
+                              <MessageSquare size={14} />
+                              <label className="text-[10px] font-black uppercase tracking-widest">Internal Review Notes</label>
+                            </div>
+                            <div className="bg-white/40 dark:bg-black/20 p-6 rounded-2xl text-sm italic text-auto-secondary leading-relaxed border border-border/50">
+                              "{selectedApp.notes}"
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
             </motion.div>
           ) : (
-            <div className="hidden lg:flex w-[450px] shrink-0 h-full items-center justify-center glass rounded-[2.5rem] border border-dashed border-border dark:border-border-dark text-text-tertiary italic text-sm">
+            <div className="hidden lg:flex w-[450px] shrink-0 h-full items-center justify-center glass rounded-[2.5rem] border border-dashed border-border dark:border-border-dark text-auto-tertiary italic text-sm">
               <div className="text-center space-y-4 opacity-30">
                 <Wrench size={48} className="mx-auto" />
                 <p>Select a submission for full audit</p>

@@ -51,21 +51,12 @@ export async function POST(request) {
         .eq('id', 'main')
         .single()
 
-      const adminHtml = await generateMINThemeEmail('New Content Submission', `
-        <p>A new piece of content has been submitted and is awaiting your review.</p>
-        <div style="background: #f4f4f4; padding: 24px; border-radius: 16px; margin: 24px 0;">
-          <p style="margin: 0 0 10px 0;"><strong>Title:</strong> ${title}</p>
-          <p style="margin: 0 0 10px 0;"><strong>From:</strong> ${submitter_name} (${submitter_email})</p>
-          <p style="margin: 0;"><strong>Type:</strong> ${type}</p>
-        </div>
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/submissions" style="display: inline-block; background-color: #4361ee; color: #ffffff; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 700;">Review Submission</a></p>
-      `, settings || {})
-
-      await sendEmail({
-        to: process.env.FROM_EMAIL || 'noreply@mathsinitiatives.org.np',
-        from: `MIN Submissions <${process.env.FROM_EMAIL || 'noreply@mathsinitiatives.org.np'}>`,
-        subject: `New Content Submission: "${title}"`,
-        html: adminHtml
+      await sendTemplatedEmail('admin_new_submission', 'website@mathsinitiatives.org.np', {
+        content_title: title,
+        submitter_name: submitter_name,
+        submitter_email: submitter_email,
+        content_type: type,
+        admin_url: `${process.env.NEXT_PUBLIC_APP_URL}/admin/submissions`
       })
 
       // Notify Submitter
@@ -112,4 +103,5 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Internal Server Error', message: err.message }, { status: 500 })
   }
 }
+
 

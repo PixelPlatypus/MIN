@@ -2,11 +2,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Plus, Trash2, GripVertical, 
-  MapPin, Flag, Award, Users, Globe, 
-  Library, FileText, ChevronRight,
-  Sparkles, ListPlus
-} from 'lucide-react'
+  Plus, Trash as Trash2, DotsSixVertical as GripVertical, 
+  MapPin, Flag, Medal as Award, Users, Globe, 
+  Books as Library, FileText, CaretRight as ChevronRight,
+  RocketLaunch as Sparkles, ListPlus
+} from '@phosphor-icons/react'
 
 // Icon mapping for RTO
 const ICON_MAP = {
@@ -80,7 +80,7 @@ export default function RTOEditor({ settings, setSettings }) {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
               activeSubTab === tab.id 
                 ? 'bg-white dark:bg-white/10 text-primary shadow-sm' 
-                : 'text-text-tertiary hover:text-text-secondary'
+                : 'text-auto-tertiary hover:text-auto-secondary'
             }`}
           >
             {tab.icon} {tab.name}
@@ -138,11 +138,11 @@ export default function RTOEditor({ settings, setSettings }) {
                         placeholder="Stage description..."
                      />
                      <div className="flex items-center gap-2">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-text-tertiary">Icon:</span>
+                        <span className="text-[8px] font-black uppercase tracking-widest text-auto-tertiary">Icon:</span>
                         <select 
                           value={stage.icon || 'Award'}
                           onChange={e => updateArray('rto_stages', idx, 'icon', e.target.value)}
-                          className="bg-transparent text-[10px] font-bold text-text-secondary focus:outline-none"
+                          className="bg-transparent text-[10px] font-bold text-auto-secondary focus:outline-none"
                         >
                           {Object.keys(ICON_MAP).map(icon => <option key={icon} value={icon}>{icon}</option>)}
                         </select>
@@ -179,7 +179,7 @@ export default function RTOEditor({ settings, setSettings }) {
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Phase Name</label>
+                          <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Phase Name</label>
                           <input 
                             value={phase.phase || ''} 
                             onChange={e => updateArray('rto_roadmap', pIdx, 'phase', e.target.value)}
@@ -187,7 +187,7 @@ export default function RTOEditor({ settings, setSettings }) {
                           />
                        </div>
                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Timeline</label>
+                          <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Timeline</label>
                           <input 
                             value={phase.timeline || ''} 
                             onChange={e => updateArray('rto_roadmap', pIdx, 'timeline', e.target.value)}
@@ -195,7 +195,7 @@ export default function RTOEditor({ settings, setSettings }) {
                           />
                        </div>
                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Goal</label>
+                          <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Goal</label>
                           <input 
                             value={phase.goal || ''} 
                             onChange={e => updateArray('rto_roadmap', pIdx, 'goal', e.target.value)}
@@ -227,7 +227,7 @@ export default function RTOEditor({ settings, setSettings }) {
                                   <textarea 
                                     value={item.desc || ''}
                                     onChange={e => updateRoadmapItem(pIdx, iIdx, 'desc', e.target.value)}
-                                    className="bg-transparent text-xs text-text-tertiary w-full outline-none resize-none"
+                                    className="bg-transparent text-xs text-auto-tertiary w-full outline-none resize-none"
                                     rows={2}
                                     placeholder="Topic description..."
                                   />
@@ -277,7 +277,7 @@ export default function RTOEditor({ settings, setSettings }) {
                     <button onClick={() => removeItem('rto_resources', cIdx)} className="absolute top-8 right-8 text-coral p-2 hover:bg-coral/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 size={16}/></button>
 
                     <div className="flex items-center gap-4">
-                       <div className="w-12 h-12 rounded-2xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-text-tertiary">
+                       <div className="w-12 h-12 rounded-2xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-auto-tertiary">
                           {ICON_MAP[cat.icon] || <Library size={18}/>}
                        </div>
                        <input 
@@ -311,11 +311,11 @@ export default function RTOEditor({ settings, setSettings }) {
                                </button>
                             </div>
                             <div className="flex items-center gap-2 pl-6">
-                               <Globe size={12} className="text-text-tertiary" />
+                               <Globe size={12} className="text-auto-tertiary" />
                                <input 
                                  value={typeof item === 'string' ? '#' : item.url || '#'}
                                  onChange={e => updateResourceItem(cIdx, iIdx, 'url', e.target.value)}
-                                 className="bg-transparent text-[10px] font-medium text-text-tertiary w-full outline-none"
+                                 className="bg-transparent text-[10px] font-medium text-auto-tertiary w-full outline-none"
                                  placeholder="Destination URL (https://...)"
                                />
                             </div>
@@ -323,18 +323,18 @@ export default function RTOEditor({ settings, setSettings }) {
                        ))}
                        <button 
                         onClick={() => addResourceSubItem(cIdx)}
-                        className="w-full py-3 rounded-xl border border-dashed border-border text-[10px] font-black uppercase tracking-widest text-text-tertiary hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2 mt-2"
+                        className="w-full py-3 rounded-xl border border-dashed border-border text-[10px] font-black uppercase tracking-widest text-auto-tertiary hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2 mt-2"
                        >
                          <Plus size={12}/> Add Resource Link
                        </button>
                     </div>
 
                     <div className="flex items-center gap-2 border-t border-border pt-4">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-text-tertiary">Icon:</span>
+                        <span className="text-[8px] font-black uppercase tracking-widest text-auto-tertiary">Icon:</span>
                         <select 
                           value={cat.icon}
                           onChange={e => updateArray('rto_resources', cIdx, 'icon', e.target.value)}
-                          className="bg-transparent text-[10px] font-bold text-text-secondary focus:outline-none"
+                          className="bg-transparent text-[10px] font-bold text-auto-secondary focus:outline-none"
                         >
                           {Object.keys(ICON_MAP).map(icon => <option key={icon} value={icon}>{icon}</option>)}
                         </select>

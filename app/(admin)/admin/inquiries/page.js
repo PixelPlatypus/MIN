@@ -2,23 +2,23 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Mail, 
-  Search, 
+  Envelope as Mail, 
+  MagnifyingGlass as Search, 
   Phone, 
   Calendar, 
-  CheckCircle2, 
+  CheckCircle as CheckCircle2, 
   XCircle, 
   Clock, 
-  ChevronRight,
-  Filter,
-  MessageSquare,
+  CaretRight as ChevronRight,
+  Funnel as Filter,
+  ChatTeardropText as MessageSquare,
   User,
-  ExternalLink,
+  ArrowSquareOut as ExternalLink,
   FileText,
-  Incite,
-  Send,
-  Trash2
-} from 'lucide-react'
+  PaperPlaneTilt as Send,
+  Trash as Trash2,
+  CircleNotch as Loader2
+} from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 
 export default function AdminInquiriesPage() {
@@ -27,6 +27,8 @@ export default function AdminInquiriesPage() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('PENDING')
   const [selectedInquiry, setSelectedInquiry] = useState(null)
+  const [adminNote, setAdminNote] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
     async function fetchInquiries() {
@@ -57,17 +59,24 @@ export default function AdminInquiriesPage() {
   })
 
   const handleUpdateStatus = async (id, newStatus) => {
-    const res = await fetch(`/api/applications/admin/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus }),
-    })
+    setIsProcessing(true)
+    try {
+      const res = await fetch(`/api/applications/admin/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus, notes: adminNote }),
+      })
 
-    if (res.ok) {
-      setInquiries(inquiries.map(a => a.id === id ? { ...a, status: newStatus } : a))
-      if (selectedInquiry?.id === id) setSelectedInquiry({ ...selectedInquiry, status: newStatus })
-      // Auto-switch to Responded tab so the item remains visible
-      if (newStatus === 'ACCEPTED') setStatusFilter('ACCEPTED')
+      if (res.ok) {
+        const updated = await res.json()
+        setInquiries(inquiries.map(a => a.id === id ? { ...a, ...updated } : a))
+        if (selectedInquiry?.id === id) setSelectedInquiry({ ...selectedInquiry, ...updated })
+        setAdminNote('')
+        // Auto-switch to Responded tab so the item remains visible
+        if (newStatus === 'ACCEPTED') setStatusFilter('ACCEPTED')
+      }
+    } finally {
+      setIsProcessing(false)
     }
   }
 
@@ -90,7 +99,7 @@ export default function AdminInquiriesPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black tracking-tight mb-1 uppercase">Contact Inquiries</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Manage general questions and feedback from the contact form.
           </p>
         </div>
@@ -101,12 +110,12 @@ export default function AdminInquiriesPage() {
         <div className="flex-grow space-y-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-grow glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:border-primary transition-all shadow-sm">
-              <Search size={18} className="text-text-tertiary" />
+              <Search size={18} className="text-auto-tertiary" />
               <input 
                 suppressHydrationWarning
                 type="text" 
                 placeholder="Search by name, email or subject..." 
-                className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary font-bold"
+                className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary font-bold"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -121,7 +130,7 @@ export default function AdminInquiriesPage() {
                       ? s.id === 'ACCEPTED'
                         ? 'bg-green dark:bg-green text-white shadow-xl'
                         : 'bg-white dark:bg-primary text-primary dark:text-white shadow-xl'
-                      : 'text-text-tertiary hover:scale-105 active:scale-95'
+                      : 'text-auto-tertiary hover:scale-105 active:scale-95'
                   }`}
                 >
                   {s.label}
@@ -156,18 +165,18 @@ export default function AdminInquiriesPage() {
                             {item.status === 'PENDING' ? 'New Inquiry' : 'Responded'}
                           </span>
                         </div>
-                        <div className="flex items-center gap-4 text-xs text-text-tertiary font-bold">
+                        <div className="flex items-center gap-4 text-xs text-auto-tertiary font-bold">
                           <span className="flex items-center gap-1.5 truncate max-w-[200px]"><FileText size={14} /> {item.form_data?.subject || 'No Subject'}</span>
                           <span className="flex items-center gap-1.5"><Calendar size={14} /> {new Date(item.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
-                    <ChevronRight size={20} className={`text-text-tertiary opacity-40 transition-transform ${selectedInquiry?.id === item.id ? 'translate-x-1 opacity-100 text-primary' : ''}`} />
+                    <ChevronRight size={20} className={`text-auto-tertiary opacity-40 transition-transform ${selectedInquiry?.id === item.id ? 'translate-x-1 opacity-100 text-primary' : ''}`} />
                   </button>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-24 text-text-tertiary space-y-4">
+              <div className="text-center py-24 text-auto-tertiary space-y-4">
                 <Filter size={48} className="mx-auto opacity-20" />
                 <p className="font-bold">No inquiries found.</p>
               </div>
@@ -203,7 +212,7 @@ export default function AdminInquiriesPage() {
                     </button>
                     <button 
                       onClick={() => setSelectedInquiry(null)}
-                      className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl transition-all text-text-tertiary hover:rotate-90"
+                      className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl transition-all text-auto-tertiary hover:rotate-90"
                     >
                       <XCircle size={24} />
                     </button>
@@ -216,7 +225,7 @@ export default function AdminInquiriesPage() {
                       <Mail size={18} />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Sender Email</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Sender Email</p>
                       <p className="text-sm font-bold truncate">{selectedInquiry.email}</p>
                     </div>
                   </div>
@@ -236,30 +245,62 @@ export default function AdminInquiriesPage() {
 
                 {selectedInquiry.status === 'PENDING' ? (
                   <div className="pt-10 border-t border-border dark:border-border-dark space-y-6 relative z-10">
-                    <div className="bg-primary/5 rounded-2xl p-6 border border-primary/10">
-                      <p className="text-xs font-bold text-text-secondary leading-relaxed">
-                        Mark this inquiry as responded once you have replied to the user via email.
-                      </p>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-auto-tertiary ml-1">
+                        <MessageSquare size={14} />
+                        <label className="text-[10px] font-black uppercase tracking-widest">Internal Response Notes (Optional)</label>
+                      </div>
+                      <textarea 
+                        placeholder="Internal notes about the response or action taken..."
+                        className="w-full bg-black/5 dark:bg-white/5 border-none rounded-2xl py-4 px-6 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none"
+                        rows={3}
+                        value={adminNote}
+                        onChange={(e) => setAdminNote(e.target.value)}
+                      />
                     </div>
+                    
                     <button 
+                      disabled={isProcessing}
                       onClick={() => handleUpdateStatus(selectedInquiry.id, 'ACCEPTED')}
-                      className="w-full flex items-center justify-center gap-3 bg-primary hover:bg-primary-dark text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 active:scale-95"
+                      className="w-full flex items-center justify-center gap-3 bg-primary hover:bg-primary-dark text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 active:scale-95 disabled:opacity-50"
                     >
-                      <CheckCircle2 size={20} />
+                      {isProcessing ? <Loader2 size={20} className="animate-spin" /> : <CheckCircle2 size={20} />}
                       Mark as Responded
                     </button>
                   </div>
                 ) : (
-                  <div className="pt-10 border-t border-border dark:border-border-dark text-center relative z-10">
-                    <div className="inline-flex items-center gap-2 bg-green/10 text-green px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest">
-                       <CheckCircle2 size={16} /> Already Responded
+                  <div className="pt-10 border-t border-border dark:border-border-dark space-y-6 relative z-10">
+                    <div className="glass bg-bg-secondary-dynamic/30 rounded-[2.5rem] p-8 border border-border dark:border-border-dark space-y-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-green/10 text-green">
+                            <CheckCircle2 size={20} />
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-auto-tertiary">Review Status</p>
+                            <p className="font-bold text-sm">Responded</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {selectedInquiry.notes && (
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-auto-tertiary">
+                            <MessageSquare size={14} />
+                            <label className="text-[10px] font-black uppercase tracking-widest">Internal Review Notes</label>
+                          </div>
+                          <div className="bg-white/40 dark:bg-black/20 p-6 rounded-2xl text-sm italic text-auto-secondary leading-relaxed border border-border/50">
+                            "{selectedInquiry.notes}"
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
               </div>
             </motion.div>
           ) : (
-            <div className="hidden lg:flex w-[450px] shrink-0 h-full items-center justify-center glass rounded-[2.5rem] border border-dashed border-border dark:border-border-dark text-text-tertiary italic text-sm">
+            <div className="hidden lg:flex w-[450px] shrink-0 h-full items-center justify-center glass rounded-[2.5rem] border border-dashed border-border dark:border-border-dark text-auto-tertiary italic text-sm">
               <div className="text-center space-y-4 opacity-30">
                 <MessageSquare size={48} className="mx-auto" />
                 <p>Select an inquiry to read the full message</p>

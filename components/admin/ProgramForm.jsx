@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Save, ArrowLeft, Loader2, AlertCircle, Layers, Globe, ListOrdered, CheckCircle2, Settings } from 'lucide-react'
+import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle, Stack as Layers, Globe, ListNumbers as ListOrdered, CheckCircle as CheckCircle2, Gear as Settings } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -61,8 +61,8 @@ export default function ProgramForm({ initialData }) {
 
   const isNew = !initialData?.id
 
-  const inputClasses = "w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-4 px-5 text-base transition-all focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary placeholder:text-text-tertiary"
-  const labelClasses = "text-xs font-black uppercase tracking-widest text-text-tertiary ml-1 block mb-2"
+  const inputClasses = "w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-4 px-5 text-base transition-all focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary placeholder:text-auto-tertiary"
+  const labelClasses = "text-xs font-black uppercase tracking-widest text-auto-tertiary ml-1 block mb-2"
 
   return (
     <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
@@ -71,7 +71,7 @@ export default function ProgramForm({ initialData }) {
         <div className="space-y-4">
           <Link 
             href="/admin/programs" 
-            className="inline-flex items-center gap-2 text-sm font-bold text-text-tertiary hover:text-primary transition-colors group"
+            className="inline-flex items-center gap-2 text-sm font-bold text-auto-tertiary hover:text-primary transition-colors group"
           >
             <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
             Back to Programs
@@ -80,7 +80,7 @@ export default function ProgramForm({ initialData }) {
             <h2 className="text-4xl font-black tracking-tight text-dynamic">
               {isNew ? 'Create New' : 'Edit'} Program
             </h2>
-            <p className="text-text-tertiary text-lg font-medium">Configure initiative details and redirects.</p>
+            <p className="text-auto-tertiary text-lg font-medium">Configure initiative details and redirects.</p>
           </div>
         </div>
 
@@ -101,7 +101,7 @@ export default function ProgramForm({ initialData }) {
                  </div>
                  <div>
                     <h3 className="text-xl font-black tracking-tight">Identity & Branding</h3>
-                    <p className="text-xs text-text-tertiary font-bold uppercase tracking-widest">General program info</p>
+                    <p className="text-xs text-auto-tertiary font-bold uppercase tracking-widest">General program info</p>
                  </div>
             </div>
 
@@ -129,14 +129,14 @@ export default function ProgramForm({ initialData }) {
             <div className="space-y-2 max-w-2xl">
                 <label className={labelClasses}>Custom Navigation Link</label>
                 <div className="relative group/input">
-                    <Globe className="absolute left-5 top-1/2 -translate-y-1/2 text-text-tertiary group-focus-within/input:text-primary transition-colors" size={20} />
+                    <Globe className="absolute left-5 top-1/2 -translate-y-1/2 text-auto-tertiary group-focus-within/input:text-primary transition-colors" size={20} />
                     <input 
                         {...register('learn_more_link')}
                         placeholder="e.g. /events or https://..."
                         className={`${inputClasses} pl-14 font-mono text-sm`}
                     />
                 </div>
-                <p className="text-[10px] text-text-tertiary font-medium italic ml-1 mt-2">Overrides the default "/events" behavior.</p>
+                <p className="text-[10px] text-auto-tertiary font-medium italic ml-1 mt-2">Overrides the default "/events" behavior.</p>
             </div>
           </div>
 
@@ -148,7 +148,7 @@ export default function ProgramForm({ initialData }) {
                  </div>
                  <div>
                     <h3 className="text-xl font-black tracking-tight">Visibility Settings</h3>
-                    <p className="text-xs text-text-tertiary font-bold uppercase tracking-widest">Controls how it appears on site</p>
+                    <p className="text-xs text-auto-tertiary font-bold uppercase tracking-widest">Controls how it appears on site</p>
                  </div>
             </div>
 
@@ -162,7 +162,7 @@ export default function ProgramForm({ initialData }) {
                              className={`flex items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer font-bold text-sm ${
                                register('status').value === status || watch('status') === status
                                  ? 'border-primary bg-primary/5 text-primary' 
-                                 : 'border-border hover:border-text-tertiary/30 text-text-tertiary'
+                                 : 'border-border hover:border-text-tertiary/30 text-auto-tertiary'
                              }`}
                            >
                              <input type="radio" {...register('status')} value={status} className="hidden" />
@@ -176,14 +176,14 @@ export default function ProgramForm({ initialData }) {
                 <div className="space-y-2">
                     <label className={labelClasses}>Display Priority</label>
                     <div className="relative group/input">
-                        <ListOrdered className="absolute left-5 top-1/2 -translate-y-1/2 text-text-tertiary group-focus-within/input:text-primary transition-colors" size={20} />
+                        <ListOrdered className="absolute left-5 top-1/2 -translate-y-1/2 text-auto-tertiary group-focus-within/input:text-primary transition-colors" size={20} />
                         <input 
                             {...register('display_order', { valueAsNumber: true })}
                             type="number"
                             className={`${inputClasses} pl-14`}
                         />
                     </div>
-                    <p className="text-[10px] text-text-tertiary font-medium italic ml-1 mt-2">Lower numbers appear first (e.g., 1, 2, 3).</p>
+                    <p className="text-[10px] text-auto-tertiary font-medium italic ml-1 mt-2">Lower numbers appear first (e.g., 1, 2, 3).</p>
                 </div>
             </div>
           </div>
@@ -210,7 +210,7 @@ export default function ProgramForm({ initialData }) {
         <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-10 border-t border-border">
           <Link 
             href="/admin/programs"
-            className="w-full sm:w-auto px-10 py-5 rounded-2xl text-sm font-black uppercase tracking-widest text-text-tertiary hover:text-text-primary hover:bg-bg-secondary transition-all text-center"
+            className="w-full sm:w-auto px-10 py-5 rounded-2xl text-sm font-black uppercase tracking-widest text-auto-tertiary hover:text-text-primary hover:bg-bg-secondary transition-all text-center"
           >
             Discard Changes
           </Link>

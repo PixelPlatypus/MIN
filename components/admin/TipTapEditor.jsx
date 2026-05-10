@@ -7,22 +7,23 @@ import rehypeRaw from 'rehype-raw'
 import rehypeHighlight from 'rehype-highlight'
 import 'highlight.js/styles/github-dark.css'
 import { 
-  Bold, 
-  Italic, 
-  List, 
-  ListOrdered, 
+  TextB as Bold, 
+  TextItalic as Italic, 
+  ListBullets as List, 
+  ListNumbers as ListOrdered, 
   Link as LinkIcon,
-  Heading1,
-  Heading2,
-  Heading3,
-  Quote,
+  TextHOne as Heading1,
+  TextHTwo as Heading2,
+  TextHThree as Heading3,
+  Quotes as Quote,
   Minus,
   Highlighter,
   Eye,
   Columns,
-  Type,
-  Eraser
-} from 'lucide-react'
+  TextT as Type,
+  Eraser,
+  Image as ImageIcon
+} from '@phosphor-icons/react'
 
 export default function TipTapEditor({ content, onChange }) {
   const [markdown, setMarkdown] = useState(content || '')
@@ -68,7 +69,7 @@ export default function TipTapEditor({ content, onChange }) {
       className={`p-2.5 rounded-xl transition-all flex items-center justify-center ${
         active 
           ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-110' 
-          : 'text-text-tertiary hover:text-primary hover:bg-primary/10 hover:scale-105 active:scale-95'
+          : 'text-auto-tertiary hover:text-primary hover:bg-primary/10 hover:scale-105 active:scale-95'
       }`}
     >
       {children}
@@ -120,6 +121,9 @@ export default function TipTapEditor({ content, onChange }) {
           <ToolbarButton onClick={() => insertText('[', '](https://)')} title="Add Link">
             <LinkIcon size={20} />
           </ToolbarButton>
+          <ToolbarButton onClick={() => insertText('![Image Description](', 'https://)')} title="Add Image">
+            <ImageIcon size={20} />
+          </ToolbarButton>
           <ToolbarButton onClick={() => insertText('\n---\n')} title="Line Divider">
             <Minus size={20} />
           </ToolbarButton>
@@ -130,7 +134,7 @@ export default function TipTapEditor({ content, onChange }) {
           <button
             type="button"
             onClick={() => setViewMode('edit')}
-            className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${viewMode === 'edit' ? 'bg-white dark:bg-white/10 shadow-md text-primary scale-105' : 'text-text-tertiary hover:text-text-secondary'}`}
+            className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${viewMode === 'edit' ? 'bg-white dark:bg-white/10 shadow-md text-primary scale-105' : 'text-auto-tertiary hover:text-auto-secondary'}`}
           >
             <Type size={14} />
             Editor
@@ -138,7 +142,7 @@ export default function TipTapEditor({ content, onChange }) {
           <button
             type="button"
             onClick={() => setViewMode('split')}
-            className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${viewMode === 'split' ? 'bg-white dark:bg-white/10 shadow-md text-primary scale-105' : 'text-text-tertiary hover:text-text-secondary'}`}
+            className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${viewMode === 'split' ? 'bg-white dark:bg-white/10 shadow-md text-primary scale-105' : 'text-auto-tertiary hover:text-auto-secondary'}`}
           >
             <Columns size={14} />
             Split
@@ -146,7 +150,7 @@ export default function TipTapEditor({ content, onChange }) {
           <button
             type="button"
             onClick={() => setViewMode('preview')}
-            className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${viewMode === 'preview' ? 'bg-white dark:bg-white/10 shadow-md text-primary scale-105' : 'text-text-tertiary hover:text-text-secondary'}`}
+            className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${viewMode === 'preview' ? 'bg-white dark:bg-white/10 shadow-md text-primary scale-105' : 'text-auto-tertiary hover:text-auto-secondary'}`}
           >
             <Eye size={14} />
             Preview
@@ -254,12 +258,12 @@ export default function TipTapEditor({ content, onChange }) {
       {/* Footer / Stats */}
       <div className="bg-bg-secondary/30 dark:bg-black/20 border-t border-border dark:border-border-dark px-6 py-3 flex justify-between items-center backdrop-blur-md">
         <div className="flex items-center gap-4">
-           <span className="text-[10px] font-black text-text-tertiary uppercase tracking-widest flex items-center gap-2">
+           <span className="text-[10px] font-black text-auto-tertiary uppercase tracking-widest flex items-center gap-2">
             <div className="w-1.5 h-1.5 bg-green rounded-full animate-pulse" />
             Live Preview Active
           </span>
         </div>
-        <div className="flex items-center gap-4 text-[10px] font-bold text-text-tertiary">
+        <div className="flex items-center gap-4 text-[10px] font-bold text-auto-tertiary">
           <span>{markdown.split(/\s+/).filter(Boolean).length} Words</span>
           <div className="w-1 h-1 bg-border rounded-full" />
           <span>{markdown.length} Chars</span>

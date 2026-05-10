@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, MoreVertical, Edit2, Trash2, Filter, FileText, FileDown, Video, ArrowUp, ArrowDown } from 'lucide-react'
+import { Plus, MagnifyingGlass as Search, DotsThreeVertical as MoreVertical, PencilSimple as Edit2, Trash as Trash2, Funnel as Filter, FileText, FileArrowDown as FileDown, VideoCamera as Video, ArrowUp, ArrowDown } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -90,7 +90,7 @@ export default function AdminContentPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">Content Library</h2>
-          <p className="text-text-secondary dark:text-text-secondary-dark text-sm">
+          <p className="text-auto-secondary text-sm">
             Manage your articles, problems, blog posts, and resources.
           </p>
         </div>
@@ -106,11 +106,11 @@ export default function AdminContentPage() {
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 glass px-4 py-2 rounded-xl flex items-center gap-3 border border-border dark:border-border-dark group-focus-within:border-primary transition-all">
-          <Search size={18} className="text-text-tertiary" />
+          <Search size={18} className="text-auto-tertiary" />
           <input 
             type="text" 
             placeholder="Search content..." 
-            className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-text-tertiary"
+            className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -149,7 +149,7 @@ export default function AdminContentPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-bg-secondary dark:bg-white/5 text-text-tertiary dark:text-text-tertiary-dark text-[10px] uppercase tracking-widest font-bold">
+                <tr className="bg-bg-secondary dark:bg-white/5 text-auto-tertiary text-[10px] uppercase tracking-widest font-bold">
                   <th className="px-6 py-4 w-12">Order</th>
                   <th className="px-6 py-4">Title</th>
                   <th className="px-6 py-4">Type</th>
@@ -166,7 +166,7 @@ export default function AdminContentPage() {
                         <button 
                           onClick={() => handleMove(item.id, 'up')}
                           disabled={content.indexOf(item) === 0}
-                          className="p-1 rounded-md text-text-tertiary hover:bg-primary/20 hover:text-primary transition-all disabled:opacity-0"
+                          className="p-1 rounded-md text-auto-tertiary hover:bg-primary/20 hover:text-primary transition-all disabled:opacity-0"
                           title="Move Up"
                         >
                           <ArrowUp size={14} strokeWidth={3} />
@@ -174,7 +174,7 @@ export default function AdminContentPage() {
                         <button 
                           onClick={() => handleMove(item.id, 'down')}
                           disabled={content.indexOf(item) === content.length - 1}
-                          className="p-1 rounded-md text-text-tertiary hover:bg-primary/20 hover:text-primary transition-all disabled:opacity-0"
+                          className="p-1 rounded-md text-auto-tertiary hover:bg-primary/20 hover:text-primary transition-all disabled:opacity-0"
                           title="Move Down"
                         >
                           <ArrowDown size={14} strokeWidth={3} />
@@ -194,15 +194,15 @@ export default function AdminContentPage() {
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="text-sm font-bold truncate">{item.title}</span>
-                          <span className="text-xs text-text-tertiary truncate">{item.slug}</span>
+                          <span className="text-xs text-auto-tertiary truncate">{item.slug}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xs font-bold uppercase tracking-wider text-text-tertiary">{item.type}</span>
+                      <span className="text-xs font-bold uppercase tracking-wider text-auto-tertiary">{item.type}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-text-secondary dark:text-text-secondary-dark">{item.author_name || 'N/A'}</span>
+                      <span className="text-sm text-auto-secondary">{item.author_name || 'N/A'}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border ${
@@ -210,7 +210,7 @@ export default function AdminContentPage() {
                           ? 'bg-green/10 text-green border-green/10' 
                           : item.status === 'DRAFT'
                             ? 'bg-primary/10 text-primary border-primary/10'
-                            : 'bg-text-tertiary/10 text-text-tertiary border-text-tertiary/10'
+                            : 'bg-text-tertiary/10 text-auto-tertiary border-text-tertiary/10'
                       }`}>
                         {item.status}
                       </span>
@@ -219,13 +219,13 @@ export default function AdminContentPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link 
                           href={`/admin/content/${item.id}`}
-                          className="p-2 rounded-xl text-text-tertiary hover:text-primary hover:bg-primary/10 transition-all"
+                          className="p-2 rounded-xl text-auto-tertiary hover:text-primary hover:bg-primary/10 transition-all"
                         >
                           <Edit2 size={18} />
                         </Link>
                         <button 
                           onClick={() => handleDelete(item.id)}
-                          className="p-2 rounded-xl text-text-tertiary hover:text-coral hover:bg-coral/10 transition-all"
+                          className="p-2 rounded-xl text-auto-tertiary hover:text-coral hover:bg-coral/10 transition-all"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -238,7 +238,7 @@ export default function AdminContentPage() {
           </div>
         ) : (
           <div className="text-center py-24">
-            <p className="text-text-tertiary">No content found.</p>
+            <p className="text-auto-tertiary">No content found.</p>
           </div>
         )}
       </div>

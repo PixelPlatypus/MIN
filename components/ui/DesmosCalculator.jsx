@@ -1,7 +1,7 @@
 'use client'
 import Script from 'next/script'
 import { useEffect, useRef, useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import { CircleNotch as Loader2 } from '@phosphor-icons/react'
 import { useTheme } from 'next-themes'
 
 export default function DesmosCalculator() {

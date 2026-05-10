@@ -23,6 +23,7 @@
   "homepage": "https://github.com/PixelPlatypus/MIN#readme",
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@phosphor-icons/react": "^2.1.10",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.0",
     "@tailwindcss/postcss": "^4.2.2",
@@ -60,6 +61,7 @@
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "resend": "^6.10.0",
+    "sanitize-html": "^2.17.3",
     "tailwindcss": "^4.2.2",
     "yet-another-react-lightbox": "^3.30.1",
     "zod": "^4.3.6"

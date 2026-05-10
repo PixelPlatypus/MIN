@@ -2,12 +2,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  ChevronRight, ChevronLeft, X, Sparkles, 
-  LayoutDashboard, Users, Library, Globe, 
-  ShieldCheck, History, Bell, Send, 
-  Layers, Calendar, Calculator, ImageIcon,
-  CheckCircle2
-} from 'lucide-react'
+  CaretRight as ChevronRight, CaretLeft as ChevronLeft, X, RocketLaunch as Sparkles, 
+  SquaresFour as LayoutDashboard, Users, Books as Library, Globe, 
+  ShieldCheck, ClockCounterClockwise as History, Bell, PaperPlaneTilt as Send, 
+  Stack as Layers, Calendar, Calculator, Image as ImageIcon,
+  CheckCircle as CheckCircle2
+} from '@phosphor-icons/react'
 
 const TOUR_STEPS = {
   ADMIN: [
@@ -157,13 +157,13 @@ export default function OnboardingTour({ role, profileName }) {
                 <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center">
                   <Sparkles size={18} />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-text-secondary dark:text-text-secondary-dark">
+                <span className="text-[10px] font-black uppercase tracking-widest text-auto-secondary">
                   Welcome, {profileName.split(' ')[0]}
                 </span>
               </div>
               <button 
                 onClick={completeOnboarding}
-                className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full text-text-secondary dark:text-text-secondary-dark transition-all"
+                className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full text-auto-secondary transition-all"
               >
                 <X size={18} />
               </button>
@@ -183,7 +183,7 @@ export default function OnboardingTour({ role, profileName }) {
                     <span className="text-[9px] font-black uppercase text-primary px-2 py-0.5 bg-primary/10 rounded-md">
                       {role.replace('_', ' ')} Guide
                     </span>
-                    <span className="text-[9px] font-black uppercase text-text-secondary dark:text-text-secondary-dark">
+                    <span className="text-[9px] font-black uppercase text-auto-secondary">
                       Step {currentStep + 1} of {steps.length}
                     </span>
                   </div>
@@ -212,7 +212,7 @@ export default function OnboardingTour({ role, profileName }) {
                 {currentStep > 0 && (
                   <button 
                     onClick={handlePrev}
-                    className="p-3 glass rounded-xl text-text-tertiary hover:text-text-primary transition-all"
+                    className="p-3 glass rounded-xl text-auto-tertiary hover:text-text-primary transition-all"
                   >
                     <ChevronLeft size={20} />
                   </button>

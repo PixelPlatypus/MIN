@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Save, ArrowLeft, Loader2, AlertCircle } from 'lucide-react'
+import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -52,7 +52,7 @@ export default function CreateUserPage() {
       <div className="flex items-center gap-4">
         <Link 
           href="/admin/users" 
-          className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-text-tertiary hover:text-primary"
+          className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
         >
           <ArrowLeft size={20} />
         </Link>

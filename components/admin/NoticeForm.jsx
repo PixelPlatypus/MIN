@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Save, ArrowLeft, Loader2, AlertCircle, Bell, Image as ImageIcon, CheckCircle2, X, Link as LinkIcon } from 'lucide-react'
+import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle, Bell, Image as ImageIcon, CheckCircle as CheckCircle2, X, Link as LinkIcon } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ImageUploader from '@/components/admin/ImageUploader'
@@ -78,7 +78,7 @@ export default function NoticeForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/notices" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-text-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
           >
             <ArrowLeft size={20} />
           </Link>
@@ -128,7 +128,7 @@ export default function NoticeForm({ initialData = null }) {
                       value={formData.cta_text}
                       onChange={(e) => setFormData({...formData, cta_text: e.target.value})}
                     />
-                    <CheckCircle2 size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+                    <CheckCircle2 size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-auto-tertiary" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -141,7 +141,7 @@ export default function NoticeForm({ initialData = null }) {
                       value={formData.cta_url}
                       onChange={(e) => setFormData({...formData, cta_url: e.target.value})}
                     />
-                    <LinkIcon size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+                    <LinkIcon size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-auto-tertiary" />
                   </div>
                 </div>
               </div>
@@ -182,7 +182,7 @@ export default function NoticeForm({ initialData = null }) {
                 ) : (
                   <div className="flex flex-col items-center gap-2">
                     <ImageIcon size={48} className="text-primary/10" />
-                    <span className="text-[10px] uppercase font-black tracking-widest text-text-tertiary">No Image Selected</span>
+                    <span className="text-[10px] uppercase font-black tracking-widest text-auto-tertiary">No Image Selected</span>
                   </div>
                 )}
               </div>
@@ -207,7 +207,7 @@ export default function NoticeForm({ initialData = null }) {
                   <div className="w-11 h-6 bg-text-tertiary/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
-              <p className="text-[10px] text-text-tertiary text-center leading-relaxed">
+              <p className="text-[10px] text-auto-tertiary text-center leading-relaxed">
                 Only one notice can be active at a time. Activating this will disable any other currently active announcements.
               </p>
             </div>
@@ -231,7 +231,7 @@ export default function NoticeForm({ initialData = null }) {
               <button 
                 type="button"
                 onClick={() => router.back()}
-                className="w-full py-4 rounded-2xl font-bold text-sm text-text-tertiary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all text-center"
+                className="w-full py-4 rounded-2xl font-bold text-sm text-auto-tertiary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all text-center"
               >
                 Cancel
               </button>

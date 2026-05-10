@@ -26,6 +26,13 @@ export async function GET(request) {
 
   // Intelligent Tenure Propagation Logic (Server-side)
   if (tenure) {
+    if (tenure === 'Alumni') {
+      return Response.json(data.filter(m => m.status === 'ALUMNI'))
+    }
+    if (tenure === 'Advisors') {
+      return Response.json(data.filter(m => m.is_advisor === true))
+    }
+
     const filterYear = parseInt(tenure)
     const filtered = data
       .filter(member => {
@@ -53,12 +60,19 @@ export async function GET(request) {
         // Apply role_history override: if this member has a past role for this exact year,
         // override the displayed position with that historical role
         const roleHistory = member.social_links?.role_history
+        const joinedYear = parseInt(member.tenure)
         if (Array.isArray(roleHistory) && roleHistory.length > 0) {
           const historicalRole = roleHistory.find(h => parseInt(h.year) === filterYear)
           if (historicalRole?.position) {
             return { ...member, position: historicalRole.position }
           }
         }
+        
+        // If the requested year is the year they joined, and no explicit role history was found, default to MINion
+        if (filterYear === joinedYear) {
+          return { ...member, position: 'MINion' }
+        }
+
         return member
       })
 
@@ -68,13 +82,58 @@ export async function GET(request) {
   return Response.json(data)
 }
 
+async function generateServerSlug(supabase, name, currentId = null, existingSlugs = []) {
+  const baseSlug = name
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+  
+  let finalSlug = baseSlug
+  let counter = 1
+  
+  while (true) {
+    // Check if it's in the current batch we are processing
+    if (existingSlugs.includes(finalSlug)) {
+       finalSlug = `${baseSlug}-${counter}`
+       counter++
+       continue
+    }
+
+    let query = supabase
+      .from('team_members')
+      .select('id')
+      .eq('slug', finalSlug)
+    
+    if (currentId) query = query.neq('id', currentId)
+    
+    const { data } = await query.maybeSingle()
+    
+    if (!data) break
+    
+    finalSlug = `${baseSlug}-${counter}`
+    counter++
+  }
+  
+  return finalSlug
+}
+
 export async function POST(request) {
-  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
-  if (error) return Response.json({ error: error.message }, { status: error.status })
+  const { user, profile, supabase, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const body = await request.json()
   const isArray = Array.isArray(body)
   const items = isArray ? body : [body]
+
+  // Automatically handle slugs for each item
+  const usedSlugs = []
+  for (const item of items) {
+    item.slug = await generateServerSlug(supabase, item.name, null, usedSlugs)
+    usedSlugs.push(item.slug)
+  }
 
   // Role Restriction: Only ADMIN can assign 'President' role
   if (profile.role !== 'ADMIN') {
@@ -89,7 +148,7 @@ export async function POST(request) {
 
   const { data, error: insertError } = await supabase
     .from('team_members')
-    .insert(isArray ? body : [body])
+    .insert(items)
     .select()
 
   if (insertError) {
@@ -106,4 +165,40 @@ export async function POST(request) {
   })
 
   return Response.json(isArray ? data : data[0])
+}
+
+export async function PATCH(request) {
+  const { user, profile, supabase, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
+
+  const body = await request.json()
+  const items = Array.isArray(body) ? body : [body]
+
+  // Automatically handle slugs for updates if name changed or slug missing
+  const patchedSlugs = []
+  for (const item of items) {
+     if (item.name) {
+        item.slug = await generateServerSlug(supabase, item.name, item.id, patchedSlugs)
+        patchedSlugs.push(item.slug)
+     }
+  }
+
+  const { data, error: updateError } = await supabase
+    .from('team_members')
+    .upsert(items, { onConflict: 'id' })
+    .select()
+
+  if (updateError) {
+    return Response.json({ error: updateError.message }, { status: 500 })
+  }
+
+  await logAudit({
+    actor_id: user.id,
+    actor_name: profile.name,
+    action: 'BULK_UPDATED_TEAM_MEMBERS',
+    entity_type: 'team_members',
+    meta: { count: items.length }
+  })
+
+  return Response.json(data)
 }

@@ -3,11 +3,11 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
 import DesmosCalculator from '@/components/ui/DesmosCalculator'
-import { Layout, Maximize2, Minimize2 } from 'lucide-react'
 import { 
-  Clock, ChevronRight, ChevronLeft, Send, Calculator, 
-  Award, RotateCcw, CheckCircle2, AlertTriangle, X, ShieldAlert, Grid3X3, XCircle, Zap
-} from 'lucide-react'
+  Clock, CaretRight as ChevronRight, CaretLeft as ChevronLeft, PaperPlaneTilt as Send, Calculator, 
+  Trophy as Award, ArrowsClockwise as RotateCcw, CheckCircle as CheckCircle2, Warning as AlertTriangle, X, ShieldWarning as ShieldAlert, SquaresFour as Grid3X3, XCircle, Lightning as Zap,
+  Layout, ArrowsOut as Maximize2, ArrowsIn as Minimize2
+} from '@phosphor-icons/react'
 import 'katex/dist/katex.min.css'
 import { InlineMath, BlockMath } from 'react-katex'
 
@@ -61,7 +61,7 @@ function SubmitModal({ questions, answers, onConfirm, onCancel }) {
               <h3 className="text-2xl font-black tracking-tight">
                 {unanswered.length > 0 ? 'Missing Answers!' : 'Submit Exam?'}
               </h3>
-              <p className="text-text-secondary text-sm">
+              <p className="text-auto-secondary text-sm">
                 {unanswered.length > 0
                   ? `You have left ${unanswered.length} question${unanswered.length > 1 ? 's' : ''} unanswered.`
                   : 'You have answered all questions. Ready to submit?'
@@ -73,11 +73,11 @@ function SubmitModal({ questions, answers, onConfirm, onCancel }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-4 text-center">
                 <p className="text-2xl font-black text-emerald-600">{answered}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary mt-1">Answered</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mt-1">Answered</p>
               </div>
               <div className={`border rounded-2xl p-4 text-center ${unanswered.length > 0 ? 'bg-amber-500/5 border-amber-500/20' : 'bg-black/5 dark:bg-white/5 border-border'}`}>
-                <p className={`text-2xl font-black ${unanswered.length > 0 ? 'text-amber-500' : 'text-text-tertiary'}`}>{unanswered.length}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary mt-1">Unanswered</p>
+                <p className={`text-2xl font-black ${unanswered.length > 0 ? 'text-amber-500' : 'text-auto-tertiary'}`}>{unanswered.length}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mt-1">Unanswered</p>
               </div>
             </div>
 
@@ -279,7 +279,7 @@ export default function ExamInterface() {
           <div className="w-16 h-16 border-4 border-primary/20 rounded-full animate-spin border-t-primary" />
           <Calculator size={28} className="absolute inset-0 m-auto text-primary/40" />
         </div>
-        <p className="text-xs font-black uppercase tracking-widest text-text-tertiary">Building Exam Environment...</p>
+        <p className="text-xs font-black uppercase tracking-widest text-auto-tertiary">Building Exam Environment...</p>
       </div>
     </div>
   )
@@ -307,15 +307,15 @@ export default function ExamInterface() {
           </div>
           <div>
             <h2 className="text-4xl font-black">{pct >= 80 ? 'Excellent Work!' : pct >= 40 ? 'Good Effort!' : 'Keep Practicing!'}</h2>
-            <p className="text-text-secondary mt-2">Completed: <span className="text-primary font-bold">{set.name}</span></p>
+            <p className="text-auto-secondary mt-2">Completed: <span className="text-primary font-bold">{set.name}</span></p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-bg-secondary dark:bg-white/5 p-6 rounded-2xl border border-border/50">
-              <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary mb-2">Score</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mb-2">Score</p>
               <p className="text-4xl font-black text-primary">{score}<span className="text-base opacity-40 ml-1">/ {totalMarks}</span></p>
             </div>
             <div className="bg-bg-secondary dark:bg-white/5 p-6 rounded-2xl border border-border/50">
-              <p className="text-[10px] font-black uppercase tracking-widest text-text-tertiary mb-2">Accuracy</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mb-2">Accuracy</p>
               <p className="text-4xl font-black text-secondary">{Math.round(pct)}%</p>
             </div>
           </div>
@@ -371,7 +371,7 @@ export default function ExamInterface() {
               
               <div className="space-y-3">
                 <h2 className="text-3xl font-black tracking-tight">Exam Security Initialized</h2>
-                <p className="text-text-secondary text-sm leading-relaxed">
+                <p className="text-auto-secondary text-sm leading-relaxed">
                   To ensure a fair testing environment, exiting, refreshing, or <span className="text-coral font-bold underline">switching tabs</span> will trigger immediate auto-submission of your exam.
                 </p>
               </div>
@@ -410,7 +410,7 @@ export default function ExamInterface() {
               </div>
               <div className="flex gap-4 mb-4">
                 <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-500"><div className="w-2 h-2 rounded-full bg-emerald-500"/>Answered</div>
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-text-tertiary"><div className="w-2 h-2 rounded-full bg-black/10 dark:bg-white/10"/>Pending</div>
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-auto-tertiary"><div className="w-2 h-2 rounded-full bg-black/10 dark:bg-white/10"/>Pending</div>
               </div>
               <div className="grid grid-cols-6 gap-3">
                 {questions.map((q, i) => (
@@ -418,7 +418,7 @@ export default function ExamInterface() {
                     className={`h-12 rounded-xl text-xs font-black transition-all border flex items-center justify-center ${
                       currentIdx === i ? 'bg-primary text-white border-primary shadow-lg scale-110' :
                       answers[q.id] ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
-                      'glass border-border text-text-tertiary'
+                      'glass border-border text-auto-tertiary'
                     }`}
                   >{i + 1}</button>
                 ))}
@@ -432,18 +432,18 @@ export default function ExamInterface() {
       <div className="fixed top-[100px] left-1/2 -translate-x-1/2 w-[95%] max-w-2xl z-30 glass backdrop-blur-3xl border border-border dark:border-white/10 shadow-2xl rounded-full px-4 h-14 flex items-center justify-center sm:justify-start gap-2 md:gap-3">
           {/* Progress & Set Info */}
           <div className="flex flex-col justify-center items-center sm:items-start min-w-0 flex-1 sm:flex-initial text-center sm:text-left">
-             <p className="text-[9px] font-black uppercase tracking-widest text-text-tertiary truncate max-w-[150px] md:max-w-none">
+             <p className="text-[9px] font-black uppercase tracking-widest text-auto-tertiary truncate max-w-[150px] md:max-w-none">
                {set?.name || 'Loading Exam...'}
              </p>
              <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
                    <span className="text-sm font-black text-emerald-500 tabular-nums">{answeredCount}</span>
-                   <span className="text-[8px] font-bold text-text-tertiary uppercase tracking-tighter">Done</span>
+                   <span className="text-[8px] font-bold text-auto-tertiary uppercase tracking-tighter">Done</span>
                 </div>
                 <div className="w-1 h-1 rounded-full bg-border" />
                 <div className="flex items-center gap-1.5">
                    <span className="text-sm font-black text-coral tabular-nums">{questions.length - answeredCount}</span>
-                   <span className="text-[8px] font-bold text-text-tertiary uppercase tracking-tighter">Left</span>
+                   <span className="text-[8px] font-bold text-auto-tertiary uppercase tracking-tighter">Left</span>
                 </div>
              </div>
           </div>
@@ -561,7 +561,7 @@ export default function ExamInterface() {
                       }`}
                     >
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ${
-                        answers[currentQuestion.id] === opt ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/5 text-text-tertiary'
+                        answers[currentQuestion.id] === opt ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/5 text-auto-tertiary'
                       }`}>{opt}</div>
                       <div className="text-sm font-semibold flex-1">
                         <MathText text={currentQuestion[`option_${opt.toLowerCase()}`]} />
@@ -580,7 +580,7 @@ export default function ExamInterface() {
                   <h4 className="font-black text-dynamic text-sm mb-3">Quick Navigator</h4>
                   <div className="flex flex-wrap gap-3">
                     <div className="flex items-center gap-1.5 text-[9px] font-black uppercase text-emerald-500"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500"/>Done</div>
-                    <div className="flex items-center gap-1.5 text-[9px] font-black uppercase text-text-tertiary"><div className="w-1.5 h-1.5 rounded-full bg-black/10 dark:bg-white/10"/>Pending</div>
+                    <div className="flex items-center gap-1.5 text-[9px] font-black uppercase text-auto-tertiary"><div className="w-1.5 h-1.5 rounded-full bg-black/10 dark:bg-white/10"/>Pending</div>
                   </div>
                 </div>
                 <div className="grid grid-cols-5 gap-2">
@@ -589,7 +589,7 @@ export default function ExamInterface() {
                       className={`h-9 rounded-lg text-[10px] font-black transition-all border flex items-center justify-center ${
                         currentIdx === i ? 'bg-primary text-white border-primary shadow-lg scale-110 z-10' :
                         answers[q.id] ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
-                        'glass border-border text-text-tertiary hover:border-primary/30'
+                        'glass border-border text-auto-tertiary hover:border-primary/30'
                       }`}
                       title={`Go to Question ${i + 1}`}
                     >{i + 1}</button>
@@ -603,7 +603,7 @@ export default function ExamInterface() {
           <div className="flex items-center justify-between gap-3">
             <button onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))} disabled={currentIdx === 0}
               className={`px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all ${
-                currentIdx === 0 ? 'opacity-30 cursor-not-allowed text-text-tertiary bg-black/5 dark:bg-white/5' : 'glass border border-border text-dynamic hover:-translate-x-0.5'
+                currentIdx === 0 ? 'opacity-30 cursor-not-allowed text-auto-tertiary bg-black/5 dark:bg-white/5' : 'glass border border-border text-dynamic hover:-translate-x-0.5'
               }`}
               title="Previous Question"
             >
@@ -671,17 +671,17 @@ export default function ExamInterface() {
                    <div className="flex items-center gap-1">
                       <button 
                         onClick={() => setCalcPosition('side')} 
-                        className="hidden lg:flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-[9px] font-bold text-text-tertiary transition-all"
+                        className="hidden lg:flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-[9px] font-bold text-auto-tertiary transition-all"
                       >
                         <Layout size={12} /> Split Side
                       </button>
                    </div>
-                   <div className="text-[9px] font-bold text-text-tertiary opacity-50">
+                   <div className="text-[9px] font-bold text-auto-tertiary opacity-50">
                      (Drag top edge to resize)
                    </div>
                  </div>
                  <div className="flex items-center gap-2">
-                    <button onClick={() => setShowCalculator(false)} className="p-1.5 hover:bg-rose-500/10 rounded-lg transition-all text-text-tertiary hover:text-rose-500">
+                    <button onClick={() => setShowCalculator(false)} className="p-1.5 hover:bg-rose-500/10 rounded-lg transition-all text-auto-tertiary hover:text-rose-500">
                       <X size={16} />
                     </button>
                  </div>

@@ -1,49 +1,50 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { useSidebar } from './SidebarProvider'
 import { 
-  LayoutDashboard, 
+  SquaresFour, 
   FileText, 
   Calendar, 
-  Layers, 
+  Stack as Layers, 
   Users, 
   Image as ImageIcon, 
-  Send, 
-  Award, 
+  PaperPlaneTilt, 
+  Trophy, 
   Bell, 
   UserPlus, 
-  BarChart3, 
-  History,
-  LogOut,
+  ChartBar, 
+  ClockCounterClockwise as History,
+  SignOut,
   PlusCircle,
-  Library,
+  Books,
   Globe,
-  ChevronRight,
-  ChevronLeft,
-  Menu,
+  CaretRight,
+  CaretLeft,
+  List,
   X,
   Calculator,
-  LayoutList,
-  Mail
-} from 'lucide-react'
+  Envelope,
+  CircleNotch
+} from '@phosphor-icons/react'
 
 const navGroups = [
   {
     title: 'Overview',
     roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'],
     links: [
-      { name: 'Dashboard', href: '/admin', icon: <LayoutDashboard size={20} /> },
+      { name: 'Dashboard', href: '/admin', icon: <SquaresFour size={20} /> },
     ]
   },
   {
     title: 'Content',
     roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'],
     links: [
-      { name: 'Library', href: '/admin/content', icon: <Library size={20} />, roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'] },
-      { name: 'Submissions', href: '/admin/submissions', icon: <Send size={20} />, roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'] },
+      { name: 'Library', href: '/admin/content', icon: <Books size={20} />, roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'] },
+      { name: 'Submissions', href: '/admin/submissions', icon: <PaperPlaneTilt size={20} />, roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'] },
       { name: 'New Content', href: '/admin/content/new', icon: <PlusCircle size={20} />, roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'] },
     ]
   },
@@ -63,7 +64,7 @@ const navGroups = [
     roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'],
     links: [
       { name: 'Join Us', href: '/admin/applications', icon: <UserPlus size={20} /> },
-      { name: 'Inquiries', href: '/admin/inquiries', icon: <Mail size={20} /> },
+      { name: 'Inquiries', href: '/admin/inquiries', icon: <Envelope size={20} /> },
       { name: 'Form Builder', href: '/admin/applications/builder', icon: <Layers size={20} /> },
       { name: 'Pop-up Notices', href: '/admin/notices', icon: <Bell size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER'] },
     ]
@@ -85,8 +86,10 @@ export default function AdminSidebar({ profile, isMaintenance }) {
   const router = useRouter()
   const supabase = createClient()
   const { isCollapsed, toggleCollapse, isMobileOpen, toggleMobile } = useSidebar()
+  const [isSigningOut, setIsSigningOut] = useState(false)
 
   async function handleSignOut() {
+    setIsSigningOut(true)
     await supabase.auth.signOut()
     router.push('/login')
     router.refresh()
@@ -153,9 +156,9 @@ export default function AdminSidebar({ profile, isMaintenance }) {
           {!isCollapsed && (
             <button 
               onClick={toggleCollapse}
-              className="hidden lg:flex p-1.5 rounded-lg hover:bg-bg-secondary dark:hover:bg-white/5 text-text-tertiary hover:text-primary transition-all ml-2"
+              className="hidden lg:flex p-1.5 rounded-lg hover:bg-bg-secondary dark:hover:bg-white/5 text-auto-tertiary hover:text-primary transition-all ml-2"
             >
-              <ChevronLeft size={18} />
+            <CaretLeft size={18} />
             </button>
           )}
         </div>
@@ -166,7 +169,7 @@ export default function AdminSidebar({ profile, isMaintenance }) {
             className="hidden lg:flex mx-auto mb-4 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
             title="Expand Sidebar"
           >
-            <ChevronRight size={18} />
+            <CaretRight size={18} />
           </button>
         )}
 
@@ -174,7 +177,7 @@ export default function AdminSidebar({ profile, isMaintenance }) {
           {filteredGroups.map((group) => (
             <div key={group.title} className="space-y-2">
               {!isCollapsed && (
-                <h4 className="px-3 text-[10px] font-bold text-text-tertiary dark:text-text-tertiary-dark uppercase tracking-widest whitespace-nowrap">
+                <h4 className="px-3 text-[10px] font-bold text-auto-tertiary uppercase tracking-widest whitespace-nowrap">
                   {group.title}
                 </h4>
               )}
@@ -197,19 +200,19 @@ export default function AdminSidebar({ profile, isMaintenance }) {
                       className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                         isActive 
                           ? 'bg-primary text-white shadow-md shadow-primary/20' 
-                          : 'text-text-secondary dark:text-text-secondary-dark hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary'
+                          : 'text-auto-secondary hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary'
                       }`}
                       title={isCollapsed ? link.name : ''}
                     >
                       <div className="flex items-center gap-3">
-                        <span className={`${isActive ? 'text-white' : 'text-text-tertiary dark:text-text-tertiary-dark group-hover:text-primary'} flex-shrink-0 transition-colors`}>
+                        <span className={`${isActive ? 'text-white' : 'text-auto-tertiary group-hover:text-primary'} flex-shrink-0 transition-colors`}>
                           {link.icon}
                         </span>
                         {!isCollapsed && <span className="truncate">{link.name}</span>}
                       </div>
                       {!isCollapsed && isActive && (
                         <motion.div layoutId="active-indicator">
-                          <ChevronRight size={14} className="opacity-50" />
+                          <CaretRight size={14} className="opacity-50" />
                         </motion.div>
                       )}
                     </Link>
@@ -229,7 +232,7 @@ export default function AdminSidebar({ profile, isMaintenance }) {
               {!isCollapsed && (
                 <div className="flex flex-col min-w-0">
                   <span className="text-sm font-bold truncate">{profile.name}</span>
-                  <span className="text-[10px] text-text-tertiary truncate">{profile.email}</span>
+                  <span className="text-[10px] text-auto-tertiary truncate">{profile.email}</span>
                 </div>
               )}
             </div>
@@ -237,19 +240,21 @@ export default function AdminSidebar({ profile, isMaintenance }) {
             {!isCollapsed && (
               <button 
                 onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-coral bg-coral/10 hover:bg-coral/20 transition-all border border-coral/20"
+                disabled={isSigningOut}
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-coral bg-coral/10 hover:bg-coral/20 transition-all border border-coral/20 disabled:opacity-50"
               >
-                <LogOut size={14} />
-                Sign Out
+                {isSigningOut ? <CircleNotch size={14} className="animate-spin" /> : <SignOut size={14} />}
+                {isSigningOut ? 'Signing Out...' : 'Sign Out'}
               </button>
             )}
             {isCollapsed && (
                <button 
                 onClick={handleSignOut}
-                className="p-2 rounded-xl text-coral hover:bg-coral/10 transition-all mt-2"
+                disabled={isSigningOut}
+                className="p-2 rounded-xl text-coral hover:bg-coral/10 transition-all mt-2 disabled:opacity-50"
                 title="Sign Out"
               >
-                <LogOut size={18} />
+                {isSigningOut ? <CircleNotch size={18} className="animate-spin" /> : <SignOut size={18} />}
               </button>
             )}
           </div>

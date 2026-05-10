@@ -7,18 +7,18 @@ import RTOEditor from '@/components/admin/RTOEditor'
 import ImageUploader from '@/components/admin/ImageUploader'
 import { FormSkeleton } from '@/components/shared/Skeletons'
 import { 
-  Save, AlertCircle, CheckCircle2, 
-  Facebook, Instagram, Linkedin, Youtube, 
-  Mail, Globe, Layout, Home, Users, Info,
-  Type, MousePointer2, Sparkles, BarChart3, 
-  History, Plus, Trash2, GripVertical, 
+  FloppyDisk as Save, WarningCircle as AlertCircle, CheckCircle as CheckCircle2, 
+  FacebookLogo as Facebook, InstagramLogo as Instagram, LinkedinLogo as Linkedin, YoutubeLogo as Youtube, 
+  Envelope as Mail, Globe, Layout, House as Home, Users, Info,
+  TextT as Type, CursorClick as MousePointer2, Fingerprint as Sparkles, ChartBar as BarChart3, 
+  ClockCounterClockwise as History, Plus, Trash as Trash2, DotsSixVertical as GripVertical, 
   Calendar, FileText, Target, Heart, 
-  Award, Image as ImageIcon, UserPlus, 
-  Send, Compass, ChevronDown, Monitor,
-  Smartphone, Eye, Settings, ShieldCheck,
-  Zap, Bell, ArrowRight, HelpCircle, ExternalLink,
-  Layers, Calculator, XCircle, Loader2, ArrowUp, ArrowDown
-} from 'lucide-react'
+  Trophy as Award, Image as ImageIcon, UserPlus, 
+  PaperPlaneTilt as Send, Compass, CaretDown as ChevronDown, Monitor,
+  Smartphone, Eye, Gear as Settings, ShieldCheck,
+  Lightning as Zap, Bell, ArrowRight, Question as HelpCircle, ArrowSquareOut as ExternalLink,
+  Stack as Layers, Calculator, XCircle, CircleNotch as Loader2, ArrowUp, ArrowDown
+} from '@phosphor-icons/react'
 
 // Layout/Internal Components
 const SettingSection = ({ title, subtitle, icon, children }) => (
@@ -29,7 +29,7 @@ const SettingSection = ({ title, subtitle, icon, children }) => (
       </div>
       <div>
         <h4 className="text-lg font-black text-dynamic tracking-tight">{title}</h4>
-        {subtitle && <p className="text-xs text-text-tertiary font-medium">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-auto-tertiary font-medium">{subtitle}</p>}
       </div>
     </div>
     <div className="grid grid-cols-1 gap-6">
@@ -47,12 +47,12 @@ const InputField = ({ label, icon, value, onChange, placeholder, type = "text", 
       <div className="flex items-center justify-between">
         <label 
           htmlFor={id}
-          className="text-[10px] font-black uppercase tracking-widest text-text-tertiary group-hover:text-primary transition-colors flex items-center gap-2 cursor-pointer"
+          className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary group-hover:text-primary transition-colors flex items-center gap-2 cursor-pointer"
         >
           {icon} {label}
         </label>
         {value?.length > 0 && typeof value === 'string' && (
-          <span className="text-[9px] font-bold text-text-tertiary/50">{value.length} chars</span>
+          <span className="text-[9px] font-bold text-auto-tertiary/50">{value.length} chars</span>
         )}
       </div>
       {isTextArea ? (
@@ -74,14 +74,14 @@ const InputField = ({ label, icon, value, onChange, placeholder, type = "text", 
           placeholder={placeholder}
         />
       )}
-      {description && <p className="text-[10px] text-text-tertiary/70 font-medium pl-1 italic">{description}</p>}
+      {description && <p className="text-[10px] text-auto-tertiary/70 font-medium pl-1 italic">{description}</p>}
     </div>
   )
 }
 
 const ImageField = ({ label, value, onUpload, folder, description }) => (
   <div className="group space-y-3">
-    <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary group-hover:text-primary transition-colors flex items-center gap-2">
+    <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary group-hover:text-primary transition-colors flex items-center gap-2">
       <ImageIcon size={14}/> {label}
     </label>
     <div className="flex flex-col md:flex-row gap-6 items-start">
@@ -89,21 +89,21 @@ const ImageField = ({ label, value, onUpload, folder, description }) => (
         {value ? (
           <img src={value} alt={label} className="w-full h-full object-cover" />
         ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-text-tertiary/50 gap-2">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-auto-tertiary/50 gap-2">
             <ImageIcon size={32} />
             <span className="text-[8px] font-bold uppercase">No Preview</span>
           </div>
         )}
       </div>
       <div className="flex-1 space-y-4">
-        <p className="text-[10px] text-text-tertiary leading-relaxed font-medium">{description || "Upload a high-quality image. It will be optimized via Cloudinary."}</p>
+        <p className="text-[10px] text-auto-tertiary leading-relaxed font-medium">{description || "Upload a high-quality image. It will be optimized via Cloudinary."}</p>
         <ImageUploader 
           label={value ? "Replace Image" : "Select Image"} 
           onUpload={onUpload} 
           folder={folder}
         />
         {value && (
-          <div className="text-[9px] font-mono text-text-tertiary bg-white/50 dark:bg-black/50 p-2 rounded-lg break-all border border-border dark:border-white/5">
+          <div className="text-[9px] font-mono text-auto-tertiary bg-white/50 dark:bg-black/50 p-2 rounded-lg break-all border border-border dark:border-white/5">
             {value}
           </div>
         )}
@@ -315,7 +315,7 @@ export default function SiteEditor() {
                 <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-green">
                    <ShieldCheck size={12} /> Live Link Active
                 </span>
-                 <span className="text-[10px] font-medium text-text-tertiary">
+                 <span className="text-[10px] font-medium text-auto-tertiary">
                    Last sync: {lastSaved}
                    {settings?.updated_by_name && (
                      <span className="ml-3 border-l border-border pl-3">
@@ -353,13 +353,13 @@ export default function SiteEditor() {
         <aside className="lg:w-72 space-y-8 flex-shrink-0">
           {TAB_GROUPS.map((group) => (
              <div key={group.name} className="space-y-4">
-                <h5 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-text-tertiary/60">{group.name}</h5>
+                <h5 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-auto-tertiary/60">{group.name}</h5>
                 <div className="space-y-1.5 p-2 glass rounded-[2rem] border border-border dark:border-white/5 shadow-sm">
                    {group.tabs.map(tab => (
                      <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black transition-all group ${activeTab === tab.id ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-text-tertiary hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary'}`}
+                        className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black transition-all group ${activeTab === tab.id ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-auto-tertiary hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary'}`}
                      >
                        <div className="flex items-center gap-4">
                           <span className={`${activeTab === tab.id ? 'text-white' : 'group-hover:text-primary transition-colors'}`}>{tab.icon}</span>
@@ -375,7 +375,7 @@ export default function SiteEditor() {
           <div className="p-6 rounded-[2rem] bg-gradient-to-br from-primary/5 to-cyan/5 border border-primary/10 overflow-hidden relative group mt-8">
              <div className="relative z-10 space-y-3">
                 <h6 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2"><Eye size={12}/> Interface Preview</h6>
-                <p className="text-[9px] text-text-tertiary leading-relaxed font-medium">Verify how your database changes affect the global viewer experience.</p>
+                <p className="text-[9px] text-auto-tertiary leading-relaxed font-medium">Verify how your database changes affect the global viewer experience.</p>
                 <Link href="/" target="_blank" className="inline-flex items-center gap-2 text-[10px] font-black text-primary hover:gap-3 transition-all">Launch Site <ArrowRight size={10}/></Link>
              </div>
              <Monitor size={80} className="absolute -bottom-6 -right-6 text-primary/5 group-hover:text-primary/10 transition-colors rotate-12" />
@@ -461,7 +461,7 @@ export default function SiteEditor() {
                              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white"><Layers size={20}/></div>
                              <div>
                                 <h6 className="text-[10px] font-black uppercase tracking-widest text-primary">Card Management</h6>
-                                <p className="text-[10px] text-text-tertiary font-medium">Add, remove, or edit individual program cards from the dedicated Programs page.</p>
+                                <p className="text-[10px] text-auto-tertiary font-medium">Add, remove, or edit individual program cards from the dedicated Programs page.</p>
                              </div>
                           </div>
                           <Link href="/admin/programs" className="px-5 py-2.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all">Go to Programs</Link>
@@ -484,7 +484,7 @@ export default function SiteEditor() {
                                 description="Action-oriented image for the join section."
                              />
                              <div className="space-y-4 pt-4 border-t border-border">
-                                <h6 className="text-[10px] font-black uppercase tracking-widest text-text-tertiary">Overlay Stats</h6>
+                                <h6 className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Overlay Stats</h6>
                                 <InputField label="Stat Value (e.g. 50+ Volunteers)" value={settings.join_cta_stat_title} onChange={e => setSettings(prev => ({...prev, join_cta_stat_title: e.target.value}))} />
                                 <InputField label="Stat Description" value={settings.join_cta_stat_desc} onChange={e => setSettings(prev => ({...prev, join_cta_stat_desc: e.target.value}))} rows={2} />
                              </div>
@@ -505,7 +505,7 @@ export default function SiteEditor() {
                              value={settings.recognition_image_url} 
                              onUpload={(url) => setSettings(prev => ({...prev, recognition_image_url: url}))}
                              folder="min-website/homepage"
-                             description="Photo of the award, team posing, or certificates."
+                             description="Photo of the award, team posing, or major milestones."
                           />
                        </div>
                     </SettingSection>
@@ -569,7 +569,7 @@ export default function SiteEditor() {
                        <Reorder.Group axis="y" values={settings.join_features || []} onReorder={(newVal) => setSettings(prev => ({...prev, join_features: newVal}))} className="space-y-4">
                           {(settings.join_features || []).map((feat, idx) => (
                             <Reorder.Item key={idx} value={feat} className="p-6 glass rounded-2xl border border-border relative group flex gap-6 hover:border-primary/40 transition-all">
-                               <div className="flex items-center justify-center text-text-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-4 border-r border-border"><GripVertical size={20} /></div>
+                               <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-4 border-r border-border"><GripVertical size={20} /></div>
                                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
                                  <InputField label="Value Title" value={feat.title} onChange={e => {
                                     const newFeats = [...settings.join_features]
@@ -611,7 +611,7 @@ export default function SiteEditor() {
                        <Reorder.Group axis="y" values={settings.join_paths || []} onReorder={(newVal) => setSettings(prev => ({...prev, join_paths: newVal}))} className="space-y-4">
                           {(settings.join_paths || []).map((path, idx) => (
                             <Reorder.Item key={idx} value={path} className="p-8 glass rounded-[2.5rem] border border-border relative group flex gap-6 hover:border-secondary/40 transition-all">
-                               <div className="flex items-center justify-center text-text-tertiary/20 cursor-grab active:cursor-grabbing transition-colors pr-6 border-r border-border"><GripVertical size={24} /></div>
+                               <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing transition-colors pr-6 border-r border-border"><GripVertical size={24} /></div>
                                <div className="flex-1 space-y-6">
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                      <InputField label="Path Label" value={path.title} onChange={e => {
@@ -632,7 +632,7 @@ export default function SiteEditor() {
                                   }} rows={2} />
                                   
                                   <div className="space-y-2">
-                                     <label className="text-[9px] font-black uppercase tracking-widest text-text-tertiary">Perks / Highlights</label>
+                                     <label className="text-[9px] font-black uppercase tracking-widest text-auto-tertiary">Perks / Highlights</label>
                                      <div className="flex flex-wrap gap-2">
                                         {(path.perks || []).map((perk, pi) => (
                                           <div key={pi} className="flex items-center gap-2 bg-white dark:bg-white/5 border border-border px-3 py-1.5 rounded-lg">
@@ -693,7 +693,7 @@ export default function SiteEditor() {
                        <Reorder.Group axis="y" values={settings.join_faqs || []} onReorder={(newVal) => setSettings(prev => ({...prev, join_faqs: newVal}))} className="space-y-4">
                           {(settings.join_faqs || []).map((faq, idx) => (
                             <Reorder.Item key={idx} value={faq} className="p-8 glass rounded-[2rem] border border-border relative group flex gap-6 hover:border-primary/40 transition-all">
-                               <div className="flex items-center justify-center text-text-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-6 border-r border-border"><GripVertical size={24} /></div>
+                               <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-6 border-r border-border"><GripVertical size={24} /></div>
                                <div className="flex-1 space-y-6">
                                   <InputField label="Question" value={faq.question} onChange={e => {
                                      const newFaqs = [...settings.join_faqs]
@@ -764,7 +764,7 @@ export default function SiteEditor() {
                       <Reorder.Group axis="y" values={timelineItems} onReorder={setTimelineItems} className="space-y-4">
                         {timelineItems.map((item) => (
                           <Reorder.Item key={item.id} value={item} className="p-8 glass rounded-[2rem] border border-border relative group flex gap-8 hover:border-primary/40 transition-all shadow-sm hover:shadow-xl">
-                            <div className="flex items-center justify-center text-text-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-4 border-r border-border"><GripVertical size={24} /></div>
+                            <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-4 border-r border-border"><GripVertical size={24} /></div>
                             <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-8">
                               <InputField label="Event Year" icon={<Calendar size={12}/>} value={item.year} onChange={e => updateTimelineItem(item.id, 'year', e.target.value)} placeholder="2024" />
                               <InputField label="Milestone Title" icon={<Type size={12}/>} value={item.title} onChange={e => updateTimelineItem(item.id, 'title', e.target.value)} />
@@ -776,7 +776,7 @@ export default function SiteEditor() {
                           </Reorder.Item>
                         ))}
                       </Reorder.Group>
-                      {timelineItems.length === 0 && <div className="py-24 text-center glass rounded-[3rem] border border-dashed border-border"><p className="text-xs text-text-tertiary font-bold uppercase tracking-[0.2em] opacity-50">Timeline Nexus Unpopulated.</p></div>}
+                      {timelineItems.length === 0 && <div className="py-24 text-center glass rounded-[3rem] border border-dashed border-border"><p className="text-xs text-auto-tertiary font-bold uppercase tracking-[0.2em] opacity-50">Timeline Nexus Unpopulated.</p></div>}
                    </SettingSection>
                 )}
 
@@ -809,7 +809,7 @@ export default function SiteEditor() {
                                     </p>
                                  </div>
                               </div>
-                              <p className="text-sm text-text-tertiary leading-relaxed md:max-w-xs md:text-right font-medium">
+                              <p className="text-sm text-auto-tertiary leading-relaxed md:max-w-xs md:text-right font-medium">
                                  The primary visual representation for any team member who hasn't provided a profile headshot.
                               </p>
                            </div>
@@ -838,7 +838,7 @@ export default function SiteEditor() {
                                     </p>
                                  </div>
                               </div>
-                              <p className="text-sm text-text-tertiary leading-relaxed md:max-w-xs md:text-right font-medium">
+                              <p className="text-sm text-auto-tertiary leading-relaxed md:max-w-xs md:text-right font-medium">
                                  Displayed as the cover image for institutional programs or community events missing unique media.
                               </p>
                            </div>
@@ -867,7 +867,7 @@ export default function SiteEditor() {
                                     </p>
                                  </div>
                               </div>
-                              <p className="text-sm text-text-tertiary leading-relaxed md:max-w-xs md:text-right font-medium">
+                              <p className="text-sm text-auto-tertiary leading-relaxed md:max-w-xs md:text-right font-medium">
                                  A neutral, high-quality background for articles or dynamic content missing designated thumbnails.
                               </p>
                            </div>
@@ -937,7 +937,7 @@ export default function SiteEditor() {
                                  </div>
                                  <h6 className={`text-lg font-black tracking-tight ${settings.is_maintenance_mode ? 'text-coral' : 'text-dynamic'}`}>Maintenance Mode</h6>
                               </div>
-                              <p className="text-xs text-text-tertiary font-medium max-w-md">
+                              <p className="text-xs text-auto-tertiary font-medium max-w-md">
                                  When activated, public access to the website will be restricted. Only <span className="font-bold text-primary">Admins</span> and <span className="font-bold text-primary">Website Managers</span> can view the site.
                               </p>
                            </div>
@@ -1027,7 +1027,7 @@ export default function SiteEditor() {
                   </div>
                   <div>
                     <h3 className="text-3xl font-black tracking-tight leading-none">Review Changes</h3>
-                    <p className="text-xs text-text-tertiary font-bold uppercase tracking-widest mt-2">Synchronization Summary</p>
+                    <p className="text-xs text-auto-tertiary font-bold uppercase tracking-widest mt-2">Synchronization Summary</p>
                   </div>
                 </div>
 
@@ -1040,7 +1040,7 @@ export default function SiteEditor() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                            <span className="text-[8px] font-black uppercase text-coral/60 tracking-widest">Previous</span>
-                           <p className="text-[11px] font-mono bg-coral/5 p-3 rounded-xl border border-coral/10 text-text-secondary truncate">{item.from}</p>
+                           <p className="text-[11px] font-mono bg-coral/5 p-3 rounded-xl border border-coral/10 text-auto-secondary truncate">{item.from}</p>
                         </div>
                         <div className="space-y-1.5">
                            <span className="text-[8px] font-black uppercase text-green/60 tracking-widest">New Value</span>
@@ -1067,7 +1067,7 @@ export default function SiteEditor() {
                      Confirm & Publish Live
                    </button>
                 </div>
-                <p className="text-[9px] text-center text-text-tertiary font-medium">This action will be permanently recorded in the forensic audit log.</p>
+                <p className="text-[9px] text-center text-auto-tertiary font-medium">This action will be permanently recorded in the forensic audit log.</p>
               </div>
             </motion.div>
           </div>

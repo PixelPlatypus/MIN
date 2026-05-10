@@ -20,6 +20,24 @@ export async function PATCH(request, { params }) {
     }
 
     const supabase = await createAdminClient()
+
+    // Fetch current status to check if it's already locked
+    const { data: currentApp } = await supabase
+      .from('form_submissions')
+      .select('status')
+      .eq('id', id)
+      .single()
+    
+    const { data: currentLegacyApp } = !currentApp ? await supabase
+      .from('join_applications')
+      .select('status')
+      .eq('id', id)
+      .single() : { data: null }
+
+    const currentStatus = currentApp?.status || currentLegacyApp?.status
+    if (['ACCEPTED', 'REJECTED', 'APPROVED'].includes(currentStatus)) {
+      return Response.json({ error: 'This application decision is finalized and cannot be changed.' }, { status: 400 })
+    }
     
     // form_submissions uses: PENDING, APPROVED, REJECTED, DRAFT
     // join_applications uses: PENDING, REVIEWED, ACCEPTED, REJECTED

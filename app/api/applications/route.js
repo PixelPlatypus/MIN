@@ -79,20 +79,14 @@ export async function POST(request) {
         contact_message: form_data?.message || form_data?.subject || typeLabel
       })
 
-      // Notify admin (using the same branding)
-      const adminHtml = await generateMINThemeEmail(`New ${isInquiry ? 'Inquiry' : 'Application'}`, `
-        <p><strong>From:</strong> ${name} (${email})</p>
-        <p><strong>Type:</strong> ${typeLabel}</p>
-        <div style="background: #f4f4f4; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 12px; margin: 20px 0;">
-          ${JSON.stringify(form_data, null, 2)}
-        </div>
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/inquiries">Review in Admin Panel</a></p>
-      `, settings || {})
-
-      await sendEmail({
-        to: process.env.FROM_EMAIL || 'noreply@mathsinitiatives.org.np',
-        subject: isInquiry ? `[Inquiry] From ${name}` : `[New App] ${typeLabel}: ${name}`,
-        html: adminHtml
+      // Notify admin
+      await sendTemplatedEmail('admin_new_application', 'website@mathsinitiatives.org.np', {
+        form_title: isInquiry ? 'Inquiry' : 'Volunteer Application',
+        applicant_name: name,
+        applicant_email: email,
+        category: typeLabel,
+        form_data_summary: Object.entries(form_data || {}).map(([k, v]) => `**${k}:** ${v}`).join('\n'),
+        admin_url: `${process.env.NEXT_PUBLIC_APP_URL}/admin/applications`
       })
     } catch (mailErr) {
       console.error('Mail delivery error:', mailErr)

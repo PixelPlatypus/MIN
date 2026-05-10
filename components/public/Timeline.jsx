@@ -9,9 +9,10 @@ const fallbackEvents = [
   { year: '2024', title: 'HundrED Top 100', description: 'Recognized as one of the top 100 global education innovations by HundrED, Finland.' },
 ]
 
-export default function Timeline({ settings, events }) {
+export default function Timeline({ settings, events, initialEvents }) {
   const containerRef = useRef(null)
-  const items = (events && events.length > 0) ? events : fallbackEvents
+  const source = initialEvents || events
+  const items = (source && source.length > 0) ? source : fallbackEvents
 
   useEffect(() => {
     let ctx

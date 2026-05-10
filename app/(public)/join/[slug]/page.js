@@ -2,10 +2,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Send, Loader2, CheckCircle2, AlertCircle, 
-  ArrowLeft, Sparkles, Heart, Globe, Target,
-  Clock, Upload, FileText
-} from 'lucide-react'
+  PaperPlaneTilt as Send, CircleNotch as Loader2, CheckCircle as CheckCircle2, WarningCircle as AlertCircle, 
+  ArrowLeft, RocketLaunch as Sparkles, Heart, Globe, Target,
+  Clock, UploadSimple as Upload, FileText
+} from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
@@ -138,7 +138,7 @@ export default function DynamicFormPage() {
         <div className="text-center space-y-4">
            <AlertCircle size={64} className="mx-auto text-coral opacity-20" />
            <h2 className="text-3xl font-black">Something went wrong</h2>
-           <p className="text-text-tertiary">{error}</p>
+           <p className="text-auto-tertiary">{error}</p>
            <Link href="/join" className="inline-block text-primary font-bold hover:underline">Return to Paths</Link>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default function DynamicFormPage() {
            </div>
            <div className="space-y-4">
               <h2 className="text-4xl font-black tracking-tight leading-tight">{definition?.is_active === false ? 'Added to Alert List' : 'Identity Recorded'}</h2>
-              <p className="text-lg text-text-secondary font-medium px-4">
+              <p className="text-lg text-auto-secondary font-medium px-4">
                 {definition?.is_active === false 
                   ? `Thank you. We will automatically notify you the moment the ${definition?.category || 'next'} intake opens.` 
                   : `Thank you for applying. We've sent a confirmation to your email. Our team will review your application for the "${definition.batch_name || 'Current'}" batch soon.`}
@@ -179,7 +179,7 @@ export default function DynamicFormPage() {
          <div className="absolute top-0 right-0 w-[50vw] h-[50vh] bg-coral/5 blur-[120px] rounded-full -z-10" />
          
          <div className="max-w-2xl w-full text-center space-y-10">
-            <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-text-tertiary hover:text-primary transition-all group mb-4">
+            <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-auto-tertiary hover:text-primary transition-all group mb-4">
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to choices
             </Link>
 
@@ -189,13 +189,13 @@ export default function DynamicFormPage() {
                </div>
                <div className="space-y-4">
                   <h1 className="text-4xl md:text-5xl font-black tracking-tight">Intake Closed</h1>
-                  <p className="text-lg text-text-secondary font-medium leading-relaxed max-w-lg mx-auto">
+                  <p className="text-lg text-auto-secondary font-medium leading-relaxed max-w-lg mx-auto">
                     The intake for <span className="text-coral font-black">{definition.title}</span> is currently closed. We are evaluating the previous batch.
                   </p>
                </div>
 
                <div className="pt-8 mt-8 border-t border-border">
-                  <h4 className="text-sm font-black uppercase tracking-widest text-text-tertiary mb-6">Get Notified When It Opens</h4>
+                  <h4 className="text-sm font-black uppercase tracking-widest text-auto-tertiary mb-6">Get Notified When It Opens</h4>
                   <form onSubmit={handleReminderSubmit} className="flex flex-col sm:flex-row gap-4 relative">
                      <input 
                       type="email" 
@@ -228,7 +228,7 @@ export default function DynamicFormPage() {
        <div className="max-w-4xl mx-auto space-y-12">
           {/* Header */}
           <header className="space-y-6">
-             <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-text-tertiary hover:text-primary transition-all group">
+             <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-auto-tertiary hover:text-primary transition-all group">
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to choices
              </Link>
              <div className="space-y-4">
@@ -236,7 +236,7 @@ export default function DynamicFormPage() {
                    <Sparkles size={12}/> Admission Program
                 </div>
                 <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-none">{definition.title}</h1>
-                <p className="text-xl text-text-secondary font-medium max-w-2xl leading-relaxed">{definition.description}</p>
+                <p className="text-xl text-auto-secondary font-medium max-w-2xl leading-relaxed">{definition.description}</p>
              </div>
           </header>
 
@@ -251,7 +251,7 @@ export default function DynamicFormPage() {
                     transition={{ delay: i * 0.05 }}
                     className={`space-y-3 ${['textarea', 'radio', 'checkbox'].includes(field.type) ? 'md:col-span-2' : ''}`}
                   >
-                    <label className="text-[10px] font-black uppercase tracking-widest text-text-tertiary ml-1 flex items-center gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-1 flex items-center gap-2">
                        {field.label} {field.required && <span className="text-coral flex items-center gap-0.5"><Heart size={8} fill="currentColor"/> Required</span>}
                     </label>
                     
@@ -309,7 +309,7 @@ export default function DynamicFormPage() {
                         rows={5}
                         onChange={(e) => handleChange(field.label, e.target.value)}
                         className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all resize-none"
-                        placeholder={`Tell us about ${field.label.toLowerCase()}...`}
+                        placeholder={field.placeholder || `Tell us about ${field.label.toLowerCase()}...`}
                       />
                      ) : field.type === 'phone' ? (
                        <PhoneInput 
@@ -326,7 +326,7 @@ export default function DynamicFormPage() {
                         required={field.required}
                         onChange={(e) => handleChange(field.label, e.target.value)}
                         className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
-                        placeholder="https://..."
+                        placeholder={field.placeholder || "https://..."}
                       />
                     ) : field.type === 'file' ? (
                        <div className="relative group bg-white dark:bg-white/10 border border-dashed border-border rounded-2xl p-6 text-center hover:border-primary/50 transition-colors">
@@ -363,7 +363,7 @@ export default function DynamicFormPage() {
                                 <p className="text-sm font-bold text-dynamic">
                                   {formData[field.label] ? "Document Attached Successfully" : "Click or drag file to upload"}
                                 </p>
-                                <p className="text-[10px] uppercase font-black tracking-widest text-text-tertiary">PDF, DOC, DOCX up to 5MB</p>
+                                <p className="text-[10px] uppercase font-black tracking-widest text-auto-tertiary">PDF, DOC, DOCX up to 5MB</p>
                              </div>
                              {formData[field.label] && <p className="text-[10px] text-primary italic break-all px-4">{formData[field.label]}</p>}
                           </div>
@@ -374,7 +374,7 @@ export default function DynamicFormPage() {
                         required={field.required}
                         onChange={(e) => handleChange(field.label, e.target.value)}
                         className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
-                        placeholder={`Your ${field.label.toLowerCase()}...`}
+                        placeholder={field.placeholder || `Your ${field.label.toLowerCase()}...`}
                       />
                     )}
                   </motion.div>
@@ -382,7 +382,7 @@ export default function DynamicFormPage() {
              </div>
 
              <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-4 text-text-tertiary">
+                <div className="flex items-center gap-4 text-auto-tertiary">
                    <Target size={20} className="shrink-0" />
                    <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed">
                       Assigned Batch: <span className="text-primary font-black">{definition.batch_name || 'GENERAL'}</span> <br />

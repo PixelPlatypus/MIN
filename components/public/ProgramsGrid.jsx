@@ -10,9 +10,10 @@ const fallbackPrograms = [
   { name: 'Digital Content', tagline: 'Building Nepal\'s largest open-access repository of math resources.' },
 ]
 
-export default function ProgramsGrid({ settings, programs }) {
+export default function ProgramsGrid({ settings, initialPrograms, programs }) {
   const containerRef = useRef(null)
-  const items = (programs && programs.length > 0) ? programs : fallbackPrograms
+  const source = initialPrograms || programs
+  const items = (source && source.length > 0) ? source : fallbackPrograms
 
   useEffect(() => {
     let ctx

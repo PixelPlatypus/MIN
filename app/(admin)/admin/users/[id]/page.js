@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Save, ArrowLeft, Loader2, AlertCircle, ShieldAlert, Key, User as UserIcon } from 'lucide-react'
+import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle, ShieldWarning as ShieldAlert, Key, User as UserIcon } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -84,13 +84,13 @@ export default function EditUserPage() {
         <div className="flex items-center gap-5">
            <Link 
             href="/admin/users" 
-            className="w-12 h-12 rounded-2xl bg-bg-secondary dark:bg-white/5 hover:bg-primary hover:text-white transition-all flex items-center justify-center text-text-tertiary shadow-sm"
+            className="w-12 h-12 rounded-2xl bg-bg-secondary dark:bg-white/5 hover:bg-primary hover:text-white transition-all flex items-center justify-center text-auto-tertiary shadow-sm"
           >
             <ArrowLeft size={24} />
           </Link>
           <div>
             <h2 className="text-3xl font-black tracking-tight leading-none">Security Control</h2>
-            <p className="text-xs text-text-tertiary font-bold uppercase tracking-widest mt-1">Manage Credentials & Status</p>
+            <p className="text-xs text-auto-tertiary font-bold uppercase tracking-widest mt-1">Manage Credentials & Status</p>
           </div>
         </div>
       </div>
@@ -116,17 +116,17 @@ export default function EditUserPage() {
               <h5 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2 mb-2"><UserIcon size={14}/> Identity Narrative</h5>
               
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest ml-1 text-text-tertiary">Full Name</label>
+                <label className="text-[10px] font-black uppercase tracking-widest ml-1 text-auto-tertiary">Full Name</label>
                 <input required name="name" value={formData.name} onChange={handleChange} className="w-full bg-white dark:bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm font-bold transition-all focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none"/>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest ml-1 text-text-tertiary">Username</label>
+                <label className="text-[10px] font-black uppercase tracking-widest ml-1 text-auto-tertiary">Username</label>
                 <input required name="username" value={formData.username} onChange={handleChange} className="w-full bg-white dark:bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm font-bold transition-all focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none"/>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest ml-1 text-text-tertiary">Authorization Role</label>
+                <label className="text-[10px] font-black uppercase tracking-widest ml-1 text-auto-tertiary">Authorization Role</label>
                 <select name="role" value={formData.role} onChange={handleChange} className="w-full bg-white dark:bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm font-black uppercase transition-all focus:border-primary outline-none cursor-pointer">
                    <option value="ADMIN">Administrator</option>
                    <option value="WEBSITE_MANAGER">Website Manager</option>
@@ -142,7 +142,7 @@ export default function EditUserPage() {
               
               <div className="space-y-4">
                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest ml-1 text-text-tertiary">Force Blind Password Reset</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest ml-1 text-auto-tertiary">Force Blind Password Reset</label>
                     <input 
                       type="text" 
                       name="password" 
@@ -154,7 +154,7 @@ export default function EditUserPage() {
                  </div>
                  <div className="p-6 bg-coral/5 border border-coral/10 rounded-3xl space-y-2">
                     <p className="text-[10px] font-black text-coral uppercase tracking-widest">Administrative Warning</p>
-                    <p className="text-[11px] leading-relaxed text-text-tertiary font-medium italic">Updates here are permanent and will immediately lock the user out of their previous session. Use only when necessary.</p>
+                    <p className="text-[11px] leading-relaxed text-auto-tertiary font-medium italic">Updates here are permanent and will immediately lock the user out of their previous session. Use only when necessary.</p>
                  </div>
               </div>
            </div>

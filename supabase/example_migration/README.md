@@ -1,34 +1,35 @@
 # Supabase Database Example & Local Setup Guide
 
-Welcome to the MIN project! To help you get up to speed quickly, we've structured our database schemas and dummy data using Supabase's native configuration.
+Welcome to the MIN project! We have structured our database migrations into modular, numbered files to make them easier to understand and maintain.
 
-## 1. Automated Setup (Supabase CLI)
-Using the local CLI environment (`npx supabase start`), you need to build the initial schema. You can do this by executing `schema.sql` directly using `supabase db reset`, or by creating a new migration file and pasting `schema.sql` into it so `npx supabase start` runs it natively.
-
-## 2. Manual Setup (Copy & Paste for Web Dashboard Contributors)
-If you do not want to use the local CLI and instead prefer to spin up a project via the [Supabase Web Dashboard](https://supabase.com/dashboard/projects), you must install the tables and Row Level Security (RLS) rules *first*!
+## 1. Modular Schema Structure
 
 Inside this `example_migration/` folder, you will find:
-1. **`schema.sql`**: We consolidated all 40+ migration steps into this single file. Copy the entire contents of this file and run it inside the Supabase SQL Editor. This will instantly build all the tables, configure foreign keys, establish Row Level Security policies, and define permissions.
-2. **`seed_data.sql`**: **Only after running `schema.sql`**, copy the contents of `seed_data.sql` and run it in the SQL Editor. This gives you realistic, robust initial mock data corresponding to all MIN functionality.
 
-## 3. Dummy Data (CLI Seed Integration)
-If using the CLI, copy the contents of `supabase/example_migration/seed_data.sql` into the official Supabase seed file located at: `supabase/seed.sql`. This will automatically run every time the CLI resets the database.
+1.  **`01_extensions.sql`**: Schema reset and enabling necessary Postgres extensions (`uuid-ossp`, `pgcrypto`).
+2.  **`02_tables.sql`**: Full table definitions for the MIN platform.
+3.  **`03_functions.sql`**: Postgres functions and triggers for auth, slugification, and auditing.
+4.  **`04_rls.sql`**: Activation of Row Level Security and implementation of hardened policies.
+5.  **`05_indexes.sql`**: Performance-optimizing indexes for frequent queries.
+6.  **`06_seed.sql`**: Generic mock data for testing and development.
 
-*(If `seed.sql` doesn't exist yet, simply copy the file over: `cp supabase/example_migration/seed_data.sql supabase/seed.sql`)*
+## 2. Setup (Supabase SQL Editor)
 
-### Starting the Database (CLI)
-Once configured, run:
-```bash
-npx supabase db reset
-```
+If you are using the Supabase Web Dashboard, run the files in the following order:
 
-This will automatically create the tables from the `migrations/` folder and populate them with the dummy content for your local frontend to fetch!
+1.  Copy and run **`01_extensions.sql`** through **`05_indexes.sql`** in sequence.
+2.  Finally, run **`06_seed.sql`** to populate the database with mock data.
 
-## 3. Local Admin Credentials
-When you run the seed script, a local admin account is automatically created so you can access the Site Nexus and dashboard functionality without having to manually patch the database.
+## 3. Local Development (CLI)
 
-**Login URL:** `http://localhost:3000/login`
-- **Username:** `admin`  *(or Email)*
-- **Email:** `admin@mathsinitiatives.org.np`
-- **Password:** `password123`
+If you are using the Supabase CLI, you can consolidate these into a single migration or use them as a reference for your local `supabase/seed.sql`.
+
+### Local Admin Credentials
+
+When you run the seed script, a local admin account is automatically created for testing:
+
+- **Email:** `admin@example.com`
+- **Password:** `securepassword123`
+
+> [!CAUTION]
+> Never use these credentials in a production environment. Always change default passwords immediately after setup.
