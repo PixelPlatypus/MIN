@@ -1,61 +1,48 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Hammer, ShieldCheck, ArrowRight, Zap, Calculator } from '@phosphor-icons/react'
-import Link from 'next/link'
+import { LogoMark } from '@/components/shared/Logo'
+import GridPaper from '@/components/shared/GridPaper'
+import NepalBar from '@/components/shared/NepalBar'
 
 export default function MaintenanceView() {
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Mesh Gradient Background (Internalized glow) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#16556D]/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[100px]" />
-      </div>
+    <main className="relative min-h-screen flex items-center justify-center px-6 py-24 overflow-hidden bg-bg">
+      <GridPaper opacity={0.10} spacing={80} />
+      <NepalBar position="left" />
 
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-xl w-full glass bg-white/5 border-white/10 backdrop-blur-3xl rounded-[3.5rem] p-10 md:p-16 text-center space-y-10 relative z-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]"
+      <motion.section
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 max-w-xl w-full text-center"
       >
-        {/* Branding inside the box */}
-        <div className="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-80">
-          Mathematics Initiatives in Nepal
-        </div>
-
-        <div className="relative mx-auto w-full max-w-md">
-           <div className="absolute inset-0 bg-primary/20 rounded-[2.5rem] blur-2xl animate-pulse" />
-           <div className="relative w-full aspect-video rounded-[2rem] overflow-hidden border border-white/20 shadow-2xl">
-              <img 
-                src="/images/maintainance.gif" 
-                alt="MINion at work" 
-                className="w-full h-full object-cover"
-              />
-           </div>
-        </div>
-
-        <div className="space-y-6">
-          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter leading-[0.95]">
-            Optimizing <br /> 
-            <span className="text-primary">Our Limits</span>
-          </h1>
-          <div className="space-y-2">
-            <p className="text-white/60 text-lg font-bold uppercase tracking-[0.2em]">
-              We are under maintenance
-            </p>
-            <p className="text-white/40 text-sm font-medium leading-relaxed max-w-sm mx-auto">
-              Solving for <span className="text-primary italic font-serif">x</span> where <span className="text-primary italic font-serif">x</span> is the ultimate platform experience.
-            </p>
+        <div className="inline-flex items-center gap-3 mb-10 text-headline">
+          <LogoMark className="h-12 w-auto" />
+          <div className="text-left leading-tight">
+            <div className="font-bold text-base tracking-tight text-text-primary-dynamic">Mathematics Initiatives</div>
+            <div className="text-[10px] uppercase tracking-[0.28em] text-text-tertiary-dynamic font-institutional mt-1">in Nepal</div>
           </div>
         </div>
 
-        <div className="pt-10 border-t border-white/10">
-           <div className="flex items-center justify-center gap-3 text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">
-              <span className="w-8 h-px bg-white/10" />
-              Returning Shortly
-              <span className="w-8 h-px bg-white/10" />
-           </div>
+        <div className="text-[10px] font-institutional uppercase tracking-[0.32em] text-text-tertiary-dynamic mb-6">
+          Status — Maintenance Window
         </div>
-      </motion.div>
-    </div>
+
+        <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.95] text-headline mb-6">
+          Optimizing <br />
+          <span className="italic font-serif text-text-secondary-dynamic">our limits</span>
+        </h1>
+
+        <p className="text-text-secondary-dynamic text-base leading-relaxed max-w-md mx-auto mb-10">
+          The site is briefly offline for an upgrade. Solving for <span className="italic font-serif text-headline">x</span>, where <span className="italic font-serif text-headline">x</span> is a sharper experience for every learner.
+        </p>
+
+        <div className="flex items-center justify-center gap-3 text-text-tertiary-dynamic text-[10px] font-institutional uppercase tracking-[0.3em]">
+          <span className="w-8 h-px bg-border-dynamic" />
+          Returning shortly
+          <span className="w-8 h-px bg-border-dynamic" />
+        </div>
+      </motion.section>
+    </main>
   )
 }

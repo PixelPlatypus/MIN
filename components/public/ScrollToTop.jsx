@@ -1,43 +1,30 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUp } from '@phosphor-icons/react'
+import { ArrowUp } from 'lucide-react'
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.scrollY > 300) {
-        setIsVisible(true)
-      } else {
-        setIsVisible(false)
-      }
-    }
-
-    window.addEventListener('scroll', toggleVisibility)
-    return () => window.removeEventListener('scroll', toggleVisibility)
+    const onScroll = () => setIsVisible(window.scrollY > 400)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  }
 
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.button
-          initial={{ opacity: 0, scale: 0.5, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.5, y: 20 }}
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-[90] p-4 rounded-2xl bg-primary text-white shadow-2xl shadow-primary/30 hover:bg-primary-dark hover:-translate-y-1 transition-all active:scale-95 group"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 12 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-8 right-8 z-[90] h-11 w-11 grid place-items-center rounded-full border border-border-dynamic bg-bg-dynamic/85 backdrop-blur-md text-text-primary-dynamic hover:text-headline hover:border-headline/40 transition-colors"
           aria-label="Scroll to top"
         >
-          <ArrowUp size={24} className="group-hover:animate-bounce" />
+          <ArrowUp size={16} strokeWidth={1.75} />
         </motion.button>
       )}
     </AnimatePresence>

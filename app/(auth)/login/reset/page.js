@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { motion } from 'framer-motion'
-import { Lock, CircleNotch as Loader2, WarningCircle as AlertCircle, CheckCircle } from '@phosphor-icons/react'
+import { Lock, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
@@ -19,67 +19,55 @@ export default function ResetPasswordPage() {
       setError('Password must be at least 6 characters.')
       return
     }
-
     setLoading(true)
     setError(null)
-
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: password
-    })
-
+    const { error: updateError } = await supabase.auth.updateUser({ password })
     if (updateError) {
       setError(updateError.message)
       setLoading(false)
     } else {
       setSuccess(true)
-      setTimeout(() => {
-        router.push('/admin')
-      }, 2000)
+      setTimeout(() => router.push('/admin'), 1800)
     }
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="glass rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
+    <motion.section
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="rounded-2xl border border-border bg-bg-dynamic p-8 md:p-10"
     >
-      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl" />
-      
-      <div className="relative text-center mb-8">
-        <h1 className="text-2xl font-bold tracking-tight mb-2">Set New Password</h1>
-        <p className="text-auto-secondary text-sm">Create a new secure password for your account.</p>
-      </div>
+      <header className="text-center mb-8">
+        <div className="text-[10px] font-institutional uppercase tracking-[0.32em] text-text-tertiary-dynamic mb-2">Account Recovery</div>
+        <h1 className="text-2xl font-black tracking-tighter text-headline">Set new password</h1>
+        <p className="text-text-secondary-dynamic text-sm mt-2">Choose a fresh, secure password.</p>
+      </header>
 
       {error && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-4 rounded-xl bg-coral/10 border border-coral/20 flex items-center gap-3 text-coral text-sm"
+          initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+          className="mb-5 p-3.5 rounded-xl border border-lotus-pink/30 bg-lotus-pink/5 flex items-center gap-2.5 text-lotus-pink text-sm"
         >
-          <AlertCircle size={18} />
-          <p>{error}</p>
+          <AlertCircle size={14} /> {error}
         </motion.div>
       )}
 
       {success ? (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-6 rounded-xl bg-green/10 border border-green/20 flex flex-col items-center gap-4 text-green text-center"
+          initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+          className="p-6 rounded-xl border border-marigold/30 bg-marigold/5 flex flex-col items-center gap-3 text-marigold text-center"
         >
-          <CheckCircle size={32} />
-          <p className="font-bold">Password successfully updated!</p>
-          <p className="text-sm">Redirecting to dashboard...</p>
+          <CheckCircle2 size={24} strokeWidth={1.5} />
+          <p className="font-semibold text-headline">Password updated</p>
+          <p className="text-sm text-text-secondary-dynamic">Redirecting to dashboard…</p>
         </motion.div>
       ) : (
-        <form onSubmit={handleUpdatePassword} className="space-y-6">
-          <div className="space-y-2 text-left">
-            <label className="text-sm font-medium ml-1">New Password</label>
-            <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-auto-tertiary">
-                <Lock size={18} />
-              </div>
+        <form onSubmit={handleUpdatePassword} className="space-y-5">
+          <div className="space-y-1.5 text-left">
+            <label className="text-[10px] font-institutional uppercase tracking-[0.28em] text-text-tertiary-dynamic">New password</label>
+            <div className="relative">
+              <Lock size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary-dynamic" />
               <input
                 type="password"
                 required
@@ -87,7 +75,7 @@ export default function ResetPasswordPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
+                className="w-full bg-bg-dynamic border border-border focus:border-headline rounded-xl py-3 pl-11 pr-4 text-sm text-text-primary-dynamic placeholder:text-text-tertiary-dynamic outline-none transition-colors"
               />
             </div>
           </div>
@@ -95,12 +83,12 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+            className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-headline text-bg text-xs font-institutional uppercase tracking-[0.24em] hover:bg-headline/90 transition-colors disabled:opacity-60"
           >
-            {loading ? <Loader2 size={18} className="animate-spin" /> : 'Update Password'}
+            {loading ? <Loader2 size={14} className="animate-spin" /> : 'Update password'}
           </button>
         </form>
       )}
-    </motion.div>
+    </motion.section>
   )
 }

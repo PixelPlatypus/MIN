@@ -1,235 +1,232 @@
 'use client'
-
-import { useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowLeft, ArrowSquareOut as ExternalLink, FacebookLogo as Facebook, GithubLogo as Github, Globe, InstagramLogo as Instagram, LinkedinLogo as Linkedin, Envelope as Mail } from '@phosphor-icons/react'
+import { motion } from 'framer-motion'
+import { ArrowLeft, ExternalLink, Facebook, Instagram, Linkedin, Github, Mail, Globe, Award, Calendar } from 'lucide-react'
+import GridPaper from '@/components/shared/GridPaper'
+import NepalBar from '@/components/shared/NepalBar'
 
 const socialIcons = {
-  facebook: <Facebook size={20} />,
-  instagram: <Instagram size={20} />,
-  linkedin: <Linkedin size={20} />,
-  email: <Mail size={20} />,
-  github: <Github size={20} />,
-  social_media: <Globe size={20} />,
+  facebook: Facebook,
+  instagram: Instagram,
+  linkedin: Linkedin,
+  email: Mail,
+  github: Github,
+  social_media: Globe,
 }
 
+const statusStyle = {
+  ACTIVE: 'bg-marigold/10 text-marigold border-marigold/20',
+  ALUMNI: 'bg-lotus-pink/10 text-lotus-pink border-lotus-pink/20',
+  INACTIVE: 'bg-text-tertiary-dynamic/10 text-text-tertiary-dynamic border-border',
+}
+
+const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : null
+
 export default function TeamMemberProfile({ member, socialLinks, roleHistory }) {
-  const containerRef = useRef(null)
+  const joined = formatDate(member.joined_date)
+  const farewell = formatDate(member.farewell_date)
+  const sortedHistory = [...roleHistory].sort((a, b) => parseInt(b.year) - parseInt(a.year))
+  const socials = Object.entries(socialLinks).filter(([k, v]) => k !== 'role_history' && typeof v === 'string' && v.trim())
 
   return (
-    <div ref={containerRef} className="relative min-h-screen bg-bg-main dark:bg-bg-main-dark selection:bg-primary/30">
-      
-      {/* Immersive Background Effects */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[50vw] h-[50vh] bg-primary/10 rounded-full blur-[120px] mix-blend-screen" />
-        <div className="absolute bottom-0 left-0 w-[50vw] h-[50vh] bg-coral/5 rounded-full blur-[120px] mix-blend-screen" />
-        <div className="absolute inset-0 bg-[url('/images/grid.svg')] bg-center opacity-5 dark:opacity-10" />
-      </div>
+    <main className="relative pt-32 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden">
+      <GridPaper opacity={0.08} spacing={80} />
+      <NepalBar position="left" />
 
-      <div className="relative max-w-7xl mx-auto px-6 pt-32 pb-32">
-        
-        {/* Header Navigation */}
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
+      <div className="relative max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-12"
+          transition={{ duration: 0.5 }}
+          className="mb-14"
         >
-          <Link href="/team" className="inline-flex items-center gap-3 text-auto-tertiary hover:text-primary transition-colors font-black text-xs tracking-[0.2em] uppercase group">
-            <span className="p-2 rounded-full bg-white/5 border border-white/10 group-hover:bg-primary/20 group-hover:border-primary/30 transition-all">
-              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            </span>
+          <Link
+            href="/team"
+            className="inline-flex items-center gap-2 text-xs font-institutional uppercase tracking-[0.28em] text-text-tertiary-dynamic hover:text-headline transition-colors group"
+          >
+            <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
             Back to Team
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative items-start">
-          
-          {/* Left Column: Sticky Image & Core Identity */}
-          <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-8">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full aspect-[4/5] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl glass-strong group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
-              <div className="w-full h-full">
-                <Image 
-                  src={member.photo_url || '/images/logo.png'} 
-                  alt={member.name}
-                  fill
-                  priority
-                  className="object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                />
-              </div>
-              
-              {/* Overlay Content */}
-              <div className="absolute bottom-0 left-0 w-full p-8 z-20 space-y-3">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full bg-primary/20 text-white backdrop-blur-md border border-primary/30 shadow-[0_0_15px_rgba(var(--color-primary),0.3)]">
-                    {member.tenure}
-                  </span>
-                  {member.is_advisor && (
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full bg-purple-500/20 text-white backdrop-blur-md border border-purple-500/30">
-                      ADVISOR
-                    </span>
-                  )}
-                  <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full backdrop-blur-md border ${
-                    member.status === 'ACTIVE' ? 'bg-green/20 text-white border-green/30' :
-                    member.status === 'ALUMNI' ? 'bg-coral/20 text-white border-coral/30' :
-                    'bg-amber-500/20 text-white border-amber-500/30'
-                  }`}>
-                    {member.status}
-                  </span>
-                </div>
-                <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">
-                  {member.name}
-                </h1>
-                <p className="text-xl font-bold text-amber-400">
-                  {member.position}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Futuristic Social Bar */}
-            <motion.div 
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          <aside className="lg:col-span-5 lg:sticky lg:top-32 space-y-8">
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-wrap gap-3"
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden border border-border"
             >
-              {Object.entries(socialLinks).map(([platform, url]) => (
-                platform !== 'role_history' && typeof url === 'string' && url.trim() !== '' && (
-                  <a 
-                    key={platform} 
-                    href={platform.toLowerCase() === 'email' ? `mailto:${url}` : url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-14 h-14 rounded-2xl glass border border-white/10 flex items-center justify-center text-auto-tertiary hover:text-white hover:bg-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)] hover:-translate-y-1"
-                    aria-label={`${member.name}'s ${platform}`}
-                  >
-                    {socialIcons[platform.toLowerCase()] || <ExternalLink size={20} />}
-                  </a>
-                )
-              ))}
+              <Image
+                src={member.photo_url || '/images/logo.png'}
+                alt={member.name}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bg via-bg/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  {member.tenure && (
+                    <span className="pill px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-text-tertiary-dynamic">
+                      Tenure {member.tenure}
+                    </span>
+                  )}
+                  {member.is_advisor && (
+                    <span className="pill px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-headline">
+                      Advisor
+                    </span>
+                  )}
+                  {member.status && statusStyle[member.status] && (
+                    <span className={`px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase tracking-[0.18em] ${statusStyle[member.status]}`}>
+                      {member.status === 'ACTIVE' ? 'Active' : member.status === 'ALUMNI' ? 'Alumni' : 'Inactive'}
+                    </span>
+                  )}
+                </div>
+              </div>
             </motion.div>
-          </div>
 
-          {/* Right Column: Scrollable Content Details */}
-          <div className="lg:col-span-7 space-y-16 pt-8 lg:pt-16">
-            
-            {/* Biography */}
-            <motion.section 
-              initial={{ opacity: 0, y: 40 }}
+            {socials.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="flex flex-wrap items-center gap-2"
+              >
+                {socials.map(([platform, url]) => {
+                  const Icon = socialIcons[platform.toLowerCase()] || Globe
+                  const href = platform.toLowerCase() === 'email' ? `mailto:${url}` : url
+                  return (
+                    <a
+                      key={platform}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${member.name} on ${platform}`}
+                      className="h-10 w-10 grid place-items-center rounded-full border border-border text-text-tertiary-dynamic hover:text-headline hover:border-headline/40 transition-colors"
+                    >
+                      <Icon size={16} />
+                    </a>
+                  )
+                })}
+              </motion.div>
+            )}
+          </aside>
+
+          <div className="lg:col-span-7 space-y-16">
+            <motion.header
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="space-y-4"
+            >
+              <div className="text-[10px] font-institutional uppercase tracking-[0.32em] text-text-tertiary-dynamic">
+                {member.position || 'MINion'}
+              </div>
+              <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.95] text-headline">
+                {member.name}
+              </h1>
+              {(joined || farewell) && (
+                <p className="text-sm text-text-tertiary-dynamic flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {joined && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Calendar size={14} />
+                      Joined {joined}
+                    </span>
+                  )}
+                  {farewell && (
+                    <>
+                      <span className="text-border-dynamic">·</span>
+                      <span>Departed {farewell}</span>
+                    </>
+                  )}
+                </p>
+              )}
+            </motion.header>
+
+            <motion.section
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-6"
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.7 }}
+              className="space-y-5"
             >
               <div className="flex items-center gap-4">
-                <h2 className="text-sm font-black uppercase tracking-[0.3em] text-primary">Biography</h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+                <h2 className="text-[10px] font-institutional uppercase tracking-[0.32em] text-text-tertiary-dynamic">Biography</h2>
+                <span className="flex-1 h-px bg-border-dynamic" />
               </div>
-              <p className="text-lg md:text-xl text-auto-secondary leading-relaxed font-medium whitespace-pre-wrap">
-                {member.bio || "Biography details are currently being updated."}
+              <p className="text-base md:text-lg leading-relaxed text-text-secondary-dynamic whitespace-pre-wrap">
+                {member.bio || 'Biography details are currently being updated.'}
               </p>
             </motion.section>
 
-            {/* Timeline Metrics */}
-            <motion.section 
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-2 gap-6"
-            >
-              <div className="glass p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-auto-tertiary mb-3">Joined</p>
-                <p className="text-2xl md:text-3xl font-black text-text-main dark:text-white tracking-tighter">
-                  {member.joined_date ? new Date(member.joined_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : 'Unknown'}
-                </p>
-              </div>
-              
-              {member.farewell_date && (
-                <div className="glass p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-coral/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-auto-tertiary mb-3">Farewell</p>
-                  <p className="text-2xl md:text-3xl font-black text-text-main dark:text-white tracking-tighter">
-                    {new Date(member.farewell_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
-                  </p>
-                </div>
-              )}
-            </motion.section>
-
-            {/* Role Evolution */}
-            {roleHistory.length > 0 && (
-              <motion.section 
-                initial={{ opacity: 0, y: 40 }}
+            {sortedHistory.length > 0 && (
+              <motion.section
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="space-y-8"
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.7 }}
+                className="space-y-5"
               >
                 <div className="flex items-center gap-4">
-                  <h2 className="text-sm font-black uppercase tracking-[0.3em] text-primary">Role History</h2>
-                  <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+                  <h2 className="text-[10px] font-institutional uppercase tracking-[0.32em] text-text-tertiary-dynamic">Role History</h2>
+                  <span className="flex-1 h-px bg-border-dynamic" />
                 </div>
-                <div className="space-y-4">
-                  {roleHistory.sort((a,b) => parseInt(b.year) - parseInt(a.year)).map((history, i) => (
-                    <motion.div 
-                      key={i}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                      className="glass p-6 rounded-[2rem] flex items-center justify-between border border-white/5 hover:border-primary/20 transition-colors group"
-                    >
-                      <span className="text-xl md:text-2xl font-black text-text-main dark:text-white tracking-tight group-hover:text-primary transition-colors">
-                        {history.position}
-                      </span>
-                      <span className="text-sm font-black text-auto-tertiary tracking-[0.2em] bg-white/5 px-4 py-2 rounded-xl">
-                        {history.year}
-                      </span>
-                    </motion.div>
+                <ol className="divide-y divide-border-dynamic border-y border-border-dynamic">
+                  {sortedHistory.map((h, i) => (
+                    <li key={`${h.year}-${i}`} className="flex items-baseline justify-between py-4">
+                      <span className="text-base md:text-lg font-bold text-headline tracking-tight">{h.position}</span>
+                      <span className="font-mono text-sm text-text-tertiary-dynamic">{h.year}</span>
+                    </li>
                   ))}
-                </div>
+                </ol>
               </motion.section>
             )}
 
-            {/* Official Certification */}
             {member.certificate_url && (
-              <motion.section 
-                initial={{ opacity: 0, y: 40 }}
+              <motion.section
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="space-y-8"
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.7 }}
+                className="space-y-5"
               >
                 <div className="flex items-center gap-4">
-                  <h2 className="text-sm font-black uppercase tracking-[0.3em] text-primary">Certification</h2>
-                  <div className="flex-1 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+                  <h2 className="text-[10px] font-institutional uppercase tracking-[0.32em] text-text-tertiary-dynamic">Certification</h2>
+                  <span className="flex-1 h-px bg-border-dynamic" />
                 </div>
-                <div className="w-full aspect-[1/1.4] md:aspect-[1.4/1] bg-black/20 dark:bg-black/40 rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl relative group">
+                <div className="relative w-full aspect-[1.4/1] rounded-2xl overflow-hidden border border-border bg-surface group">
                   {(member.certificate_url || '').toLowerCase().endsWith('.pdf') ? (
-                    <iframe src={`${member.certificate_url}#toolbar=0&navpanes=0&scrollbar=0`} className="w-full h-full border-none opacity-80 group-hover:opacity-100 transition-opacity duration-500" title={`${member.name} Certificate`} />
+                    <iframe
+                      src={`${member.certificate_url}#toolbar=0&navpanes=0&scrollbar=0`}
+                      className="w-full h-full border-none"
+                      title={`${member.name} Certificate`}
+                    />
                   ) : (
-                    <img src={member.certificate_url} alt="Certificate" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
+                    <img
+                      src={member.certificate_url}
+                      alt={`${member.name} certificate`}
+                      className="w-full h-full object-cover"
+                    />
                   )}
-                  <a href={member.certificate_url} target="_blank" rel="noopener noreferrer" className="absolute bottom-6 right-6 px-6 py-3 bg-black/50 hover:bg-primary backdrop-blur-xl border border-white/10 rounded-2xl text-white font-bold tracking-wide flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)] translate-y-4 group-hover:translate-y-0">
-                    View Full Size <ExternalLink size={18} />
+                  <a
+                    href={member.certificate_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-institutional uppercase tracking-[0.2em] bg-bg-dynamic/85 backdrop-blur-md border border-border-dynamic text-text-primary-dynamic hover:text-headline hover:border-headline/40 transition-colors"
+                  >
+                    <Award size={14} />
+                    View Full Size
+                    <ExternalLink size={12} />
                   </a>
                 </div>
               </motion.section>
             )}
-
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

@@ -3,15 +3,13 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
 import DesmosCalculator from '@/components/ui/DesmosCalculator'
-import { 
-  Clock, CaretRight as ChevronRight, CaretLeft as ChevronLeft, PaperPlaneTilt as Send, Calculator, 
-  Trophy as Award, ArrowsClockwise as RotateCcw, CheckCircle as CheckCircle2, Warning as AlertTriangle, X, ShieldWarning as ShieldAlert, SquaresFour as Grid3X3, XCircle, Lightning as Zap,
-  Layout, ArrowsOut as Maximize2, ArrowsIn as Minimize2
-} from '@phosphor-icons/react'
+import {
+  Clock, ChevronRight, ChevronLeft, Send, Calculator, Trophy, RotateCcw,
+  CheckCircle2, AlertTriangle, X, ShieldAlert, LayoutGrid, Zap, Layout,
+} from 'lucide-react'
 import 'katex/dist/katex.min.css'
 import { InlineMath, BlockMath } from 'react-katex'
 
-// --- Math rendering helper ---
 function MathText({ text, className = '' }) {
   if (!text) return null
   const parts = text.split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/)
@@ -26,7 +24,6 @@ function MathText({ text, className = '' }) {
   )
 }
 
-// --- Submit Confirmation Modal ---
 function SubmitModal({ questions, answers, onConfirm, onCancel }) {
   const unanswered = questions.filter(q => !answers[q.id])
   const answered = questions.length - unanswered.length
@@ -34,62 +31,53 @@ function SubmitModal({ questions, answers, onConfirm, onCancel }) {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bg/70 backdrop-blur-md"
         onClick={onCancel}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.85, y: 20 }}
+          initial={{ opacity: 0, scale: 0.96, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.85, y: 20 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="bg-white dark:bg-[#111] rounded-[2.5rem] p-8 md:p-10 max-w-md w-full border border-border dark:border-white/10 shadow-2xl"
+          exit={{ opacity: 0, scale: 0.96, y: 12 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-bg-dynamic border border-border rounded-2xl p-8 md:p-10 max-w-md w-full"
           onClick={e => e.stopPropagation()}
         >
           <div className="text-center space-y-6">
-            {/* Icon */}
-            <div className={`w-20 h-20 rounded-[1.5rem] mx-auto flex items-center justify-center ${unanswered.length > 0 ? 'bg-amber-500/10' : 'bg-primary/10'}`}>
-              {unanswered.length > 0 
-                ? <AlertTriangle size={40} className="text-amber-500" />
-                : <Send size={40} className="text-primary" />
-              }
+            <div className="h-14 w-14 mx-auto grid place-items-center rounded-full border border-border text-text-primary-dynamic">
+              {unanswered.length > 0 ? <AlertTriangle size={22} strokeWidth={1.5} /> : <Send size={22} strokeWidth={1.5} />}
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-2xl font-black tracking-tight">
-                {unanswered.length > 0 ? 'Missing Answers!' : 'Submit Exam?'}
+              <h3 className="text-2xl font-black tracking-tighter text-headline">
+                {unanswered.length > 0 ? 'Missing answers' : 'Submit exam?'}
               </h3>
-              <p className="text-auto-secondary text-sm">
+              <p className="text-text-secondary-dynamic text-sm">
                 {unanswered.length > 0
-                  ? `You have left ${unanswered.length} question${unanswered.length > 1 ? 's' : ''} unanswered.`
-                  : 'You have answered all questions. Ready to submit?'
-                }
+                  ? `${unanswered.length} question${unanswered.length > 1 ? 's' : ''} still unanswered.`
+                  : 'You’ve answered every question. Ready to submit?'}
               </p>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-4 text-center">
-                <p className="text-2xl font-black text-emerald-600">{answered}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mt-1">Answered</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="border border-marigold/20 bg-marigold/5 rounded-xl p-4">
+                <p className="text-2xl font-black text-marigold">{answered}</p>
+                <p className="text-[10px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic mt-1">Answered</p>
               </div>
-              <div className={`border rounded-2xl p-4 text-center ${unanswered.length > 0 ? 'bg-amber-500/5 border-amber-500/20' : 'bg-black/5 dark:bg-white/5 border-border'}`}>
-                <p className={`text-2xl font-black ${unanswered.length > 0 ? 'text-amber-500' : 'text-auto-tertiary'}`}>{unanswered.length}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mt-1">Unanswered</p>
+              <div className={`border rounded-xl p-4 ${unanswered.length > 0 ? 'border-lotus-pink/20 bg-lotus-pink/5' : 'border-border bg-surface'}`}>
+                <p className={`text-2xl font-black ${unanswered.length > 0 ? 'text-lotus-pink' : 'text-text-tertiary-dynamic'}`}>{unanswered.length}</p>
+                <p className="text-[10px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic mt-1">Unanswered</p>
               </div>
             </div>
 
-            {/* Unanswered question numbers */}
             {unanswered.length > 0 && (
-              <div className="bg-amber-500/5 border border-amber-500/15 rounded-2xl p-4 text-left space-y-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Unanswered Questions</p>
-                <div className="flex flex-wrap gap-2">
+              <div className="border border-border rounded-xl p-4 text-left space-y-2">
+                <p className="text-[10px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic">Unanswered</p>
+                <div className="flex flex-wrap gap-1.5">
                   {unanswered.map(q => {
                     const idx = questions.findIndex(qq => qq.id === q.id)
                     return (
-                      <span key={q.id} className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 text-xs font-black flex items-center justify-center border border-amber-500/20">
+                      <span key={q.id} className="h-7 w-7 rounded-md border border-border text-xs font-mono grid place-items-center text-text-secondary-dynamic">
                         {idx + 1}
                       </span>
                     )
@@ -98,19 +86,18 @@ function SubmitModal({ questions, answers, onConfirm, onCancel }) {
               </div>
             )}
 
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-3 pt-2">
+            <div className="flex flex-col gap-2 pt-2">
               <button
                 onClick={onConfirm}
-                className="w-full bg-primary text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                className="w-full px-6 py-3.5 rounded-full bg-headline text-bg text-xs font-institutional uppercase tracking-[0.24em] hover:bg-headline/90 transition-colors flex items-center justify-center gap-2"
               >
-                <Send size={16} /> Yes, Submit Exam
+                <Send size={14} /> Yes, submit
               </button>
               <button
                 onClick={onCancel}
-                className="w-full glass border border-border py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                className="w-full px-6 py-3.5 rounded-full border border-border text-xs font-institutional uppercase tracking-[0.24em] text-text-primary-dynamic hover:text-headline hover:border-headline/40 transition-colors"
               >
-                Go Back & Review
+                Go back &amp; review
               </button>
             </div>
           </div>
@@ -120,11 +107,10 @@ function SubmitModal({ questions, answers, onConfirm, onCancel }) {
   )
 }
 
-// --- Main Exam Component ---
 export default function ExamInterface() {
   const { setId } = useParams()
   const router = useRouter()
-  
+
   const [set, setSet] = useState(null)
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(true)
@@ -133,7 +119,6 @@ export default function ExamInterface() {
   const [timeLeft, setTimeLeft] = useState(0)
   const [isFinished, setIsFinished] = useState(false)
   const [isSecurityBreach, setIsSecurityBreach] = useState(false)
-  const [showSecurityNotice, setShowSecurityNotice] = useState(true)
   const [score, setScore] = useState(0)
   const [totalMarks, setTotalMarks] = useState(0)
   const [isTimeUp, setIsTimeUp] = useState(false)
@@ -143,37 +128,14 @@ export default function ExamInterface() {
   const [calcPosition, setCalcPosition] = useState('side')
   const [calcHeight, setCalcHeight] = useState(400)
   const [hasConsented, setHasConsented] = useState(false)
-
-  // Security Logic: Auto-submit on tab switch or window blur
-  useEffect(() => {
-    if (isFinished || loading) return
-    
-    const handleSecurityBreach = () => {
-      if (isFinished) return
-      setIsSecurityBreach(true)
-      handleFinishExam(true)
-    }
-
-    // Tab switching detection
-    const handleVisibility = () => {
-      if (document.visibilityState === 'hidden') handleSecurityBreach()
-    }
-
-    window.addEventListener('blur', handleSecurityBreach)
-    document.addEventListener('visibilitychange', handleVisibility)
-
-    return () => {
-      window.removeEventListener('blur', handleSecurityBreach)
-      document.removeEventListener('visibilitychange', handleVisibility)
-    }
-  }, [isFinished, loading])
+  const [isResizing, setIsResizing] = useState(false)
 
   useEffect(() => {
     async function initExam() {
       try {
         const [setRes, questRes] = await Promise.all([
           fetch('/api/practice/sets').then(r => r.json()),
-          fetch(`/api/practice/questions?set_id=${setId}`).then(r => r.json())
+          fetch(`/api/practice/questions?set_id=${setId}`).then(r => r.json()),
         ])
         const currentSet = setRes.find(s => s.id === setId)
         if (!currentSet || questRes.length === 0) { router.push('/dmopractice'); return }
@@ -185,34 +147,26 @@ export default function ExamInterface() {
       } catch { router.push('/dmopractice') }
     }
     initExam()
-  }, [setId])
-
-
+  }, [setId, router])
 
   const formatTime = (s) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`
 
-  
-  const [isResizing, setIsResizing] = useState(false)
   const handleResize = useCallback((e) => {
     if (!isResizing) return
     const newHeight = window.innerHeight - e.clientY
-    if (newHeight > 150 && newHeight < window.innerHeight * 0.8) {
-      setCalcHeight(newHeight)
-    }
+    if (newHeight > 150 && newHeight < window.innerHeight * 0.8) setCalcHeight(newHeight)
   }, [isResizing])
 
   useEffect(() => {
-    if (isResizing) {
-      window.addEventListener('mousemove', handleResize)
-      window.addEventListener('mouseup', () => setIsResizing(false))
-    }
+    if (!isResizing) return
+    const stop = () => setIsResizing(false)
+    window.addEventListener('mousemove', handleResize)
+    window.addEventListener('mouseup', stop)
     return () => {
       window.removeEventListener('mousemove', handleResize)
-      window.removeEventListener('mouseup', () => setIsResizing(false))
+      window.removeEventListener('mouseup', stop)
     }
   }, [isResizing, handleResize])
-
-
 
   const handleFinishExam = useCallback((auto = false) => {
     if (isFinished) return
@@ -222,23 +176,22 @@ export default function ExamInterface() {
     setIsFinished(true)
     setIsTimeUp(auto)
     setShowSubmitModal(false)
-    setHasConsented(false) // Reset consent on finish
+    setHasConsented(false)
     const history = JSON.parse(localStorage.getItem('min_exam_history') || '[]')
     const breakdown = questions.map(q => ({
       text: q.question_text,
       userAnswer: answers[q.id] || null,
       correctAnswer: q.correct_option,
       isCorrect: answers[q.id] === q.correct_option,
-      options: { a: q.option_a, b: q.option_b, c: q.option_c, d: q.option_d }
-    })).filter(q => !q.isCorrect) // Only store incorrect answers to save space
-    
-    history.push({ 
-      setId, 
-      setName: set.name, 
-      score: currentScore, 
-      total: questions.reduce((a, q) => a + (q.marks || 1), 0), 
+      options: { a: q.option_a, b: q.option_b, c: q.option_c, d: q.option_d },
+    })).filter(q => !q.isCorrect)
+    history.push({
+      setId,
+      setName: set.name,
+      score: currentScore,
+      total: questions.reduce((a, q) => a + (q.marks || 1), 0),
       date: new Date().toISOString(),
-      wrongAnswers: breakdown
+      wrongAnswers: breakdown,
     })
     localStorage.setItem('min_exam_history', JSON.stringify(history))
   }, [isFinished, questions, answers, set, setId])
@@ -255,138 +208,128 @@ export default function ExamInterface() {
   }, [loading, isFinished, timeLeft, handleFinishExam])
 
   useEffect(() => {
-    if (isFinished || loading) return
-    const handleSecurityBreach = () => {
+    if (isFinished || loading || !hasConsented) return
+    const breach = () => {
       if (isFinished) return
       setIsSecurityBreach(true)
       handleFinishExam(true)
     }
-    window.addEventListener('blur', handleSecurityBreach)
-    const handleVisibility = () => {
-      if (document.visibilityState === 'hidden') handleSecurityBreach()
-    }
-    document.addEventListener('visibilitychange', handleVisibility)
+    const onVisibility = () => { if (document.visibilityState === 'hidden') breach() }
+    window.addEventListener('blur', breach)
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
-      window.removeEventListener('blur', handleSecurityBreach)
-      document.removeEventListener('visibilitychange', handleVisibility)
+      window.removeEventListener('blur', breach)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [isFinished, loading, handleFinishExam, hasConsented])
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="flex flex-col items-center gap-6">
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-primary/20 rounded-full animate-spin border-t-primary" />
-          <Calculator size={28} className="absolute inset-0 m-auto text-primary/40" />
-        </div>
-        <p className="text-xs font-black uppercase tracking-widest text-auto-tertiary">Building Exam Environment...</p>
-      </div>
-    </div>
-  )
-
-  // Result Screen
-  if (isFinished) {
-    const pct = (score / totalMarks) * 100
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-          className="max-w-lg w-full glass rounded-[3rem] p-8 md:p-12 text-center space-y-8 border border-border dark:border-white/10 shadow-2xl relative overflow-hidden"
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Calculator size={22} className="text-text-tertiary-dynamic animate-pulse" />
+          <p className="text-[10px] font-institutional uppercase tracking-[0.32em] text-text-tertiary-dynamic">Loading exam</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (isFinished) {
+    const pct = totalMarks > 0 ? (score / totalMarks) * 100 : 0
+    const verdict = pct >= 80 ? 'Excellent work' : pct >= 40 ? 'Good effort' : 'Keep practicing'
+    return (
+      <main className="min-h-screen flex items-center justify-center px-6 py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+          className="max-w-lg w-full p-10 rounded-2xl border border-border bg-bg-dynamic relative overflow-hidden text-center space-y-8"
         >
-          {isSecurityBreach && (
-            <div className="absolute top-0 left-0 right-0 bg-rose-600 text-white py-2 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2">
-              <ShieldAlert size={12} /> Exam Security Activated: Auto-Submitted
+          {(isSecurityBreach || isTimeUp) && (
+            <div className="absolute top-0 inset-x-0 px-4 py-1.5 bg-lotus-pink/10 text-lotus-pink text-[10px] font-institutional uppercase tracking-[0.24em] flex items-center justify-center gap-2 border-b border-lotus-pink/20">
+              {isSecurityBreach ? <><ShieldAlert size={12} /> Security trigger — auto-submitted</> : <><Clock size={12} /> Time up — auto-submitted</>}
             </div>
           )}
-          {isTimeUp && !isSecurityBreach && (
-            <div className="absolute top-0 left-0 right-0 bg-coral text-white py-2 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2">
-              <Clock size={12} /> Time is Up! Auto-Submitted
-            </div>
-          )}
-          <div className={`w-24 h-24 rounded-[2rem] mx-auto flex items-center justify-center text-white shadow-2xl ${pct >= 80 ? 'bg-emerald-500' : pct >= 40 ? 'bg-primary' : 'bg-coral'}`}>
-            <Award size={52} />
+
+          <div className="h-16 w-16 mx-auto grid place-items-center rounded-full border border-marigold/30 text-marigold mt-4">
+            <Trophy size={26} strokeWidth={1.5} />
           </div>
-          <div>
-            <h2 className="text-4xl font-black">{pct >= 80 ? 'Excellent Work!' : pct >= 40 ? 'Good Effort!' : 'Keep Practicing!'}</h2>
-            <p className="text-auto-secondary mt-2">Completed: <span className="text-primary font-bold">{set.name}</span></p>
+
+          <div className="space-y-2">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-headline">{verdict}</h2>
+            <p className="text-text-secondary-dynamic">{set?.name}</p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-bg-secondary dark:bg-white/5 p-6 rounded-2xl border border-border/50">
-              <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mb-2">Score</p>
-              <p className="text-4xl font-black text-primary">{score}<span className="text-base opacity-40 ml-1">/ {totalMarks}</span></p>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="border border-border rounded-xl p-5">
+              <p className="text-[10px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic mb-2">Score</p>
+              <p className="text-3xl font-black text-headline tabular-nums">
+                {score}<span className="text-base text-text-tertiary-dynamic ml-1">/ {totalMarks}</span>
+              </p>
             </div>
-            <div className="bg-bg-secondary dark:bg-white/5 p-6 rounded-2xl border border-border/50">
-              <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary mb-2">Accuracy</p>
-              <p className="text-4xl font-black text-secondary">{Math.round(pct)}%</p>
+            <div className="border border-border rounded-xl p-5">
+              <p className="text-[10px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic mb-2">Accuracy</p>
+              <p className="text-3xl font-black text-headline tabular-nums">{Math.round(pct)}%</p>
             </div>
           </div>
-          <div className="flex gap-4">
-            <button onClick={() => window.location.reload()} className="flex-1 glass border-primary/20 text-primary py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary/5 transition-all">
-              <RotateCcw size={16} /> Retake
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => window.location.reload()}
+              className="flex-1 px-5 py-3 rounded-full border border-border text-text-primary-dynamic hover:text-headline hover:border-headline/40 text-xs font-institutional uppercase tracking-[0.24em] transition-colors flex items-center justify-center gap-2"
+            >
+              <RotateCcw size={14} /> Retake
             </button>
-            <button onClick={() => router.push('/dmopractice')} className="flex-1 bg-primary text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all">
-              Dashboard <ChevronRight size={16} />
+            <button
+              onClick={() => router.push('/dmopractice')}
+              className="flex-1 px-5 py-3 rounded-full bg-headline text-bg text-xs font-institutional uppercase tracking-[0.24em] hover:bg-headline/90 transition-colors flex items-center justify-center gap-2"
+            >
+              Dashboard <ChevronRight size={14} />
             </button>
           </div>
         </motion.div>
-      </div>
+      </main>
     )
   }
 
   const currentQuestion = questions[currentIdx]
   const answeredCount = Object.keys(answers).length
+  const isCalcBottom = showCalculator && (calcPosition === 'bottom' || (typeof window !== 'undefined' && window.innerWidth < 1024))
 
   return (
-    <div className="min-h-screen bg-bg-main dark:bg-[#050505] flex flex-col pt-[80px]">
-      
-      {/* Submit Confirmation Modal */}
+    <div className="min-h-screen flex flex-col pt-[80px]">
       {showSubmitModal && (
-        <SubmitModal
-          questions={questions}
-          answers={answers}
-          onConfirm={() => handleFinishExam(false)}
-          onCancel={() => setShowSubmitModal(false)}
-        />
+        <SubmitModal questions={questions} answers={answers} onConfirm={() => handleFinishExam(false)} onCancel={() => setShowSubmitModal(false)} />
       )}
 
-      
-      
-      {/* Mobile Navigator Drawer */}
-      {/* Security Consent Modal */}
       <AnimatePresence>
         {!hasConsented && !loading && !isFinished && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-white/80 dark:bg-black/80 backdrop-blur-xl flex items-center justify-center p-6"
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-bg/85 backdrop-blur-md flex items-center justify-center p-6"
           >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              className="max-w-md w-full glass bg-white dark:bg-[#111] border-border dark:border-white/10 p-8 md:p-12 rounded-[3rem] text-center space-y-8 shadow-2xl"
+            <motion.div
+              initial={{ scale: 0.96, y: 12 }} animate={{ scale: 1, y: 0 }}
+              className="max-w-md w-full bg-bg-dynamic border border-border p-8 md:p-10 rounded-2xl text-center space-y-7"
             >
-              <div className="w-20 h-20 bg-coral/10 rounded-[2.5rem] flex items-center justify-center mx-auto text-coral">
-                 <ShieldAlert size={40} />
+              <div className="h-16 w-16 mx-auto grid place-items-center rounded-full border border-lotus-pink/30 text-lotus-pink">
+                <ShieldAlert size={26} strokeWidth={1.5} />
               </div>
-              
+
               <div className="space-y-3">
-                <h2 className="text-3xl font-black tracking-tight">Exam Security Initialized</h2>
-                <p className="text-auto-secondary text-sm leading-relaxed">
-                  To ensure a fair testing environment, exiting, refreshing, or <span className="text-coral font-bold underline">switching tabs</span> will trigger immediate auto-submission of your exam.
+                <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-headline">Exam security initialized</h2>
+                <p className="text-text-secondary-dynamic text-sm leading-relaxed">
+                  To keep things fair, exiting, refreshing, or <span className="text-headline font-semibold">switching tabs</span> will auto-submit the exam.
                 </p>
               </div>
 
-              <div className="p-6 bg-coral/5 border border-coral/10 rounded-2xl">
-                 <p className="text-[10px] font-black uppercase tracking-widest text-coral/70 flex items-center justify-center gap-2">
-                    <Zap size={14} /> Anti-Cheat Mode Active
-                 </p>
+              <div className="px-4 py-3 rounded-xl border border-border text-text-tertiary-dynamic text-[10px] font-institutional uppercase tracking-[0.24em] flex items-center justify-center gap-2">
+                <Zap size={12} /> Anti-cheat mode active
               </div>
 
-              <button 
+              <button
                 onClick={() => setHasConsented(true)}
-                className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:-translate-y-1 transition-all active:scale-95"
+                className="w-full px-6 py-3.5 rounded-full bg-headline text-bg text-xs font-institutional uppercase tracking-[0.24em] hover:bg-headline/90 transition-colors"
               >
-                I Understood
+                I understand
               </button>
             </motion.div>
           </motion.div>
@@ -395,30 +338,36 @@ export default function ExamInterface() {
 
       <AnimatePresence>
         {showNavigator && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-bg/60 backdrop-blur-sm lg:hidden"
             onClick={() => setShowNavigator(false)}
           >
-            <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+            <motion.div
+              initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="absolute bottom-0 left-0 right-0 bg-white dark:bg-[#111] rounded-t-[2.5rem] p-6 max-h-[70vh] overflow-y-auto"
+              className="absolute bottom-0 left-0 right-0 bg-bg-dynamic border-t border-border rounded-t-2xl p-6 max-h-[70vh] overflow-y-auto"
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between mb-6">
-                <h4 className="text-lg font-black">Question Navigator</h4>
-                <button onClick={() => setShowNavigator(false)} className="p-2 rounded-xl bg-black/5 dark:bg-white/5"><X size={20} /></button>
+              <div className="flex items-center justify-between mb-5">
+                <h4 className="text-sm font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic">Question Navigator</h4>
+                <button onClick={() => setShowNavigator(false)} className="h-8 w-8 grid place-items-center rounded-full border border-border text-text-tertiary-dynamic hover:text-headline">
+                  <X size={14} />
+                </button>
               </div>
-              <div className="flex gap-4 mb-4">
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-500"><div className="w-2 h-2 rounded-full bg-emerald-500"/>Answered</div>
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-auto-tertiary"><div className="w-2 h-2 rounded-full bg-black/10 dark:bg-white/10"/>Pending</div>
+              <div className="flex gap-4 mb-4 text-[10px] font-institutional uppercase tracking-[0.24em]">
+                <span className="flex items-center gap-2 text-marigold"><span className="w-1.5 h-1.5 rounded-full bg-marigold" />Answered</span>
+                <span className="flex items-center gap-2 text-text-tertiary-dynamic"><span className="w-1.5 h-1.5 rounded-full bg-border-dynamic" />Pending</span>
               </div>
-              <div className="grid grid-cols-6 gap-3">
+              <div className="grid grid-cols-6 gap-2">
                 {questions.map((q, i) => (
-                  <button key={q.id} onClick={() => { setCurrentIdx(i); setShowNavigator(false) }}
-                    className={`h-12 rounded-xl text-xs font-black transition-all border flex items-center justify-center ${
-                      currentIdx === i ? 'bg-primary text-white border-primary shadow-lg scale-110' :
-                      answers[q.id] ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
-                      'glass border-border text-auto-tertiary'
+                  <button
+                    key={q.id}
+                    onClick={() => { setCurrentIdx(i); setShowNavigator(false) }}
+                    className={`h-11 rounded-md text-xs font-mono transition-colors border flex items-center justify-center ${
+                      currentIdx === i ? 'bg-headline text-bg border-headline' :
+                      answers[q.id] ? 'border-marigold/30 text-marigold bg-marigold/5' :
+                      'border-border text-text-tertiary-dynamic hover:text-headline hover:border-headline/40'
                     }`}
                   >{i + 1}</button>
                 ))}
@@ -428,263 +377,226 @@ export default function ExamInterface() {
         )}
       </AnimatePresence>
 
-      {/* Floating Progress Bar & Timer */}
-      <div className="fixed top-[100px] left-1/2 -translate-x-1/2 w-[95%] max-w-2xl z-30 glass backdrop-blur-3xl border border-border dark:border-white/10 shadow-2xl rounded-full px-4 h-14 flex items-center justify-center sm:justify-start gap-2 md:gap-3">
-          {/* Progress & Set Info */}
-          <div className="flex flex-col justify-center items-center sm:items-start min-w-0 flex-1 sm:flex-initial text-center sm:text-left">
-             <p className="text-[9px] font-black uppercase tracking-widest text-auto-tertiary truncate max-w-[150px] md:max-w-none">
-               {set?.name || 'Loading Exam...'}
-             </p>
-             <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                   <span className="text-sm font-black text-emerald-500 tabular-nums">{answeredCount}</span>
-                   <span className="text-[8px] font-bold text-auto-tertiary uppercase tracking-tighter">Done</span>
-                </div>
-                <div className="w-1 h-1 rounded-full bg-border" />
-                <div className="flex items-center gap-1.5">
-                   <span className="text-sm font-black text-coral tabular-nums">{questions.length - answeredCount}</span>
-                   <span className="text-[8px] font-bold text-auto-tertiary uppercase tracking-tighter">Left</span>
-                </div>
-             </div>
+      <div className="fixed top-[100px] left-1/2 -translate-x-1/2 w-[95%] max-w-2xl z-30 bg-bg-dynamic/85 backdrop-blur-md border border-border rounded-full px-4 h-14 flex items-center gap-3">
+        <div className="flex flex-col justify-center min-w-0 flex-1 sm:flex-initial">
+          <p className="text-[9px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic truncate max-w-[160px]">{set?.name || 'Loading'}</p>
+          <div className="flex items-center gap-2 text-[10px] tabular-nums">
+            <span className="text-marigold font-semibold">{answeredCount} done</span>
+            <span className="text-border-dynamic">·</span>
+            <span className="text-lotus-pink font-semibold">{questions.length - answeredCount} left</span>
           </div>
+        </div>
 
-          <div className="flex-1 h-1.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden mx-2 hidden sm:block">
-            <motion.div animate={{ width: `${(answeredCount / questions.length) * 100}%` }}
-              className="h-full bg-gradient-to-r from-emerald-500 to-primary rounded-full"
-            />
-          </div>
+        <div className="flex-1 h-1 bg-border/60 rounded-full overflow-hidden mx-2 hidden sm:block">
+          <motion.div animate={{ width: `${(answeredCount / questions.length) * 100}%` }} className="h-full bg-headline" />
+        </div>
 
-          {/* Timer */}
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-sm font-black tabular-nums ${
-            timeLeft < 120 ? 'bg-coral/10 border-coral text-coral animate-pulse' : 'glass border-border/50 text-dynamic'
-          }`} title="Remaining Time">
-            <Clock size={14} />
-            {formatTime(timeLeft)}
-          </div>
+        <div
+          className={`flex items-center gap-2 px-3 h-9 rounded-full border text-xs font-mono tabular-nums ${timeLeft < 120 ? 'border-lotus-pink text-lotus-pink animate-pulse' : 'border-border text-text-primary-dynamic'}`}
+          title="Remaining time"
+        >
+          <Clock size={12} />
+          {formatTime(timeLeft)}
+        </div>
 
-          <div className="h-6 w-px bg-border/50" />
+        <span className="h-5 w-px bg-border-dynamic" />
 
-          {/* Calculator Toggle */}
-          <button 
-            onClick={() => setShowCalculator(prev => !prev)}
-            className={`p-2 rounded-xl transition-all ${showCalculator ? 'bg-primary text-white shadow-lg' : 'hover:bg-primary/10 text-[#16556D] dark:text-[#F6F094] active:scale-95'}`}
-            title={showCalculator ? "Hide Scientific Calculator" : "Show Scientific Calculator"}
-          >
-            <Calculator size={18} />
-          </button>
+        <button
+          onClick={() => setShowCalculator(p => !p)}
+          className={`h-9 w-9 grid place-items-center rounded-full transition-colors ${showCalculator ? 'bg-headline text-bg' : 'border border-border text-text-primary-dynamic hover:text-headline hover:border-headline/40'}`}
+          title={showCalculator ? 'Hide calculator' : 'Show calculator'}
+        >
+          <Calculator size={14} />
+        </button>
 
-          {/* Mobile navigator toggle */}
-          <button onClick={() => setShowNavigator(true)}
-            className="lg:hidden p-2 rounded-xl glass border border-border/50 relative"
-            title="Open Question Navigator"
-          >
-            <Grid3X3 size={18} />
-            {answeredCount < questions.length && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-white text-[9px] font-black rounded-full flex items-center justify-center">
-                {questions.length - answeredCount}
-              </span>
-            )}
-          </button>
+        <button
+          onClick={() => setShowNavigator(true)}
+          className="lg:hidden relative h-9 w-9 grid place-items-center rounded-full border border-border text-text-primary-dynamic hover:text-headline hover:border-headline/40 transition-colors"
+          title="Open navigator"
+        >
+          <LayoutGrid size={14} />
+          {answeredCount < questions.length && (
+            <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-lotus-pink text-bg text-[9px] font-bold grid place-items-center">
+              {questions.length - answeredCount}
+            </span>
+          )}
+        </button>
       </div>
 
-      
-      
-      {/* Main Content */}
-      <div className={`flex-1 container mx-auto px-4 py-6 mt-24 flex transition-all duration-500 ease-in-out ${
-        showCalculator && calcPosition === 'side' ? 'flex-col lg:flex-row max-w-[1600px] w-full gap-6 lg:gap-8' : 
-        'flex-col max-w-7xl gap-6'
-      } ${showCalculator && (calcPosition === 'bottom' || (typeof window !== 'undefined' && window.innerWidth < 1024)) ? `pb-[${calcHeight}px]` : ''}`}>
-        
-        {/* SIDE SPLIT CALCULATOR */}
+      <div className={`flex-1 mx-auto px-4 py-6 mt-24 flex transition-all duration-500 ${
+        showCalculator && calcPosition === 'side' ? 'flex-col lg:flex-row max-w-[1600px] w-full gap-6 lg:gap-8' : 'flex-col max-w-7xl w-full gap-6'
+      } ${isCalcBottom ? `pb-[${calcHeight}px]` : ''}`}>
+
         <AnimatePresence>
           {showCalculator && calcPosition === 'side' && (
-            <motion.div 
-              initial={{ width: 0, opacity: 0 }} 
-              animate={{ width: '40%', opacity: 1 }} 
-              exit={{ width: 0, opacity: 0 }} 
-              className="hidden lg:flex flex-col relative rounded-[2rem] overflow-hidden border border-border dark:border-white/10 shadow-2xl bg-white dark:bg-[#111] min-h-[600px]"
+            <motion.div
+              initial={{ width: 0, opacity: 0 }} animate={{ width: '40%', opacity: 1 }} exit={{ width: 0, opacity: 0 }}
+              className="hidden lg:flex flex-col relative rounded-2xl overflow-hidden border border-border bg-bg-dynamic min-h-[600px]"
             >
-              <div className="absolute top-4 left-4 z-20 flex gap-2">
-                <button onClick={() => setCalcPosition('bottom')} className="p-2 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm rounded-lg hover:bg-primary hover:text-white transition-all" title="Dock Calculator to Bottom">
-                  <Layout size={14} />
+              <div className="absolute top-3 left-3 z-20 flex gap-2">
+                <button onClick={() => setCalcPosition('bottom')} className="h-8 w-8 grid place-items-center rounded-full border border-border bg-bg-dynamic/85 text-text-primary-dynamic hover:text-headline hover:border-headline/40 transition-colors" title="Dock to bottom">
+                  <Layout size={12} />
                 </button>
               </div>
-              <div className="absolute top-4 right-4 z-20">
-                <button onClick={() => setShowCalculator(false)} className="p-2 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm rounded-lg hover:bg-rose-500 hover:text-white transition-all" title="Close Calculator">
-                  <X size={14} />
+              <div className="absolute top-3 right-3 z-20">
+                <button onClick={() => setShowCalculator(false)} className="h-8 w-8 grid place-items-center rounded-full border border-border bg-bg-dynamic/85 text-text-primary-dynamic hover:text-lotus-pink hover:border-lotus-pink/40 transition-colors" title="Close">
+                  <X size={12} />
                 </button>
               </div>
               <DesmosCalculator />
             </motion.div>
           )}
         </AnimatePresence>
-        
-        {/* Calculator will be rendered based on calcPosition */}
-        
-        {/* Question Area */}
+
         <div className="flex-1 flex flex-col gap-3">
-          
-          {/* Question Layout with Navigator on Right */}
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Question Card */}
-            <motion.div key={currentQuestion.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-              className="flex-1 glass rounded-[2rem] p-6 md:p-10 border border-border dark:border-white/10 shadow-xl relative"
+            <motion.div
+              key={currentQuestion.id}
+              initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="flex-1 rounded-2xl border border-border bg-bg-dynamic p-6 md:p-10 relative"
             >
               <div className="absolute top-4 right-4">
-                <span className="bg-primary/5 dark:bg-white/5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-primary border border-primary/10" title="Weight of this question">
-                  {currentQuestion.marks} {currentQuestion.marks === 1 ? 'Mark' : 'Marks'}
+                <span className="px-2.5 py-1 rounded-full border border-border text-[10px] font-institutional uppercase tracking-[0.2em] text-text-tertiary-dynamic">
+                  {currentQuestion.marks} {currentQuestion.marks === 1 ? 'mark' : 'marks'}
                 </span>
               </div>
 
-              <div className="space-y-8">
-                {/* Question Text */}
-                <div className="text-xl md:text-2xl font-bold text-dynamic leading-snug pr-16">
+              <div className="space-y-7">
+                <div className="text-xl md:text-2xl font-medium leading-snug text-text-primary-dynamic pr-16">
                   <MathText text={currentQuestion.question_text} />
                 </div>
 
-                {/* Question Image */}
                 {currentQuestion.image_url && (
-                  <div className="max-w-sm mx-auto rounded-2xl overflow-hidden border border-border dark:border-white/10 shadow-md">
+                  <div className="max-w-sm mx-auto rounded-xl overflow-hidden border border-border">
                     <img src={currentQuestion.image_url} alt="Question figure" className="w-full h-auto object-contain" />
                   </div>
                 )}
 
-                {/* Options */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {['A', 'B', 'C', 'D'].map(opt => (
-                    <button key={opt}
-                      onClick={() => setAnswers({ ...answers, [currentQuestion.id]: opt })}
-                      className={`w-full p-4 md:p-5 rounded-2xl border-2 text-left transition-all duration-200 flex items-center gap-4 group ${
-                        answers[currentQuestion.id] === opt
-                          ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-[1.02]'
-                          : 'glass border-border hover:border-primary/30 text-dynamic hover:-translate-y-0.5'
-                      }`}
-                    >
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm shrink-0 transition-colors ${
-                        answers[currentQuestion.id] === opt ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/5 text-auto-tertiary'
-                      }`}>{opt}</div>
-                      <div className="text-sm font-semibold flex-1">
-                        <MathText text={currentQuestion[`option_${opt.toLowerCase()}`]} />
-                      </div>
-                      {answers[currentQuestion.id] === opt && <CheckCircle2 size={18} className="shrink-0 text-white/80" />}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {['A', 'B', 'C', 'D'].map(opt => {
+                    const selected = answers[currentQuestion.id] === opt
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => setAnswers({ ...answers, [currentQuestion.id]: opt })}
+                        className={`text-left p-4 md:p-5 rounded-xl border transition-colors flex items-center gap-4 ${
+                          selected ? 'border-headline bg-headline/5' : 'border-border hover:border-headline/40'
+                        }`}
+                      >
+                        <span className={`h-8 w-8 grid place-items-center rounded-full font-mono text-xs shrink-0 ${selected ? 'bg-headline text-bg' : 'border border-border text-text-tertiary-dynamic'}`}>
+                          {opt}
+                        </span>
+                        <span className="text-sm flex-1 text-text-primary-dynamic">
+                          <MathText text={currentQuestion[`option_${opt.toLowerCase()}`]} />
+                        </span>
+                        {selected && <CheckCircle2 size={16} className="shrink-0 text-headline" />}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             </motion.div>
 
-            {/* Desktop Quick Navigator */}
-            <div className="hidden lg:flex lg:w-72 flex-col gap-6">
-              <div className="glass rounded-[2rem] p-6 border border-border dark:border-white/10 space-y-6">
+            <aside className="hidden lg:flex lg:w-64 flex-col gap-4">
+              <div className="rounded-2xl border border-border bg-bg-dynamic p-5 space-y-4">
                 <div>
-                  <h4 className="font-black text-dynamic text-sm mb-3">Quick Navigator</h4>
-                  <div className="flex flex-wrap gap-3">
-                    <div className="flex items-center gap-1.5 text-[9px] font-black uppercase text-emerald-500"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500"/>Done</div>
-                    <div className="flex items-center gap-1.5 text-[9px] font-black uppercase text-auto-tertiary"><div className="w-1.5 h-1.5 rounded-full bg-black/10 dark:bg-white/10"/>Pending</div>
+                  <h4 className="text-[10px] font-institutional uppercase tracking-[0.28em] text-text-tertiary-dynamic mb-2">Quick navigator</h4>
+                  <div className="flex flex-wrap gap-3 text-[9px] font-institutional uppercase tracking-[0.24em]">
+                    <span className="flex items-center gap-1.5 text-marigold"><span className="w-1.5 h-1.5 rounded-full bg-marigold" />Done</span>
+                    <span className="flex items-center gap-1.5 text-text-tertiary-dynamic"><span className="w-1.5 h-1.5 rounded-full bg-border-dynamic" />Pending</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-5 gap-1.5">
                   {questions.map((q, i) => (
-                    <button key={q.id} onClick={() => setCurrentIdx(i)}
-                      className={`h-9 rounded-lg text-[10px] font-black transition-all border flex items-center justify-center ${
-                        currentIdx === i ? 'bg-primary text-white border-primary shadow-lg scale-110 z-10' :
-                        answers[q.id] ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
-                        'glass border-border text-auto-tertiary hover:border-primary/30'
+                    <button
+                      key={q.id}
+                      onClick={() => setCurrentIdx(i)}
+                      className={`h-9 rounded-md text-[10px] font-mono transition-colors border ${
+                        currentIdx === i ? 'bg-headline text-bg border-headline' :
+                        answers[q.id] ? 'border-marigold/30 text-marigold bg-marigold/5' :
+                        'border-border text-text-tertiary-dynamic hover:text-headline hover:border-headline/40'
                       }`}
-                      title={`Go to Question ${i + 1}`}
+                      title={`Question ${i + 1}`}
                     >{i + 1}</button>
                   ))}
                 </div>
               </div>
-            </div>
+            </aside>
           </div>
 
-          {/* Navigation Controls */}
           <div className="flex items-center justify-between gap-3">
-            <button onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))} disabled={currentIdx === 0}
-              className={`px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all ${
-                currentIdx === 0 ? 'opacity-30 cursor-not-allowed text-auto-tertiary bg-black/5 dark:bg-white/5' : 'glass border border-border text-dynamic hover:-translate-x-0.5'
+            <button
+              onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))}
+              disabled={currentIdx === 0}
+              className={`px-5 py-3 rounded-full text-xs font-institutional uppercase tracking-[0.24em] flex items-center gap-2 transition-colors ${
+                currentIdx === 0 ? 'opacity-40 cursor-not-allowed border border-border text-text-tertiary-dynamic' : 'border border-border text-text-primary-dynamic hover:text-headline hover:border-headline/40'
               }`}
-              title="Previous Question"
             >
-              <ChevronLeft size={18} /> Prev
+              <ChevronLeft size={14} /> Prev
             </button>
 
-            {/* Dot nav for desktop */}
             <div className="hidden md:flex items-center gap-1.5">
               {questions.map((_, i) => (
-                <button key={i} onClick={() => setCurrentIdx(i)}
+                <button
+                  key={i}
+                  onClick={() => setCurrentIdx(i)}
                   className={`rounded-full transition-all ${
-                    currentIdx === i ? 'bg-primary w-6 h-2.5' : answers[questions[i].id] ? 'bg-emerald-500 w-2.5 h-2.5' : 'bg-black/10 dark:bg-white/10 w-2.5 h-2.5 hover:bg-black/20'
+                    currentIdx === i ? 'bg-headline w-6 h-2' :
+                    answers[questions[i].id] ? 'bg-marigold w-2 h-2' :
+                    'bg-border-dynamic w-2 h-2 hover:bg-text-tertiary-dynamic'
                   }`}
-                  title={`Jump to Question ${i + 1}`}
+                  title={`Jump to question ${i + 1}`}
                 />
               ))}
             </div>
 
-            <div className="flex items-center gap-2">
-              
-              
-              {currentIdx === questions.length - 1 ? (
-                <button 
-                  onClick={() => setShowSubmitModal(true)}
-                  className="px-8 py-3 bg-emerald-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5 transition-all flex items-center gap-2"
-                  title="Finalize and Submit Exam"
-                >
-                  Submit <Send size={16} />
-                </button>
-              ) : (
-                <button onClick={() => setCurrentIdx(prev => Math.min(questions.length - 1, prev + 1))}
-                  className="px-8 py-3 bg-primary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all flex items-center gap-2"
-                  title="Next Question"
-                >
-                  Next <ChevronRight size={18} />
-                </button>
-              )}
-            </div>
+            {currentIdx === questions.length - 1 ? (
+              <button
+                onClick={() => setShowSubmitModal(true)}
+                className="px-7 py-3 rounded-full bg-headline text-bg text-xs font-institutional uppercase tracking-[0.24em] hover:bg-headline/90 transition-colors flex items-center gap-2"
+              >
+                Submit <Send size={14} />
+              </button>
+            ) : (
+              <button
+                onClick={() => setCurrentIdx(prev => Math.min(questions.length - 1, prev + 1))}
+                className="px-7 py-3 rounded-full border border-border text-xs font-institutional uppercase tracking-[0.24em] text-text-primary-dynamic hover:text-headline hover:border-headline/40 transition-colors flex items-center gap-2"
+              >
+                Next <ChevronRight size={14} />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* BOTTOM SPLIT CALCULATOR */}
         <AnimatePresence>
-          {showCalculator && (calcPosition === 'bottom' || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
-            <motion.div 
-              initial={{ height: 0, opacity: 0 }} 
-              animate={{ height: calcHeight, opacity: 1 }} 
-              exit={{ height: 0, opacity: 0 }} 
+          {isCalcBottom && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }} animate={{ height: calcHeight, opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               style={{ height: calcHeight }}
-              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-white dark:bg-[#0A0A0B] border-t border-border shadow-[0_-20px_50px_rgba(0,0,0,0.3)]"
+              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-bg-dynamic border-t border-border"
             >
-              {/* Resize Handle */}
-              <div 
+              <div
                 onMouseDown={() => setIsResizing(true)}
-                className="absolute -top-1 left-0 right-0 h-2 cursor-ns-resize z-50 hover:bg-primary/30 transition-colors"
+                className="absolute -top-1 left-0 right-0 h-2 cursor-ns-resize z-50 hover:bg-headline/20 transition-colors"
                 title="Drag to resize"
               />
-
-              <div className="flex items-center justify-between px-4 py-2 bg-slate-50 dark:bg-white/5 border-b border-border select-none">
-                 <div className="flex items-center gap-3">
-                   <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px]">
-                     <Calculator size={14} /> Desmos Pro
-                   </div>
-                   <div className="h-4 w-px bg-border" />
-                   <div className="flex items-center gap-1">
-                      <button 
-                        onClick={() => setCalcPosition('side')} 
-                        className="hidden lg:flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-[9px] font-bold text-auto-tertiary transition-all"
-                      >
-                        <Layout size={12} /> Split Side
-                      </button>
-                   </div>
-                   <div className="text-[9px] font-bold text-auto-tertiary opacity-50">
-                     (Drag top edge to resize)
-                   </div>
-                 </div>
-                 <div className="flex items-center gap-2">
-                    <button onClick={() => setShowCalculator(false)} className="p-1.5 hover:bg-rose-500/10 rounded-lg transition-all text-auto-tertiary hover:text-rose-500">
-                      <X size={16} />
-                    </button>
-                 </div>
+              <div className="flex items-center justify-between px-4 py-2 border-b border-border select-none">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 text-[10px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic">
+                    <Calculator size={12} /> Desmos
+                  </div>
+                  <span className="h-3 w-px bg-border-dynamic" />
+                  <button
+                    onClick={() => setCalcPosition('side')}
+                    className="hidden lg:flex items-center gap-1.5 px-2 py-1 rounded-md text-[9px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic hover:text-headline transition-colors"
+                  >
+                    <Layout size={11} /> Split side
+                  </button>
+                </div>
+                <button onClick={() => setShowCalculator(false)} className="h-7 w-7 grid place-items-center rounded-full text-text-tertiary-dynamic hover:text-lotus-pink transition-colors">
+                  <X size={14} />
+                </button>
               </div>
               <div className="flex-1 overflow-hidden">
                 <DesmosCalculator />
@@ -692,8 +604,6 @@ export default function ExamInterface() {
             </motion.div>
           )}
         </AnimatePresence>
-
-
       </div>
     </div>
   )

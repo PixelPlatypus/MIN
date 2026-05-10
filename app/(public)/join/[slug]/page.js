@@ -1,16 +1,29 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  PaperPlaneTilt as Send, CircleNotch as Loader2, CheckCircle as CheckCircle2, WarningCircle as AlertCircle, 
-  ArrowLeft, RocketLaunch as Sparkles, Heart, Globe, Target,
-  Clock, UploadSimple as Upload, FileText
-} from '@phosphor-icons/react'
+import { motion } from 'framer-motion'
+import {
+  Send, Loader2, CheckCircle2, AlertCircle, ArrowLeft, Sparkles,
+  Clock, Upload, FileText, Target,
+} from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
 import 'react-phone-number-input/style.css'
+import GridPaper from '@/components/shared/GridPaper'
+import NepalBar from '@/components/shared/NepalBar'
+
+const inputClass = 'w-full bg-bg-dynamic border border-border rounded-xl py-3.5 px-5 text-sm text-text-primary-dynamic placeholder:text-text-tertiary-dynamic focus:border-headline outline-none transition-colors'
+const labelClass = 'text-[10px] font-institutional uppercase tracking-[0.28em] text-text-tertiary-dynamic flex items-center gap-2'
+
+function FieldLabel({ field }) {
+  return (
+    <label className={labelClass}>
+      {field.label}
+      {field.required && <span className="text-lotus-pink normal-case tracking-normal text-[10px]">— required</span>}
+    </label>
+  )
+}
 
 export default function DynamicFormPage() {
   const { slug } = useParams()
@@ -28,12 +41,10 @@ export default function DynamicFormPage() {
         if (!res.ok) throw new Error('Form not found or inactive')
         const data = await res.json()
         setDefinition(data)
-        
-        // Initialize form data only if basic fields exist
         if (data.fields) {
-           const initial = {}
-           data.fields.forEach(f => initial[f.label] = '')
-           setFormData(initial)
+          const initial = {}
+          data.fields.forEach(f => { initial[f.label] = '' })
+          setFormData(initial)
         }
       } catch (err) {
         setError(err.message)
@@ -44,9 +55,7 @@ export default function DynamicFormPage() {
     fetchDefinition()
   }, [slug])
 
-  const handleChange = (label, value) => {
-    setFormData(prev => ({ ...prev, [label]: value }))
-  }
+  const handleChange = (label, value) => setFormData(prev => ({ ...prev, [label]: value }))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -56,29 +65,19 @@ export default function DynamicFormPage() {
     if (definition?.fields) {
       for (const field of definition.fields) {
         const val = formData[field.label]
-        
-        // Required check (redundant but good for custom UI)
         if (field.required && (!val || (Array.isArray(val) && val.length === 0))) {
           setError(`Please fill out the required field: ${field.label}`)
           setSubmitting(false)
           return
         }
-
-        // Phone validation
-        if (field.type === 'phone' && val) {
-          if (!isValidPhoneNumber(val)) {
-            setError(`Invalid phone number format for ${field.label}. Please include country code (e.g. +977).`)
-            setSubmitting(false)
-            return
-          }
+        if (field.type === 'phone' && val && !isValidPhoneNumber(val)) {
+          setError(`Invalid phone number for ${field.label}. Include country code (e.g. +977).`)
+          setSubmitting(false)
+          return
         }
-
-        // URL validation for links
         if (field.type === 'link' && val) {
-          try {
-            new URL(val)
-          } catch (e) {
-            setError(`Please enter a valid URL (starting with http:// or https://) for ${field.label}.`)
+          try { new URL(val) } catch {
+            setError(`Please enter a valid URL (https://...) for ${field.label}.`)
             setSubmitting(false)
             return
           }
@@ -87,15 +86,11 @@ export default function DynamicFormPage() {
     }
 
     try {
-      const res = await fetch(`/api/forms/submit`, {
+      const res = await fetch('/api/forms/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          form_id: definition.id, 
-          data: formData 
-        })
+        body: JSON.stringify({ form_id: definition.id, data: formData }),
       })
-      
       if (!res.ok) throw new Error('Failed to submit application')
       setSubmitted(true)
     } catch (err) {
@@ -109,17 +104,12 @@ export default function DynamicFormPage() {
     setSubmitting(true)
     setError(null)
     const email = new FormData(e.target).get('email')
-
     try {
-      const res = await fetch(`/api/forms/reminders`, {
+      const res = await fetch('/api/forms/reminders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email, 
-          category: definition.category 
-        })
+        body: JSON.stringify({ email, category: definition.category }),
       })
-      
       if (!res.ok) throw new Error('Failed to join waitlist')
       setSubmitted(true)
     } catch (err) {
@@ -129,280 +119,282 @@ export default function DynamicFormPage() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 size={48} className="animate-spin text-primary" /></div>
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 size={28} className="animate-spin text-text-tertiary-dynamic" />
+      </div>
+    )
   }
 
-  if (error) {
+  if (error && !definition) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <div className="text-center space-y-4">
-           <AlertCircle size={64} className="mx-auto text-coral opacity-20" />
-           <h2 className="text-3xl font-black">Something went wrong</h2>
-           <p className="text-auto-tertiary">{error}</p>
-           <Link href="/join" className="inline-block text-primary font-bold hover:underline">Return to Paths</Link>
+      <main className="min-h-screen flex items-center justify-center px-6">
+        <div className="text-center space-y-4 max-w-md">
+          <AlertCircle size={32} className="mx-auto text-text-tertiary-dynamic" />
+          <h2 className="text-3xl font-black tracking-tighter text-headline">Something went wrong</h2>
+          <p className="text-text-secondary-dynamic">{error}</p>
+          <Link href="/join" className="inline-block text-headline font-medium underline-offset-4 hover:underline">Return to programs</Link>
         </div>
-      </div>
+      </main>
     )
   }
 
   if (submitted) {
+    const isWaitlist = definition?.is_active === false
     return (
-      <div className="min-h-screen flex items-center justify-center p-6 bg-white dark:bg-black">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-xl w-full text-center space-y-8 p-12 glass rounded-[3rem] border border-primary/20 shadow-2xl"
+      <main className="relative min-h-screen flex items-center justify-center px-6 py-24 overflow-hidden">
+        <GridPaper opacity={0.08} spacing={80} />
+        <NepalBar position="left" />
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative max-w-xl w-full text-center space-y-8 p-10 md:p-14 rounded-2xl border border-border bg-bg-dynamic/60 backdrop-blur-md"
         >
-           <div className="w-24 h-24 bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/5">
-              <CheckCircle2 size={48} />
-           </div>
-           <div className="space-y-4">
-              <h2 className="text-4xl font-black tracking-tight leading-tight">{definition?.is_active === false ? 'Added to Alert List' : 'Identity Recorded'}</h2>
-              <p className="text-lg text-auto-secondary font-medium px-4">
-                {definition?.is_active === false 
-                  ? `Thank you. We will automatically notify you the moment the ${definition?.category || 'next'} intake opens.` 
-                  : `Thank you for applying. We've sent a confirmation to your email. Our team will review your application for the "${definition.batch_name || 'Current'}" batch soon.`}
-              </p>
-           </div>
-           <Link href="/" className="inline-block bg-primary text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-primary/20">
-             Return Home
-           </Link>
-        </motion.div>
-      </div>
+          <div className="h-16 w-16 mx-auto grid place-items-center rounded-full border border-marigold/30 text-marigold">
+            <CheckCircle2 size={28} strokeWidth={1.5} />
+          </div>
+          <div className="space-y-3">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-headline">
+              {isWaitlist ? 'Added to the waitlist' : 'Application received'}
+            </h2>
+            <p className="text-text-secondary-dynamic leading-relaxed">
+              {isWaitlist
+                ? `We'll notify you the moment the ${definition?.category || 'next'} intake opens.`
+                : `Thank you for applying. A confirmation has been emailed. Our team will review your submission for the "${definition.batch_name || 'current'}" batch.`}
+            </p>
+          </div>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-border text-text-primary-dynamic hover:text-headline hover:border-headline/40 text-xs font-institutional uppercase tracking-[0.24em] transition-colors"
+          >
+            Return home
+          </Link>
+        </motion.section>
+      </main>
     )
   }
 
-  // Handle Dormant/Inactive form state
   if (definition?.is_active === false) {
     return (
-      <div className="min-h-screen pt-32 pb-40 px-6 relative overflow-hidden flex items-center justify-center">
-         <div className="absolute top-0 right-0 w-[50vw] h-[50vh] bg-coral/5 blur-[120px] rounded-full -z-10" />
-         
-         <div className="max-w-2xl w-full text-center space-y-10">
-            <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-auto-tertiary hover:text-primary transition-all group mb-4">
-                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to choices
-            </Link>
+      <main className="relative min-h-screen pt-32 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden">
+        <GridPaper opacity={0.08} spacing={80} />
+        <NepalBar position="left" />
 
-            <div className="space-y-6 glass p-10 md:p-14 rounded-[3rem] border border-border shadow-2xl">
-               <div className="w-24 h-24 bg-coral/10 text-coral rounded-full flex items-center justify-center mx-auto shadow-xl shadow-coral/5">
-                  <Clock size={48} />
-               </div>
-               <div className="space-y-4">
-                  <h1 className="text-4xl md:text-5xl font-black tracking-tight">Intake Closed</h1>
-                  <p className="text-lg text-auto-secondary font-medium leading-relaxed max-w-lg mx-auto">
-                    The intake for <span className="text-coral font-black">{definition.title}</span> is currently closed. We are evaluating the previous batch.
-                  </p>
-               </div>
+        <div className="relative max-w-2xl mx-auto space-y-12">
+          <Link href="/join" className="inline-flex items-center gap-2 text-xs font-institutional uppercase tracking-[0.28em] text-text-tertiary-dynamic hover:text-headline transition-colors group">
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            Back to programs
+          </Link>
 
-               <div className="pt-8 mt-8 border-t border-border">
-                  <h4 className="text-sm font-black uppercase tracking-widest text-auto-tertiary mb-6">Get Notified When It Opens</h4>
-                  <form onSubmit={handleReminderSubmit} className="flex flex-col sm:flex-row gap-4 relative">
-                     <input 
-                      type="email" 
-                      name="email"
-                      required
-                      placeholder="Enter your email address..."
-                      className="flex-1 bg-white dark:bg-white/5 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary outline-none transition-all"
-                     />
-                     <button
-                        type="submit"
-                        disabled={submitting}
-                        className="bg-primary text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                      >
-                        {submitting ? <Loader2 size={16} className="animate-spin" /> : <><Send size={16} /> Alert Me</>}
-                     </button>
-                  </form>
-               </div>
+          <section className="space-y-8 p-10 md:p-12 rounded-2xl border border-border bg-bg-dynamic/60 backdrop-blur-md">
+            <div className="h-14 w-14 grid place-items-center rounded-full border border-border text-text-primary-dynamic">
+              <Clock size={22} strokeWidth={1.5} />
             </div>
-         </div>
-      </div>
+            <div className="space-y-3">
+              <div className="text-[10px] font-institutional uppercase tracking-[0.32em] text-text-tertiary-dynamic">Status</div>
+              <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-headline">Intake closed</h1>
+              <p className="text-text-secondary-dynamic leading-relaxed">
+                The intake for <span className="text-headline font-semibold">{definition.title}</span> is currently closed while we evaluate the previous batch.
+              </p>
+            </div>
+
+            <div className="pt-6 border-t border-border space-y-4">
+              <h3 className="text-[10px] font-institutional uppercase tracking-[0.28em] text-text-tertiary-dynamic">Get notified when it opens</h3>
+              <form onSubmit={handleReminderSubmit} className="flex flex-col sm:flex-row gap-3">
+                <input type="email" name="email" required placeholder="Your email address" className={inputClass} />
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-headline text-bg text-xs font-institutional uppercase tracking-[0.24em] hover:bg-headline/90 transition-colors disabled:opacity-60"
+                >
+                  {submitting ? <Loader2 size={14} className="animate-spin" /> : <><Send size={14} /> Alert me</>}
+                </button>
+              </form>
+              {error && <p className="text-xs text-lotus-pink">{error}</p>}
+            </div>
+          </section>
+        </div>
+      </main>
     )
   }
 
   return (
-    <div className="min-h-screen pt-32 pb-40 px-6 relative overflow-hidden">
-       {/* Ambient Backdrops */}
-       <div className="absolute top-0 right-0 w-[50vw] h-[50vh] bg-primary/5 blur-[120px] rounded-full -z-10 animate-pulse" />
-       <div className="absolute bottom-0 left-0 w-[50vw] h-[50vh] bg-secondary/10 blur-[120px] rounded-full -z-10" />
+    <main className="relative min-h-screen pt-32 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden">
+      <GridPaper opacity={0.08} spacing={80} />
+      <NepalBar position="left" />
 
-       <div className="max-w-4xl mx-auto space-y-12">
-          {/* Header */}
-          <header className="space-y-6">
-             <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-auto-tertiary hover:text-primary transition-all group">
-                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to choices
-             </Link>
-             <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/10">
-                   <Sparkles size={12}/> Admission Program
-                </div>
-                <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-none">{definition.title}</h1>
-                <p className="text-xl text-auto-secondary font-medium max-w-2xl leading-relaxed">{definition.description}</p>
-             </div>
-          </header>
+      <div className="relative max-w-3xl mx-auto space-y-12">
+        <header className="space-y-6">
+          <Link href="/join" className="inline-flex items-center gap-2 text-xs font-institutional uppercase tracking-[0.28em] text-text-tertiary-dynamic hover:text-headline transition-colors group">
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            Back to programs
+          </Link>
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border text-text-tertiary-dynamic text-[10px] font-institutional uppercase tracking-[0.28em]">
+              <Sparkles size={11} />
+              Application
+            </div>
+            <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.95] text-headline">{definition.title}</h1>
+            {definition.description && (
+              <p className="text-base md:text-lg text-text-secondary-dynamic leading-relaxed max-w-2xl">{definition.description}</p>
+            )}
+          </div>
+        </header>
 
-          {/* Form Engine */}
-          <form onSubmit={handleSubmit} className="glass p-8 md:p-12 rounded-[3rem] border border-border shadow-2xl space-y-10 relative overflow-hidden bg-white/40 dark:bg-white/5 backdrop-blur-2xl">
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {definition.fields.map((field, i) => (
-                  <motion.div 
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    className={`space-y-3 ${['textarea', 'radio', 'checkbox'].includes(field.type) ? 'md:col-span-2' : ''}`}
+        <form onSubmit={handleSubmit} className="space-y-10 p-8 md:p-10 rounded-2xl border border-border bg-bg-dynamic/60 backdrop-blur-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {definition.fields.map((field, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04 }}
+                className={`space-y-2 ${['textarea', 'radio', 'checkbox', 'file'].includes(field.type) ? 'md:col-span-2' : ''}`}
+              >
+                <FieldLabel field={field} />
+
+                {field.type === 'select' ? (
+                  <select
+                    required={field.required}
+                    onChange={(e) => handleChange(field.label, e.target.value)}
+                    className={`${inputClass} cursor-pointer appearance-none`}
                   >
-                    <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-1 flex items-center gap-2">
-                       {field.label} {field.required && <span className="text-coral flex items-center gap-0.5"><Heart size={8} fill="currentColor"/> Required</span>}
-                    </label>
-                    
-                    {field.type === 'select' ? (
-                       <select 
-                        required={field.required}
-                        onChange={(e) => handleChange(field.label, e.target.value)}
-                        className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all cursor-pointer appearance-none"
-                      >
-                         <option value="">Select an option...</option>
-                         {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                      </select>
-                    ) : field.type === 'radio' ? (
-                       <div className="flex flex-wrap gap-4">
-                          {field.options?.map(opt => (
-                            <label key={opt} className="flex items-center gap-3 bg-white dark:bg-white/5 border border-border rounded-xl px-5 py-3 cursor-pointer group hover:border-primary/50 transition-colors">
-                              <input 
-                                type="radio" 
-                                name={field.label}
-                                value={opt}
-                                required={field.required}
-                                onChange={(e) => handleChange(field.label, e.target.value)}
-                                className="w-4 h-4 text-primary focus:ring-primary"
-                              />
-                              <span className="text-sm font-bold">{opt}</span>
-                            </label>
-                          ))}
-                       </div>
-                    ) : field.type === 'checkbox' ? (
-                       <div className="flex flex-wrap gap-4">
-                          {field.options?.map(opt => (
-                            <label key={opt} className="flex items-center gap-3 bg-white dark:bg-white/5 border border-border rounded-xl px-5 py-3 cursor-pointer group hover:border-primary/50 transition-colors">
-                              <input 
-                                type="checkbox" 
-                                name={`${field.label}-${opt}`}
-                                value={opt}
-                                onChange={(e) => {
-                                  // For checkboxes, we store an array of selected options
-                                  const currentArr = Array.isArray(formData[field.label]) ? formData[field.label] : [];
-                                  if(e.target.checked) {
-                                    handleChange(field.label, [...currentArr, opt])
-                                  } else {
-                                    handleChange(field.label, currentArr.filter(i => i !== opt))
-                                  }
-                                }}
-                                className="w-4 h-4 text-primary rounded focus:ring-primary"
-                              />
-                              <span className="text-sm font-bold">{opt}</span>
-                            </label>
-                          ))}
-                       </div>
-                    ) : field.type === 'textarea' ? (
-                      <textarea 
-                        required={field.required}
-                        rows={5}
-                        onChange={(e) => handleChange(field.label, e.target.value)}
-                        className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all resize-none"
-                        placeholder={field.placeholder || `Tell us about ${field.label.toLowerCase()}...`}
-                      />
-                     ) : field.type === 'phone' ? (
-                       <PhoneInput 
-                         international
-                         defaultCountry="NP"
-                         flags={flags}
-                         value={formData[field.label]}
-                         onChange={(val) => handleChange(field.label, val || '')}
-                         className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl px-6 py-4 text-sm font-bold focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/5 outline-none transition-all"
-                       />
-                    ) : field.type === 'link' ? (
-                      <input 
-                        type="url"
-                        required={field.required}
-                        onChange={(e) => handleChange(field.label, e.target.value)}
-                        className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
-                        placeholder={field.placeholder || "https://..."}
-                      />
-                    ) : field.type === 'file' ? (
-                       <div className="relative group bg-white dark:bg-white/10 border border-dashed border-border rounded-2xl p-6 text-center hover:border-primary/50 transition-colors">
-                          <input 
-                            type="file"
-                            accept=".pdf,.doc,.docx"
-                            required={field.required && !formData[field.label]}
-                            onChange={async (e) => {
-                               const uploaded = e.target.files[0];
-                               if (!uploaded) return;
-                               setSubmitting(true);
-                               try {
-                                 const fd = new FormData();
-                                 fd.append('file', uploaded);
-                                 fd.append('folder', 'intake-cvs');
-                                 const res = await fetch('/api/upload', { method: 'POST', body: fd });
-                                 const resData = await res.json();
-                                 if (resData.url) {
-                                    handleChange(field.label, resData.url);
-                                 } else throw new Error("Upload failed");
-                               } catch (err) {
-                                 alert("Failed to upload file. Please try again.");
-                               } finally {
-                                 setSubmitting(false);
-                               }
-                            }}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                          />
-                          <div className="space-y-3 pointer-events-none">
-                             <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mx-auto">
-                               {formData[field.label] ? <FileText size={20} /> : <Upload size={20} />}
-                             </div>
-                             <div className="space-y-1">
-                                <p className="text-sm font-bold text-dynamic">
-                                  {formData[field.label] ? "Document Attached Successfully" : "Click or drag file to upload"}
-                                </p>
-                                <p className="text-[10px] uppercase font-black tracking-widest text-auto-tertiary">PDF, DOC, DOCX up to 5MB</p>
-                             </div>
-                             {formData[field.label] && <p className="text-[10px] text-primary italic break-all px-4">{formData[field.label]}</p>}
-                          </div>
-                       </div>
-                    ) : (
-                      <input 
-                        type={field.type === 'email' ? 'email' : 'text'}
-                        required={field.required}
-                        onChange={(e) => handleChange(field.label, e.target.value)}
-                        className="w-full bg-white dark:bg-white/10 border border-border rounded-2xl py-4 px-6 text-sm font-bold focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
-                        placeholder={field.placeholder || `Your ${field.label.toLowerCase()}...`}
-                      />
-                    )}
-                  </motion.div>
-                ))}
-             </div>
+                    <option value="">Select an option…</option>
+                    {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                  </select>
+                ) : field.type === 'radio' ? (
+                  <div className="flex flex-wrap gap-2">
+                    {field.options?.map(opt => (
+                      <label key={opt} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-border bg-bg-dynamic text-sm text-text-primary-dynamic cursor-pointer hover:border-headline/40 transition-colors">
+                        <input
+                          type="radio"
+                          name={field.label}
+                          value={opt}
+                          required={field.required}
+                          onChange={(e) => handleChange(field.label, e.target.value)}
+                          className="accent-headline"
+                        />
+                        {opt}
+                      </label>
+                    ))}
+                  </div>
+                ) : field.type === 'checkbox' ? (
+                  <div className="flex flex-wrap gap-2">
+                    {field.options?.map(opt => (
+                      <label key={opt} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-border bg-bg-dynamic text-sm text-text-primary-dynamic cursor-pointer hover:border-headline/40 transition-colors">
+                        <input
+                          type="checkbox"
+                          name={`${field.label}-${opt}`}
+                          value={opt}
+                          onChange={(e) => {
+                            const cur = Array.isArray(formData[field.label]) ? formData[field.label] : []
+                            handleChange(field.label, e.target.checked ? [...cur, opt] : cur.filter(x => x !== opt))
+                          }}
+                          className="accent-headline"
+                        />
+                        {opt}
+                      </label>
+                    ))}
+                  </div>
+                ) : field.type === 'textarea' ? (
+                  <textarea
+                    required={field.required}
+                    rows={5}
+                    onChange={(e) => handleChange(field.label, e.target.value)}
+                    placeholder={field.placeholder || `Tell us about ${field.label.toLowerCase()}…`}
+                    className={`${inputClass} resize-none`}
+                  />
+                ) : field.type === 'phone' ? (
+                  <PhoneInput
+                    international
+                    defaultCountry="NP"
+                    flags={flags}
+                    value={formData[field.label]}
+                    onChange={(val) => handleChange(field.label, val || '')}
+                    className="bg-bg-dynamic border border-border rounded-xl px-5 py-3 text-sm text-text-primary-dynamic focus-within:border-headline transition-colors"
+                  />
+                ) : field.type === 'link' ? (
+                  <input
+                    type="url"
+                    required={field.required}
+                    onChange={(e) => handleChange(field.label, e.target.value)}
+                    placeholder={field.placeholder || 'https://…'}
+                    className={inputClass}
+                  />
+                ) : field.type === 'file' ? (
+                  <div className="relative bg-bg-dynamic border border-dashed border-border rounded-xl p-6 text-center hover:border-headline/40 transition-colors">
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      required={field.required && !formData[field.label]}
+                      onChange={async (e) => {
+                        const uploaded = e.target.files[0]
+                        if (!uploaded) return
+                        setSubmitting(true)
+                        try {
+                          const fd = new FormData()
+                          fd.append('file', uploaded)
+                          fd.append('folder', 'intake-cvs')
+                          const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                          const resData = await res.json()
+                          if (resData.url) handleChange(field.label, resData.url)
+                          else throw new Error('Upload failed')
+                        } catch {
+                          alert('Failed to upload file. Please try again.')
+                        } finally {
+                          setSubmitting(false)
+                        }
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                    <div className="space-y-2 pointer-events-none">
+                      <div className="h-10 w-10 mx-auto grid place-items-center rounded-full border border-border text-text-primary-dynamic">
+                        {formData[field.label] ? <FileText size={16} /> : <Upload size={16} />}
+                      </div>
+                      <p className="text-sm font-medium text-text-primary-dynamic">
+                        {formData[field.label] ? 'Document attached' : 'Click or drag to upload'}
+                      </p>
+                      <p className="text-[10px] font-institutional uppercase tracking-[0.24em] text-text-tertiary-dynamic">PDF, DOC, DOCX · up to 5MB</p>
+                      {formData[field.label] && <p className="text-[10px] text-text-secondary-dynamic break-all px-4 italic">{formData[field.label]}</p>}
+                    </div>
+                  </div>
+                ) : (
+                  <input
+                    type={field.type === 'email' ? 'email' : 'text'}
+                    required={field.required}
+                    onChange={(e) => handleChange(field.label, e.target.value)}
+                    placeholder={field.placeholder || `Your ${field.label.toLowerCase()}…`}
+                    className={inputClass}
+                  />
+                )}
+              </motion.div>
+            ))}
+          </div>
 
-             <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-4 text-auto-tertiary">
-                   <Target size={20} className="shrink-0" />
-                   <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed">
-                      Assigned Batch: <span className="text-primary font-black">{definition.batch_name || 'GENERAL'}</span> <br />
-                      Response time: 7-10 Business Days
-                   </p>
-                </div>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full md:w-auto bg-primary text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1 transition-all active:scale-95 disabled:opacity-70"
-                >
-                  {submitting ? (
-                    <><Loader2 size={18} className="animate-spin" /> Verifying Submission</>
-                  ) : (
-                    <><Send size={18} /> Submit Application</>
-                  )}
-                </button>
-             </div>
-          </form>
-       </div>
-    </div>
+          {error && (
+            <div className="rounded-xl border border-lotus-pink/30 bg-lotus-pink/5 px-4 py-3 text-sm text-lotus-pink flex items-center gap-2">
+              <AlertCircle size={14} /> {error}
+            </div>
+          )}
+
+          <div className="pt-6 border-t border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-text-tertiary-dynamic">
+              <Target size={14} className="shrink-0" />
+              <p className="text-[10px] font-institutional uppercase tracking-[0.24em]">
+                Batch <span className="text-headline">{definition.batch_name || 'General'}</span> · Reply within 7–10 days
+              </p>
+            </div>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-headline text-bg text-xs font-institutional uppercase tracking-[0.24em] hover:bg-headline/90 transition-colors disabled:opacity-60"
+            >
+              {submitting ? <><Loader2 size={14} className="animate-spin" /> Submitting</> : <><Send size={14} /> Submit application</>}
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
   )
 }
