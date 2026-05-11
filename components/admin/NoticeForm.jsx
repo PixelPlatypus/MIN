@@ -78,7 +78,7 @@ export default function NoticeForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/notices" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary hover:bg-bg-tertiary transition-all text-auto-tertiary hover:text-primary"
           >
             <ArrowLeft size={20} />
           </Link>
@@ -99,7 +99,7 @@ export default function NoticeForm({ initialData = null }) {
                   required
                   type="text" 
                   placeholder="e.g. Join the JMOC 2026!"
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-lg font-bold transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-lg font-bold transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                 />
@@ -111,7 +111,7 @@ export default function NoticeForm({ initialData = null }) {
                   required
                   rows={6}
                   placeholder="What should the announcement say?"
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-4 px-4 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10 resize-none"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-4 px-4 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10 resize-none"
                   value={formData.body}
                   onChange={(e) => setFormData({...formData, body: e.target.value})}
                 />
@@ -124,7 +124,7 @@ export default function NoticeForm({ initialData = null }) {
                     <input 
                       type="text" 
                       placeholder="e.g. Register Now"
-                      className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-10 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
+                      className="w-full bg-white/5 border border-border rounded-2xl py-3 px-10 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
                       value={formData.cta_text}
                       onChange={(e) => setFormData({...formData, cta_text: e.target.value})}
                     />
@@ -137,7 +137,7 @@ export default function NoticeForm({ initialData = null }) {
                     <input 
                       type="url" 
                       placeholder="https://..."
-                      className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-10 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
+                      className="w-full bg-white/5 border border-border rounded-2xl py-3 px-10 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
                       value={formData.cta_url}
                       onChange={(e) => setFormData({...formData, cta_url: e.target.value})}
                     />
@@ -154,7 +154,7 @@ export default function NoticeForm({ initialData = null }) {
                   <label className="text-sm font-bold ml-1 opacity-60">Publish from</label>
                   <input 
                     type="date" 
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
                     value={formData.starts_at}
                     onChange={(e) => setFormData({...formData, starts_at: e.target.value})}
                   />
@@ -163,7 +163,7 @@ export default function NoticeForm({ initialData = null }) {
                   <label className="text-sm font-bold ml-1 opacity-60">Expire on</label>
                   <input 
                     type="date" 
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-primary/10"
                     value={formData.ends_at}
                     onChange={(e) => setFormData({...formData, ends_at: e.target.value})}
                   />
@@ -195,7 +195,7 @@ export default function NoticeForm({ initialData = null }) {
 
             <div className="glass rounded-[2rem] p-8 space-y-6">
               <h3 className="text-lg font-bold tracking-tight">Publishing</h3>
-              <div className="flex items-center justify-between p-4 bg-bg-secondary dark:bg-white/5 rounded-2xl border border-border">
+              <div className="flex items-center justify-between p-4 bg-bg-secondary rounded-2xl border border-border">
                 <span className="text-sm font-bold">Active Immediately</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input 
@@ -223,7 +223,7 @@ export default function NoticeForm({ initialData = null }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70"
+                className="w-full bg-marigold hover:bg-[color:var(--color-primary-dark)] text-bg py-4 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70"
               >
                 {loading ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
                 {isEditing ? 'Save Changes' : 'Post Announcement'}
@@ -231,7 +231,7 @@ export default function NoticeForm({ initialData = null }) {
               <button 
                 type="button"
                 onClick={() => router.back()}
-                className="w-full py-4 rounded-2xl font-bold text-sm text-auto-tertiary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all text-center"
+                className="w-full py-4 rounded-2xl font-bold text-sm text-auto-tertiary hover:bg-bg-secondary transition-all text-center"
               >
                 Cancel
               </button>

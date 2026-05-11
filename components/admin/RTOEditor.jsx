@@ -68,7 +68,7 @@ export default function RTOEditor({ settings, setSettings }) {
   return (
     <div className="space-y-8">
       {/* Sub Tabs */}
-      <div className="flex gap-2 p-1.5 glass bg-black/5 dark:bg-white/5 rounded-2xl w-fit">
+      <div className="flex gap-2 p-1.5 glass bg-white/5 rounded-2xl w-fit">
         {[
           { id: 'stages', name: 'Selection Stages', icon: <MapPin size={14}/> },
           { id: 'roadmap', name: 'Roadmap Flow', icon: <ChevronRight size={14}/> },
@@ -183,7 +183,7 @@ export default function RTOEditor({ settings, setSettings }) {
                           <input 
                             value={phase.phase || ''} 
                             onChange={e => updateArray('rto_roadmap', pIdx, 'phase', e.target.value)}
-                            className="w-full bg-white dark:bg-white/5 border border-border rounded-xl px-4 py-2 text-sm font-bold"
+                            className="w-full bg-white/5 border border-border rounded-xl px-4 py-2 text-sm font-bold"
                           />
                        </div>
                        <div className="space-y-2">
@@ -191,7 +191,7 @@ export default function RTOEditor({ settings, setSettings }) {
                           <input 
                             value={phase.timeline || ''} 
                             onChange={e => updateArray('rto_roadmap', pIdx, 'timeline', e.target.value)}
-                            className="w-full bg-white dark:bg-white/5 border border-border rounded-xl px-4 py-2 text-sm font-bold"
+                            className="w-full bg-white/5 border border-border rounded-xl px-4 py-2 text-sm font-bold"
                           />
                        </div>
                        <div className="space-y-2">
@@ -199,7 +199,7 @@ export default function RTOEditor({ settings, setSettings }) {
                           <input 
                             value={phase.goal || ''} 
                             onChange={e => updateArray('rto_roadmap', pIdx, 'goal', e.target.value)}
-                            className="w-full bg-white dark:bg-white/5 border border-border rounded-xl px-4 py-2 text-sm font-bold"
+                            className="w-full bg-white/5 border border-border rounded-xl px-4 py-2 text-sm font-bold"
                           />
                        </div>
                     </div>
@@ -213,7 +213,7 @@ export default function RTOEditor({ settings, setSettings }) {
                        </div>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {(phase.items || []).map((item, iIdx) => (
-                            <div key={iIdx} className="flex gap-4 p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-border/50 relative group/item">
+                            <div key={iIdx} className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-border/50 relative group/item">
                                <div className="w-8 h-8 rounded-full bg-white dark:bg-black/20 flex items-center justify-center shrink-0 text-xs font-black text-primary border border-border">
                                  {iIdx + 1}
                                </div>
@@ -277,7 +277,7 @@ export default function RTOEditor({ settings, setSettings }) {
                     <button onClick={() => removeItem('rto_resources', cIdx)} className="absolute top-8 right-8 text-coral p-2 hover:bg-coral/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 size={16}/></button>
 
                     <div className="flex items-center gap-4">
-                       <div className="w-12 h-12 rounded-2xl bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-auto-tertiary">
+                       <div className="w-12 h-12 rounded-2xl bg-bg-secondary flex items-center justify-center text-auto-tertiary">
                           {ICON_MAP[cat.icon] || <Library size={18}/>}
                        </div>
                        <input 
@@ -290,7 +290,7 @@ export default function RTOEditor({ settings, setSettings }) {
 
                     <div className="space-y-4">
                        {(cat.items || []).map((item, iIdx) => (
-                         <div key={iIdx} className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-border/50 space-y-3 relative group/item">
+                         <div key={iIdx} className="p-4 rounded-2xl bg-white/5 border border-border/50 space-y-3 relative group/item">
                             <div className="flex items-center gap-3">
                                <ChevronRight size={14} className="text-primary shrink-0" />
                                <input 

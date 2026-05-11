@@ -47,15 +47,6 @@ export default async function RTOPage() {
           <div className="relative">
             {/* Desktop horizontal progression bar — vertically centered on the icon (card p-8=32 + icon h-16/2=32 → 64px) */}
             <div className="hidden lg:block absolute top-[63px] left-[8%] right-[8%] h-[2px] bg-gradient-to-r from-marigold/15 via-marigold/70 to-marigold/15 rounded-full pointer-events-none" />
-            {[20, 40, 60, 80].map((pct) => (
-              <ChevronRight
-                key={pct}
-                size={18}
-                strokeWidth={2.5}
-                className="hidden lg:block absolute top-[55px] text-marigold pointer-events-none"
-                style={{ left: `calc(${pct}% - 9px)` }}
-              />
-            ))}
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 relative">
               {displayStages.map((stage, idx) => {

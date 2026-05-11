@@ -7,10 +7,15 @@ import Link from 'next/link'
 const typeIcons = { ARTICLE: <FileText size={14} />, PROBLEM: <Tag size={14} />, BLOG: <FileText size={14} />, RESOURCE: <FileDown size={14} />, VIDEO: <Video size={14} /> }
 
 export default function ContentCard({ item, index, fallbackImage }) {
-  const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [], video_metadata = {} } = item
+  const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [], video_metadata = {}, video_url } = item
   const icon = typeIcons[type] || <FileText size={14} />
   const isVideo = type === 'VIDEO' || content_type === 'VIDEO'
-  const ytId = video_metadata?.video_id || (video_metadata?.is_playlist ? video_metadata?.playlist_video_id : null)
+  const extractYtId = (u) => {
+    if (!u) return null
+    const m = u.match(/[?&]v=([\w-]{11})/) || u.match(/youtu\.be\/([\w-]{11})/) || u.match(/youtube\.com\/embed\/([\w-]{11})/)
+    return m ? m[1] : null
+  }
+  const ytId = video_metadata?.video_id || extractYtId(video_url)
   const ytThumb = isVideo && ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null
   const imageSrc = ytThumb || cover_url || fallbackImage || '/images/logo.png'
 

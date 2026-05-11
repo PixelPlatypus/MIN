@@ -61,7 +61,7 @@ export default function ProgramForm({ initialData }) {
 
   const isNew = !initialData?.id
 
-  const inputClasses = "w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-4 px-5 text-base transition-all focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary placeholder:text-auto-tertiary"
+  const inputClasses = "w-full bg-white/5 border border-border rounded-2xl py-4 px-5 text-base transition-all focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary placeholder:text-auto-tertiary"
   const labelClasses = "text-xs font-black uppercase tracking-widest text-auto-tertiary ml-1 block mb-2"
 
   return (

@@ -169,7 +169,7 @@ export default function EventForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/events" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary hover:bg-bg-tertiary transition-all text-auto-tertiary hover:text-primary"
           >
             <ArrowLeft size={20} />
           </Link>
@@ -190,8 +190,8 @@ export default function EventForm({ initialData = null }) {
                   {...register('title')}
                   onChange={handleTitleChange}
                   placeholder="e.g. JMOC 2024"
-                  className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-lg font-bold transition-all focus:outline-none focus:ring-4 ${
-                    errors.title ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                  className={`w-full bg-white/5 border rounded-2xl py-3 px-4 text-lg font-bold transition-all focus:outline-none focus:ring-4 ${
+                    errors.title ? 'border-coral/50 focus:ring-coral/10' : 'border-border focus:border-primary focus:ring-primary/10'
                   }`}
                 />
                 {errors.title && <p className="text-xs text-coral ml-1">{errors.title.message}</p>}
@@ -202,8 +202,8 @@ export default function EventForm({ initialData = null }) {
                 <input 
                   {...register('slug')}
                   placeholder="e-g-jmoc-2024"
-                  className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-2 px-4 text-xs font-mono transition-all focus:outline-none focus:ring-4 ${
-                    errors.slug ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                  className={`w-full bg-white/5 border rounded-2xl py-2 px-4 text-xs font-mono transition-all focus:outline-none focus:ring-4 ${
+                    errors.slug ? 'border-coral/50 focus:ring-coral/10' : 'border-border focus:border-primary focus:ring-primary/10'
                   }`}
                 />
                 {errors.slug && <p className="text-xs text-coral ml-1">{errors.slug.message}</p>}
@@ -269,7 +269,7 @@ export default function EventForm({ initialData = null }) {
 
               <div className="space-y-4">
                 {fields.map((field, index) => (
-                  <div key={field.id} className="p-4 rounded-2xl bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark space-y-4 relative group">
+                  <div key={field.id} className="p-4 rounded-2xl bg-bg-secondary border border-border space-y-4 relative group">
                     <button
                       type="button"
                       onClick={() => remove(index)}
@@ -284,7 +284,7 @@ export default function EventForm({ initialData = null }) {
                         <input
                           {...register(`youtube_videos.${index}.title`)}
                           placeholder="e.g. Workshop Session 1"
-                          className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-xl py-2 px-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                          className="w-full bg-white/5 border border-border rounded-xl py-2 px-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                         />
                       </div>
                       <div className="space-y-2">
@@ -292,7 +292,7 @@ export default function EventForm({ initialData = null }) {
                         <input
                           {...register(`youtube_videos.${index}.url`)}
                           placeholder="https://youtu.be/..."
-                          className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-xl py-2 px-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                          className="w-full bg-white/5 border border-border rounded-xl py-2 px-4 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                         />
                         {errors.youtube_videos?.[index]?.url && (
                           <p className="text-[10px] text-coral">{errors.youtube_videos[index].url.message}</p>
@@ -303,7 +303,7 @@ export default function EventForm({ initialData = null }) {
                 ))}
                 
                 {fields.length === 0 && (
-                  <div className="py-12 text-center border-2 border-dashed border-border dark:border-border-dark rounded-[2rem]">
+                  <div className="py-12 text-center border-2 border-dashed border-border rounded-[2rem]">
                     <Video size={32} className="mx-auto text-auto-tertiary mb-2 opacity-50" />
                     <p className="text-sm text-auto-tertiary font-medium">No videos added yet.</p>
                   </div>
@@ -321,7 +321,7 @@ export default function EventForm({ initialData = null }) {
                 <label className="text-sm font-bold ml-1">Event Type</label>
                 <select 
                   {...register('event_type')}
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer"
                 >
                   <option value="EVENT">Event (Standard)</option>
                   <option value="RECURRING">Recurring</option>
@@ -334,7 +334,7 @@ export default function EventForm({ initialData = null }) {
                 <label className="text-sm font-bold ml-1">Status</label>
                 <select 
                   {...register('status')}
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer"
                 >
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
@@ -342,7 +342,7 @@ export default function EventForm({ initialData = null }) {
                 </select>
               </div>
 
-              <div className="pt-4 space-y-4 border-t border-border dark:border-border-dark">
+              <div className="pt-4 space-y-4 border-t border-border">
                 <label className="flex items-center gap-3 cursor-pointer group">
                   <div className="relative">
                     <input 
@@ -389,8 +389,8 @@ export default function EventForm({ initialData = null }) {
                   <input 
                     {...register('start_date')}
                     type="date"
-                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 ${
-                      errors.start_date ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                    className={`w-full bg-white/5 border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:ring-4 ${
+                      errors.start_date ? 'border-coral/50 focus:ring-coral/10' : 'border-border focus:border-primary focus:ring-primary/10'
                     }`}
                   />
                   {errors.start_date && <p className="text-xs text-coral ml-1">{errors.start_date.message}</p>}
@@ -402,7 +402,7 @@ export default function EventForm({ initialData = null }) {
                 <input 
                   {...register('end_date')}
                   type="date"
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                 />
               </div>
 
@@ -411,11 +411,11 @@ export default function EventForm({ initialData = null }) {
                 <input 
                   {...register('location')}
                   placeholder="e.g. Kathmandu, Nepal"
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                 />
               </div>
 
-              <div className="space-y-4 pt-4 border-t border-border dark:border-border-dark">
+              <div className="space-y-4 pt-4 border-t border-border">
                 <h4 className="text-xs font-black uppercase tracking-widest text-auto-tertiary">Action Button Customization</h4>
                 
                 <div className="space-y-2">
@@ -423,7 +423,7 @@ export default function EventForm({ initialData = null }) {
                   <input 
                     {...register('action_title')}
                     placeholder="e.g. Registration / Action Required"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 </div>
 
@@ -433,7 +433,7 @@ export default function EventForm({ initialData = null }) {
                     {...register('action_description')}
                     rows={2}
                     placeholder="Follow the link to participate or register..."
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
                   />
                 </div>
 
@@ -442,7 +442,7 @@ export default function EventForm({ initialData = null }) {
                   <input 
                     {...register('action_text')}
                     placeholder="e.g. Register Now, Join Discord"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 </div>
 
@@ -451,7 +451,7 @@ export default function EventForm({ initialData = null }) {
                   <input 
                     {...register('action_link')}
                     placeholder="e.g. https://forms.gle/..."
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 </div>
 
@@ -460,7 +460,7 @@ export default function EventForm({ initialData = null }) {
                   <input 
                     {...register('action_deadline')}
                     type="date"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                   <p className="text-[10px] text-auto-tertiary ml-1 italic">If not provided, the event's End Date will be used as the deadline.</p>
                 </div>
@@ -473,7 +473,7 @@ export default function EventForm({ initialData = null }) {
                     {...register('youtube_title')}
                     list="youtube-title-suggestions"
                     placeholder="e.g. Event Recordings"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                   <datalist id="youtube-title-suggestions">
                     <option value="Event Recordings" />
@@ -489,7 +489,7 @@ export default function EventForm({ initialData = null }) {
 
             <div className="glass rounded-[2rem] p-8 space-y-6">
               <h3 className="text-lg font-bold tracking-tight">Cover Image</h3>
-              <div className="aspect-video relative rounded-2xl overflow-hidden border-2 border-primary/10 mb-4 bg-bg-secondary dark:bg-white/5 shadow-inner">
+              <div className="aspect-video relative rounded-2xl overflow-hidden border-2 border-primary/10 mb-4 bg-bg-secondary shadow-inner">
                 {coverUrl ? (
                   <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
                 ) : (
@@ -523,7 +523,7 @@ export default function EventForm({ initialData = null }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100"
+                className="w-full bg-marigold hover:bg-[color:var(--color-primary-dark)] text-bg py-4 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100"
               >
                 {loading ? (
                   <Loader2 size={20} className="animate-spin" />
@@ -536,7 +536,7 @@ export default function EventForm({ initialData = null }) {
               </button>
               <Link 
                 href="/admin/events"
-                className="w-full px-8 py-4 rounded-2xl text-sm font-bold text-auto-secondary text-center hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
+                className="w-full px-8 py-4 rounded-2xl text-sm font-bold text-auto-secondary text-center border border-border hover:border-border-strong hover:text-text-primary-dynamic transition-all"
               >
                 Cancel
               </Link>

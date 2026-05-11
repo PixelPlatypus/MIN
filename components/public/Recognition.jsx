@@ -36,7 +36,7 @@ export default function Recognition({ settings }) {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden bg-bg-secondary/30 border-y border-border-dynamic">
+    <section ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden border-t border-border-dynamic">
       <div className="relative z-10 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="space-y-8">

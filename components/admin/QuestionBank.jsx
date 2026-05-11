@@ -229,7 +229,7 @@ export default function QuestionBank() {
                 placeholder="Set Name (e.g., DMO Mock 1)"
                 value={newSetName}
                 onChange={e => setNewSetName(e.target.value)}
-                className="w-full bg-white dark:bg-white/5 border border-border rounded-xl px-4 py-3 text-sm font-bold focus:border-primary transition-all outline-none"
+                className="w-full bg-white/5 border border-border rounded-xl px-4 py-3 text-sm font-bold focus:border-primary transition-all outline-none"
               />
               <div className="flex items-center gap-3">
                 <Clock size={16} className="text-auto-tertiary" />
@@ -238,7 +238,7 @@ export default function QuestionBank() {
                   placeholder="Mins"
                   value={newSetTime}
                   onChange={e => setNewSetTime(e.target.value)}
-                  className="w-full bg-white dark:bg-white/5 border border-border rounded-xl px-4 py-3 text-sm font-bold focus:border-primary transition-all outline-none"
+                  className="w-full bg-white/5 border border-border rounded-xl px-4 py-3 text-sm font-bold focus:border-primary transition-all outline-none"
                 />
                 <span className="text-[10px] text-auto-tertiary font-black uppercase tracking-widest">Minutes</span>
               </div>
@@ -249,7 +249,7 @@ export default function QuestionBank() {
                 >
                   {editingSet ? 'Update' : 'Create'}
                 </button>
-                <button onClick={() => { setIsAddingSet(false); setEditingSet(null); }} className="flex-1 bg-bg-secondary dark:bg-white/5 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-auto-tertiary">Cancel</button>
+                <button onClick={() => { setIsAddingSet(false); setEditingSet(null); }} className="flex-1 bg-bg-secondary py-3 rounded-xl text-xs font-black uppercase tracking-widest text-auto-tertiary">Cancel</button>
               </div>
             </motion.div>
           )}
@@ -419,7 +419,7 @@ export default function QuestionBank() {
                             rows={6}
                             value={questionForm.question_text}
                             onChange={e => setQuestionForm({...questionForm, question_text: e.target.value})}
-                            className="w-full bg-white dark:bg-white/5 border border-border rounded-2xl px-5 py-4 text-sm font-medium focus:border-primary transition-all resize-none h-full"
+                            className="w-full bg-white/5 border border-border rounded-2xl px-5 py-4 text-sm font-medium focus:border-primary transition-all resize-none h-full"
                             placeholder="State the Pythagorean theorem... $a^2 + b^2 = c^2$"
                           />
                         </div>
@@ -487,7 +487,7 @@ export default function QuestionBank() {
                              <input 
                               value={questionForm[`option_${opt.toLowerCase()}`]}
                               onChange={e => setQuestionForm({...questionForm, [`option_${opt.toLowerCase()}`]: e.target.value})}
-                              className={`w-full bg-white dark:bg-white/5 border rounded-xl px-4 py-3 text-sm transition-all pr-12 ${
+                              className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-sm transition-all pr-12 ${
                                 questionForm.correct_option === opt ? 'border-primary shadow-sm bg-primary/5' : 'border-border'
                               }`}
                               placeholder={`Possible answer ${opt}...`}
@@ -495,14 +495,14 @@ export default function QuestionBank() {
                             <button 
                               onClick={() => setQuestionForm({...questionForm, correct_option: opt})}
                               className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all ${
-                                questionForm.correct_option === opt ? 'bg-primary text-white' : 'text-auto-tertiary hover:bg-black/5 dark:hover:bg-white/5'
+                                questionForm.correct_option === opt ? 'bg-primary text-white' : 'text-auto-tertiary hover:bg-white/5'
                               }`}
                             >
                               <CheckCircle2 size={16} />
                             </button>
                           </div>
                           {questionForm[`option_${opt.toLowerCase()}`] && (
-                            <div className="px-4 py-2 bg-black/5 dark:bg-white/5 rounded-xl border border-border/50 text-xs">
+                            <div className="px-4 py-2 bg-white/5 rounded-xl border border-border/50 text-xs">
                                {questionForm[`option_${opt.toLowerCase()}`].split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/).map((part, i) => {
                                   if (part.startsWith('$$')) return <BlockMath key={i}>{part.slice(2, -2)}</BlockMath>
                                   if (part.startsWith('$')) return <InlineMath key={i}>{part.slice(1, -1)}</InlineMath>
@@ -519,7 +519,7 @@ export default function QuestionBank() {
                         <select 
                           value={questionForm.marks}
                           onChange={e => setQuestionForm({...questionForm, marks: parseInt(e.target.value)})}
-                          className="bg-bg-secondary dark:bg-white/5 border border-border rounded-xl px-4 py-2 text-sm font-bold focus:outline-none focus:border-primary"
+                          className="bg-bg-secondary border border-border rounded-xl px-4 py-2 text-sm font-bold focus:outline-none focus:border-primary"
                         >
                           {[1, 2, 3, 4, 5].map(v => <option key={v} value={v}>{v} Marks</option>)}
                         </select>
@@ -546,7 +546,7 @@ export default function QuestionBank() {
                   animate={{ opacity: 1, x: 0 }}
                   className="glass p-6 rounded-[2rem] border border-border group hover:border-primary/20 transition-all flex gap-6"
                 >
-                  <div className="w-10 h-10 rounded-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center shrink-0 font-black text-auto-tertiary text-xs border border-border">
+                  <div className="w-10 h-10 rounded-full bg-bg-secondary flex items-center justify-center shrink-0 font-black text-auto-tertiary text-xs border border-border">
                     {idx + 1}
                   </div>
                   <div className="flex-1 min-w-0 space-y-4">
@@ -566,7 +566,7 @@ export default function QuestionBank() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       {['a', 'b', 'c', 'd'].map(opt => (
-                        <div key={opt} className={`text-xs px-4 py-3 rounded-xl flex items-center gap-2 border ${q.correct_option === opt.toUpperCase() ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold' : 'bg-black/5 dark:bg-white/5 border-transparent opacity-60'}`}>
+                        <div key={opt} className={`text-xs px-4 py-3 rounded-xl flex items-center gap-2 border ${q.correct_option === opt.toUpperCase() ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold' : 'bg-white/5 border-transparent opacity-60'}`}>
                           <span className="uppercase text-[10px] opacity-40 font-black shrink-0">{opt}:</span>
                           <div className="truncate prose-sm dark:prose-invert">
                              {q[`option_${opt}`].split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/).map((part, i) => {
@@ -581,7 +581,7 @@ export default function QuestionBank() {
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="flex items-center justify-between gap-1 bg-black/5 dark:bg-white/5 rounded-xl p-1 mb-1">
+                    <div className="flex items-center justify-between gap-1 bg-white/5 rounded-xl p-1 mb-1">
                       <button onClick={() => handleReorderQuestion(idx, 'up')} disabled={idx === 0} className={`p-1 rounded-md transition-all ${idx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/50 dark:hover:bg-black/50 text-auto-secondary'}`}><ArrowUp size={14} /></button>
                       <button onClick={() => handleReorderQuestion(idx, 'down')} disabled={idx === questions.length - 1} className={`p-1 rounded-md transition-all ${idx === questions.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/50 dark:hover:bg-black/50 text-auto-secondary'}`}><ArrowDown size={14} /></button>
                     </div>

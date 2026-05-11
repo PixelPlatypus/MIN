@@ -11,7 +11,7 @@ export default function EventCard({ event, index, fallbackImage }) {
   const end = end_date ? new Date(end_date) : null
 
   const getStatusBadge = () => {
-    if (event_type === 'RECURRING' || event_type === 'EVERGOING') return { text: 'Ongoing', class: 'bg-diya-flame/10 text-diya-flame' }
+    if (event_type === 'RECURRING' || event_type === 'EVERGOING') return null
     if (start > now) return { text: 'Upcoming', class: 'bg-marigold/10 text-marigold' }
     if (end && end < now) return { text: 'Past Event', class: 'bg-text-tertiary-dynamic/10 text-text-tertiary-dynamic' }
     if (!end && start < now && start > new Date(now - 86400000 * 30)) return { text: 'Happening Now', class: 'bg-sari-red/10 text-sari-red' }
@@ -40,7 +40,7 @@ export default function EventCard({ event, index, fallbackImage }) {
           <div className="relative aspect-[21/9] overflow-hidden">
             <Image src={cover_url || fallbackImage || '/images/logo.png'} alt={title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 50vw" />
             <div className="absolute top-3 left-3 flex items-center gap-2">
-              <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide ${status.class}`}>{status.text}</span>
+              {status && <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide ${status.class}`}>{status.text}</span>}
               {typeLabel && <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide bg-black/20 ${typeLabel.class}`}>{typeLabel.text}</span>}
             </div>
           </div>

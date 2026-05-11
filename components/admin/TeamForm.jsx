@@ -211,7 +211,7 @@ export default function TeamForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/team" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary hover:bg-bg-tertiary transition-all text-auto-tertiary hover:text-primary"
           >
             <ArrowLeft size={20} />
           </Link>
@@ -234,7 +234,7 @@ export default function TeamForm({ initialData = null }) {
                 {photoUrl ? (
                   <img src={photoUrl} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-bg-secondary dark:bg-white/5 flex items-center justify-center text-auto-tertiary">
+                  <div className="w-full h-full bg-bg-secondary flex items-center justify-center text-auto-tertiary">
                     <ImageIcon size={48} />
                   </div>
                 )}
@@ -265,8 +265,8 @@ export default function TeamForm({ initialData = null }) {
                   <input 
                     {...register('name')}
                     placeholder="e.g. John Doe"
-                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
-                      errors.name ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                    className={`w-full bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
+                      errors.name ? 'border-coral/50 focus:ring-coral/10' : 'border-border focus:border-primary focus:ring-primary/10'
                     }`}
                   />
                   {errors.name && <p className="text-xs text-coral ml-1">{errors.name.message}</p>}
@@ -276,7 +276,7 @@ export default function TeamForm({ initialData = null }) {
                   <label className="text-sm font-bold ml-1">Status</label>
                   <select 
                     {...register('status')}
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 appearance-none cursor-pointer"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 appearance-none cursor-pointer"
                   >
                     <option value="ACTIVE">Active</option>
                     <option value="ALUMNI">Alumni</option>
@@ -293,7 +293,7 @@ export default function TeamForm({ initialData = null }) {
                     {...register('joined_date')}
                     type="text"
                     placeholder="YYYY or YYYY-MM"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                   {errors.joined_date && <p className="text-xs text-coral ml-1">{errors.joined_date.message}</p>}
                 </div>
@@ -303,16 +303,16 @@ export default function TeamForm({ initialData = null }) {
                   <input 
                     {...register('display_order', { valueAsNumber: true })}
                     type="number"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 </div>
 
                 <div className="col-span-1 sm:col-span-2 mt-2">
-                  <label className="flex items-center gap-3 cursor-pointer p-4 rounded-2xl border border-border dark:border-border-dark bg-white dark:bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                  <label className="flex items-center gap-3 cursor-pointer p-4 rounded-2xl border border-border bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
                     <input 
                       type="checkbox" 
                       {...register('is_advisor')}
-                      className="w-5 h-5 rounded border-border dark:border-border-dark text-primary focus:ring-primary/20 cursor-pointer"
+                      className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 cursor-pointer"
                     />
                     <div>
                       <div className="text-sm font-bold">Mark as Advisor</div>
@@ -328,7 +328,7 @@ export default function TeamForm({ initialData = null }) {
                   {...register('bio')}
                   placeholder="Tell us a bit about this team member..."
                   rows={4}
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
                 />
               </div>
 
@@ -338,8 +338,8 @@ export default function TeamForm({ initialData = null }) {
                   {...register('farewell_date')}
                   type="text"
                   placeholder="YYYY or YYYY-MM"
-                  className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
-                    errors.farewell_date ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                  className={`w-full bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
+                    errors.farewell_date ? 'border-coral/50 focus:ring-coral/10' : 'border-border focus:border-primary focus:ring-primary/10'
                   }`}
                 />
                 {errors.farewell_date && <p className="text-xs text-coral ml-1">{errors.farewell_date.message}</p>}
@@ -367,20 +367,20 @@ export default function TeamForm({ initialData = null }) {
               
               <div className="space-y-4">
                 {(watch('social_links.role_history') || []).map((historyItem, index) => (
-                  <div key={index} className="flex items-center gap-4 bg-bg-secondary dark:bg-white/5 p-4 rounded-2xl border border-black/5 dark:border-white/5 relative group">
+                  <div key={index} className="flex items-center gap-4 bg-bg-secondary p-4 rounded-2xl border border-black/5 dark:border-white/5 relative group">
                     <div className="space-y-1 flex-1">
                       <label className="text-xs font-bold text-auto-tertiary ml-1">Year</label>
                       <input 
                         {...register(`social_links.role_history.${index}.year`)}
                         placeholder="e.g. 2022"
-                        className="w-full bg-white dark:bg-[#1a1a1a] border border-border dark:border-border-dark rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-primary"
+                        className="w-full bg-white dark:bg-[#1a1a1a] border border-border rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-primary"
                       />
                     </div>
                     <div className="space-y-1 flex-1">
                       <label className="text-xs font-bold text-auto-tertiary ml-1">Position</label>
                       <select 
                         {...register(`social_links.role_history.${index}.position`)}
-                        className="w-full bg-white dark:bg-[#1a1a1a] border border-border dark:border-border-dark rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-primary appearance-none cursor-pointer"
+                        className="w-full bg-white dark:bg-[#1a1a1a] border border-border rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-primary appearance-none cursor-pointer"
                       >
                         <option value="MINion">MINion</option>
                         {currentUser?.role === 'ADMIN' && (
@@ -459,7 +459,7 @@ export default function TeamForm({ initialData = null }) {
                   <input 
                     {...register('social_links.social_media')}
                     placeholder="Link to Facebook or Instagram"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 </div>
                 {['LinkedIn', 'Email', 'GitHub'].map((platform) => (
@@ -468,7 +468,7 @@ export default function TeamForm({ initialData = null }) {
                     <input 
                       {...register(`social_links.${platform.toLowerCase()}`)}
                       placeholder={`${platform} ${platform === 'Email' ? 'address' : 'URL'}`}
-                      className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                     />
                   </div>
                 ))}
@@ -491,14 +491,14 @@ export default function TeamForm({ initialData = null }) {
             <div className="flex items-center justify-end gap-4 pt-4">
               <Link 
                 href="/admin/team"
-                className="px-8 py-3.5 rounded-2xl text-sm font-bold text-auto-secondary hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
+                className="px-8 py-3.5 rounded-2xl text-sm font-bold text-auto-secondary hover:text-text-primary hover:bg-bg-secondary transition-all"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-primary hover:bg-primary-dark text-white px-12 py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 transition-all flex items-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100"
+                className="bg-marigold hover:bg-[color:var(--color-primary-dark)] text-bg px-12 py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 transition-all flex items-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100"
               >
                 {loading ? (
                   <Loader2 size={20} className="animate-spin" />

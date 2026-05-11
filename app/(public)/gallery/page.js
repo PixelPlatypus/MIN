@@ -73,10 +73,10 @@ export default function GalleryPage() {
             <button
               key={album}
               onClick={() => setActiveAlbum(album)}
-              className={`pill px-8 py-3 text-sm font-bold transition-all ${
+              className={`rounded-full border px-8 py-3 text-sm font-bold transition-all ${
                 activeAlbum === album
                   ? 'bg-marigold text-bg border-marigold'
-                  : 'text-text-secondary-dynamic border-border hover:border-border-strong'
+                  : 'pill text-text-secondary-dynamic border-border hover:border-border-strong'
               }`}
             >
               {album === 'ALL' ? 'All Albums' : album}
@@ -89,10 +89,10 @@ export default function GalleryPage() {
             <button
               key={tag}
               onClick={() => setActiveTag(tag)}
-              className={`pill px-4 py-1.5 text-xs font-bold transition-all ${
+              className={`rounded-full border px-4 py-1.5 text-xs font-bold transition-all ${
                 activeTag === tag
                   ? 'bg-marigold text-bg border-marigold'
-                  : 'text-text-tertiary-dynamic border-border hover:border-border-strong'
+                  : 'pill text-text-tertiary-dynamic border-border hover:border-border-strong'
               }`}
             >
               #{tag}

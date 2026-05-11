@@ -130,7 +130,7 @@ export default function ContentForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/content" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary hover:bg-bg-tertiary transition-all text-auto-tertiary hover:text-primary"
           >
             <ArrowLeft size={20} />
           </Link>
@@ -145,7 +145,7 @@ export default function ContentForm({ initialData = null }) {
           {/* Main Content Column */}
           <div className="lg:col-span-2 space-y-8">
             <div className="glass rounded-[2rem] p-8 space-y-6">
-              <div className="flex p-1 bg-bg-secondary dark:bg-white/5 rounded-2xl border border-border dark:border-border-dark">
+              <div className="flex p-1 bg-bg-secondary rounded-2xl border border-border">
                 {['RICHTEXT', 'PDF', 'VIDEO'].map((mode) => (
                   <button
                     key={mode}
@@ -173,8 +173,8 @@ export default function ContentForm({ initialData = null }) {
                   {...register('title')}
                   onChange={handleTitleChange}
                   placeholder="e.g. Introduction to Calculus"
-                  className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-lg font-bold transition-all focus:outline-none focus:ring-4 ${
-                    errors.title ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                  className={`w-full bg-white/5 border rounded-2xl py-3 px-4 text-lg font-bold transition-all focus:outline-none focus:ring-4 ${
+                    errors.title ? 'border-coral/50 focus:ring-coral/10' : 'border-border focus:border-primary focus:ring-primary/10'
                   }`}
                 />
                 {errors.title && <p className="text-xs text-coral ml-1">{errors.title.message}</p>}
@@ -186,7 +186,7 @@ export default function ContentForm({ initialData = null }) {
                   <input 
                     {...register('author_name')}
                     placeholder="e.g. MIN Team"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 </div>
                 <div className="space-y-2">
@@ -194,7 +194,7 @@ export default function ContentForm({ initialData = null }) {
                   <input 
                     {...register('published_at')}
                     type="date"
-                    className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 </div>
               </div>
@@ -210,7 +210,7 @@ export default function ContentForm({ initialData = null }) {
               )}
 
               {watch('content_type') === 'PDF' && (
-                <div className="space-y-6 pt-4 p-8 bg-bg-secondary dark:bg-white/5 rounded-3xl border border-dashed border-primary/20">
+                <div className="space-y-6 pt-4 p-8 bg-bg-secondary rounded-3xl border border-dashed border-primary/20">
                   <div className="space-y-2 text-center">
                     <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <FileDown size={32} />
@@ -220,7 +220,7 @@ export default function ContentForm({ initialData = null }) {
                   </div>
                   
                   {pdfUrl && (
-                    <div className="p-4 bg-white dark:bg-bg-dark rounded-2xl flex items-center justify-between border border-border dark:border-border-dark">
+                    <div className="p-4 bg-bg rounded-2xl flex items-center justify-between border border-border">
                       <div className="flex items-center gap-3">
                         <FileDown className="text-primary" size={20} />
                         <span className="text-sm font-bold truncate max-w-[200px]">{watch('pdf_filename') || 'document.pdf'}</span>
@@ -253,7 +253,7 @@ export default function ContentForm({ initialData = null }) {
               )}
 
               {watch('content_type') === 'VIDEO' && (
-                <div className="space-y-6 pt-4 p-8 bg-bg-secondary dark:bg-white/5 rounded-3xl border border-dashed border-primary/20">
+                <div className="space-y-6 pt-4 p-8 bg-bg-secondary rounded-3xl border border-dashed border-primary/20">
                   <div className="space-y-2 text-center">
                     <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <Video size={32} />
@@ -267,7 +267,7 @@ export default function ContentForm({ initialData = null }) {
                     <input 
                       {...register('video_url')}
                       placeholder="https://www.youtube.com/watch?v=... or https://youtube.com/playlist?list=..."
-                      className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                      className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                       onChange={async (e) => {
                         const url = e.target.value
                         setValue('video_url', url)
@@ -310,7 +310,7 @@ export default function ContentForm({ initialData = null }) {
                       <input 
                         type="number"
                         placeholder="e.g. 12"
-                        className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                        className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                         value={watch('video_metadata')?.video_count || ''}
                         onChange={(e) => {
                           setValue('video_metadata', { ...watch('video_metadata'), video_count: parseInt(e.target.value) || 0 })
@@ -327,7 +327,7 @@ export default function ContentForm({ initialData = null }) {
                   {...register('excerpt')}
                   placeholder="A short summary for previews..."
                   rows={3}
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none"
                 />
               </div>
             </div>
@@ -343,7 +343,7 @@ export default function ContentForm({ initialData = null }) {
                 <label className="text-sm font-bold ml-1">Type</label>
                 <select 
                   {...register('type')}
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer font-bold"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer font-bold"
                 >
                   <option value="ARTICLE">Article</option>
                   <option value="PROBLEM">Problem</option>
@@ -357,7 +357,7 @@ export default function ContentForm({ initialData = null }) {
                 <label className="text-sm font-bold ml-1">Status</label>
                 <select 
                   {...register('status')}
-                  className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer font-bold"
+                  className="w-full bg-white/5 border border-border rounded-2xl py-3 px-4 text-sm transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-transparent cursor-pointer font-bold"
                 >
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
@@ -368,7 +368,7 @@ export default function ContentForm({ initialData = null }) {
 
             <div className="glass rounded-[2rem] p-8 space-y-6">
               <h3 className="text-lg font-bold tracking-tight">Cover Image</h3>
-              <div className="aspect-video relative rounded-2xl overflow-hidden border-2 border-primary/10 mb-4 bg-bg-secondary dark:bg-white/5">
+              <div className="aspect-video relative rounded-2xl overflow-hidden border-2 border-primary/10 mb-4 bg-bg-secondary">
                 {coverUrl ? (
                   <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
                 ) : (
@@ -434,7 +434,7 @@ export default function ContentForm({ initialData = null }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100"
+                className="w-full bg-marigold hover:bg-[color:var(--color-primary-dark)] text-bg py-4 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100"
               >
                 {loading ? (
                   <Loader2 size={20} className="animate-spin" />
@@ -447,7 +447,7 @@ export default function ContentForm({ initialData = null }) {
               </button>
               <Link 
                 href="/admin/content"
-                className="w-full px-8 py-4 rounded-2xl text-sm font-bold text-auto-secondary text-center hover:text-text-primary hover:bg-bg-secondary dark:hover:bg-white/5 transition-all"
+                className="w-full px-8 py-4 rounded-2xl text-sm font-bold text-auto-secondary text-center border border-border hover:border-border-strong hover:text-text-primary-dynamic transition-all"
               >
                 Cancel
               </Link>

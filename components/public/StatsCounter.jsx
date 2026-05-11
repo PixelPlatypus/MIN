@@ -56,26 +56,26 @@ export default function StatsCounter({ settings }) {
   }, [])
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32 overflow-hidden">
+    <section ref={containerRef} className="relative py-20 lg:py-24 overflow-hidden">
       <GridPaper className="opacity-[0.08]" spacing={50} />
 
       <div className="relative z-10 px-6 md:px-12 lg:px-20 max-w-6xl mx-auto text-center">
-        <span className="pill inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase font-institutional mb-8">
+        <span className="pill inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase font-institutional mb-6">
           Impact at Scale
         </span>
 
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-headline max-w-3xl mx-auto">
-          {settings?.stats_title || 'Numbers that represent real change.'}
+          {settings?.stats_title || 'Our Growing Impact'}
         </h2>
 
-        <p className="mt-6 text-base text-text-secondary-dynamic max-w-xl mx-auto">
-          {settings?.stats_subtitle || 'Every number reflects a life touched, a mind opened, and a future transformed.'}
+        <p className="mt-4 text-base text-text-secondary-dynamic max-w-xl mx-auto">
+          {settings?.stats_subtitle || 'Numbers that drive our mission forward.'}
         </p>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 mt-20 lg:divide-x divide-border-dynamic">
+        <div className="grid grid-cols-2 lg:grid-cols-4 mt-12 lg:divide-x divide-border-dynamic">
           {statItems.map((item, i) => (
-            <div key={i} className="flex flex-col items-center gap-5 px-4 lg:px-8 py-8">
-              <div className="w-12 h-12 rounded-xl bg-marigold/10 border border-marigold/15 flex items-center justify-center text-marigold">
+            <div key={i} className="flex flex-col items-center gap-4 px-4 lg:px-8 py-6">
+              <div className="w-11 h-11 rounded-xl bg-marigold/10 border border-marigold/15 flex items-center justify-center text-marigold">
                 {item.icon}
               </div>
               <div className="stat-value text-5xl md:text-6xl font-black tracking-tight text-headline tabular-nums leading-none"
