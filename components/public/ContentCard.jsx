@@ -9,7 +9,10 @@ const typeIcons = { ARTICLE: <FileText size={14} />, PROBLEM: <Tag size={14} />,
 export default function ContentCard({ item, index, fallbackImage }) {
   const { title, slug, type, content_type, excerpt, cover_url, author_name, published_at, tags = [], video_metadata = {} } = item
   const icon = typeIcons[type] || <FileText size={14} />
-  const imageSrc = cover_url || (content_type === 'VIDEO' && video_metadata?.video_id ? `https://img.youtube.com/vi/${video_metadata.video_id}/hqdefault.jpg` : null) || fallbackImage || '/images/logo.png'
+  const isVideo = type === 'VIDEO' || content_type === 'VIDEO'
+  const ytId = video_metadata?.video_id || (video_metadata?.is_playlist ? video_metadata?.playlist_video_id : null)
+  const ytThumb = isVideo && ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null
+  const imageSrc = ytThumb || cover_url || fallbackImage || '/images/logo.png'
 
   return (
     <motion.div layout initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.4, delay: index * 0.05 }} className="group">

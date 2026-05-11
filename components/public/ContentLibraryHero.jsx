@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Sparkles, Library } from 'lucide-react'
 export default function ContentLibraryHero() {
   return (
-    <section className="px-6 md:px-12 lg:px-20 pt-36 pb-12">
+    <section className="px-6 md:px-12 lg:px-20 pb-12">
       <div className="max-w-3xl mx-auto text-center space-y-6">
         <div className="pill inline-flex items-center gap-2 px-4 py-1.5"><Library size={14} className="text-marigold" /><span className="text-[10px] font-institutional tracking-[0.2em] text-text-tertiary-dynamic">Library</span></div>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] text-headline">Knowledge &amp; Resources</h1>

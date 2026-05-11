@@ -105,7 +105,7 @@ export default function AdminSidebar({ profile, isMaintenance }) {
   })).filter(group => group.links.length > 0)
 
   const sidebarClasses = `
-    fixed inset-y-0 left-0 z-50 flex flex-col bg-white dark:bg-bg-dark border-r border-border dark:border-border-dark transition-all duration-300 shadow-2xl lg:shadow-none
+    fixed inset-y-0 left-0 z-50 flex flex-col bg-bg-secondary border-r border-border transition-all duration-300 shadow-2xl lg:shadow-none
     ${isCollapsed ? 'w-20' : 'w-64'}
     ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
   `

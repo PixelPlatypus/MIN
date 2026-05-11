@@ -44,7 +44,8 @@ export default function ProgramsGrid({ settings, initialPrograms, programs }) {
   }, [])
 
   return (
-    <section ref={containerRef} className="relative border-t border-border-dynamic">
+    <section ref={containerRef} className="relative">
+      <div aria-hidden className="mx-auto h-px w-[80vw] max-w-6xl bg-border-dynamic" />
       <div className="px-6 md:px-12 lg:px-20 py-24 lg:py-32 max-w-5xl mx-auto">
         <div className="mb-16">
           <span className="pill inline-flex items-center gap-2 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase font-institutional mb-6">
@@ -59,10 +60,14 @@ export default function ProgramsGrid({ settings, initialPrograms, programs }) {
         </div>
 
         <div className="flex flex-col">
-          {items.map((item, i) => (
+          {items.map((item, i) => {
+            const href = item.learn_more_link || item.href || '/about'
+            const external = /^https?:\/\//i.test(href)
+            return (
             <Link
               key={i}
-              href={item.learn_more_link || item.href || '#'}
+              href={href}
+              {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="program-row group flex items-center gap-6 py-6 border-t border-border-dynamic last:border-b hover:border-marigold/30 transition-colors duration-300"
             >
               <span className="text-text-tertiary-dynamic text-xs font-mono font-medium w-8 shrink-0 tabular-nums">
@@ -80,7 +85,7 @@ export default function ProgramsGrid({ settings, initialPrograms, programs }) {
                 <ArrowUpRight size={18} />
               </div>
             </Link>
-          ))}
+          )})}
         </div>
       </div>
     </section>

@@ -78,7 +78,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="space-y-12 pb-24">
+    <div className="space-y-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

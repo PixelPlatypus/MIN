@@ -19,12 +19,8 @@ export default function EventCard({ event, index, fallbackImage }) {
   }
 
   const getTypeLabel = () => {
-    switch (event_type) {
-      case 'RECURRING': return { text: 'Recurring', class: 'text-lotus-pink' }
-      case 'EVERGOING': return { text: 'Evergoing', class: 'text-diya-flame' }
-      case 'SPECIAL': return { text: 'Special', class: 'text-marigold' }
-      default: return null
-    }
+    if (event_type === 'SPECIAL') return { text: 'Special', class: 'text-marigold' }
+    return null
   }
 
   const status = getStatusBadge()

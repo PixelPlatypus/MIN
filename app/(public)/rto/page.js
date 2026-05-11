@@ -45,34 +45,42 @@ export default async function RTOPage() {
           </div>
 
           <div className="relative">
-            {/* progression bar — sits behind the icon row; visible only in inter-card gaps so it reads as flow between stages */}
-            <div className="hidden lg:block absolute top-[88px] left-[8%] right-[8%] h-[2px] bg-gradient-to-r from-marigold/15 via-marigold/70 to-marigold/15 rounded-full pointer-events-none" />
+            {/* Desktop horizontal progression bar — vertically centered on the icon (card p-8=32 + icon h-16/2=32 → 64px) */}
+            <div className="hidden lg:block absolute top-[63px] left-[8%] right-[8%] h-[2px] bg-gradient-to-r from-marigold/15 via-marigold/70 to-marigold/15 rounded-full pointer-events-none" />
             {[20, 40, 60, 80].map((pct) => (
               <ChevronRight
                 key={pct}
                 size={18}
                 strokeWidth={2.5}
-                className="hidden lg:block absolute top-[80px] text-marigold pointer-events-none"
+                className="hidden lg:block absolute top-[55px] text-marigold pointer-events-none"
                 style={{ left: `calc(${pct}% - 9px)` }}
               />
             ))}
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 relative">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 relative">
               {displayStages.map((stage, idx) => {
                 const Icon = ICON_MAP[stage.icon] || Award
+                const isLast = idx === displayStages.length - 1
                 return (
-                  <div
-                    key={stage.id}
-                    className="bg-surface rounded-2xl p-8 border border-border flex flex-col items-center text-center hover:border-border-strong transition-colors"
-                  >
-                    <div className="w-16 h-16 rounded-xl bg-bg-secondary flex items-center justify-center mb-6">
-                      <Icon size={32} className="text-marigold" />
+                  <div key={stage.id} className="relative flex flex-col items-center">
+                    <div className="bg-surface rounded-2xl p-8 border border-border flex flex-col items-center text-center hover:border-border-strong transition-colors w-full">
+                      <div className="w-16 h-16 rounded-xl bg-bg-secondary flex items-center justify-center mb-6">
+                        <Icon size={32} className="text-marigold" />
+                      </div>
+                      <h3 className="text-headline font-bold text-xl mb-3 tracking-tight">{stage.id}</h3>
+                      <h4 className="text-sm font-bold text-text-secondary-dynamic mb-4 leading-tight min-h-[40px]">{stage.name}</h4>
+                      <p className="text-xs text-text-tertiary-dynamic leading-relaxed mt-auto">
+                        {stage.desc}
+                      </p>
                     </div>
-                    <h3 className="text-headline font-bold text-xl mb-3 tracking-tight">{stage.id}</h3>
-                    <h4 className="text-sm font-bold text-text-secondary-dynamic mb-4 leading-tight min-h-[40px]">{stage.name}</h4>
-                    <p className="text-xs text-text-tertiary-dynamic leading-relaxed mt-auto">
-                      {stage.desc}
-                    </p>
+                    {!isLast && (
+                      <ChevronRight
+                        size={22}
+                        strokeWidth={2.5}
+                        className="lg:hidden text-marigold rotate-90 my-1"
+                        aria-hidden
+                      />
+                    )}
                   </div>
                 )
               })}

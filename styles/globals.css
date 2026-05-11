@@ -19,6 +19,17 @@
   --color-diya-flame:     #F5B942;
   --color-border:         rgba(255,255,255,0.10);
   --color-border-strong:  rgba(255,255,255,0.20);
+  --color-primary:        #D8A73A;
+  --color-primary-dark:   #B5872A;
+  --color-bg-dark:        #134551;
+  --color-bg-secondary-dark: #0F3641;
+  --color-border-dark:    rgba(255,255,255,0.08);
+  --color-auto-secondary: rgba(255,255,255,0.75);
+  --color-auto-tertiary:  rgba(255,255,255,0.50);
+  --color-coral:          #E87A96;
+  --color-cyan:           #5BC0BE;
+  --color-purple:         #A78BFA;
+  --color-green:          #6FCF97;
   --color-bg-dynamic: var(--color-bg);
   --color-text-primary-dynamic: var(--color-text-primary);
   --color-text-secondary-dynamic: var(--color-text-secondary);
@@ -121,6 +132,9 @@
   .math-grid { background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 60px 60px; }
   .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); }
   .pill { border-radius: 9999px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); }
+  .glass { background: rgba(255,255,255,0.04); border: 1px solid var(--color-border); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .text-auto-secondary { color: var(--color-auto-secondary); }
+  .text-auto-tertiary { color: var(--color-auto-tertiary); }
 
   .PhoneInput { display: flex; align-items: center; gap: 0; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; transition: border-color 0.2s; }
   .PhoneInput:focus-within { border-color: var(--color-headline); }

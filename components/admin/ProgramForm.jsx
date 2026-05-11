@@ -208,16 +208,16 @@ export default function ProgramForm({ initialData }) {
 
         {/* Action Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-10 border-t border-border">
-          <Link 
+          <Link
             href="/admin/programs"
-            className="w-full sm:w-auto px-10 py-5 rounded-2xl text-sm font-black uppercase tracking-widest text-auto-tertiary hover:text-text-primary hover:bg-bg-secondary transition-all text-center"
+            className="w-full sm:w-auto px-10 py-5 rounded-2xl text-sm font-black uppercase tracking-widest text-text-secondary-dynamic border border-border hover:border-border-strong hover:text-text-primary-dynamic transition-all text-center"
           >
             Discard Changes
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-2xl shadow-primary/30 transition-all flex items-center justify-center gap-3 hover:-translate-y-1 active:scale-95 disabled:opacity-70 disabled:active:scale-100"
+            className="w-full sm:w-auto bg-marigold hover:bg-[color:var(--color-primary-dark)] text-bg px-12 py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-2xl shadow-marigold/30 transition-all flex items-center justify-center gap-3 hover:-translate-y-1 active:scale-95 disabled:opacity-70 disabled:active:scale-100"
           >
             {loading ? (
               <Loader2 size={24} className="animate-spin" />

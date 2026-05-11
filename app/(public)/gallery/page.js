@@ -75,7 +75,7 @@ export default function GalleryPage() {
               onClick={() => setActiveAlbum(album)}
               className={`pill px-8 py-3 text-sm font-bold transition-all ${
                 activeAlbum === album
-                  ? 'bg-headline text-bg border-headline'
+                  ? 'bg-marigold text-bg border-marigold'
                   : 'text-text-secondary-dynamic border-border hover:border-border-strong'
               }`}
             >
@@ -91,7 +91,7 @@ export default function GalleryPage() {
               onClick={() => setActiveTag(tag)}
               className={`pill px-4 py-1.5 text-xs font-bold transition-all ${
                 activeTag === tag
-                  ? 'bg-headline text-bg border-headline'
+                  ? 'bg-marigold text-bg border-marigold'
                   : 'text-text-tertiary-dynamic border-border hover:border-border-strong'
               }`}
             >

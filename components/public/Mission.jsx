@@ -33,7 +33,7 @@ export default function Mission({ settings }) {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative bg-bg-secondary/30 border-y border-border-dynamic overflow-hidden">
+    <section ref={sectionRef} className="relative bg-bg-secondary/30 border-t border-border-dynamic overflow-hidden">
       <div className="absolute top-1/3 right-0 w-[350px] h-[350px] bg-marigold/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="px-6 md:px-12 lg:px-20 py-24 lg:py-32">
