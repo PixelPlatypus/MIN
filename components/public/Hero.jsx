@@ -21,7 +21,6 @@ const stats = [
 export default function Hero({ settings }) {
   const [visible, setVisible] = useState(false)
   const sectionRef = useRef(null)
-  const curveRef = useRef(null)
 
   useEffect(() => { setVisible(true) }, [])
 
@@ -32,13 +31,6 @@ export default function Hero({ settings }) {
       ctx = gsap.context(() => {
         if (sectionRef.current) {
           gsap.to(sectionRef.current, { y: -30, ease: 'none', scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: 'bottom top', scrub: true } })
-        }
-        if (curveRef.current) {
-          const len = curveRef.current.getTotalLength()
-          gsap.fromTo(curveRef.current, { strokeDashoffset: len }, {
-            strokeDashoffset: 0, ease: 'none',
-            scrollTrigger: { trigger: sectionRef.current, start: 'top 80%', end: 'center 40%', scrub: true },
-          })
         }
       })
     })
@@ -51,20 +43,6 @@ export default function Hero({ settings }) {
     <section ref={sectionRef} className="relative min-h-screen flex items-center pt-20 pb-16 overflow-hidden">
       <VoronoiCanvas className="opacity-35" />
       <div className="absolute inset-0 math-grid opacity-[0.06]" />
-
-      {/* Math motif: integral curve drawing across hero */}
-      <svg className="absolute left-0 bottom-[25%] w-full h-40 pointer-events-none opacity-[0.07]" viewBox="0 0 1200 160" preserveAspectRatio="none" fill="none">
-        <defs>
-          <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="var(--color-headline)" stopOpacity="0" />
-            <stop offset="20%" stopColor="var(--color-headline)" stopOpacity="1" />
-            <stop offset="80%" stopColor="var(--color-headline)" stopOpacity="1" />
-            <stop offset="100%" stopColor="var(--color-headline)" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path ref={curveRef} d="M-10,80 Q100,140 200,80 T400,40 T600,100 T800,30 T1000,70 T1210,50"
-          stroke="url(#curveGrad)" strokeWidth="2" strokeDasharray="1200" strokeDashoffset="1200" />
-      </svg>
 
       <div className="relative z-10 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto w-full">
         <div className="max-w-4xl">
