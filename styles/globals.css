@@ -185,20 +185,21 @@
 }
 .animate-flag-wave { animation: flag-wave 6s ease-in-out infinite; transform-origin: left center; }
 
-/* === Math glyphs emit outward from flag center, fade and drift === */
+/* === Math glyphs fade in/out from flag center, gentle drift === */
 @keyframes emit-glyph {
-  0%   { transform: translate(-50%, -50%) translate(0, 0) scale(0.4); opacity: 0; }
-  15%  { opacity: var(--peak, 0.18); }
-  100% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1.1); opacity: 0; }
+  0%   { transform: translate(-50%, -50%) translate(0, 0) scale(0.7); opacity: 0; }
+  25%  { opacity: var(--peak, 0.22); }
+  50%  { opacity: var(--peak, 0.22); }
+  100% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1.05); opacity: 0; }
 }
-.emit-glyph { animation: emit-glyph 9s ease-out infinite both; will-change: transform, opacity; opacity: 0; }
-.emit-glyph-1 { --tx: -120px; --ty: -90px;  --peak: 0.20; animation-delay: 0s;    animation-duration: 9s; }
-.emit-glyph-2 { --tx:  130px; --ty: -70px;  --peak: 0.16; animation-delay: 1.3s;  animation-duration: 10s; }
-.emit-glyph-3 { --tx:  -90px; --ty:  110px; --peak: 0.18; animation-delay: 2.6s;  animation-duration: 8.5s; }
-.emit-glyph-4 { --tx:  140px; --ty:  60px;  --peak: 0.14; animation-delay: 3.9s;  animation-duration: 11s; }
-.emit-glyph-5 { --tx:  -50px; --ty: -130px; --peak: 0.17; animation-delay: 5.2s;  animation-duration: 9.5s; }
-.emit-glyph-6 { --tx:  100px; --ty:  130px; --peak: 0.15; animation-delay: 6.5s;  animation-duration: 10.5s; }
-.emit-glyph-7 { --tx: -140px; --ty:  20px;  --peak: 0.16; animation-delay: 7.8s;  animation-duration: 9s; }
+.emit-glyph { animation: emit-glyph 10s ease-in-out infinite both; will-change: transform, opacity; opacity: 0; }
+.emit-glyph-1 { --tx:  -55px; --ty: -45px;  --peak: 0.22; animation-delay: 0s;    animation-duration: 10s; }
+.emit-glyph-2 { --tx:   60px; --ty: -35px;  --peak: 0.20; animation-delay: 1.4s;  animation-duration: 11s; }
+.emit-glyph-3 { --tx:  -45px; --ty:   50px; --peak: 0.22; animation-delay: 2.8s;  animation-duration: 9.5s; }
+.emit-glyph-4 { --tx:   65px; --ty:   30px; --peak: 0.18; animation-delay: 4.2s;  animation-duration: 12s; }
+.emit-glyph-5 { --tx:  -30px; --ty:  -60px; --peak: 0.20; animation-delay: 5.6s;  animation-duration: 10.5s; }
+.emit-glyph-6 { --tx:   50px; --ty:   55px; --peak: 0.20; animation-delay: 7.0s;  animation-duration: 11.5s; }
+.emit-glyph-7 { --tx:  -60px; --ty:   10px; --peak: 0.18; animation-delay: 8.4s;  animation-duration: 10s; }
 @media (prefers-reduced-motion: reduce) {
   .emit-glyph { animation: none; opacity: 0; }
   .animate-flag-wave { animation: none; }
