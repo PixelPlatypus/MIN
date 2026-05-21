@@ -323,7 +323,7 @@ export default function RTOEditor({ settings, setSettings }) {
                        ))}
                        <button 
                         onClick={() => addResourceSubItem(cIdx)}
-                        className="w-full py-3 rounded-xl border border-dashed border-border text-[10px] font-black uppercase tracking-widest text-auto-tertiary hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2 mt-2"
+                        className="w-full py-3 rounded-xl border border-dashed border-border text-[10px] font-black uppercase tracking-widest text-auto-tertiary hover:border-primary/50 hover:text-primary-dark dark:duration-75 transition-all flex items-center justify-center gap-2 mt-2"
                        >
                          <Plus size={12}/> Add Resource Link
                        </button>

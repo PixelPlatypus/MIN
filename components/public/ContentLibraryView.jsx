@@ -72,7 +72,7 @@ export default function ContentLibraryView({ initialContent, initialType = 'ALL'
             className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
               activeType === type.value 
                 ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary'
+                : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary-dark dark:duration-75'
             }`}
           >
             {type.label}

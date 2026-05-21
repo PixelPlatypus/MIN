@@ -74,7 +74,7 @@ export default function Navbar({ settings: initialSettings = null }) {
                 key={link.href} 
                 href={link.href}
                 aria-current={pathname === link.href ? 'page' : undefined}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-sm font-medium transition-colors hover:text-primary-dark dark:duration-75 ${
                   pathname === link.href ? 'text-primary' : 'text-dynamic'
                 }`}
               >

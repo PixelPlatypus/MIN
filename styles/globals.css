@@ -40,18 +40,18 @@
   --color-text-secondary: #333336;   /* Accessible secondary text — Darkened for better contrast */
   --color-text-tertiary:  #55555A;   /* Accessible tertiary text — Darkened for better contrast */
 
-  /* === Apple-style Neutrals (Dark Mode) === */
-  --color-bg-dark:             #0B0B0F;   /* Charcoal base */
-  --color-bg-secondary-dark:   #141417;   /* Elevated surface */
-  --color-bg-tertiary-dark:    #1C1C21;   /* Further elevated surface */
-  --color-bg-glass-dark:       rgba(11,11,15,0.85);
-  --color-surface-dark:        #141417;
-  --color-border-dark:         rgba(255,255,255,0.08);
-  --color-border-strong-dark:  rgba(255,255,255,0.15);
+  /* === MIN Brand (Dark Mode) === */
+  --color-bg-dark:             #16556D;   /* MIN Primary base */
+  --color-bg-secondary-dark:   #1A6B87;   /* MIN Primary Medium elevated */
+  --color-bg-tertiary-dark:    #4A90A4;   /* MIN Primary Light further elevated */
+  --color-bg-glass-dark:       rgba(22,85,109,0.85);
+  --color-surface-dark:        #1A6B87;
+  --color-border-dark:         rgba(255,255,255,0.15);
+  --color-border-strong-dark:  rgba(255,255,255,0.30);
 
-  --color-text-primary-dark:   #FFFFFF;   /* Pure white on charcoal */
-  --color-text-secondary-dark: #E2E2E7;   /* Bright silver — matches Apple secondary */
-  --color-text-tertiary-dark:  #A1A1A6;   /* Medium silver — matches Apple tertiary */
+  --color-text-primary-dark:   #FFFFFF;      /* Pure white — maximum contrast on teal */
+  --color-text-secondary-dark: #D4EEF5;     /* Light cyan-white — warm & readable on teal */
+  --color-text-tertiary-dark:  #A8D4E0;     /* Muted cyan — still passes WCAG AA on teal */
 
   /* === Typography === */
   /* --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", ui-sans-serif, system-ui, sans-serif; */
@@ -100,6 +100,7 @@
     --color-bg-dynamic: var(--color-bg);
     --color-bg-secondary-dynamic: var(--color-bg-secondary);
     --color-border-dynamic: var(--color-border);
+    --color-preloader-accent: var(--color-primary);
   }
 
   .dark {
@@ -109,6 +110,7 @@
     --color-bg-dynamic: var(--color-bg-dark);
     --color-bg-secondary-dynamic: var(--color-bg-secondary-dark);
     --color-border-dynamic: var(--color-border-dark);
+    --color-preloader-accent: var(--color-secondary-light);
   }
 
   body {
@@ -192,6 +194,57 @@
 }
 
 @layer utilities {
+  /* Override hover colors in dark mode for text, cards, and links using attribute selectors for maximum robustness */
+  .dark [class*="hover:text-primary"]:hover,
+  .dark .group:hover [class*="group-hover:text-primary"] {
+    color: var(--color-secondary-light) !important;
+  }
+
+  .dark [class*="hover:border-primary"]:hover {
+    border-color: var(--color-secondary-light) !important;
+  }
+
+  /* Fix primary buttons/links merging with the background in dark mode.
+     Scoped to interactive elements only — does NOT affect decorative uses
+     of bg-primary (e.g. timeline dots, progress bars, badges) */
+  .dark a.bg-primary,
+  .dark button.bg-primary,
+  .dark [role="button"].bg-primary {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #FFFFFF !important;
+    backdrop-filter: blur(8px);
+  }
+  
+  .dark [class*="hover:bg-primary"]:hover {
+    background-color: rgba(250, 250, 192, 0.1) !important; /* Faint secondary-light tint */
+    color: var(--color-secondary-light) !important;
+    border-color: var(--color-secondary-light) !important;
+  }
+
+  /* Scroll indicator dot — forced secondary-light in dark mode */
+  .scroll-dot {
+    background-color: var(--color-primary);
+  }
+  .dark .scroll-dot {
+    background-color: var(--color-secondary-light);
+  }
+
+  .scroll-dot-border {
+    border-color: rgba(22, 85, 109, 0.2);
+  }
+  .dark .scroll-dot-border {
+    border-color: rgba(250, 250, 192, 0.5);
+  }
+
+  /* Preloader clock hand and dot — forced secondary-light in dark mode */
+  .preloader-accent {
+    background-color: var(--color-primary);
+  }
+  .dark .preloader-accent {
+    background-color: var(--color-secondary-light);
+  }
+
   .text-dynamic {
     color: var(--color-text-primary-dynamic);
   }
@@ -233,7 +286,7 @@
   }
   
   .dark .glass {
-    @apply bg-black/85 border-white/10;
+    @apply bg-primary-dark/85 border-white/10;
   }
 
   .glass-brand {
@@ -241,7 +294,7 @@
   }
 
   .dark .glass-brand {
-    @apply bg-black/90 border-white/20;
+    @apply bg-primary-dark/90 border-white/20;
   }
 
   /* Specific brand tint for popups */

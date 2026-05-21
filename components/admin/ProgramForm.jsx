@@ -71,7 +71,7 @@ export default function ProgramForm({ initialData }) {
         <div className="space-y-4">
           <Link 
             href="/admin/programs" 
-            className="inline-flex items-center gap-2 text-sm font-bold text-auto-tertiary hover:text-primary transition-colors group"
+            className="inline-flex items-center gap-2 text-sm font-bold text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors group"
           >
             <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
             Back to Programs

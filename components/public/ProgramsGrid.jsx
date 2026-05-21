@@ -105,7 +105,7 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
                   <div className={`w-16 h-16 ${getColor(program.slug)} rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm`}>
                     {getIcon(program.slug)}
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-text dark:text-white group-hover:text-primary transition-colors">{program.name}</h3>
+                  <h3 className="text-xl font-bold mb-3 text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors">{program.name}</h3>
                   <p className="text-sm text-auto-secondary leading-relaxed mb-6 flex-grow">
                     {program.tagline}
                   </p>

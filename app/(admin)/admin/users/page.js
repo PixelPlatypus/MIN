@@ -192,7 +192,7 @@ export default function AdminUsersPage() {
                       </div>
                       <Link
                         href={`/admin/users/${user.id}`}
-                        className="text-auto-tertiary hover:text-primary hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
+                        className="text-auto-tertiary hover:text-primary-dark dark:duration-75 hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
                         title="Edit User"
                       >
                         <Edit2 size={16} />

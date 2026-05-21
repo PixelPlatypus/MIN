@@ -179,7 +179,7 @@ export default function DynamicFormPage() {
          <div className="absolute top-0 right-0 w-[50vw] h-[50vh] bg-coral/5 blur-[120px] rounded-full -z-10" />
          
          <div className="max-w-2xl w-full text-center space-y-10">
-            <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-auto-tertiary hover:text-primary transition-all group mb-4">
+            <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-all group mb-4">
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to choices
             </Link>
 
@@ -228,7 +228,7 @@ export default function DynamicFormPage() {
        <div className="max-w-4xl mx-auto space-y-12">
           {/* Header */}
           <header className="space-y-6">
-             <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-auto-tertiary hover:text-primary transition-all group">
+             <Link href="/join" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-all group">
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to choices
              </Link>
              <div className="space-y-4">

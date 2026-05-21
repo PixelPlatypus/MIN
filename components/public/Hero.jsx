@@ -74,11 +74,11 @@ export default function Hero({ settings }) {
         transition={{ delay: 2 }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <div className="w-6 h-10 border-2 border-primary/20 rounded-full flex justify-center p-2">
+        <div className="w-6 h-10 border-2 scroll-dot-border rounded-full flex justify-center p-2">
           <motion.div 
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-1.5 h-1.5 bg-primary rounded-full"
+            className="w-1.5 h-1.5 scroll-dot rounded-full"
           />
         </div>
       </motion.div>

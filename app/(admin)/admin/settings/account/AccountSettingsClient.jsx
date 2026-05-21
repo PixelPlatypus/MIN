@@ -221,7 +221,7 @@ export default function AccountSettingsClient({ initialProfile }) {
                     <button 
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-auto-tertiary hover:text-primary transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>

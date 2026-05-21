@@ -119,7 +119,7 @@ export default function JoinPage() {
                 </button>
                 <button
                   onClick={scrollToForm}
-                  className="glass px-8 py-4 rounded-2xl font-semibold text-sm text-auto-secondary dark:text-auto-secondary-dark hover:text-primary transition-all flex items-center gap-2"
+                  className="glass px-8 py-4 rounded-2xl font-semibold text-sm text-auto-secondary dark:text-auto-secondary-dark hover:text-primary-dark dark:duration-75 transition-all flex items-center gap-2"
                   aria-label="Explore joining opportunities"
                 >
                   Explore Opportunities

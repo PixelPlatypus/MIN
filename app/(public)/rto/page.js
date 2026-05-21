@@ -98,7 +98,7 @@ export default function RTOPage() {
 
           <div className="relative">
             {/* Connecting Line */}
-            <div className="hidden lg:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-primary/10 via-primary/40 to-coral/40 -translate-y-1/2 rounded-full" />
+            <div className="hidden lg:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-primary/30 via-primary/60 to-coral/60 dark:from-secondary-light/30 dark:via-secondary-light/60 dark:to-secondary/60 -translate-y-1/2 rounded-full" />
             
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
               {isLoading ? (
@@ -120,7 +120,7 @@ export default function RTOPage() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: idx * 0.1 }}
-                      className="glass rounded-3xl p-8 relative flex flex-col items-center text-center group border border-border dark:border-white/10 hover:border-primary/50 transition-all hover:-translate-y-2 shadow-sm hover:shadow-xl hover:shadow-primary/10 bg-white/50 dark:bg-[#111111]/50"
+                      className="glass rounded-3xl p-8 relative flex flex-col items-center text-center group border border-border dark:border-white/10 hover:border-primary/50 dark:hover:border-secondary-light/50 transition-all hover:-translate-y-2 shadow-sm hover:shadow-xl hover:shadow-primary/10 bg-white/50 dark:bg-white/5"
                     >
                       <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all shadow-inner">
                         <Icon size={32} />
@@ -248,14 +248,14 @@ export default function RTOPage() {
                         const url = typeof item === 'string' ? '#' : item.url
                         return (
                           <li key={i} className="group flex items-start gap-3">
-                            <ChevronRight size={16} className="text-primary/30 group-hover:text-primary shrink-0 mt-0.5 transition-all group-hover:translate-x-1" />
+                            <ChevronRight size={16} className="text-primary/30 group-hover:text-primary-dark dark:duration-75 shrink-0 mt-0.5 transition-all group-hover:translate-x-1" />
                             <a 
                               href={url} 
                               target={url.startsWith('http') ? '_blank' : '_self'}
                               rel="noopener noreferrer"
                               className={`text-sm leading-tight font-medium transition-all duration-300 ${
                                 url !== '#' 
-                                  ? 'text-auto-secondary-dynamic group-hover:text-primary' 
+                                  ? 'text-auto-secondary-dynamic group-hover:text-primary-dark dark:duration-75' 
                                   : 'text-auto-tertiary-dynamic opacity-50'
                               }`}
                             >

@@ -122,13 +122,13 @@ export default function Timeline({ initialEvents = [] }) {
 
                   {/* Pointer arrow for desktop */}
                   <div className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-4 h-4 glass border-none rotate-45 -z-10 ${
-                    i % 2 !== 0 ? '-right-2' : '-left-2'
+                    i % 2 !== 0 ? '-left-2' : '-right-2'
                   }`} />
                 </div>
               </div>
 
               {/* Center dot */}
-              <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary border-4 border-white dark:border-black shadow-xl z-10 shrink-0" />
+              <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary border-4 border-white dark:border-secondary-light shadow-xl z-10 shrink-0" />
 
               {/* Empty space for desktop alternating layout */}
               <div className="hidden md:block w-[45%]" />

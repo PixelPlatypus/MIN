@@ -137,7 +137,7 @@ export default function AdminSubmissionsPage() {
                   {sub.content_type === 'RICHTEXT' ? <FileText size={24} /> : <FileDown size={24} />}
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-lg group-hover:text-primary transition-colors">{sub.title}</h4>
+                  <h4 className="font-bold text-lg group-hover:text-primary-dark dark:duration-75 transition-colors">{sub.title}</h4>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-auto-tertiary">
                     <span className="flex items-center gap-1.5"><User size={12} /> {sub.submitter_name}</span>
                     <span className="flex items-center gap-1.5"><Clock size={12} /> {new Date(sub.created_at).toLocaleDateString()}</span>

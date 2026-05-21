@@ -104,7 +104,7 @@ export default function AdminSearch() {
         onClick={() => setIsOpen(true)}
         className="hidden lg:flex items-center gap-2 bg-bg-secondary dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border dark:border-border-dark cursor-pointer hover:border-primary/50 transition-all group"
       >
-        <Search size={16} className="text-auto-tertiary group-hover:text-primary transition-colors" />
+        <Search size={16} className="text-auto-tertiary group-hover:text-primary-dark dark:duration-75 transition-colors" />
         <div className="flex items-center justify-between w-48">
           <span className="text-xs text-auto-tertiary select-none">Search dashboard...</span>
           <kbd className="hidden xl:inline-flex h-5 items-center gap-1 rounded border border-border bg-white/50 dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-auto-tertiary opacity-100">

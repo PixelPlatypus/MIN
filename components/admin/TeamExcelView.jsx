@@ -443,7 +443,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
               <td colSpan="6" className="p-0">
                 <button 
                   onClick={addNewRow}
-                  className="w-full py-4 bg-bg-secondary/30 dark:bg-white/[0.02] hover:bg-primary/[0.05] text-auto-tertiary hover:text-primary transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] group"
+                  className="w-full py-4 bg-bg-secondary/30 dark:bg-white/[0.02] hover:bg-primary/[0.05] text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] group"
                 >
                   <Plus size={14} className="group-hover:scale-125 transition-transform" />
                   Add New Member Row

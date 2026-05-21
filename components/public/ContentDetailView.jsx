@@ -35,7 +35,7 @@ export default function ContentDetailView({ content }) {
           <div className="space-y-8">
             <Link 
               href="/content" 
-              className="inline-flex items-center gap-2 text-auto-tertiary hover:text-primary transition-colors font-bold text-sm group"
+              className="inline-flex items-center gap-2 text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors font-bold text-sm group"
             >
               <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
               Back to Library

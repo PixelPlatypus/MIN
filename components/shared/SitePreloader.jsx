@@ -84,8 +84,8 @@ export default function SitePreloader() {
                   className="absolute inset-0 z-20 pointer-events-none"
                 >
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full w-[2px] h-32 origin-bottom">
-                    <div className="absolute top-0 left-0 w-full h-full bg-primary" />
-                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary shadow-lg shadow-primary/50" />
+                    <div className="absolute top-0 left-0 w-full h-full preloader-accent" />
+                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full preloader-accent shadow-lg" />
                   </div>
                 </motion.div>
               )}
@@ -96,13 +96,13 @@ export default function SitePreloader() {
                   cy="50%"
                   r="128"
                   fill="none"
-                  stroke="var(--color-primary)"
+                  stroke="var(--color-preloader-accent)"
                   strokeWidth="1.5"
                   strokeDasharray="804" // 2 * pi * 128
                   initial={{ strokeDashoffset: 804 }}
                   animate={{ strokeDashoffset: 804 - (804 * (progress / 100)) }}
                   transition={{ ease: "linear" }}
-                  className="opacity-30"
+                  className="opacity-50"
                 />
               </svg>
 

@@ -75,7 +75,7 @@ export default function EventCard({ event, index, fallbackImage }) {
 
             {/* Content */}
             <div className="p-8 flex flex-col flex-grow space-y-4 bg-white/40 dark:bg-black/20">
-              <h3 className="text-xl font-bold tracking-tight line-clamp-2 text-text dark:text-white group-hover:text-primary transition-colors">
+              <h3 className="text-xl font-bold tracking-tight line-clamp-2 text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors">
                 {title}
               </h3>
 

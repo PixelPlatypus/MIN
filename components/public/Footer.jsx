@@ -85,7 +85,7 @@ export default function Footer({ settings: initialSettings = null }) {
                   href={social.href} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-dynamic hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1"
+                  className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-dynamic hover:text-primary-dark dark:duration-75 transition-all shadow-sm hover:shadow-md hover:-translate-y-1"
                   aria-label={social.name}
                 >
                   {social.icon}
@@ -103,7 +103,7 @@ export default function Footer({ settings: initialSettings = null }) {
                   <li key={link.name}>
                     <Link 
                       href={link.href}
-                      className="text-dynamic opacity-70 hover:opacity-100 hover:text-primary transition-all text-sm font-medium"
+                      className="text-dynamic opacity-70 hover:opacity-100 hover:text-primary-dark dark:duration-75 transition-all text-sm font-medium"
                     >
                       {link.name}
                     </Link>
@@ -117,12 +117,12 @@ export default function Footer({ settings: initialSettings = null }) {
         <div className="mt-20 pt-8 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-dynamic opacity-50">
           <p>© {new Date().getFullYear()} Mathematics Initiatives in Nepal. All rights reserved.</p>
           <div className="flex items-center gap-8">
-            <Link href="/about/cookies" className="hover:text-primary transition-colors">Cookies</Link>
-            <Link href="/about/legal" className="hover:text-primary transition-colors">Legal</Link>
+            <Link href="/about/cookies" className="hover:text-primary-dark dark:duration-75 transition-colors">Cookies</Link>
+            <Link href="/about/legal" className="hover:text-primary-dark dark:duration-75 transition-colors">Legal</Link>
             {settings?.contact_email && (
               <div className="flex items-center gap-2">
                 <Envelope size={16} />
-                <a href={`mailto:${settings.contact_email}`} className="hover:text-primary transition-colors">
+                <a href={`mailto:${settings.contact_email}`} className="hover:text-primary-dark dark:duration-75 transition-colors">
                   {settings.contact_email}
                 </a>
               </div>

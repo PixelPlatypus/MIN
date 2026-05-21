@@ -48,7 +48,7 @@ export default function InquiryDetailPage() {
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <button 
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-auto-tertiary hover:text-primary transition-colors font-bold uppercase tracking-widest text-[10px]"
+        className="flex items-center gap-2 text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors font-bold uppercase tracking-widest text-[10px]"
       >
         <ArrowLeft size={16} /> Back
       </button>

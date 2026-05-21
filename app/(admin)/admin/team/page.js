@@ -213,7 +213,7 @@ export default function AdminTeamPage() {
               Orchestrate your human capital, roles, and historical tenures.
             </p>
             <details className="text-[9px] text-auto-tertiary font-bold group cursor-pointer">
-              <summary className="hover:text-primary transition-colors uppercase tracking-widest list-none flex items-center gap-1">
+              <summary className="hover:text-primary-dark dark:duration-75 transition-colors uppercase tracking-widest list-none flex items-center gap-1">
                 <Info size={10} /> View CSV Import Format
               </summary>
               <div className="mt-2 p-4 glass rounded-xl border border-border dark:border-white/10 space-y-1 font-mono leading-relaxed bg-white/50 dark:bg-black/20">
@@ -369,7 +369,7 @@ export default function AdminTeamPage() {
                             <button 
                               onClick={() => handleEdit(member.id)}
                               title="Edit Member"
-                              className="p-2.5 rounded-xl text-auto-tertiary hover:text-primary hover:bg-primary/10 transition-all active:scale-95"
+                              className="p-2.5 rounded-xl text-auto-tertiary hover:text-primary-dark dark:duration-75 hover:bg-primary/10 transition-all active:scale-95"
                             >
                               <Edit2 size={18} />
                             </button>

@@ -146,7 +146,7 @@ export default function AuditLogPage() {
                          <button
                             key={act}
                             onClick={() => setFilters({...filters, action: filters.action === act ? '' : act})}
-                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${filters.action === act ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-bg-secondary text-auto-tertiary hover:text-primary border border-transparent hover:border-primary/20'}`}
+                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${filters.action === act ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-bg-secondary text-auto-tertiary hover:text-primary-dark dark:duration-75 border border-transparent hover:border-primary/20'}`}
                          >
                            {act}
                          </button>
@@ -162,7 +162,7 @@ export default function AuditLogPage() {
                          <button
                             key={cat.id}
                             onClick={() => setFilters({...filters, entity_type: filters.entity_type === cat.id ? '' : cat.id})}
-                            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${filters.entity_type === cat.id ? 'bg-primary/10 text-primary border-primary shadow-sm' : 'bg-transparent text-auto-tertiary border-border hover:border-primary/50 hover:text-primary'}`}
+                            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${filters.entity_type === cat.id ? 'bg-primary/10 text-primary border-primary shadow-sm' : 'bg-transparent text-auto-tertiary border-border hover:border-primary/50 hover:text-primary-dark dark:duration-75'}`}
                          >
                            {cat.icon}
                            {cat.name}

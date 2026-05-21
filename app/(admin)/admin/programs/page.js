@@ -188,18 +188,18 @@ export default function AdminProgramsPage() {
                         <button 
                           onClick={() => moveItem(index, -1)}
                           disabled={index === 0}
-                          className="p-1.5 hover:bg-primary/10 text-auto-tertiary hover:text-primary rounded-lg transition-all disabled:opacity-0"
+                          className="p-1.5 hover:bg-primary/10 text-auto-tertiary hover:text-primary-dark dark:duration-75 rounded-lg transition-all disabled:opacity-0"
                           title="Move Up"
                         >
                           <ChevronUp size={16} />
                         </button>
-                        <div className="cursor-grab active:cursor-grabbing p-1.5 text-auto-tertiary hover:text-primary transition-colors bg-bg-secondary dark:bg-white/5 rounded-lg">
+                        <div className="cursor-grab active:cursor-grabbing p-1.5 text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors bg-bg-secondary dark:bg-white/5 rounded-lg">
                           <GripVertical size={20} />
                         </div>
                         <button 
                           onClick={() => moveItem(index, 1)}
                           disabled={index === programs.length - 1}
-                          className="p-1.5 hover:bg-primary/10 text-auto-tertiary hover:text-primary rounded-lg transition-all disabled:opacity-0"
+                          className="p-1.5 hover:bg-primary/10 text-auto-tertiary hover:text-primary-dark dark:duration-75 rounded-lg transition-all disabled:opacity-0"
                           title="Move Down"
                         >
                           <ChevronDown size={16} />
@@ -229,7 +229,7 @@ export default function AdminProgramsPage() {
                     <div className="flex items-center gap-3 pl-12 md:pl-0">
                       <Link 
                         href={`/admin/programs/${program.id}`}
-                        className="p-3 bg-bg-secondary dark:bg-white/5 text-auto-tertiary hover:text-primary hover:bg-primary/10 rounded-2xl transition-all"
+                        className="p-3 bg-bg-secondary dark:bg-white/5 text-auto-tertiary hover:text-primary-dark dark:duration-75 hover:bg-primary/10 rounded-2xl transition-all"
                         title="Edit Details"
                       >
                         <Edit2 size={20} />

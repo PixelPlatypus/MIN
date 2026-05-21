@@ -71,7 +71,7 @@ export default function ContentCard({ item, index, fallbackImage }) {
 
             {/* Content */}
             <div className="p-8 flex flex-col flex-grow space-y-4 bg-white/40 dark:bg-black/20">
-              <h3 className="text-xl font-bold tracking-tight line-clamp-2 text-text dark:text-white group-hover:text-primary transition-colors z-10">
+              <h3 className="text-xl font-bold tracking-tight line-clamp-2 text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors z-10">
                 {title}
               </h3>
 
@@ -99,7 +99,7 @@ export default function ContentCard({ item, index, fallbackImage }) {
                     </span>
                   </div>
                 </div>
-                <ArrowRight size={18} className="text-auto-tertiary transition-transform mt-2 group-hover:translate-x-2 group-hover:text-primary" />
+                <ArrowRight size={18} className="text-auto-tertiary transition-transform mt-2 group-hover:translate-x-2 group-hover:text-primary-dark dark:duration-75" />
               </div>
             </div>
           </div>

@@ -128,7 +128,7 @@ export default function GalleryPage() {
                 className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
                   activeAlbum === album 
                     ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                    : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary'
+                    : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary-dark dark:duration-75'
                 }`}
               >
                 {album === 'ALL' ? 'All Albums' : album}
@@ -151,7 +151,7 @@ export default function GalleryPage() {
                 className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
                   activeTag === tag 
                     ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 dark:bg-white dark:text-bg-dark dark:border-white' 
-                    : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary dark:hover:text-secondary'
+                    : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary-dark dark:duration-75'
                 }`}
               >
                 #{tag}

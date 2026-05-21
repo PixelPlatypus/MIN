@@ -132,7 +132,7 @@ export default async function EventDetailPage({ params }) {
       {/* Hero Section */}
       <section className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto space-y-8">
-          <Link href="/events" className="inline-flex items-center gap-2 text-sm font-bold text-auto-tertiary hover:text-primary transition-colors">
+          <Link href="/events" className="inline-flex items-center gap-2 text-sm font-bold text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors">
             ← Back to Events
           </Link>
           

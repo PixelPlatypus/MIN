@@ -52,7 +52,7 @@ const categories = [
     desc: 'Support events, teach sessions, or help with outreach.',
     borderColor: 'border-primary/20 dark:border-primary/10',
     hoverBorder: 'hover:border-primary/50',
-    hoverText: 'group-hover:text-primary',
+    hoverText: 'group-hover:text-primary-dark dark:duration-75',
     gradient: 'from-primary/10',
     accent: 'bg-primary'
   },
@@ -309,7 +309,7 @@ export default function JoinForm() {
                   setFormData({ name: '', email: '', phone: '' })
                   setFormQuestions({})
                 }}
-                className="px-12 py-5 rounded-2xl bg-black/5 dark:bg-white/5 text-auto-tertiary hover:text-primary font-black text-xs uppercase tracking-widest transition-all border border-border"
+                className="px-12 py-5 rounded-2xl bg-black/5 dark:bg-white/5 text-auto-tertiary hover:text-primary-dark dark:duration-75 font-black text-xs uppercase tracking-widest transition-all border border-border"
               >
                 Submit another application
               </button>
@@ -355,7 +355,7 @@ export default function JoinForm() {
               <button 
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-auto-tertiary hover:text-primary transition-all group"
+                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-all group"
               >
                 <ChevronLeft size={20} className="transition-transform group-hover:-translate-x-1" />
                 Change Category

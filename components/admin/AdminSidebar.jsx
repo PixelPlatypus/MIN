@@ -156,7 +156,7 @@ export default function AdminSidebar({ profile, isMaintenance }) {
           {!isCollapsed && (
             <button 
               onClick={toggleCollapse}
-              className="hidden lg:flex p-1.5 rounded-lg hover:bg-bg-secondary dark:hover:bg-white/5 text-auto-tertiary hover:text-primary transition-all ml-2"
+              className="hidden lg:flex p-1.5 rounded-lg hover:bg-bg-secondary dark:hover:bg-white/5 text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-all ml-2"
             >
             <CaretLeft size={18} />
             </button>
@@ -200,12 +200,12 @@ export default function AdminSidebar({ profile, isMaintenance }) {
                       className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                         isActive 
                           ? 'bg-primary text-white shadow-md shadow-primary/20' 
-                          : 'text-auto-secondary hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary'
+                          : 'text-auto-secondary hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary-dark dark:duration-75'
                       }`}
                       title={isCollapsed ? link.name : ''}
                     >
                       <div className="flex items-center gap-3">
-                        <span className={`${isActive ? 'text-white' : 'text-auto-tertiary group-hover:text-primary'} flex-shrink-0 transition-colors`}>
+                        <span className={`${isActive ? 'text-white' : 'text-auto-tertiary group-hover:text-primary-dark dark:duration-75'} flex-shrink-0 transition-colors`}>
                           {link.icon}
                         </span>
                         {!isCollapsed && <span className="truncate">{link.name}</span>}

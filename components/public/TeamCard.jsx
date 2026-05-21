@@ -49,7 +49,7 @@ export default function TeamCard({ member, index, fallbackImage, activeTab }) {
 
             {/* Name & Position */}
             <div className="space-y-1 mb-4 flex-grow">
-              <h3 className="text-xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary transition-colors">{name}</h3>
+              <h3 className="text-xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors">{name}</h3>
               
               {!isAdvisorTab && !isAlumniTab && (
                 <p className="text-sm font-semibold text-primary">{position}</p>
@@ -91,7 +91,7 @@ export default function TeamCard({ member, index, fallbackImage, activeTab }) {
                   href={platform.toLowerCase() === 'email' ? `mailto:${url}` : url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-auto-secondary hover:text-primary dark:text-auto-secondary-dark dark:hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1 z-20"
+                  className="w-9 h-9 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center text-auto-secondary hover:text-primary-dark dark:duration-75 dark:text-auto-secondary-dark dark:hover:text-primary-dark dark:duration-75 transition-all shadow-sm hover:shadow-md hover:-translate-y-1 z-20"
                   aria-label={`${name}'s ${platform}`}
                 >
                   {socialIcons[platform.toLowerCase()] || <ExternalLink size={18} />}

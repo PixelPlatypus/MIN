@@ -224,7 +224,7 @@ export default function LoginPage() {
         <div className="mt-8 text-center">
           <Link 
             href="/" 
-            className="text-sm text-auto-tertiary hover:text-primary transition-colors inline-flex items-center gap-1"
+            className="text-sm text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors inline-flex items-center gap-1"
           >
             ← Back to homepage
           </Link>

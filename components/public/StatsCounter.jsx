@@ -140,7 +140,7 @@ export default function StatsCounter({ settings: initialSettings = null }) {
                   {stat.icon}
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-4xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary transition-colors">
+                  <h3 className="text-4xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors">
                     <span className="stat-value">0</span>{stat.suffix}
                   </h3>
                   <p className="text-sm font-semibold text-auto-tertiary uppercase tracking-widest group-hover:text-auto-secondary transition-colors">

@@ -37,7 +37,7 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="mb-12"
         >
-          <Link href="/team" className="inline-flex items-center gap-3 text-auto-tertiary hover:text-primary transition-colors font-black text-xs tracking-[0.2em] uppercase group">
+          <Link href="/team" className="inline-flex items-center gap-3 text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors font-black text-xs tracking-[0.2em] uppercase group">
             <span className="p-2 rounded-full bg-white/5 border border-white/10 group-hover:bg-primary/20 group-hover:border-primary/30 transition-all">
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
             </span>
@@ -189,7 +189,7 @@ export default function TeamMemberProfile({ member, socialLinks, roleHistory }) 
                       transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                       className="glass p-6 rounded-[2rem] flex items-center justify-between border border-white/5 hover:border-primary/20 transition-colors group"
                     >
-                      <span className="text-xl md:text-2xl font-black text-text-main dark:text-white tracking-tight group-hover:text-primary transition-colors">
+                      <span className="text-xl md:text-2xl font-black text-text-main dark:text-white tracking-tight group-hover:text-primary-dark dark:duration-75 transition-colors">
                         {history.position}
                       </span>
                       <span className="text-sm font-black text-auto-tertiary tracking-[0.2em] bg-white/5 px-4 py-2 rounded-xl">

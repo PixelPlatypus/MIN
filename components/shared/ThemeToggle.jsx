@@ -33,7 +33,7 @@ export default function ThemeToggle() {
           transition={{ duration: 0.2, ease: 'easeOut' }}
         >
           {theme === 'light' ? (
-            <Sun size={20} className="text-auto-secondary group-hover:text-primary transition-colors" />
+            <Sun size={20} className="text-auto-secondary group-hover:text-primary-dark dark:duration-75 transition-colors" />
           ) : (
             <Moon size={20} className="text-auto-secondary-dark group-hover:text-secondary transition-colors" />
           )}

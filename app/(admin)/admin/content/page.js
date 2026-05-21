@@ -166,7 +166,7 @@ export default function AdminContentPage() {
                         <button 
                           onClick={() => handleMove(item.id, 'up')}
                           disabled={content.indexOf(item) === 0}
-                          className="p-1 rounded-md text-auto-tertiary hover:bg-primary/20 hover:text-primary transition-all disabled:opacity-0"
+                          className="p-1 rounded-md text-auto-tertiary hover:bg-primary/20 hover:text-primary-dark dark:duration-75 transition-all disabled:opacity-0"
                           title="Move Up"
                         >
                           <ArrowUp size={14} strokeWidth={3} />
@@ -174,7 +174,7 @@ export default function AdminContentPage() {
                         <button 
                           onClick={() => handleMove(item.id, 'down')}
                           disabled={content.indexOf(item) === content.length - 1}
-                          className="p-1 rounded-md text-auto-tertiary hover:bg-primary/20 hover:text-primary transition-all disabled:opacity-0"
+                          className="p-1 rounded-md text-auto-tertiary hover:bg-primary/20 hover:text-primary-dark dark:duration-75 transition-all disabled:opacity-0"
                           title="Move Down"
                         >
                           <ArrowDown size={14} strokeWidth={3} />
@@ -219,7 +219,7 @@ export default function AdminContentPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link 
                           href={`/admin/content/${item.id}`}
-                          className="p-2 rounded-xl text-auto-tertiary hover:text-primary hover:bg-primary/10 transition-all"
+                          className="p-2 rounded-xl text-auto-tertiary hover:text-primary-dark dark:duration-75 hover:bg-primary/10 transition-all"
                         >
                           <Edit2 size={18} />
                         </Link>

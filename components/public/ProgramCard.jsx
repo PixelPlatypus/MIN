@@ -50,7 +50,7 @@ export default function ProgramCard({ program, index }) {
               <div className="w-14 h-14 bg-bg-secondary dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 shadow-lg z-10">
                 {icon}
               </div>
-              <h3 className="text-xl font-bold tracking-tight mb-3 text-text dark:text-white group-hover:text-primary transition-colors z-10">
+              <h3 className="text-xl font-bold tracking-tight mb-3 text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors z-10">
                 {name}
               </h3>
               <p className="text-sm text-auto-secondary leading-relaxed line-clamp-2 z-10">

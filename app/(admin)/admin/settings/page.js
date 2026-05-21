@@ -47,7 +47,7 @@ const InputField = ({ label, icon, value, onChange, placeholder, type = "text", 
       <div className="flex items-center justify-between">
         <label 
           htmlFor={id}
-          className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary group-hover:text-primary transition-colors flex items-center gap-2 cursor-pointer"
+          className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary group-hover:text-primary-dark dark:duration-75 transition-colors flex items-center gap-2 cursor-pointer"
         >
           {icon} {label}
         </label>
@@ -81,7 +81,7 @@ const InputField = ({ label, icon, value, onChange, placeholder, type = "text", 
 
 const ImageField = ({ label, value, onUpload, folder, description }) => (
   <div className="group space-y-3">
-    <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary group-hover:text-primary transition-colors flex items-center gap-2">
+    <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary group-hover:text-primary-dark dark:duration-75 transition-colors flex items-center gap-2">
       <ImageIcon size={14}/> {label}
     </label>
     <div className="flex flex-col md:flex-row gap-6 items-start">
@@ -359,10 +359,10 @@ export default function SiteEditor() {
                      <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black transition-all group ${activeTab === tab.id ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-auto-tertiary hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary'}`}
+                        className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black transition-all group ${activeTab === tab.id ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-auto-tertiary hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary-dark dark:duration-75'}`}
                      >
                        <div className="flex items-center gap-4">
-                          <span className={`${activeTab === tab.id ? 'text-white' : 'group-hover:text-primary transition-colors'}`}>{tab.icon}</span>
+                          <span className={`${activeTab === tab.id ? 'text-white' : 'group-hover:text-primary-dark dark:duration-75 transition-colors'}`}>{tab.icon}</span>
                           <span className="tracking-tight uppercase">{tab.name}</span>
                        </div>
                        {activeTab === tab.id && <motion.div layoutId="rail-arrow"><ArrowRight size={14} className="opacity-50" /></motion.div>}
@@ -378,7 +378,7 @@ export default function SiteEditor() {
                 <p className="text-[9px] text-auto-tertiary leading-relaxed font-medium">Verify how your database changes affect the global viewer experience.</p>
                 <Link href="/" target="_blank" className="inline-flex items-center gap-2 text-[10px] font-black text-primary hover:gap-3 transition-all">Launch Site <ArrowRight size={10}/></Link>
              </div>
-             <Monitor size={80} className="absolute -bottom-6 -right-6 text-primary/5 group-hover:text-primary/10 transition-colors rotate-12" />
+             <Monitor size={80} className="absolute -bottom-6 -right-6 text-primary/5 group-hover:text-primary-dark dark:duration-75/10 transition-colors rotate-12" />
           </div>
         </aside>
 
@@ -569,7 +569,7 @@ export default function SiteEditor() {
                        <Reorder.Group axis="y" values={settings.join_features || []} onReorder={(newVal) => setSettings(prev => ({...prev, join_features: newVal}))} className="space-y-4">
                           {(settings.join_features || []).map((feat, idx) => (
                             <Reorder.Item key={idx} value={feat} className="p-6 glass rounded-2xl border border-border relative group flex gap-6 hover:border-primary/40 transition-all">
-                               <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-4 border-r border-border"><GripVertical size={20} /></div>
+                               <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary-dark dark:duration-75 transition-colors pr-4 border-r border-border"><GripVertical size={20} /></div>
                                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
                                  <InputField label="Value Title" value={feat.title} onChange={e => {
                                     const newFeats = [...settings.join_features]
@@ -693,7 +693,7 @@ export default function SiteEditor() {
                        <Reorder.Group axis="y" values={settings.join_faqs || []} onReorder={(newVal) => setSettings(prev => ({...prev, join_faqs: newVal}))} className="space-y-4">
                           {(settings.join_faqs || []).map((faq, idx) => (
                             <Reorder.Item key={idx} value={faq} className="p-8 glass rounded-[2rem] border border-border relative group flex gap-6 hover:border-primary/40 transition-all">
-                               <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-6 border-r border-border"><GripVertical size={24} /></div>
+                               <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary-dark dark:duration-75 transition-colors pr-6 border-r border-border"><GripVertical size={24} /></div>
                                <div className="flex-1 space-y-6">
                                   <InputField label="Question" value={faq.question} onChange={e => {
                                      const newFaqs = [...settings.join_faqs]
@@ -764,7 +764,7 @@ export default function SiteEditor() {
                       <Reorder.Group axis="y" values={timelineItems} onReorder={setTimelineItems} className="space-y-4">
                         {timelineItems.map((item) => (
                           <Reorder.Item key={item.id} value={item} className="p-8 glass rounded-[2rem] border border-border relative group flex gap-8 hover:border-primary/40 transition-all shadow-sm hover:shadow-xl">
-                            <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary transition-colors pr-4 border-r border-border"><GripVertical size={24} /></div>
+                            <div className="flex items-center justify-center text-auto-tertiary/20 cursor-grab active:cursor-grabbing hover:text-primary-dark dark:duration-75 transition-colors pr-4 border-r border-border"><GripVertical size={24} /></div>
                             <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-8">
                               <InputField label="Event Year" icon={<Calendar size={12}/>} value={item.year} onChange={e => updateTimelineItem(item.id, 'year', e.target.value)} placeholder="2024" />
                               <InputField label="Milestone Title" icon={<Type size={12}/>} value={item.title} onChange={e => updateTimelineItem(item.id, 'title', e.target.value)} />

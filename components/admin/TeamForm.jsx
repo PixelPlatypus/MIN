@@ -211,7 +211,7 @@ export default function TeamForm({ initialData = null }) {
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/team" 
-            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary"
+            className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary-dark dark:duration-75"
           >
             <ArrowLeft size={20} />
           </Link>

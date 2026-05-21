@@ -150,7 +150,7 @@ export default function AdminEventsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link 
                           href={`/admin/events/${event.id}`}
-                          className="p-2 rounded-xl text-auto-tertiary hover:text-primary hover:bg-primary/10 transition-all"
+                          className="p-2 rounded-xl text-auto-tertiary hover:text-primary-dark dark:duration-75 hover:bg-primary/10 transition-all"
                         >
                           <Edit2 size={18} />
                         </Link>

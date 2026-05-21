@@ -294,7 +294,7 @@ export default function FormBuilderPage() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-bold text-sm tracking-tight truncate">{f.title}</h3>
-                  <ChevronRight size={16} className="text-auto-tertiary group-hover:text-primary transition-colors shrink-0" />
+                  <ChevronRight size={16} className="text-auto-tertiary group-hover:text-primary-dark dark:duration-75 transition-colors shrink-0" />
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   {f.is_active ? (

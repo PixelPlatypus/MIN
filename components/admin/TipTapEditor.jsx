@@ -69,7 +69,7 @@ export default function TipTapEditor({ content, onChange }) {
       className={`p-2.5 rounded-xl transition-all flex items-center justify-center ${
         active 
           ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-110' 
-          : 'text-auto-tertiary hover:text-primary hover:bg-primary/10 hover:scale-105 active:scale-95'
+          : 'text-auto-tertiary hover:text-primary-dark dark:duration-75 hover:bg-primary/10 hover:scale-105 active:scale-95'
       }`}
     >
       {children}
