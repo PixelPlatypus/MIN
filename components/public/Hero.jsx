@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Rocket } from '@phosphor-icons/react'
+import { ArrowRight } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
 
@@ -16,7 +16,11 @@ export default function Hero({ settings }) {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 glass px-6 py-2.5 rounded-full text-xs font-bold mb-6 shadow-xl will-change-transform"
           >
-            <Rocket size={16} weight="fill" className="text-secondary-dark" />
+            <motion.div 
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="w-2.5 h-2.5 rounded-full bg-secondary-dark"
+            />
             <span className="uppercase tracking-[0.2em]">
               {settings?.hero_badge}
             </span>

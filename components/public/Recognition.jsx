@@ -75,23 +75,21 @@ export default function Recognition({ settings: initialSettings = null }) {
                 </>
               ) : (
                 <>
-                  {settings?.about_rec_link && (
-                    <a 
-                      href={settings.about_rec_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full sm:w-auto bg-secondary hover:bg-secondary-dark text-[#16556D] px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-secondary/20 hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-1 active:scale-[0.98]"
-                      aria-label="Explore MIN Global Recognition"
-                    >
-                      Explore Recognition
-                      <ArrowRight size={20} />
-                    </a>
-                  )}
+                  <a 
+                    href="https://hundred.org/en/innovations/mathematics-initiatives-in-nepal-min"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto bg-secondary hover:bg-secondary-dark text-[#16556D] px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-secondary/20 hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-1 active:scale-[0.98]"
+                    aria-label="View on HundrED"
+                  >
+                    View on HundrED
+                    <ArrowRight size={20} />
+                  </a>
                   <Link 
                     href="/about"
                     className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all border border-white/10 backdrop-blur-md"
                   >
-                    Our Journey
+                    Mission & Vision
                   </Link>
                 </>
               )}
