@@ -6,7 +6,7 @@ import {
   CaretRight as ChevronRight, Calculator, Clock, 
   Eye, CheckCircle as CheckCircle2, WarningCircle as AlertCircle, CircleNotch as Loader2,
   ListNumbers as ListOrdered, Image as ImageIcon,
-  UploadSimple as Upload, XCircle, ArrowUp, ArrowDown
+  UploadSimple as Upload, XCircle, ArrowUp, ArrowDown, YoutubeLogo
 } from '@phosphor-icons/react'
 import 'katex/dist/katex.min.css'
 import { InlineMath, BlockMath } from 'react-katex'
@@ -31,7 +31,8 @@ export default function QuestionBank() {
     option_d: '',
     correct_option: 'A',
     marks: 1,
-    image_url: ''
+    image_url: '',
+    youtube_url: ''
   })
 
   useEffect(() => {
@@ -147,7 +148,8 @@ export default function QuestionBank() {
           option_d: '',
           correct_option: 'A',
           marks: 1,
-          image_url: ''
+          image_url: '',
+          youtube_url: ''
         })
       }
     } catch (err) {
@@ -380,7 +382,8 @@ export default function QuestionBank() {
                     option_d: '',
                     correct_option: 'A',
                     marks: 1,
-                    image_url: ''
+                    image_url: '',
+                    youtube_url: ''
                   })
                   setIsAddingQuestion(true)
                 }}
@@ -514,6 +517,17 @@ export default function QuestionBank() {
                       ))}
                     </div>
 
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">YouTube Explanation Video URL</label>
+                      <input 
+                        type="url"
+                        value={questionForm.youtube_url}
+                        onChange={e => setQuestionForm({...questionForm, youtube_url: e.target.value})}
+                        className="w-full bg-white dark:bg-white/5 border border-border rounded-xl px-4 py-3 text-sm transition-all focus:border-primary outline-none"
+                        placeholder="https://www.youtube.com/watch?v=..."
+                      />
+                    </div>
+
                     <div className="flex items-center gap-6 pt-4 border-t border-border">
                       <div className="flex items-center gap-3">
                         <select 
@@ -579,6 +593,15 @@ export default function QuestionBank() {
                         </div>
                       ))}
                     </div>
+                    
+                    {q.youtube_url && (
+                      <div className="text-xs text-primary dark:text-secondary flex items-center gap-1.5 font-bold pt-2">
+                        <YoutubeLogo size={16} className="text-rose-500" />
+                        <a href={q.youtube_url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Video Explanation: {q.youtube_url}
+                        </a>
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="flex items-center justify-between gap-1 bg-black/5 dark:bg-white/5 rounded-xl p-1 mb-1">
@@ -595,7 +618,8 @@ export default function QuestionBank() {
                           option_d: q.option_d,
                           correct_option: q.correct_option,
                           marks: q.marks,
-                          image_url: q.image_url || ''
+                          image_url: q.image_url || '',
+                          youtube_url: q.youtube_url || ''
                         })
                         setEditingQuestion(q)
                         window.scrollTo({ top: 0, behavior: 'smooth' })

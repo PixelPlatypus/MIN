@@ -27,7 +27,7 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const body = await request.json()
@@ -54,7 +54,7 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
-  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  const { user, profile, supabase, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const { items } = await request.json() // Expect [{id, display_order}]

@@ -43,7 +43,9 @@ CREATE POLICY "Admin/Manager manage events" ON public.events FOR ALL USING (publ
 
 -- Programs
 CREATE POLICY "Public read active programs" ON public.programs FOR SELECT USING (status = 'ACTIVE');
-CREATE POLICY "Admin/Manager manage programs" ON public.programs FOR ALL USING (public.is_admin_or_manager());
+CREATE POLICY "Admin/Manager/Writer manage programs" ON public.programs FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'))
+);
 
 -- Content
 CREATE POLICY "Public read published content" ON public.content FOR SELECT USING (status = 'PUBLISHED');
@@ -67,11 +69,15 @@ CREATE POLICY "Admin update stats" ON public.site_stats FOR UPDATE USING (public
 
 -- Practice sets/questions
 CREATE POLICY "Public read published practice" ON public.practice_sets FOR SELECT USING (is_published = TRUE);
-CREATE POLICY "Admin/Manager manage practice" ON public.practice_sets FOR ALL USING (public.is_admin_or_manager());
+CREATE POLICY "Admin/Writer manage practice" ON public.practice_sets FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('ADMIN', 'WEBSITE_MANAGER', 'WRITER'))
+);
 CREATE POLICY "Public read practice questions" ON public.practice_questions FOR SELECT USING (
     EXISTS (SELECT 1 FROM public.practice_sets WHERE id = set_id AND is_published = TRUE)
 );
-CREATE POLICY "Admin/Manager manage practice questions" ON public.practice_questions FOR ALL USING (public.is_admin_or_manager());
+CREATE POLICY "Admin/Writer manage practice questions" ON public.practice_questions FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('ADMIN', 'WEBSITE_MANAGER', 'WRITER'))
+);
 
 -- Forms & Applications
 CREATE POLICY "Public submit forms" ON public.form_submissions FOR INSERT WITH CHECK (status = 'PENDING');
@@ -87,7 +93,12 @@ CREATE POLICY "Admin read audit log" ON public.audit_log FOR SELECT USING (
 
 -- Notifications
 CREATE POLICY "Public read active notices" ON public.popup_notices FOR SELECT USING (is_active = TRUE);
-CREATE POLICY "Admin manage notices" ON public.popup_notices FOR ALL USING (public.is_admin_or_manager());
+CREATE POLICY "Admin/Writer read all notices" ON public.popup_notices FOR SELECT USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'))
+);
+CREATE POLICY "Admin/Writer manage notices" ON public.popup_notices FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('ADMIN', 'WEBSITE_MANAGER', 'WRITER'))
+);
 
 -- Timeline
 CREATE POLICY "Public read timeline" ON public.timeline_events FOR SELECT USING (TRUE);

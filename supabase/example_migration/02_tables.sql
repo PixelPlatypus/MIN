@@ -258,6 +258,7 @@ CREATE TABLE public.practice_questions (
     marks INTEGER DEFAULT 1,
     sort_order INTEGER DEFAULT 0,
     image_url TEXT,
+    youtube_url TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
