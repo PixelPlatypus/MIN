@@ -229,7 +229,8 @@ export default function ExamInterface() {
       userAnswer: answers[q.id] || null,
       correctAnswer: q.correct_option,
       isCorrect: answers[q.id] === q.correct_option,
-      options: { a: q.option_a, b: q.option_b, c: q.option_c, d: q.option_d }
+      options: { a: q.option_a, b: q.option_b, c: q.option_c, d: q.option_d },
+      youtube_url: q.youtube_url || null
     })).filter(q => !q.isCorrect) // Only store incorrect answers to save space
     
     history.push({ 
@@ -336,7 +337,7 @@ export default function ExamInterface() {
   const answeredCount = Object.keys(answers).length
 
   return (
-    <div className="min-h-screen bg-bg-main dark:bg-[#050505] flex flex-col pt-[80px]">
+    <div className="min-h-screen bg-bg-main dark:bg-bg-main-dark flex flex-col pt-[80px]">
       
       {/* Submit Confirmation Modal */}
       {showSubmitModal && (

@@ -85,21 +85,33 @@ const TOUR_STEPS = {
   WRITER: [
     {
       title: "Editorial Suite",
-      description: "Publish articles, upload PDFs, and manage the MIN resource library. Support for LaTeX and Rich Text formatting.",
+      description: "Publish articles, upload PDFs, and manage the MIN resource library. Full support for LaTeX and Rich Text formatting to craft polished academic content.",
       icon: <Library size={24} className="text-primary" />,
       target: "content"
     },
     {
       title: "Public Submissions",
-      description: "Review and audit content submitted by the community. Approve high-quality problems for the public resource bank.",
+      description: "Review content submitted by the community. Approve high-quality problems and articles for the public resource bank.",
       icon: <Send size={24} className="text-green" />,
       target: "submissions"
     },
     {
-      title: "Olympiad Training",
-      description: "Construct DMO Practice sets using our LaTeX question builder. Manage mock exams and verify diagrams for students.",
+      title: "Olympiad Practice",
+      description: "Build DMO Practice sets using our LaTeX question builder. Add questions, attach YouTube explanation links, and publish mock exams for students.",
       icon: <Calculator size={24} className="text-coral" />,
       target: "dmopractice"
+    },
+    {
+      title: "Programs & Events",
+      description: "Keep MIN's academic programs and events up to date. Create new programs, update details, and schedule upcoming events visible to the public.",
+      icon: <Calendar size={24} className="text-primary" />,
+      target: "programs"
+    },
+    {
+      title: "Pop-up Notices",
+      description: "Deploy urgent banners and pop-up notices across the site to inform students of critical updates, deadlines, or announcements.",
+      icon: <Bell size={24} className="text-green" />,
+      target: "notices"
     }
   ]
 }

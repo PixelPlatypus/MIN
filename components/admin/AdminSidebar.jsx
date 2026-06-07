@@ -50,23 +50,23 @@ const navGroups = [
   },
   {
     title: 'Management',
-    roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'],
+    roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'],
     links: [
-      { name: 'Programs', href: '/admin/programs', icon: <Layers size={20} /> },
-      { name: 'Events', href: '/admin/events', icon: <Calendar size={20} /> },
-      { name: 'DMO Practice', href: '/admin/dmopractice', icon: <Calculator size={20} /> },
-      { name: 'Team', href: '/admin/team', icon: <Users size={20} /> },
-      { name: 'Gallery', href: '/admin/gallery', icon: <ImageIcon size={20} /> }
+      { name: 'Programs', href: '/admin/programs', icon: <Layers size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'] },
+      { name: 'Events', href: '/admin/events', icon: <Calendar size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'] },
+      { name: 'DMO Practice', href: '/admin/dmopractice', icon: <Calculator size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER', 'WRITER'] },
+      { name: 'Team', href: '/admin/team', icon: <Users size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
+      { name: 'Gallery', href: '/admin/gallery', icon: <ImageIcon size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] }
     ]
   },
   {
     title: 'Applications',
-    roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'],
+    roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'],
     links: [
-      { name: 'Join Us', href: '/admin/applications', icon: <UserPlus size={20} /> },
-      { name: 'Inquiries', href: '/admin/inquiries', icon: <Envelope size={20} /> },
-      { name: 'Form Builder', href: '/admin/applications/builder', icon: <Layers size={20} /> },
-      { name: 'Pop-up Notices', href: '/admin/notices', icon: <Bell size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER'] },
+      { name: 'Join Us', href: '/admin/applications', icon: <UserPlus size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
+      { name: 'Inquiries', href: '/admin/inquiries', icon: <Envelope size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
+      { name: 'Form Builder', href: '/admin/applications/builder', icon: <Layers size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
+      { name: 'Pop-up Notices', href: '/admin/notices', icon: <Bell size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER', 'WRITER'] },
     ]
   },
   {

@@ -24,7 +24,7 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const { user, profile, supabase, error: rbacError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+  const { user, profile, supabase, error: rbacError } = await withRole(['ADMIN', 'WEBSITE_MANAGER', 'WRITER'])
   if (rbacError) return NextResponse.json({ error: rbacError.message }, { status: rbacError.status })
 
   const body = await request.json()
@@ -48,7 +48,7 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
-  const { user, profile, supabase, error: rbacError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+  const { user, profile, supabase, error: rbacError } = await withRole(['ADMIN', 'WEBSITE_MANAGER', 'WRITER'])
   if (rbacError) return NextResponse.json({ error: rbacError.message }, { status: rbacError.status })
 
   const body = await request.json()
@@ -74,7 +74,7 @@ export async function PATCH(request) {
 }
 
 export async function DELETE(request) {
-  const { user, profile, supabase, error: rbacError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+  const { user, profile, supabase, error: rbacError } = await withRole(['ADMIN', 'WEBSITE_MANAGER', 'WRITER'])
   if (rbacError) return NextResponse.json({ error: rbacError.message }, { status: rbacError.status })
 
   const { searchParams } = new URL(request.url)

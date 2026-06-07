@@ -13,7 +13,8 @@ import {
   ArrowRight,
   ShieldCheck,
   ClockCounterClockwise as History,
-  CaretDown as ChevronDown
+  CaretDown as ChevronDown,
+  YoutubeLogo
 } from '@phosphor-icons/react'
 import { Skeleton } from '@/components/ui/Skeleton'
 
@@ -214,7 +215,7 @@ export default function DMOPracticePage() {
                   </div>
                   <div className="space-y-4">
                     {history.slice(0, 5).map((entry, idx) => (
-                      <div key={idx} className="rounded-2xl bg-bg-secondary/50 dark:bg-white/5 border border-border/50 overflow-hidden">
+                      <div key={idx} className="rounded-xl bg-bg-secondary/50 dark:bg-white/5 border border-border/50 overflow-hidden">
                         <button 
                           onClick={() => setExpandedHistory(expandedHistory === idx ? null : idx)}
                           className="w-full flex items-center justify-between p-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left"
@@ -242,12 +243,24 @@ export default function DMOPracticePage() {
                             >
                               <p className="text-[10px] font-black uppercase tracking-widest text-coral">Incorrect Answers</p>
                               {entry.wrongAnswers.map((w, i) => (
-                                <div key={i} className="text-xs space-y-1 p-2 rounded-xl bg-white dark:bg-[#111] border border-coral/20">
+                                <div key={i} className="text-xs space-y-1 p-2 rounded-md bg-white dark:bg-[#111] border border-coral/20">
                                   <div className="font-semibold text-dynamic pr-4"><MathText text={w.text} /></div>
                                   <div className="flex items-center gap-4 text-[10px] font-bold">
                                     <span className="text-coral flex items-center gap-1">You: {w.userAnswer || 'None'} {w.userAnswer && w.options && <span className="opacity-70">(<MathText text={w.options[w.userAnswer.toLowerCase()]} />)</span>}</span>
                                     <span className="text-emerald-500 flex items-center gap-1">Correct: {w.correctAnswer} {w.options && <span className="opacity-70">(<MathText text={w.options[w.correctAnswer.toLowerCase()]} />)</span>}</span>
                                   </div>
+                                  {w.youtube_url && (
+                                    <div className="pt-2 mt-2 border-t border-border/30 dark:border-white/5">
+                                      <a 
+                                        href={w.youtube_url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-dark dark:text-secondary dark:hover:text-secondary-dark transition-colors"
+                                      >
+                                        <YoutubeLogo size={14} className="text-rose-500" /> Watch Explanation
+                                      </a>
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                             </motion.div>

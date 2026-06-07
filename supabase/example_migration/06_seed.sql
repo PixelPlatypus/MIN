@@ -154,8 +154,8 @@ INSERT INTO public.content (title, slug, type, content_type, excerpt, author_nam
 INSERT INTO public.practice_sets (id, name, time_limit, is_published) VALUES
 ('d1111111-1111-1111-1111-111111111111', 'Sample Mock Exam', 60, TRUE);
 
-INSERT INTO public.practice_questions (set_id, question_text, option_a, option_b, option_c, option_d, correct_option, marks, sort_order) VALUES
-('d1111111-1111-1111-1111-111111111111', 'What is 1 + 1?', '1', '2', '3', '4', 'B', 1, 1);
+INSERT INTO public.practice_questions (set_id, question_text, option_a, option_b, option_c, option_d, correct_option, marks, sort_order, youtube_url) VALUES
+('d1111111-1111-1111-1111-111111111111', 'What is 1 + 1?', '1', '2', '3', '4', 'B', 1, 1, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 
 -- 8. EMAIL TEMPLATES
 INSERT INTO public.email_templates (id, name, subject, body_markdown) VALUES

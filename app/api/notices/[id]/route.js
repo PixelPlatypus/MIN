@@ -5,7 +5,7 @@ import { logAudit } from '@/lib/audit'
 export async function GET(request, { params }) {
   try {
     const { id } = await params
-    const { profile, error: authError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+    const { profile, error: authError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'])
     if (authError) return Response.json({ error: authError.message }, { status: authError.status })
 
     const supabase = await createAdminClient()
@@ -25,7 +25,7 @@ export async function GET(request, { params }) {
 export async function PATCH(request, { params }) {
   try {
     const { id } = await params
-    const { user, profile, error: authError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+    const { user, profile, error: authError } = await withRole(['ADMIN', 'WEBSITE_MANAGER', 'WRITER'])
     if (authError) return Response.json({ error: authError.message }, { status: authError.status })
 
     const body = await request.json()
@@ -67,7 +67,7 @@ export async function PATCH(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const { id } = await params
-    const { user, profile, error: authError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+    const { user, profile, error: authError } = await withRole(['ADMIN', 'WEBSITE_MANAGER', 'WRITER'])
     if (authError) return Response.json({ error: authError.message }, { status: authError.status })
 
     const supabase = await createAdminClient()
