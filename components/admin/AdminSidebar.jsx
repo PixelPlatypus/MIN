@@ -54,6 +54,7 @@ const navGroups = [
     links: [
       { name: 'Programs', href: '/admin/programs', icon: <Layers size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'] },
       { name: 'Events', href: '/admin/events', icon: <Calendar size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'] },
+      { name: 'Certificates', href: '/admin/certificates', icon: <Trophy size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
       { name: 'DMO Practice', href: '/admin/dmopractice', icon: <Calculator size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER', 'WRITER'] },
       { name: 'Team', href: '/admin/team', icon: <Users size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
       { name: 'Gallery', href: '/admin/gallery', icon: <ImageIcon size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] }
