@@ -32,6 +32,7 @@ const eventSchema = z.object({
   show_date: z.boolean().default(true),
   show_action_link: z.boolean().default(true),
   show_youtube_playlist: z.boolean().default(true),
+  certificates_enabled: z.boolean().default(true),
   event_type: z.enum(['RECURRING', 'EVERGOING', 'SPECIAL', 'EVENT']).default('EVENT'),
   status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).default('DRAFT'),
 }).superRefine((data, ctx) => {
@@ -76,6 +77,7 @@ export default function EventForm({ initialData = null }) {
       show_date: initialData.show_date ?? true,
       show_action_link: initialData.show_action_link ?? true,
       show_youtube_playlist: initialData.show_youtube_playlist ?? true,
+      certificates_enabled: initialData.certificates_enabled ?? true,
       action_text: initialData.action_text || '',
       action_link: initialData.action_link || '',
       action_title: initialData.action_title || 'Registration / Action Required',
@@ -102,6 +104,7 @@ export default function EventForm({ initialData = null }) {
       show_date: true,
       show_action_link: true,
       show_youtube_playlist: true,
+      certificates_enabled: true,
       event_type: 'EVENT',
       status: 'DRAFT',
     },
@@ -380,6 +383,19 @@ export default function EventForm({ initialData = null }) {
                     <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-all peer-checked:left-6"></div>
                   </div>
                   <span className="text-sm font-bold">Show YouTube Section</span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative">
+                    <input 
+                      type="checkbox"
+                      {...register('certificates_enabled')}
+                      className="sr-only peer"
+                    />
+                    <div className="w-10 h-5 bg-bg-secondary dark:bg-white/10 rounded-full peer peer-checked:bg-primary transition-all"></div>
+                    <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-all peer-checked:left-6"></div>
+                  </div>
+                  <span className="text-sm font-bold">Enable Certificates</span>
                 </label>
               </div>
 

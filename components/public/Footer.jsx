@@ -27,7 +27,8 @@ const footerLinks = [
     title: 'Support',
     links: [
       { name: 'Join Us', href: '/join' },
-      { name: 'Contact Us', href: '/contact' },
+      { name: 'Contact Us', href: '/join#contact' },
+      { name: 'Verify Certificate', href: '/verify' },
       { name: 'Privacy Policy', href: '/about/privacy' },
       { name: 'Terms of Use', href: '/about/terms' },
     ],
