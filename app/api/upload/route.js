@@ -28,7 +28,7 @@ export async function POST(request) {
     // Role check
     const { data: profile } = await supabase
       .from('profiles').select('role').eq('id', user.id).single()
-    if (!profile || !['ADMIN','MANAGER', 'WEBSITE_MANAGER'].includes(profile.role)) {
+    if (!profile || !['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER', 'SYSTEM_ADMIN'].includes(profile.role)) {
       return Response.json({ error: 'Forbidden' }, { status: 403 })
     }
   }
@@ -38,10 +38,11 @@ export async function POST(request) {
 
   if (!file) return Response.json({ error: 'No file provided' }, { status: 400 })
 
-  // Validate type and size
-  const allowedTypes = ['image/jpeg','image/png','image/webp','image/gif','application/pdf']
-  if (!allowedTypes.includes(file.type)) {
-    return Response.json({ error: 'File type not allowed' }, { status: 400 })
+  // Validate type and size — allow any image format plus PDFs
+  const isImage = file.type.startsWith('image/')
+  const isPdf = file.type === 'application/pdf'
+  if (!isImage && !isPdf) {
+    return Response.json({ error: 'File type not allowed. Please upload an image or PDF.' }, { status: 400 })
   }
   if (file.size > 10 * 1024 * 1024) {
     return Response.json({ error: 'File too large (max 10MB)' }, { status: 400 })

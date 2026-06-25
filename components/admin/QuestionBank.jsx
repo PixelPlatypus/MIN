@@ -16,6 +16,9 @@ export default function QuestionBank() {
   const [activeSet, setActiveSet] = useState(null)
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(false)
+  const [setsError, setSetsError] = useState(null)
+  const [loadingQuestions, setLoadingQuestions] = useState(false)
+  const [questionsError, setQuestionsError] = useState(null)
   const [isAddingSet, setIsAddingSet] = useState(false)
   const [editingSet, setEditingSet] = useState(null)
   const [newSetName, setNewSetName] = useState('')
@@ -34,6 +37,8 @@ export default function QuestionBank() {
     image_url: '',
     youtube_url: ''
   })
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadError, setUploadError] = useState(null)
 
   useEffect(() => {
     fetchSets()
@@ -49,24 +54,33 @@ export default function QuestionBank() {
 
   async function fetchSets() {
     setLoading(true)
+    setSetsError(null)
     try {
       const res = await fetch('/api/practice/sets?show_all=true')
+      if (!res.ok) throw new Error('Failed to load practice sets')
       const data = await res.json()
       setSets(data)
     } catch (err) {
       console.error(err)
+      setSetsError('There is an issue loading sets. Please reload the page.')
     } finally {
       setLoading(false)
     }
   }
 
   async function fetchQuestions(setId) {
+    setLoadingQuestions(true)
+    setQuestionsError(null)
     try {
       const res = await fetch(`/api/practice/questions?set_id=${setId}`)
+      if (!res.ok) throw new Error('Failed to load questions')
       const data = await res.json()
       setQuestions(data)
     } catch (err) {
       console.error(err)
+      setQuestionsError('There is an issue loading questions. Please reload the page.')
+    } finally {
+      setLoadingQuestions(false)
     }
   }
 
@@ -140,6 +154,8 @@ export default function QuestionBank() {
         fetchQuestions(activeSet.id)
         setIsAddingQuestion(false)
         setEditingQuestion(null)
+        setUploadingImage(false)
+        setUploadError(null)
         setQuestionForm({
           question_text: '',
           option_a: '',
@@ -336,7 +352,34 @@ export default function QuestionBank() {
               </div>
             </div>
           ))}
-          {sets.length === 0 && !loading && (
+          {/* Loading skeleton */}
+          {loading && (
+            <div className="space-y-3">
+              {[1,2,3].map(i => (
+                <div key={i} className="glass p-5 rounded-3xl border border-border animate-pulse">
+                  <div className="flex flex-col gap-2">
+                    <div className="h-4 bg-black/10 dark:bg-white/10 rounded-lg w-3/4" />
+                    <div className="h-3 bg-black/5 dark:bg-white/5 rounded-md w-1/2" />
+                  </div>
+                </div>
+              ))}
+              <p className="text-[10px] text-auto-tertiary text-center font-bold uppercase tracking-widest animate-pulse pt-1">Loading practice sets...</p>
+            </div>
+          )}
+
+          {/* Error state */}
+          {setsError && !loading && (
+            <div className="py-10 text-center glass rounded-3xl border border-coral/20 bg-coral/5 space-y-3">
+              <AlertCircle size={28} className="mx-auto text-coral opacity-70" />
+              <p className="text-xs font-bold text-coral">{setsError}</p>
+              <button
+                onClick={() => fetchSets()}
+                className="text-[10px] font-black uppercase tracking-widest text-primary border border-primary/30 px-4 py-2 rounded-xl hover:bg-primary/10 transition-all"
+              >Reload</button>
+            </div>
+          )}
+
+          {sets.length === 0 && !loading && !setsError && (
             <div className="py-12 text-center text-auto-tertiary glass rounded-3xl border border-dashed border-border">
               <Calculator size={32} className="mx-auto mb-3 opacity-20" />
               <p className="text-xs font-bold uppercase tracking-widest">No sets found</p>
@@ -357,6 +400,32 @@ export default function QuestionBank() {
                 <p className="text-auto-tertiary text-sm max-w-xs mx-auto">Click a practice set on the left to add, edit or remove competitive math questions.</p>
              </div>
           </div>
+        ) : loadingQuestions ? (
+          <div className="space-y-4">
+            {[1,2,3].map(i => (
+              <div key={i} className="glass p-6 rounded-[2rem] border border-border animate-pulse flex gap-6">
+                <div className="w-10 h-10 rounded-full bg-black/10 dark:bg-white/10 shrink-0" />
+                <div className="flex-1 space-y-3">
+                  <div className="h-4 bg-black/10 dark:bg-white/10 rounded-lg w-3/4" />
+                  <div className="h-3 bg-black/5 dark:bg-white/5 rounded-md w-full" />
+                  <div className="h-3 bg-black/5 dark:bg-white/5 rounded-md w-2/3" />
+                </div>
+              </div>
+            ))}
+            <p className="text-[10px] text-auto-tertiary text-center font-bold uppercase tracking-widest animate-pulse">Loading questions...</p>
+          </div>
+        ) : questionsError ? (
+          <div className="h-full flex items-center justify-center glass rounded-[3rem] border border-coral/20 bg-coral/5 p-12 text-center">
+            <div className="space-y-4">
+              <AlertCircle size={40} className="mx-auto text-coral opacity-70" />
+              <h4 className="text-lg font-black text-coral">Something went wrong</h4>
+              <p className="text-auto-tertiary text-sm max-w-xs mx-auto">{questionsError}</p>
+              <button
+                onClick={() => fetchQuestions(activeSet.id)}
+                className="text-xs font-black uppercase tracking-widest text-white bg-primary px-6 py-2.5 rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all"
+              >Reload Questions</button>
+            </div>
+          </div>
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between glass p-6 rounded-[2rem] border border-border">
@@ -374,6 +443,8 @@ export default function QuestionBank() {
               <button 
                 onClick={() => {
                   setEditingQuestion(null)
+                  setUploadingImage(false)
+                  setUploadError(null)
                   setQuestionForm({
                     question_text: '',
                     option_a: '',
@@ -404,7 +475,7 @@ export default function QuestionBank() {
                 >
                   <div className="flex items-center justify-between">
                     <h4 className="text-xl font-black text-dynamic">{editingQuestion ? 'Edit Question' : 'Add New Question'}</h4>
-                    <button onClick={() => { setIsAddingQuestion(false); setEditingQuestion(null); }} className="p-2 hover:bg-coral/10 text-coral rounded-xl transition-all">
+                    <button onClick={() => { setIsAddingQuestion(false); setEditingQuestion(null); setUploadingImage(false); setUploadError(null); }} className="p-2 hover:bg-coral/10 text-coral rounded-xl transition-all">
                       <X size={20} />
                     </button>
                   </div>
@@ -428,42 +499,83 @@ export default function QuestionBank() {
                         </div>
                         <div className="lg:col-span-4 space-y-4">
                            <div className="glass bg-bg-secondary/50 rounded-2xl p-4 border border-border flex flex-col items-center justify-center min-h-[160px] relative group overflow-hidden">
-                              {questionForm.image_url ? (
+                              {uploadingImage ? (
+                                <div className="text-center space-y-2 py-4">
+                                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+                                    <Loader2 size={20} className="animate-spin" />
+                                  </div>
+                                  <p className="text-[10px] font-black uppercase text-primary animate-pulse">Uploading Image...</p>
+                                </div>
+                              ) : questionForm.image_url ? (
                                 <>
                                   <img src={questionForm.image_url} alt="Question figure" className="max-h-32 rounded-lg object-contain mb-2" />
                                   <button 
-                                    onClick={() => setQuestionForm({...questionForm, image_url: ''})}
-                                    className="absolute top-2 right-2 p-1 bg-coral text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => setQuestionForm(prev => ({...prev, image_url: ''}))}
+                                    className="absolute top-2 right-2 p-1 bg-coral text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"
                                   >
                                     <X size={14} />
                                   </button>
                                 </>
                               ) : (
-                                <div className="text-center space-y-2">
+                                <div className="text-center space-y-2 w-full px-4">
                                   <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
                                     <ImageIcon size={20} />
                                   </div>
                                   <p className="text-[10px] font-black uppercase text-auto-tertiary">Add Figure</p>
+                                  {uploadError && (
+                                    <p className="text-[9px] text-coral font-bold mt-1 max-w-[180px] mx-auto break-words leading-tight">{uploadError}</p>
+                                  )}
                                   <input 
                                     type="file" 
                                     accept="image/*"
                                     onChange={async (e) => {
-                                      const file = e.target.files[0]
+                                      const file = e.target.files?.[0]
                                       if (!file) return
+                                      
+                                      // Validate size (e.g. 10MB)
+                                      if (file.size > 10 * 1024 * 1024) {
+                                        setUploadError('File too large (max 10MB)')
+                                        return
+                                      }
+
+                                      setUploadingImage(true)
+                                      setUploadError(null)
+
                                       const formData = new FormData()
                                       formData.append('file', file)
                                       formData.append('folder', 'practice-exams')
                                       
-                                      const res = await fetch('/api/upload', { method: 'POST', body: formData })
-                                      const data = await res.json()
-                                      if (data.url) setQuestionForm({...questionForm, image_url: data.url})
+                                      try {
+                                        const res = await fetch('/api/upload', { method: 'POST', body: formData })
+                                        if (!res.ok) {
+                                          const errData = await res.json()
+                                          throw new Error(errData.error || 'Upload failed')
+                                        }
+                                        const data = await res.json()
+                                        if (data.url) {
+                                          setQuestionForm(prev => ({...prev, image_url: data.url}))
+                                        } else {
+                                          throw new Error('Upload succeeded but no URL was returned')
+                                        }
+                                      } catch (err) {
+                                        console.error('Image upload error:', err)
+                                        setUploadError(err.message || 'Upload failed')
+                                      } finally {
+                                        setUploadingImage(false)
+                                      }
                                     }}
                                     className="absolute inset-0 opacity-0 cursor-pointer"
                                   />
                                 </div>
                               )}
                            </div>
-                           <p className="text-[8px] text-auto-tertiary text-center leading-relaxed font-bold uppercase tracking-widest">Optional figure for geometry or diagrams</p>
+                           <div className="space-y-1 text-center">
+                             <p className="text-[9px] text-auto-tertiary font-bold uppercase tracking-widest">Optional figure for geometry or diagrams</p>
+                             <p className="text-[9px] text-auto-tertiary/70 leading-relaxed">
+                               Accepted: <span className="font-bold text-primary/60">JPG · PNG · WEBP · GIF · AVIF · SVG · HEIC · BMP</span>
+                             </p>
+                             <p className="text-[9px] text-auto-tertiary/60">Max size: 10 MB</p>
+                           </div>
                         </div>
                       </div>
 
@@ -610,6 +722,8 @@ export default function QuestionBank() {
                     </div>
                     <button 
                       onClick={() => {
+                        setUploadingImage(false)
+                        setUploadError(null)
                         setQuestionForm({
                           question_text: q.question_text,
                           option_a: q.option_a,
