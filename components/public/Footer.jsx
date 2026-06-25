@@ -20,6 +20,7 @@ const footerLinks = [
       { name: 'Content Library', href: '/content' },
       { name: 'Gallery', href: '/gallery' },
       { name: 'RTO Program', href: '/rto' },
+      { name: 'DMO Practice', href: '/dmopractice' },
       { name: 'Submit Content', href: '/submit-content' },
     ],
   },
