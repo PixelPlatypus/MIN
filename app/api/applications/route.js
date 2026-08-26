@@ -86,7 +86,7 @@ export async function POST(request) {
         applicant_email: email,
         category: typeLabel,
         form_data_summary: Object.entries(form_data || {}).map(([k, v]) => `**${k}:** ${v}`).join('\n'),
-        admin_url: `${process.env.NEXT_PUBLIC_APP_URL}/admin/applications`
+        admin_url: `${process.env.NEXT_PUBLIC_APP_URL}/${isInquiry ? 'admin/inquiries' : 'admin/applications'}`
       })
     } catch (mailErr) {
       console.error('Mail delivery error:', mailErr)

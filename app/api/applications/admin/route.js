@@ -57,11 +57,16 @@ export async function GET(request) {
       }
     })
 
-    // Combine and apply server-side type filtering if requested
+    // Combine and apply server-side type filtering
     let combined = [...legacyFormatted, ...modernFormatted]
     
-    if (typeFilter) {
+    if (typeFilter === 'INQUIRY') {
+      combined = combined.filter(item => item.type === 'INQUIRY')
+    } else if (typeFilter && typeFilter !== 'ALL' && typeFilter !== 'APPLICATIONS') {
       combined = combined.filter(item => item.type === typeFilter)
+    } else if (typeFilter !== 'ALL') {
+      // Default for recruitment /admin/applications: exclude general contact inquiries
+      combined = combined.filter(item => item.type !== 'INQUIRY')
     }
 
     combined.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
