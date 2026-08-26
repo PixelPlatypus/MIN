@@ -64,20 +64,10 @@ export default async function TeamMemberPage({ params }) {
   
   const roleHistory = Array.isArray(socialLinks.role_history) ? [...socialLinks.role_history] : []
   
-  // 1. Add current position to history if ACTIVE
-  if (member.status === 'ACTIVE') {
-    const currentYear = new Date().getFullYear().toString()
-    if (!roleHistory.some(h => h.year === currentYear)) {
-      roleHistory.push({ year: currentYear, position: member.position || 'MINion' })
-    }
-  }
-
-  // 2. Ensure joined year is present
-  if (member.tenure) {
-    const joinedYear = member.tenure.toString()
-    if (!roleHistory.some(h => h.year === joinedYear)) {
-      roleHistory.push({ year: joinedYear, position: 'MINion' })
-    }
+  // Ensure the member's current/tenure role is represented in history if roleHistory is empty
+  if (roleHistory.length === 0 && member.position) {
+    const year = member.tenure ? member.tenure.toString() : (member.joined_date ? new Date(member.joined_date).getFullYear().toString() : new Date().getFullYear().toString())
+    roleHistory.push({ year, position: member.position })
   }
 
   return (

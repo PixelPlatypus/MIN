@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['isomorphic-dompurify', 'dompurify', 'resend'],
+
+  // Remove X-Powered-By header (security + slightly smaller response)
+  poweredByHeader: false,
+
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
@@ -9,6 +13,13 @@ const nextConfig = {
       { protocol: 'https', hostname: 'img.youtube.com' },
       { protocol: 'https', hostname: 'i.ytimg.com' },
     ],
+    // Enable modern image formats for smaller payload
+    formats: ['image/avif', 'image/webp'],
+    // Cache optimized images for 1 year
+    minimumCacheTTL: 31536000,
+    // Reasonable device size breakpoints
+    deviceSizes: [390, 640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
   skipTrailingSlashRedirect: true,
@@ -75,6 +86,19 @@ const nextConfig = {
           },
         ],
       },
+      // Cache sitemap & robots for 1 hour (so search engines get fresh data regularly)
+      {
+        source: '/sitemap.xml',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=3600, stale-while-revalidate=86400' },
+        ],
+      },
+      {
+        source: '/robots.txt',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
     ]
   },
   
@@ -86,8 +110,10 @@ const nextConfig = {
   // Experimental performance flags
   experimental: {
     optimizePackageImports: [
-      '@phosphor-icons/react', 
+      '@phosphor-icons/react',
       'framer-motion',
+      'date-fns',
+      'lodash',
     ],
   },
 }

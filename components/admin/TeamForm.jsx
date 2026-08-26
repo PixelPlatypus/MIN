@@ -12,7 +12,7 @@ import ImageUploader from './ImageUploader'
 const teamSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   position: z.string().min(1, 'Position is required'),
-  bio: z.string().optional(),
+  bio: z.string().optional().nullable(),
   tenure: z.string().min(4, 'Tenure year is required'),
   joined_date: z.string().min(1, 'Joined date is required'),
   farewell_date: z.string().optional().nullable(),
@@ -20,17 +20,17 @@ const teamSchema = z.object({
   display_order: z.number().int().default(0),
   is_advisor: z.boolean().default(false),
   status: z.enum(['ACTIVE', 'ALUMNI', 'INACTIVE', 'REMOVED']).default('ACTIVE'),
-  certificate_url: z.string().url().or(z.literal('')).optional().nullable(),
+  certificate_url: z.string().optional().nullable(),
   social_links: z.object({
-    social_media: z.string().url().or(z.literal('')).optional(),
-    facebook: z.string().url().or(z.literal('')).optional(),
-    instagram: z.string().url().or(z.literal('')).optional(),
-    linkedin: z.string().url().or(z.literal('')).optional(),
-    email: z.string().email().or(z.literal('')).optional(),
-    github: z.string().url().or(z.literal('')).optional(),
+    social_media: z.string().optional().nullable(),
+    facebook: z.string().optional().nullable(),
+    instagram: z.string().optional().nullable(),
+    linkedin: z.string().optional().nullable(),
+    email: z.string().optional().nullable(),
+    github: z.string().optional().nullable(),
     role_history: z.array(z.object({
-      year: z.string().min(4, "Year must be 4 digits"),
-      position: z.string().min(1, "Position is required")
+      year: z.string().optional().nullable(),
+      position: z.string().optional().nullable()
     })).default([]),
   }).default({}),
 }).refine(data => {
@@ -86,37 +86,20 @@ export default function TeamForm({ initialData = null }) {
   } = useForm({
     resolver: zodResolver(teamSchema),
     defaultValues: {
-      ...(initialData || {
-        name: '',
-        position: 'MINion',
-        bio: '',
-        tenure: new Date().getFullYear().toString(),
-        photo_url: '',
-        display_order: 0,
-        is_advisor: false,
-        status: 'ACTIVE',
-        certificate_url: '',
-      }),
-      joined_date: initialData?.joined_date ? initialData.joined_date.substring(0, 7) : new Date().getFullYear().toString(),
-      farewell_date: initialData?.farewell_date ? initialData.farewell_date.substring(0, 7) : '',
+      name: initialData?.name || '',
+      position: initialData?.position || 'MINion',
+      bio: initialData?.bio || '',
+      tenure: initialData?.tenure || (initialData?.joined_date ? new Date(initialData.joined_date).getFullYear().toString() : new Date().getFullYear().toString()),
+      photo_url: initialData?.photo_url || '',
+      display_order: initialData?.display_order ?? 0,
+      is_advisor: initialData?.is_advisor || false,
+      status: initialData?.status || 'ACTIVE',
+      certificate_url: initialData?.certificate_url || '',
+      joined_date: initialData?.joined_date ? initialData.joined_date.split('T')[0] : new Date().toISOString().split('T')[0],
+      farewell_date: initialData?.farewell_date ? initialData.farewell_date.split('T')[0] : '',
       social_links: parsedSocialLinks,
     },
   })
-
-  const currentJoinedDate = watch('joined_date')
-  
-  // Auto-populate MINion role in UI when joined date is provided
-  useEffect(() => {
-    if (currentJoinedDate && currentJoinedDate.length >= 4) {
-      const year = currentJoinedDate.split('-')[0]
-      if (year.length === 4) {
-        const history = watch('social_links.role_history') || []
-        if (!history.some(r => r.year === year)) {
-          setValue('social_links.role_history', [...history, { year, position: 'MINion' }])
-        }
-      }
-    }
-  }, [currentJoinedDate, setValue, watch])
 
   const photoUrl = watch('photo_url')
 
@@ -124,41 +107,22 @@ export default function TeamForm({ initialData = null }) {
     setLoading(true)
     setError(null)
 
-    // Auto-derive data based on user requests
+    // Ensure valid date formatting and sync tenure
     if (data.joined_date) {
       const parts = data.joined_date.split('-')
-      const year = parts[0]
-      const month = parts[1] || '01'
-      const day = parts[2] || '01'
-      
-      data.joined_date = `${year}-${month}-${day}`
-      data.tenure = year
-
-      // Automatically inject MINion role for their joining year (fallback backup)
-      if (!data.social_links) data.social_links = {}
-      if (!data.social_links.role_history) data.social_links.role_history = []
-      
-      const hasJoinedYearRole = data.social_links.role_history.some(r => r.year === data.tenure)
-      if (!hasJoinedYearRole) {
-        data.social_links.role_history.push({ year: data.tenure, position: 'MINion' })
-      }
+      data.tenure = parts[0]
     }
     
     if (data.farewell_date && data.farewell_date.trim() !== '') {
-      const parts = data.farewell_date.split('-')
-      const year = parts[0]
-      const month = parts[1] || '01'
-      const day = parts[2] || '01'
-      data.farewell_date = `${year}-${month}-${day}`
+      data.farewell_date = data.farewell_date.trim()
     } else {
       data.farewell_date = null
     }
 
-    if (data.social_links?.role_history?.length > 0) {
-      const history = [...data.social_links.role_history].sort((a,b) => parseInt(b.year) - parseInt(a.year))
-      data.position = history[0].position
-    } else {
-      data.position = 'MINion'
+    // Clean up empty role_history entries
+    if (data.social_links?.role_history) {
+      data.social_links.role_history = data.social_links.role_history
+        .filter(r => r && r.year && r.year.trim() !== '' && r.position && r.position.trim() !== '')
     }
 
     // Generate slug from name if it doesn't exist
@@ -273,6 +237,18 @@ export default function TeamForm({ initialData = null }) {
                 </div>
 
                 <div className="space-y-2">
+                  <label className="text-sm font-bold ml-1">Position / Role</label>
+                  <input 
+                    {...register('position')}
+                    placeholder="e.g. President, Manager, MINion"
+                    className={`w-full bg-white dark:bg-white/5 border rounded-2xl py-3 px-4 text-sm focus:outline-none focus:ring-4 ${
+                      errors.position ? 'border-coral/50 focus:ring-coral/10' : 'border-border dark:border-border-dark focus:border-primary focus:ring-primary/10'
+                    }`}
+                  />
+                  {errors.position && <p className="text-xs text-coral ml-1">{errors.position.message}</p>}
+                </div>
+
+                <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">Status</label>
                   <select 
                     {...register('status')}
@@ -285,14 +261,11 @@ export default function TeamForm({ initialData = null }) {
                   </select>
                 </div>
 
-
-
                 <div className="space-y-2">
                   <label className="text-sm font-bold ml-1">Joined Date</label>
                   <input 
                     {...register('joined_date')}
-                    type="text"
-                    placeholder="YYYY or YYYY-MM"
+                    type="date"
                     className="w-full bg-white dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                   {errors.joined_date && <p className="text-xs text-coral ml-1">{errors.joined_date.message}</p>}

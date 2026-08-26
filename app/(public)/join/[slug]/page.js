@@ -332,23 +332,34 @@ export default function DynamicFormPage() {
                        <div className="relative group bg-white dark:bg-white/10 border border-dashed border-border rounded-2xl p-6 text-center hover:border-primary/50 transition-colors">
                           <input 
                             type="file"
-                            accept=".pdf,.doc,.docx"
+                            accept=".pdf"
                             required={field.required && !formData[field.label]}
                             onChange={async (e) => {
                                const uploaded = e.target.files[0];
                                if (!uploaded) return;
+                               if (uploaded.type !== 'application/pdf') {
+                                 setError('Please upload your CV/document as a PDF file.');
+                                 return;
+                               }
+                               if (uploaded.size > 5 * 1024 * 1024) {
+                                 setError('File is too large. Please upload a PDF under 5MB.');
+                                 return;
+                               }
                                setSubmitting(true);
+                               setError(null);
                                try {
                                  const fd = new FormData();
                                  fd.append('file', uploaded);
-                                 fd.append('folder', 'intake-cvs');
-                                 const res = await fetch('/api/upload', { method: 'POST', body: fd });
+                                 fd.append('category', definition.category || 'JOIN');
+                                 const res = await fetch('/api/applications/upload', { method: 'POST', body: fd });
                                  const resData = await res.json();
                                  if (resData.url) {
                                     handleChange(field.label, resData.url);
-                                 } else throw new Error("Upload failed");
+                                 } else {
+                                   throw new Error(resData.error || "Upload failed");
+                                 }
                                } catch (err) {
-                                 alert("Failed to upload file. Please try again.");
+                                 setError(`Failed to upload file: ${err.message}`);
                                } finally {
                                  setSubmitting(false);
                                }
@@ -363,9 +374,13 @@ export default function DynamicFormPage() {
                                 <p className="text-sm font-bold text-dynamic">
                                   {formData[field.label] ? "Document Attached Successfully" : "Click or drag file to upload"}
                                 </p>
-                                <p className="text-[10px] uppercase font-black tracking-widest text-auto-tertiary">PDF, DOC, DOCX up to 5MB</p>
+                                <p className="text-[10px] uppercase font-black tracking-widest text-auto-tertiary">PDF format up to 5MB</p>
                              </div>
-                             {formData[field.label] && <p className="text-[10px] text-primary italic break-all px-4">{formData[field.label]}</p>}
+                             {formData[field.label] && (
+                               <p className="text-[10px] font-mono text-primary break-all px-4 bg-primary/5 py-1.5 rounded-lg border border-primary/20">
+                                 ✓ Attached: {formData[field.label].split('/').pop()}
+                                </p>
+                             )}
                           </div>
                        </div>
                     ) : (

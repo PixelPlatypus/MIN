@@ -1,18 +1,22 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Users, MagnifyingGlass as Search, PlusCircle, CircleNotch as Loader2, Shield, Trash as Trash2, PencilSimple as Edit2, CheckCircle as CheckCircle2, XCircle, UserCheck } from '@phosphor-icons/react'
+import { Users, MagnifyingGlass as Search, PlusCircle, CircleNotch as Loader2, Shield, Trash as Trash2, PencilSimple as Edit2, CheckCircle as CheckCircle2, XCircle, UserCheck, LockSimple } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
 
-const ROLES = ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER']
+const ROLES = ['ADMIN', 'MANAGER', 'HR', 'WRITER', 'WEBSITE_MANAGER']
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([])
+  const [currentUserRole, setCurrentUserRole] = useState('WRITER')
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [feedback, setFeedback] = useState(null) // { type: 'success'|'error', message }
   const [changingRole, setChangingRole] = useState(null) // userId currently being updated
+
+  // Derived: is the viewer an ADMIN or SUPER_ADMIN?
+  const canDelete = currentUserRole === 'ADMIN' || currentUserRole === 'SUPER_ADMIN'
 
   useEffect(() => {
     async function fetchUsers() {
@@ -20,16 +24,22 @@ export default function AdminUsersPage() {
       const res = await fetch('/api/users')
       if (res.ok) {
         const data = await res.json()
-        setUsers(data)
+        // Support both old array response and new { users, currentUserRole } shape
+        if (Array.isArray(data)) {
+          setUsers(data)
+        } else {
+          setUsers(data.users || [])
+          setCurrentUserRole(data.currentUserRole || 'WRITER')
+        }
       }
       setLoading(false)
     }
     fetchUsers()
   }, [])
 
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(search.toLowerCase()) || 
-    user.email.toLowerCase().includes(search.toLowerCase())
+  const filteredUsers = users.filter(user =>
+    user.name?.toLowerCase().includes(search.toLowerCase()) ||
+    user.email?.toLowerCase().includes(search.toLowerCase())
   )
 
   function showFeedback(type, message) {
@@ -50,7 +60,6 @@ export default function AdminUsersPage() {
       showFeedback('success', `Role updated to ${newRole}`)
     } else {
       const data = await res.json()
-      // Revert the optimistic update in UI on error
       setUsers(users.map(u => u.id === userId ? { ...u, role: prevRole } : u))
       showFeedback('error', data.error || 'Failed to change role.')
     }
@@ -58,16 +67,15 @@ export default function AdminUsersPage() {
 
   async function handleRemoveUser(userId) {
     if (!confirm('Are you sure you want to permanently remove this user? This cannot be undone.')) return
-    
-    const res = await fetch(`/api/users/${userId}`, {
-      method: 'DELETE'
-    })
-    
+
+    const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' })
+
     if (res.ok) {
       setUsers(users.filter(u => u.id !== userId))
+      showFeedback('success', 'User removed successfully.')
     } else {
       const data = await res.json()
-      alert(data.error || 'Failed to remove user.')
+      showFeedback('error', data.error || 'Failed to remove user.')
     }
   }
 
@@ -91,14 +99,20 @@ export default function AdminUsersPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight mb-1">User Management</h2>
           <p className="text-auto-secondary text-sm">
             Manage admin, manager, and writer accounts.
+            {!canDelete && (
+              <span className="ml-2 text-amber-500 font-semibold inline-flex items-center gap-1">
+                <LockSimple size={12} /> Delete restricted to Admins only.
+              </span>
+            )}
           </p>
         </div>
-        <Link 
+        <Link
           href="/admin/users/new"
           className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-lg shadow-primary/20 transition-all flex items-center gap-2 w-fit"
         >
@@ -109,9 +123,9 @@ export default function AdminUsersPage() {
 
       <div className="flex-1 glass px-4 py-2 rounded-xl flex items-center gap-3 border border-border dark:border-border-dark group-focus-within:border-primary transition-all max-w-md">
         <Search size={18} className="text-auto-tertiary" />
-        <input 
-          type="text" 
-          placeholder="Search by name or email..." 
+        <input
+          type="text"
+          placeholder="Search by name or email..."
           className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -157,12 +171,14 @@ export default function AdminUsersPage() {
                     <td className="px-6 py-4">
                       <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border flex items-center gap-1.5 w-fit ${
                         user.role === 'ADMIN' ? 'bg-coral/10 text-coral border-coral/20' :
+                        user.role === 'SUPER_ADMIN' ? 'bg-red-600/10 text-red-500 border-red-500/20' :
                         user.role === 'MANAGER' ? 'bg-purple-500/10 text-purple-500 border-purple-500/20' :
+                        user.role === 'HR' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
                         user.role === 'WEBSITE_MANAGER' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
                         'bg-text-tertiary/10 text-auto-secondary border-text-tertiary/20'
                       }`}>
-                        {user.role === 'ADMIN' && <Shield size={10} />}
-                        {user.role.replace('_', ' ')}
+                        {(user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') && <Shield size={10} />}
+                        {user.role.replace(/_/g, ' ')}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -170,41 +186,58 @@ export default function AdminUsersPage() {
                         {new Date(user.created_at).toLocaleDateString()}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right flex items-center justify-end gap-3 h-full">
-                      <div className="relative">
-                        {changingRole === user.id && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <Loader2 size={14} className="animate-spin text-primary" />
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {/* Role Selector */}
+                        <div className="relative">
+                          {changingRole === user.id && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <Loader2 size={14} className="animate-spin text-primary" />
+                            </div>
+                          )}
+                          <select
+                            className={`bg-transparent border border-border dark:border-border-dark rounded-xl px-2 py-1 text-[10px] font-black uppercase focus:outline-none focus:border-primary cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                              changingRole === user.id ? 'opacity-0' : ''
+                            }`}
+                            value={user.role}
+                            onChange={(e) => handleRoleChange(user.id, e.target.value, user.role)}
+                            disabled={changingRole !== null || user.isSelf}
+                            title={user.isSelf ? "You can't change your own role" : 'Change role'}
+                          >
+                            {ROLES.map(r => (
+                              <option key={r} value={r}>{r.replace(/_/g, ' ')}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Edit Button */}
+                        <Link
+                          href={`/admin/users/${user.id}`}
+                          className="text-auto-tertiary hover:text-primary-dark hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
+                          title="Edit User"
+                        >
+                          <Edit2 size={16} />
+                        </Link>
+
+                        {/* Delete — only shown to ADMIN/SUPER_ADMIN */}
+                        {canDelete ? (
+                          <button
+                            onClick={() => handleRemoveUser(user.id)}
+                            disabled={user.isSelf}
+                            className="text-coral hover:bg-coral/10 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
+                            title={user.isSelf ? 'Cannot delete your own account' : 'Remove User'}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        ) : (
+                          <div
+                            className="p-1.5 rounded-lg text-auto-tertiary/30 cursor-not-allowed"
+                            title="Only Administrators can delete users"
+                          >
+                            <LockSimple size={16} />
                           </div>
                         )}
-                        <select
-                          className={`bg-transparent border border-border dark:border-border-dark rounded-xl px-2 py-1 text-[10px] font-black uppercase focus:outline-none focus:border-primary cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
-                            changingRole === user.id ? 'opacity-0' : ''
-                          }`}
-                          value={user.role}
-                          onChange={(e) => handleRoleChange(user.id, e.target.value, user.role)}
-                          disabled={changingRole !== null}
-                        >
-                          {ROLES.map(r => (
-                            <option key={r} value={r}>{r.replace('_', ' ')}</option>
-                          ))}
-                        </select>
                       </div>
-                      <Link
-                        href={`/admin/users/${user.id}`}
-                        className="text-auto-tertiary hover:text-primary-dark dark:duration-75 hover:bg-primary/10 p-1.5 rounded-lg transition-colors"
-                        title="Edit User"
-                      >
-                        <Edit2 size={16} />
-                      </Link>
-                      <button
-                        onClick={() => handleRemoveUser(user.id)}
-                        disabled={user.isSelf}
-                        className="text-coral hover:bg-coral/10 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
-                        title={user.isSelf ? 'Cannot delete your own account' : 'Remove User'}
-                      >
-                        <Trash2 size={16} />
-                      </button>
                     </td>
                   </tr>
                 ))}

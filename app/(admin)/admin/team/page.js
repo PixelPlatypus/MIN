@@ -35,6 +35,7 @@ export default function AdminTeamPage() {
   const [tenureFilter, setTenureFilter] = useState('all')
   const [uploading, setUploading] = useState(false)
   const [settings, setSettings] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null)
   const [excelMode, setExcelMode] = useState(false)
   const router = useRouter()
 
@@ -43,6 +44,9 @@ export default function AdminTeamPage() {
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => setSettings(data))
+    fetch('/api/me')
+      .then(res => res.json())
+      .then(data => setCurrentUser(data))
   }, [])
 
   async function fetchInitialData() {
@@ -373,13 +377,15 @@ export default function AdminTeamPage() {
                             >
                               <Edit2 size={18} />
                             </button>
-                            <button 
-                              onClick={() => handleDelete(member.id, member.name)}
-                              title="Delete Member"
-                              className="p-2.5 rounded-xl text-auto-tertiary hover:text-coral hover:bg-coral/10 transition-all active:scale-95"
-                            >
-                              <Trash2 size={18} />
-                            </button>
+                            {currentUser?.role !== 'HR' && (
+                              <button 
+                                onClick={() => handleDelete(member.id, member.name)}
+                                title="Delete Member"
+                                className="p-2.5 rounded-xl text-auto-tertiary hover:text-coral hover:bg-coral/10 transition-all active:scale-95"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>

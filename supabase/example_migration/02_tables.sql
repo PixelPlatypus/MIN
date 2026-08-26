@@ -8,7 +8,7 @@ CREATE TABLE public.profiles (
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     username TEXT UNIQUE,
-    role TEXT NOT NULL DEFAULT 'WRITER' CHECK (role IN ('ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER')),
+    role TEXT NOT NULL DEFAULT 'WRITER' CHECK (role IN ('ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER', 'HR')),
     avatar_url TEXT,
     has_completed_onboarding BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(),

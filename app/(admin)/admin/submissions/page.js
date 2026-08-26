@@ -21,6 +21,7 @@ import {
   ClockCounterClockwise as History
 } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
+import { sanitizeHtml } from '@/lib/sanitize'
 
 export default function AdminSubmissionsPage() {
   const [submissions, setSubmissions] = useState([])
@@ -202,7 +203,7 @@ export default function AdminSubmissionsPage() {
 
                 <div className="space-y-10">
                   {selectedSubmission.content_type === 'RICHTEXT' ? (
-                    <div className="prose dark:prose-invert max-w-none bg-white/50 dark:bg-white/5 p-8 rounded-[2rem] border border-border dark:border-border-dark" dangerouslySetInnerHTML={{ __html: selectedSubmission.body }} />
+                    <div className="prose dark:prose-invert max-w-none bg-white/50 dark:bg-white/5 p-8 rounded-[2rem] border border-border dark:border-border-dark" dangerouslySetInnerHTML={{ __html: sanitizeHtml(selectedSubmission.body) }} />
                   ) : (
                     <div className="bg-white/50 dark:bg-white/5 p-12 rounded-[2rem] border border-border dark:border-border-dark text-center space-y-6">
                       <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto">

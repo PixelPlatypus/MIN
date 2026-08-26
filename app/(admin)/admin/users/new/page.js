@@ -138,6 +138,7 @@ export default function CreateUserPage() {
             >
               <option value="WEBSITE_MANAGER">Website Manager</option>
               <option value="MANAGER">Manager</option>
+              <option value="HR">HR Manager</option>
               <option value="WRITER">Writer</option>
               <option value="ADMIN">Admin</option>
             </select>

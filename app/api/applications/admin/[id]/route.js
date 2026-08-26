@@ -3,17 +3,30 @@ import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
 import { sendEmail, generateMINThemeEmail, sendTemplatedEmail } from '@/lib/resend'
 
+// Pipeline stages in order
+const PIPELINE_STAGES = ['PENDING', 'REVIEWED', 'ACCEPTED', 'TASK_ASSIGNED', 'INTERVIEW', 'ONBOARDED']
+const TERMINAL_STATES = ['REJECTED', 'ONBOARDED']
+
+// Map pipeline status → email template key
+const STATUS_EMAIL_MAP = {
+  ACCEPTED: 'application_accepted',
+  REJECTED: 'application_rejected',
+  TASK_ASSIGNED: 'application_task_assigned',
+  INTERVIEW: 'application_interview',
+  ONBOARDED: 'application_onboarded',
+}
+
 export async function PATCH(request, { params }) {
   try {
     const { id } = await params
     
-    const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+    const { user, profile, error } = await withRole(['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'])
     if (error) {
       return Response.json({ error: error.message }, { status: error.status })
     }
 
     const body = await request.json()
-    let { status, notes } = body
+    let { status, notes, task_bank_url, task_deadline, scheduling_url, buddy_name, buddy_email, team_name } = body
     
     if (!status) {
       return Response.json({ error: 'Status is required' }, { status: 400 })
@@ -21,7 +34,7 @@ export async function PATCH(request, { params }) {
 
     const supabase = await createAdminClient()
 
-    // Fetch current status to check if it's already locked
+    // Fetch current status
     const { data: currentApp } = await supabase
       .from('form_submissions')
       .select('status')
@@ -34,16 +47,8 @@ export async function PATCH(request, { params }) {
       .eq('id', id)
       .single() : { data: null }
 
-    const currentStatus = currentApp?.status || currentLegacyApp?.status
-    if (['ACCEPTED', 'REJECTED', 'APPROVED'].includes(currentStatus)) {
-      return Response.json({ error: 'This application decision is finalized and cannot be changed.' }, { status: 400 })
-    }
-    
-    // form_submissions uses: PENDING, APPROVED, REJECTED, DRAFT
-    // join_applications uses: PENDING, REVIEWED, ACCEPTED, REJECTED
-    // Map frontend 'ACCEPTED' to the correct DB value per table
+    // form_submissions uses APPROVED instead of ACCEPTED
     const formSubStatus = status === 'ACCEPTED' ? 'APPROVED' : status
-    const legacyStatus = status // join_applications already uses ACCEPTED directly
 
     const updateData = { status: formSubStatus }
     if (notes !== undefined) updateData.notes = notes
@@ -53,12 +58,12 @@ export async function PATCH(request, { params }) {
       .from('form_submissions')
       .update(updateData)
       .eq('id', id)
-      .select('*, form_definitions(category)')
+      .select('*, form_definitions(category, title)')
       .single()
 
-    // If not found in form_submissions, try join_applications (uses different status enum)
+    // Fallback to join_applications
     if (updateError || !updatedSub) {
-      const legacyUpdateData = { status: legacyStatus }
+      const legacyUpdateData = { status }
       if (notes !== undefined) legacyUpdateData.notes = notes
 
       const { data: legacySub, error: legacyError } = await supabase
@@ -74,30 +79,41 @@ export async function PATCH(request, { params }) {
       updatedSub = legacySub
     }
 
-    // Email Notification using Mappings
-    if (status === 'ACCEPTED' || status === 'REJECTED') {
+    // Send pipeline email if status has a mapped template
+    const eventKey = STATUS_EMAIL_MAP[status]
+    if (eventKey) {
       const subData = updatedSub.data || updatedSub.form_data || {}
       const applicantName = subData.Name || subData["Full Name"] || subData.name || "Applicant"
       const applicantEmail = updatedSub.email || subData.Email || subData["Email Address"] || subData.email
+      const formName = updatedSub.form_definitions?.title || updatedSub.type || 'Role'
       const category = updatedSub.form_definitions?.category?.toLowerCase() || ''
       const type = updatedSub.type?.toLowerCase() || ''
 
-      let eventKey = status === 'ACCEPTED' ? 'application_accepted' : 'application_rejected'
-
-      // Specialize event key based on category
-      if (category.includes('inquiry') || type.includes('inquiry')) {
-        eventKey = status === 'ACCEPTED' ? 'inquiry_responded' : 'application_rejected'
-      } else if (category.includes('org') || type.includes('org') || category.includes('partner') || type.includes('partnership')) {
-        eventKey = status === 'ACCEPTED' ? 'org_accepted' : 'org_rejected'
-      } else if (category.includes('ambassador')) {
-        eventKey = status === 'ACCEPTED' ? 'ambassadorship_accepted' : 'ambassadorship_rejected'
+      // For non-application categories, use specialized templates
+      let finalEventKey = eventKey
+      if (status === 'ACCEPTED' || status === 'REJECTED') {
+        if (category.includes('inquiry') || type.includes('inquiry')) {
+          finalEventKey = status === 'ACCEPTED' ? 'inquiry_responded' : 'application_rejected'
+        } else if (category.includes('org') || type.includes('org') || category.includes('partner') || type.includes('partnership')) {
+          finalEventKey = status === 'ACCEPTED' ? 'org_accepted' : 'org_rejected'
+        } else if (category.includes('ambassador')) {
+          finalEventKey = status === 'ACCEPTED' ? 'ambassadorship_accepted' : 'ambassadorship_rejected'
+        }
       }
 
       if (applicantEmail) {
-        await sendTemplatedEmail(eventKey, applicantEmail, {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.mathsinitiatives.org.np'
+        await sendTemplatedEmail(finalEventKey, applicantEmail, {
           applicant_name: applicantName,
-          role_type: updatedSub.form_definitions?.title || updatedSub.type || 'Role',
-          contact_message: subData.Message || subData.message || ''
+          form_name: formName,
+          role_type: formName,
+          contact_message: subData.Message || subData.message || '',
+          task_bank_url: task_bank_url || `${appUrl}/tasks`,
+          task_deadline: task_deadline || 'TBD',
+          scheduling_url: scheduling_url || '',
+          buddy_name: buddy_name || 'Your team lead',
+          buddy_email: buddy_email || '',
+          team_name: team_name || 'MIN Nepal',
         })
       }
     }

@@ -88,7 +88,7 @@ export default async function TeamPage() {
       <TeamHero settings={settings} />
       
       <TeamView 
-        initialTenures={tenures.slice(0, 2)}
+        initialTenures={tenures}
         initialMembers={initialMembers}
         initialTenure={activeTenure}
         fallbackImage={settings?.default_team_photo}

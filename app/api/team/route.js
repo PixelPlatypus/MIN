@@ -60,17 +60,11 @@ export async function GET(request) {
         // Apply role_history override: if this member has a past role for this exact year,
         // override the displayed position with that historical role
         const roleHistory = member.social_links?.role_history
-        const joinedYear = parseInt(member.tenure)
         if (Array.isArray(roleHistory) && roleHistory.length > 0) {
           const historicalRole = roleHistory.find(h => parseInt(h.year) === filterYear)
           if (historicalRole?.position) {
             return { ...member, position: historicalRole.position }
           }
-        }
-        
-        // If the requested year is the year they joined, and no explicit role history was found, default to MINion
-        if (filterYear === joinedYear) {
-          return { ...member, position: 'MINion' }
         }
 
         return member
@@ -121,7 +115,7 @@ async function generateServerSlug(supabase, name, currentId = null, existingSlug
 }
 
 export async function POST(request) {
-  const { user, profile, supabase, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  const { user, profile, supabase, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const body = await request.json()
@@ -168,7 +162,7 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
-  const { user, profile, supabase, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  const { user, profile, supabase, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const body = await request.json()

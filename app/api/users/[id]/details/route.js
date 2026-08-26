@@ -4,7 +4,7 @@ import { logAudit } from '@/lib/audit'
 
 export async function PATCH(request, { params }) {
   const { id } = await params
-  const { user, profile, error: roleError } = await withRole(['ADMIN'])
+  const { user, profile, error: roleError } = await withRole(['ADMIN', 'SUPER_ADMIN', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const body = await request.json()
