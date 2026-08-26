@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -91,6 +91,33 @@ export default function AdminSidebar({ profile, isMaintenance }) {
   const supabase = createClient()
   const { isCollapsed, toggleCollapse, isMobileOpen, toggleMobile } = useSidebar()
   const [isSigningOut, setIsSigningOut] = useState(false)
+  const [badgeCounts, setBadgeCounts] = useState({ inquiries: 0, applications: 0, submissions: 0 })
+
+  useEffect(() => {
+    async function fetchCounts() {
+      try {
+        const res = await fetch('/api/admin/notifications')
+        if (res.ok) {
+          const data = await res.json()
+          if (data?.counts) {
+            setBadgeCounts(data.counts)
+          }
+        }
+      } catch (e) {
+        // silence background polling errors
+      }
+    }
+    fetchCounts()
+    const interval = setInterval(fetchCounts, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  function getBadgeCount(href) {
+    if (href === '/admin/inquiries') return badgeCounts.inquiries || 0
+    if (href === '/admin/applications') return badgeCounts.applications || 0
+    if (href === '/admin/submissions') return badgeCounts.submissions || 0
+    return 0
+  }
 
   async function handleSignOut() {
     setIsSigningOut(true)
@@ -197,27 +224,48 @@ export default function AdminSidebar({ profile, isMaintenance }) {
                     sibling => sibling.href !== link.href && pathname.startsWith(sibling.href) && sibling.href.length > link.href.length
                   )
                   const isActive = isExact || (isChild && !hasBetterMatch)
+                  const count = getBadgeCount(link.href)
+
                   return (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+                      className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-3 py-2.5 rounded-xl text-sm font-medium transition-all group relative ${
                         isActive 
                           ? 'bg-primary text-white shadow-md shadow-primary/20' 
                           : 'text-auto-secondary hover:bg-bg-secondary dark:hover:bg-white/5 hover:text-primary-dark dark:duration-75'
                       }`}
                       title={isCollapsed ? link.name : ''}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className={`${isActive ? 'text-white' : 'text-auto-tertiary group-hover:text-primary-dark dark:duration-75'} flex-shrink-0 transition-colors`}>
-                          {link.icon}
-                        </span>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative flex items-center justify-center">
+                          <span className={`${isActive ? 'text-white' : 'text-auto-tertiary group-hover:text-primary-dark dark:duration-75'} flex-shrink-0 transition-colors`}>
+                            {link.icon}
+                          </span>
+                          {/* Collapsed dot badge */}
+                          {isCollapsed && count > 0 && (
+                            <span className="absolute -top-1.5 -right-2 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full text-[8px] font-black bg-rose-500 text-white border-2 border-white dark:border-bg-dark shadow-sm">
+                              {count > 9 ? '9+' : count}
+                            </span>
+                          )}
+                        </div>
                         {!isCollapsed && <span className="truncate">{link.name}</span>}
                       </div>
-                      {!isCollapsed && isActive && (
-                        <motion.div layoutId="active-indicator">
-                          <CaretRight size={14} className="opacity-50" />
-                        </motion.div>
+
+                      {!isCollapsed && (
+                        <div className="flex items-center gap-2 shrink-0">
+                          {/* Social media / Mobile style Red Count Indicator Badge */}
+                          {count > 0 && (
+                            <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-black bg-rose-500 text-white shadow-md shadow-rose-500/40 animate-pulse shrink-0">
+                              {count > 99 ? '99+' : count}
+                            </span>
+                          )}
+                          {isActive && (
+                            <motion.div layoutId="active-indicator">
+                              <CaretRight size={14} className="opacity-50" />
+                            </motion.div>
+                          )}
+                        </div>
                       )}
                     </Link>
                   )

@@ -12,14 +12,22 @@ import {
   CaretRight as ChevronRight,
   Funnel as Filter,
   ChatTeardropText as MessageSquare,
-  User,
-  ArrowSquareOut as ExternalLink,
   FileText,
   PaperPlaneTilt as Send,
   Trash as Trash2,
-  CircleNotch as Loader2
+  CircleNotch as Loader2,
+  Archive,
+  ArrowSquareOut as ExternalLink,
+  Sparkle
 } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
+
+const STATUS_TABS = [
+  { id: 'PENDING', label: 'New', color: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
+  { id: 'RESPONDED', label: 'Responded', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
+  { id: 'ARCHIVED', label: 'Archived', color: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20' },
+  { id: 'ALL', label: 'All Inquiries', color: 'bg-primary/10 text-primary border-primary/20' }
+]
 
 export default function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState([])
@@ -31,28 +39,31 @@ export default function AdminInquiriesPage() {
   const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
-    async function fetchInquiries() {
-      setLoading(true)
-      try {
-        const res = await fetch('/api/applications/admin?type=INQUIRY')
-        if (res.ok) {
-          const data = await res.json()
-          setInquiries(Array.isArray(data) ? data : [])
-        }
-      } catch (err) {
-        console.error('Failed to fetch inquiries:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
     fetchInquiries()
   }, [])
 
+  async function fetchInquiries() {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/inquiries')
+      if (res.ok) {
+        const data = await res.json()
+        setInquiries(Array.isArray(data) ? data : [])
+      }
+    } catch (err) {
+      console.error('Failed to fetch inquiries:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const filtered = inquiries.filter(item => {
+    const term = search.toLowerCase()
     const matchesSearch = 
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.email.toLowerCase().includes(search.toLowerCase()) ||
-      (item.form_data?.subject || '').toLowerCase().includes(search.toLowerCase())
+      (item.name || '').toLowerCase().includes(term) ||
+      (item.email || '').toLowerCase().includes(term) ||
+      (item.subject || '').toLowerCase().includes(term) ||
+      (item.message || '').toLowerCase().includes(term)
     
     const matchesStatus = statusFilter === 'ALL' || item.status === statusFilter
     return matchesSearch && matchesStatus
@@ -61,10 +72,10 @@ export default function AdminInquiriesPage() {
   const handleUpdateStatus = async (id, newStatus) => {
     setIsProcessing(true)
     try {
-      const res = await fetch(`/api/applications/admin/${id}`, {
+      const res = await fetch(`/api/inquiries/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus, notes: adminNote }),
+        body: JSON.stringify({ status: newStatus, admin_notes: adminNote }),
       })
 
       if (res.ok) {
@@ -72,9 +83,10 @@ export default function AdminInquiriesPage() {
         setInquiries(inquiries.map(a => a.id === id ? { ...a, ...updated } : a))
         if (selectedInquiry?.id === id) setSelectedInquiry({ ...selectedInquiry, ...updated })
         setAdminNote('')
-        // Auto-switch to Responded tab so the item remains visible
-        if (newStatus === 'ACCEPTED') setStatusFilter('ACCEPTED')
+        if (newStatus === 'RESPONDED') setStatusFilter('RESPONDED')
       }
+    } catch (err) {
+      console.error('Update inquiry status error:', err)
     } finally {
       setIsProcessing(false)
     }
@@ -84,7 +96,7 @@ export default function AdminInquiriesPage() {
     if (!confirm('Are you sure you want to delete this inquiry permanently?')) return
     
     try {
-      const res = await fetch(`/api/applications/admin?id=${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/inquiries/${id}`, { method: 'DELETE' })
       if (res.ok) {
         setInquiries(inquiries.filter(i => i.id !== id))
         if (selectedInquiry?.id === id) setSelectedInquiry(null)
@@ -98,50 +110,65 @@ export default function AdminInquiriesPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black tracking-tight mb-1 uppercase">Contact Inquiries</h2>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-black uppercase tracking-widest mb-2">
+            <Sparkle size={12} weight="fill" />
+            Contact & Inquiries Hub
+          </div>
+          <h2 className="text-3xl font-black tracking-tight text-dynamic">Public Inquiries</h2>
           <p className="text-auto-secondary text-sm">
-            Manage general questions and feedback from the contact form.
+            Review, reply, and track messages received from the website contact form.
           </p>
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Main List */}
+        {/* Main Inquiries List */}
         <div className="flex-grow space-y-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-grow glass px-5 py-3 rounded-2xl flex items-center gap-3 border border-border dark:border-border-dark focus-within:border-primary transition-all shadow-sm">
               <Search size={18} className="text-auto-tertiary" />
               <input 
-                suppressHydrationWarning
                 type="text" 
-                placeholder="Search by name, email or subject..." 
+                placeholder="Search by sender, email, subject or message..." 
                 className="bg-transparent border-none text-sm focus:outline-none w-full placeholder:text-auto-tertiary font-bold"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <div className="flex items-center gap-2 bg-bg-secondary dark:bg-white/5 p-1 rounded-2xl border border-border dark:border-border-dark shadow-inner">
-              {[{ id: 'PENDING', label: 'New' }, { id: 'ACCEPTED', label: 'Responded' }, { id: 'ALL', label: 'All' }].map(s => (
-                <button
-                  key={s.id}
-                  onClick={() => setStatusFilter(s.id)}
-                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                    statusFilter === s.id
-                      ? s.id === 'ACCEPTED'
-                        ? 'bg-green dark:bg-green text-white shadow-xl'
-                        : 'bg-white dark:bg-primary text-primary dark:text-white shadow-xl'
-                      : 'text-auto-tertiary hover:scale-105 active:scale-95'
-                  }`}
-                >
-                  {s.label}
-                </button>
-              ))}
+            
+            {/* Status Tabs */}
+            <div className="flex items-center gap-1.5 bg-bg-secondary dark:bg-white/5 p-1.5 rounded-2xl border border-border dark:border-border-dark shadow-inner overflow-x-auto">
+              {STATUS_TABS.map(s => {
+                const count = inquiries.filter(i => s.id === 'ALL' || i.status === s.id).length
+                const isActive = statusFilter === s.id
+                return (
+                  <button
+                    key={s.id}
+                    onClick={() => setStatusFilter(s.id)}
+                    className={`px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 whitespace-nowrap ${
+                      isActive
+                        ? 'bg-primary text-white shadow-lg shadow-primary/25 scale-[1.02]'
+                        : 'text-auto-tertiary hover:text-dynamic hover:bg-black/5 dark:hover:bg-white/5'
+                    }`}
+                  >
+                    <span>{s.label}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-black ${
+                      s.id === 'PENDING' && count > 0
+                        ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/40 animate-pulse'
+                        : isActive ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/10 text-auto-tertiary'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           </div>
 
+          {/* Inquiries Stream */}
           <div className="glass rounded-[2.5rem] overflow-hidden border border-border dark:border-border-dark shadow-sm">
             {loading ? (
-              <TableSkeleton rows={10} cols={4} />
+              <TableSkeleton rows={8} cols={4} />
             ) : filtered.length > 0 ? (
               <div className="divide-y divide-border dark:divide-border-dark">
                 {filtered.map((item) => (
@@ -153,38 +180,48 @@ export default function AdminInquiriesPage() {
                     }`}
                   >
                     <div className="flex items-center gap-5 min-w-0">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner bg-purple-500/10 text-purple-500`}>
-                        <MessageSquare size={24} />
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner ${
+                        item.status === 'PENDING' ? 'bg-amber-500/10 text-amber-500' :
+                        item.status === 'RESPONDED' ? 'bg-emerald-500/10 text-emerald-500' :
+                        'bg-zinc-500/10 text-zinc-400'
+                      }`}>
+                        <MessageSquare size={22} weight={item.status === 'PENDING' ? 'fill' : 'regular'} />
                       </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-3 mb-1.5">
-                          <span className="font-black text-lg tracking-tight truncate">{item.name}</span>
-                          <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
-                            item.status === 'PENDING' ? 'bg-orange/10 text-orange border-orange/20' : 'bg-green/10 text-green border-green/20'
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex items-center gap-3">
+                          <span className="font-black text-base tracking-tight truncate text-dynamic">{item.name}</span>
+                          <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full border ${
+                            item.status === 'PENDING' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
+                            item.status === 'RESPONDED' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+                            'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
                           }`}>
-                            {item.status === 'PENDING' ? 'New Inquiry' : 'Responded'}
+                            {item.status}
                           </span>
                         </div>
-                        <div className="flex items-center gap-4 text-xs text-auto-tertiary font-bold">
-                          <span className="flex items-center gap-1.5 truncate max-w-[200px]"><FileText size={14} /> {item.form_data?.subject || 'No Subject'}</span>
-                          <span className="flex items-center gap-1.5"><Calendar size={14} /> {new Date(item.created_at).toLocaleDateString()}</span>
+                        <p className="text-xs font-bold text-dynamic truncate max-w-md">
+                          {item.subject || 'General Inquiry'}
+                        </p>
+                        <div className="flex items-center gap-4 text-[11px] text-auto-tertiary font-medium">
+                          <span className="truncate">{item.email}</span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1"><Calendar size={12} /> {new Date(item.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
-                    <ChevronRight size={20} className={`text-auto-tertiary opacity-40 transition-transform ${selectedInquiry?.id === item.id ? 'translate-x-1 opacity-100 text-primary' : ''}`} />
+                    <ChevronRight size={18} className={`text-auto-tertiary opacity-40 transition-transform ${selectedInquiry?.id === item.id ? 'translate-x-1 opacity-100 text-primary' : ''}`} />
                   </button>
                 ))}
               </div>
             ) : (
               <div className="text-center py-24 text-auto-tertiary space-y-4">
                 <Filter size={48} className="mx-auto opacity-20" />
-                <p className="font-bold">No inquiries found.</p>
+                <p className="font-bold text-sm">No inquiries found in this view.</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Details Sidebar */}
+        {/* Inquiry Detail Inspector */}
         <AnimatePresence mode="wait">
           {selectedInquiry ? (
             <motion.div 
@@ -192,118 +229,139 @@ export default function AdminInquiriesPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="w-full lg:w-[450px] shrink-0"
+              className="w-full lg:w-[460px] shrink-0"
             >
-              <div className="glass rounded-[2.5rem] p-10 border border-border dark:border-border-dark sticky top-8 space-y-10 shadow-2xl overflow-hidden relative">
+              <div className="glass rounded-[2.5rem] p-8 border border-border dark:border-border-dark sticky top-8 space-y-8 shadow-2xl overflow-hidden relative">
+                {/* Header */}
                 <div className="flex justify-between items-start relative z-10">
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-purple-500/20 bg-purple-500/10 text-purple-500">
-                      General Inquiry
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-primary/20 bg-primary/10 text-primary">
+                      Inquiry Details
                     </span>
-                    <h3 className="text-3xl font-black tracking-tight leading-none pt-2">{selectedInquiry.name}</h3>
+                    <h3 className="text-2xl font-black tracking-tight text-dynamic pt-2">{selectedInquiry.name}</h3>
                   </div>
                   <div className="flex items-center gap-2">
                     <button 
                       onClick={() => handleDelete(selectedInquiry.id)}
-                      className="p-2.5 bg-coral/10 text-coral hover:bg-coral hover:text-white rounded-2xl transition-all"
+                      className="p-2.5 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white rounded-2xl transition-all"
                       title="Delete Inquiry"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={16} />
                     </button>
                     <button 
                       onClick={() => setSelectedInquiry(null)}
                       className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl transition-all text-auto-tertiary hover:rotate-90"
                     >
-                      <XCircle size={24} />
+                      <XCircle size={20} />
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-6 relative z-10">
-                  <div className="flex items-center gap-4 bg-bg-secondary dark:bg-white/5 p-4 rounded-2xl border border-border dark:border-border-dark group">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Mail size={18} />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">Sender Email</p>
-                      <p className="text-sm font-bold truncate">{selectedInquiry.email}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div className="p-6 bg-black/5 dark:bg-white/5 rounded-3xl border border-border dark:border-border-dark space-y-2">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-primary">Subject</p>
-                      <p className="text-lg font-bold tracking-tight">{selectedInquiry.form_data?.subject}</p>
-                    </div>
-
-                    <div className="p-6 bg-black/5 dark:bg-white/5 rounded-3xl border border-border dark:border-border-dark space-y-2">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-primary">Message</p>
-                      <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{selectedInquiry.form_data?.message}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {selectedInquiry.status === 'PENDING' ? (
-                  <div className="pt-10 border-t border-border dark:border-border-dark space-y-6 relative z-10">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-auto-tertiary ml-1">
-                        <MessageSquare size={14} />
-                        <label className="text-[10px] font-black uppercase tracking-widest">Internal Response Notes (Optional)</label>
+                {/* Sender Contact Strip */}
+                <div className="space-y-3 relative z-10">
+                  <div className="flex items-center justify-between p-4 rounded-2xl bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                        <Mail size={18} />
                       </div>
-                      <textarea 
-                        placeholder="Internal notes about the response or action taken..."
-                        className="w-full bg-black/5 dark:bg-white/5 border-none rounded-2xl py-4 px-6 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none"
-                        rows={3}
-                        value={adminNote}
-                        onChange={(e) => setAdminNote(e.target.value)}
-                      />
+                      <div className="min-w-0">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-auto-tertiary block">Email Address</span>
+                        <p className="text-xs font-bold truncate text-dynamic">{selectedInquiry.email}</p>
+                      </div>
                     </div>
-                    
-                    <button 
-                      disabled={isProcessing}
-                      onClick={() => handleUpdateStatus(selectedInquiry.id, 'ACCEPTED')}
-                      className="w-full flex items-center justify-center gap-3 bg-primary hover:bg-primary-dark text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 active:scale-95 disabled:opacity-50"
+                    <a 
+                      href={`mailto:${selectedInquiry.email}?subject=Re: ${encodeURIComponent(selectedInquiry.subject || 'MIN Inquiry')}`}
+                      className="px-3 py-1.5 rounded-xl bg-primary text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-primary/20 hover:scale-105 transition-all"
                     >
-                      {isProcessing ? <Loader2 size={20} className="animate-spin" /> : <CheckCircle2 size={20} />}
-                      Mark as Responded
-                    </button>
+                      <Send size={12} weight="bold" /> Reply
+                    </a>
                   </div>
-                ) : (
-                  <div className="pt-10 border-t border-border dark:border-border-dark space-y-6 relative z-10">
-                    <div className="glass bg-bg-secondary-dynamic/30 rounded-[2.5rem] p-8 border border-border dark:border-border-dark space-y-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-green/10 text-green">
-                            <CheckCircle2 size={20} />
-                          </div>
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-auto-tertiary">Review Status</p>
-                            <p className="font-bold text-sm">Responded</p>
-                          </div>
-                        </div>
-                      </div>
 
-                      {selectedInquiry.notes && (
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-2 text-auto-tertiary">
-                            <MessageSquare size={14} />
-                            <label className="text-[10px] font-black uppercase tracking-widest">Internal Review Notes</label>
-                          </div>
-                          <div className="bg-white/40 dark:bg-black/20 p-6 rounded-2xl text-sm italic text-auto-secondary leading-relaxed border border-border/50">
-                            "{selectedInquiry.notes}"
-                          </div>
-                        </div>
-                      )}
+                  {selectedInquiry.phone && (
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark">
+                      <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                        <Phone size={18} />
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-auto-tertiary block">Phone Number</span>
+                        <p className="text-xs font-bold text-dynamic">{selectedInquiry.phone}</p>
+                      </div>
                     </div>
+                  )}
+                </div>
+
+                {/* Message Body */}
+                <div className="space-y-3 relative z-10">
+                  <div className="p-5 rounded-2xl bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark space-y-1.5">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary block">Subject</span>
+                    <p className="text-sm font-bold text-dynamic">{selectedInquiry.subject || 'General Inquiry'}</p>
                   </div>
-                )}
+
+                  <div className="p-5 rounded-2xl bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary block">Message Body</span>
+                    <p className="text-xs text-dynamic font-medium leading-relaxed whitespace-pre-wrap">
+                      {selectedInquiry.message}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Status Update & Notes */}
+                <div className="pt-6 border-t border-border dark:border-border-dark space-y-4 relative z-10">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary block">
+                      Internal Staff Notes
+                    </label>
+                    <textarea 
+                      placeholder="Add notes on reply status, follow-up person, or decision..."
+                      className="w-full bg-bg-secondary dark:bg-white/5 border border-border dark:border-border-dark rounded-2xl py-3 px-4 text-xs focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none"
+                      rows={3}
+                      value={adminNote || selectedInquiry.admin_notes || ''}
+                      onChange={(e) => setAdminNote(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    {selectedInquiry.status !== 'RESPONDED' && (
+                      <button 
+                        disabled={isProcessing}
+                        onClick={() => handleUpdateStatus(selectedInquiry.id, 'RESPONDED')}
+                        className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
+                      >
+                        {isProcessing ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} weight="bold" />}
+                        Mark Responded
+                      </button>
+                    )}
+
+                    {selectedInquiry.status !== 'ARCHIVED' && (
+                      <button 
+                        disabled={isProcessing}
+                        onClick={() => handleUpdateStatus(selectedInquiry.id, 'ARCHIVED')}
+                        className="flex items-center justify-center gap-2 bg-zinc-700 hover:bg-zinc-800 text-white py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all disabled:opacity-50"
+                      >
+                        <Archive size={16} weight="bold" />
+                        Archive
+                      </button>
+                    )}
+
+                    {selectedInquiry.status !== 'PENDING' && (
+                      <button 
+                        disabled={isProcessing}
+                        onClick={() => handleUpdateStatus(selectedInquiry.id, 'PENDING')}
+                        className="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-amber-600/20 disabled:opacity-50"
+                      >
+                        <Clock size={16} weight="bold" />
+                        Move to New
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </motion.div>
           ) : (
-            <div className="hidden lg:flex w-[450px] shrink-0 h-full items-center justify-center glass rounded-[2.5rem] border border-dashed border-border dark:border-border-dark text-auto-tertiary italic text-sm">
-              <div className="text-center space-y-4 opacity-30">
+            <div className="hidden lg:flex w-[460px] shrink-0 h-full items-center justify-center glass rounded-[2.5rem] border border-dashed border-border dark:border-border-dark text-auto-tertiary italic text-sm">
+              <div className="text-center space-y-4 opacity-30 py-32">
                 <MessageSquare size={48} className="mx-auto" />
-                <p>Select an inquiry to read the full message</p>
+                <p className="font-bold">Select an inquiry to view details and reply</p>
               </div>
             </div>
           )}

@@ -286,8 +286,10 @@ export default function AdminApplicationsPage() {
                 }`}
               >
                 <span>{stage.label}</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/10 text-auto-tertiary'
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
+                  stage.id === 'PENDING' && count > 0
+                    ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/40 animate-pulse'
+                    : isSelected ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/10 text-auto-tertiary'
                 }`}>
                   {count}
                 </span>

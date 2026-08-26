@@ -139,7 +139,9 @@ export default function AdminTopbar({ profile, isMaintenance }) {
           >
             <Bell size={18} className="text-dynamic" />
             {actualUnreadCount > 0 && (
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-coral rounded-full ring-2 ring-white dark:ring-bg-dark" />
+              <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[9px] font-black bg-rose-500 text-white shadow-md shadow-rose-500/40 ring-2 ring-white dark:ring-bg-dark animate-pulse">
+                {actualUnreadCount > 9 ? '9+' : actualUnreadCount}
+              </span>
             )}
           </button>
 

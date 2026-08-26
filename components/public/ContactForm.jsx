@@ -13,17 +13,14 @@ export default function ContactForm() {
     setLoading(true)
     
     try {
-      const res = await fetch('/api/applications', {
+      const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          type: 'INQUIRY',
-          form_data: {
-            subject: formData.subject,
-            message: formData.message
-          }
+          subject: formData.subject,
+          message: formData.message
         })
       })
 
