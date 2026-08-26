@@ -17,7 +17,10 @@ export async function GET() {
   return Response.json(data || {}, {
     headers: {
       // No CDN caching — settings must always be fresh after admin saves
-      'Cache-Control': 'no-store'
+      'Cache-Control': 'no-store',
+      // Freshness signals for AI crawlers (Perplexity, GPTBot, etc.)
+      'Last-Modified': new Date().toUTCString(),
+      'X-Content-Date': new Date().toISOString(),
     }
   })
 }

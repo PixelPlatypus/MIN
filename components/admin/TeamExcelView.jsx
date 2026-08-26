@@ -77,9 +77,10 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
       id: m.id,
       slug: m.slug,
       name: m.name || '',
+      position: m.position || 'MINion',
       status: m.status || 'ACTIVE',
-      joined_date: m.joined_date || '',
-      farewell_date: m.farewell_date || '',
+      joined_date: m.joined_date ? m.joined_date.split('T')[0] : '',
+      farewell_date: m.farewell_date ? m.farewell_date.split('T')[0] : '',
       is_advisor: m.is_advisor ? 'YES' : 'NO',
       role_history: roles,
       _original: m
@@ -94,16 +95,16 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
 
     const tempId = `temp-${Math.random().toString(36).substr(2, 9)}`
     const joinDate = new Date().toISOString().split('T')[0]
-    const year = new Date(joinDate).getFullYear()
     const newRow = {
       id: tempId,
       slug: '',
       name: '',
+      position: 'MINion',
       status: 'ACTIVE',
       joined_date: joinDate,
       farewell_date: '',
       is_advisor: 'NO',
-      role_history: `${year}: MINion`,
+      role_history: '',
       _isNew: true
     }
     setData(prev => [...prev, newRow])
@@ -118,14 +119,6 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
       
       // Track changes for highlighting
       setChangedIds(ids => new Set(ids).add(id))
-      
-      // Auto-fill Role History if joined_date is set and history is empty
-      if (field === 'joined_date' && value && !updatedRow.role_history) {
-        const year = new Date(value).getFullYear()
-        if (!isNaN(year)) {
-          updatedRow.role_history = `${year}: MINion`
-        }
-      }
 
       // Sync slug if name is changed and it's a new row
       if (field === 'name' && updatedRow._isNew) {
@@ -149,33 +142,19 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
           ? new Date(row.joined_date).getFullYear().toString() 
           : new Date().getFullYear().toString()
 
-        let roleHistory = row.role_history.split(',')
+        let roleHistory = row.role_history ? row.role_history.split(',')
           .map(s => s.trim())
           .filter(Boolean)
           .map(s => {
             const [year, ...pos] = s.split(':')
             return { year: year?.trim(), position: pos.join(':')?.trim() }
           })
-          .filter(rh => rh.year && rh.position)
-
-        // Ensure baseline MINion entry exists for their joining year
-        const hasJoinedYearRole = roleHistory.some(rh => rh.year === joinedYear)
-        if (!hasJoinedYearRole) {
-          roleHistory.push({ year: joinedYear, position: 'MINion' })
-        }
-
-        // Sort role history chronologically for the database
-        roleHistory.sort((a, b) => parseInt(a.year) - parseInt(b.year))
-
-        // Derive current position from the LATEST role entry
-        const latestRole = roleHistory.length > 0 
-          ? [...roleHistory].sort((a, b) => parseInt(b.year) - parseInt(a.year))[0]
-          : { position: 'MINion' }
+          .filter(rh => rh.year && rh.position) : []
 
         const payload = {
           name: row.name || 'New Member',
           slug: row.slug || generateUniqueSlug(row.name, row.id, data),
-          position: latestRole.position || 'MINion',
+          position: row.position || 'MINion',
           status: row.status.toUpperCase(),
           joined_date: row.joined_date || new Date().toISOString().split('T')[0],
           farewell_date: row.farewell_date || null,
@@ -364,6 +343,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
           <thead>
             <tr className="bg-bg-secondary dark:bg-white/5 text-[10px] font-black uppercase tracking-widest text-auto-tertiary border-b border-border dark:border-white/10">
               <th className="px-4 py-4 w-48">Full Name</th>
+              <th className="px-4 py-4 w-36">Position</th>
               <th className="px-4 py-4 w-32">Status</th>
               <th className="px-4 py-4 w-32">Joined Date</th>
               <th className="px-4 py-4 w-32">Farewell Date</th>
@@ -387,6 +367,14 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
                     placeholder="Member Name"
                     value={row.name}
                     onChange={e => handleCellChange(row.id, 'name', e.target.value)}
+                  />
+                </td>
+                <td className="px-1 py-1">
+                  <input 
+                    className="w-full bg-transparent px-3 py-2 text-xs font-bold focus:bg-white dark:focus:bg-white/10 outline-none rounded-lg border border-transparent focus:border-primary/30 transition-all"
+                    placeholder="e.g. MINion"
+                    value={row.position}
+                    onChange={e => handleCellChange(row.id, 'position', e.target.value)}
                   />
                 </td>
                 <td className="px-1 py-1">
@@ -431,7 +419,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
                   <textarea 
                     rows={1}
                     className="w-full bg-transparent px-3 py-2 text-[10px] font-medium focus:bg-white dark:focus:bg-white/10 outline-none rounded-lg border border-transparent focus:border-primary/30 transition-all resize-none overflow-hidden hover:overflow-y-auto max-h-20"
-                    placeholder="e.g. 2024: Manager (MINion is auto-added)"
+                    placeholder="e.g. 2024: Manager"
                     value={row.role_history}
                     onChange={e => handleCellChange(row.id, 'role_history', e.target.value)}
                   />
@@ -440,7 +428,7 @@ export default function TeamExcelView({ members, onSave, onRefresh }) {
             ))}
             {/* Natural Add Row Button */}
             <tr>
-              <td colSpan="6" className="p-0">
+              <td colSpan="7" className="p-0">
                 <button 
                   onClick={addNewRow}
                   className="w-full py-4 bg-bg-secondary/30 dark:bg-white/[0.02] hover:bg-primary/[0.05] text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-all flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] group"

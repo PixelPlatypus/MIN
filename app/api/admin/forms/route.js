@@ -4,7 +4,7 @@ import { logAudit } from '@/lib/audit'
 import { sendTemplatedEmail } from '@/lib/resend'
 
 export async function GET() {
-  const { error: roleError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+  const { error: roleError } = await withRole(['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const supabase = await createAdminClient()
@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  const { user, profile, error: roleError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+  const { user, profile, error: roleError } = await withRole(['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const body = await request.json()
@@ -45,7 +45,7 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
-  const { user, profile, error: roleError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+  const { user, profile, error: roleError } = await withRole(['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const body = await request.json()
@@ -103,7 +103,7 @@ export async function PATCH(request) {
 }
 
 export async function DELETE(request) {
-  const { user, profile, error: roleError } = await withRole(['ADMIN', 'WEBSITE_MANAGER'])
+  const { user, profile, error: roleError } = await withRole(['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const { searchParams } = new URL(request.url)

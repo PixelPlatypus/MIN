@@ -2,7 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { withRole } from '@/lib/rbac'
 
 export async function GET() {
-  const { user, error: roleError } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  const { user, profile, error: roleError } = await withRole(['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   const supabaseAdmin = await createAdminClient()
@@ -22,5 +22,8 @@ export async function GET() {
     isSelf: u.id === (user?.id) // user comes from withRole
   }))
 
-  return Response.json(usersWithSelf)
+  return Response.json({
+    users: usersWithSelf,
+    currentUserRole: profile?.role || 'WRITER'
+  })
 }

@@ -4,7 +4,7 @@ import { logAudit } from '@/lib/audit'
 
 export async function PATCH(request, { params }) {
   const { id } = await params
-  const { user, profile, error: roleError } = await withRole(['ADMIN'])
+  const { user, profile, error: roleError } = await withRole(['ADMIN', 'SUPER_ADMIN', 'HR'])
   if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
 
   // Admin cannot modify their own role via this endpoint for safety
@@ -19,7 +19,7 @@ export async function PATCH(request, { params }) {
 
   // 1. Handle Role Update
   if (role) {
-    if (!['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'].includes(role)) {
+    if (!['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER', 'HR'].includes(role)) {
       return Response.json({ error: "Invalid role specified." }, { status: 400 })
     }
     const { error: roleError } = await supabaseAdmin
@@ -31,7 +31,7 @@ export async function PATCH(request, { params }) {
     auditDetails.new_role = role
   }
 
-  // 2. Handle Blind Password Reset (Admin capability)
+  // 2. Handle Blind Password Reset (Admin/HR capability)
   if (password) {
     if (password.length < 6) return Response.json({ error: "Password too short." }, { status: 400 })
     
@@ -63,8 +63,8 @@ export async function PATCH(request, { params }) {
 
 export async function DELETE(request, { params }) {
   const { id } = await params
-  const { user, profile, error: roleError } = await withRole(['ADMIN'])
-  if (roleError) return Response.json({ error: roleError.message }, { status: roleError.status })
+  const { user, profile, error: roleError } = await withRole(['ADMIN', 'SUPER_ADMIN'])
+  if (roleError) return Response.json({ error: 'Only Administrators can permanently delete user accounts.' }, { status: 403 })
 
   // Admin cannot delete their own profile
   if (id === user.id) {

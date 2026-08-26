@@ -31,8 +31,9 @@ export async function POST(request) {
     const buffer = Buffer.from(await file.arrayBuffer())
     const adminSupabase = await createAdminClient()
     
-    // We store in a dedicated 'applications' folder/bucket
-    const fileName = `CV-${category}-${Date.now()}-${file.name.replace(/\s+/g, '-')}`
+    const sanitizedBaseName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+    const safeCategory = category.replace(/[^a-zA-Z0-9_-]/g, '')
+    const fileName = `CV-${safeCategory}-${Date.now()}-${sanitizedBaseName}`
     
     // 1. Upload to Supabase Storage (applications bucket)
     const { data: storageData, error: storageError } = await adminSupabase.storage

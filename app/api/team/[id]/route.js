@@ -4,26 +4,31 @@ import { logAudit } from '@/lib/audit'
 
 export async function PATCH(request, { params }) {
   const { id } = await params
-  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const body = await request.json()
 
-  // Role Restriction: Only ADMIN can assign 'President' role
-  if (profile.role !== 'ADMIN') {
-    if (body.position === 'President' || body.social_links?.role_history?.some(h => h.position === 'President')) {
-      return Response.json({ error: 'Only administrators can assign the President role.' }, { status: 403 })
-    }
-  }
-
   const supabaseAdmin = await createAdminClient()
   
-  // Fetch old data for logging changes
+  // Fetch old data for logging changes and permission validation
   const { data: oldMember } = await supabaseAdmin
     .from('team_members')
     .select('*')
     .eq('id', id)
     .single()
+
+  // Role Restriction: Only ADMIN can assign 'President' role
+  if (profile.role !== 'ADMIN') {
+    const isNewPresident = body.position === 'President' && oldMember?.position !== 'President'
+    const hasNewPresidentRole = body.social_links?.role_history?.some(h => 
+      h.position === 'President' && 
+      !oldMember?.social_links?.role_history?.some(oh => oh.year === h.year && oh.position === 'President')
+    )
+    if (isNewPresident || hasNewPresidentRole) {
+      return Response.json({ error: 'Only administrators can assign the President role.' }, { status: 403 })
+    }
+  }
 
   const { data, error: updateError } = await supabaseAdmin
     .from('team_members')
@@ -61,7 +66,7 @@ export async function PATCH(request, { params }) {
 
 export async function DELETE(request, { params }) {
   const { id } = await params
-  const { user, profile, error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+  const { user, profile, error } = await withRole(['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'])
   if (error) return Response.json({ error: error.message }, { status: error.status })
 
   const supabaseAdmin = await createAdminClient()

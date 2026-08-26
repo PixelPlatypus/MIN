@@ -38,8 +38,8 @@ export default async function AdminDashboard() {
     supabase.from('content').select('*', { count: 'exact', head: true }).gt('created_at', dateStr),
     supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'PUBLISHED'),
     supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'PUBLISHED').gt('created_at', dateStr),
-    supabase.from('team_members').select('*', { count: 'exact', head: true }).eq('is_active', true),
-    supabase.from('team_members').select('*', { count: 'exact', head: true }).eq('is_active', true).gt('created_at', dateStr),
+    supabase.from('team_members').select('*', { count: 'exact', head: true }).neq('status', 'REMOVED'),
+    supabase.from('team_members').select('*', { count: 'exact', head: true }).neq('status', 'REMOVED').gt('created_at', dateStr),
     supabase.from('join_applications').select('*', { count: 'exact', head: true }).eq('status', 'PENDING'),
     supabase.from('join_applications').select('*', { count: 'exact', head: true }).eq('status', 'PENDING').gt('created_at', dateStr),
     supabase.from('audit_log').select('*').eq('actor_id', user.id).order('created_at', { ascending: false }).limit(5),
@@ -170,7 +170,7 @@ export default async function AdminDashboard() {
               <h3 className="text-lg font-bold mb-1">Your Recent Activity</h3>
               <p className="text-xs text-auto-tertiary">Your latest actions on the platform</p>
             </div>
-            <button className="text-xs font-semibold text-primary hover:underline">View All</button>
+            <a href="/admin/audit" className="text-xs font-semibold text-primary hover:underline">View All</a>
           </div>
           
           <div className="space-y-6">

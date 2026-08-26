@@ -28,7 +28,7 @@ export async function POST(request) {
     // Role check
     const { data: profile } = await supabase
       .from('profiles').select('role').eq('id', user.id).single()
-    if (!profile || !['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER', 'SYSTEM_ADMIN'].includes(profile.role)) {
+    if (!profile || !['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER', 'SYSTEM_ADMIN', 'HR'].includes(profile.role)) {
       return Response.json({ error: 'Forbidden' }, { status: 403 })
     }
   }
@@ -51,7 +51,8 @@ export async function POST(request) {
   const buffer = Buffer.from(await file.arrayBuffer())
   const resource_type = file.type === 'application/pdf' ? 'raw' : 'image'
   const bucketName = resource_type === 'raw' ? 'documents' : 'media'
-  const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
+  const sanitizedBaseName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+  const fileName = `${Date.now()}-${sanitizedBaseName}`
 
   try {
     console.log(`API Upload: Starting storage upload to bucket ${bucketName} for ${file.name}`)

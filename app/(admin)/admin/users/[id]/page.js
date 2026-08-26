@@ -131,6 +131,7 @@ export default function EditUserPage() {
                    <option value="ADMIN">Administrator</option>
                    <option value="WEBSITE_MANAGER">Website Manager</option>
                    <option value="MANAGER">Manager</option>
+                   <option value="HR">HR Manager</option>
                    <option value="WRITER">Writer</option>
                 </select>
               </div>

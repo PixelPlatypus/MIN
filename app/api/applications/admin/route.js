@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(request) {
   try {
-    const { error } = await withRole(['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'])
+    const { error } = await withRole(['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'])
     if (error) {
       return Response.json({ error: error.message }, { status: error.status })
     }
@@ -74,7 +74,7 @@ export async function GET(request) {
 
 export async function DELETE(request) {
   try {
-    const { user, profile, error } = await withRole(['ADMIN', 'WEBSITE_MANAGER']) 
+    const { user, profile, error } = await withRole(['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR']) 
     if (error) return Response.json({ error: error.message }, { status: error.status })
 
     const { searchParams } = new URL(request.url)

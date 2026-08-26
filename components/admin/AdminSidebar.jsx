@@ -28,56 +28,59 @@ import {
   X,
   Calculator,
   Envelope,
-  CircleNotch
+  CircleNotch,
+  ClipboardText
 } from '@phosphor-icons/react'
 
 const navGroups = [
   {
     title: 'Overview',
-    roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'],
+    roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'],
     links: [
       { name: 'Dashboard', href: '/admin', icon: <SquaresFour size={20} /> },
     ]
   },
   {
-    title: 'Content',
-    roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'],
+    title: 'Intake & Applications',
+    roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'],
     links: [
-      { name: 'Library', href: '/admin/content', icon: <Books size={20} />, roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'] },
-      { name: 'Submissions', href: '/admin/submissions', icon: <PaperPlaneTilt size={20} />, roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'] },
-      { name: 'New Content', href: '/admin/content/new', icon: <PlusCircle size={20} />, roles: ['ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER'] },
+      { name: 'Applicants Pipeline', href: '/admin/applications', icon: <UserPlus size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'Task Bank', href: '/admin/tasks', icon: <ClipboardText size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'Form Blueprints', href: '/admin/applications/builder', icon: <Layers size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'Email Formats', href: '/admin/emails', icon: <Envelope size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'Intake Waitlist', href: '/admin/settings/waitlist', icon: <Bell size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'Inquiries', href: '/admin/inquiries', icon: <PaperPlaneTilt size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'Pop-up Notices', href: '/admin/notices', icon: <Bell size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR'] },
+    ]
+  },
+  {
+    title: 'Content',
+    roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER', 'HR'],
+    links: [
+      { name: 'Library', href: '/admin/content', icon: <Books size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'Submissions', href: '/admin/submissions', icon: <PaperPlaneTilt size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'New Content', href: '/admin/content/new', icon: <PlusCircle size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WRITER', 'WEBSITE_MANAGER', 'HR'] },
     ]
   },
   {
     title: 'Management',
-    roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'],
+    roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER', 'HR'],
     links: [
-      { name: 'Programs', href: '/admin/programs', icon: <Layers size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'] },
-      { name: 'Events', href: '/admin/events', icon: <Calendar size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'] },
-      { name: 'Certificates', href: '/admin/certificates', icon: <Trophy size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
-      { name: 'DMO Practice', href: '/admin/dmopractice', icon: <Calculator size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER', 'WRITER'] },
-      { name: 'Team', href: '/admin/team', icon: <Users size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
-      { name: 'Gallery', href: '/admin/gallery', icon: <ImageIcon size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] }
-    ]
-  },
-  {
-    title: 'Applications',
-    roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER'],
-    links: [
-      { name: 'Join Us', href: '/admin/applications', icon: <UserPlus size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
-      { name: 'Inquiries', href: '/admin/inquiries', icon: <Envelope size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
-      { name: 'Form Builder', href: '/admin/applications/builder', icon: <Layers size={20} />, roles: ['ADMIN', 'MANAGER', 'WEBSITE_MANAGER'] },
-      { name: 'Pop-up Notices', href: '/admin/notices', icon: <Bell size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER', 'WRITER'] },
+      { name: 'Programs', href: '/admin/programs', icon: <Layers size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER', 'HR'] },
+      { name: 'Events', href: '/admin/events', icon: <Calendar size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'WRITER', 'HR'] },
+      { name: 'Certificates', href: '/admin/certificates', icon: <Trophy size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'DMO Practice', href: '/admin/dmopractice', icon: <Calculator size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'WRITER'] },
+      { name: 'Team', href: '/admin/team', icon: <Users size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'] },
+      { name: 'Gallery', href: '/admin/gallery', icon: <ImageIcon size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'WEBSITE_MANAGER', 'HR'] }
     ]
   },
   {
     title: 'Configuration',
-    roles: ['ADMIN', 'WEBSITE_MANAGER'],
+    roles: ['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER', 'HR'],
     links: [
-      { name: 'Site Editor', href: '/admin/settings', icon: <Globe size={20} /> },
-      { name: 'Intake Waitlist', href: '/admin/settings/waitlist', icon: <Bell size={20} /> },
-      { name: 'Users', href: '/admin/users', icon: <Users size={20} />, roles: ['ADMIN'] },
-      { name: 'Audit Log', href: '/admin/audit', icon: <History size={20} />, roles: ['ADMIN', 'WEBSITE_MANAGER'] },
+      { name: 'Site Editor', href: '/admin/settings', icon: <Globe size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER'] },
+      { name: 'Users & Access', href: '/admin/users', icon: <Users size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'HR'] },
+      { name: 'Audit Log', href: '/admin/audit', icon: <History size={20} />, roles: ['ADMIN', 'SUPER_ADMIN', 'WEBSITE_MANAGER'] },
     ]
   }
 ]

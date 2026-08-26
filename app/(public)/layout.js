@@ -1,4 +1,4 @@
-export const revalidate = 0;
+export const revalidate = 60; // ISR: revalidate public pages every 60 seconds
 import Navbar from '@/components/public/Navbar'
 import Footer from '@/components/public/Footer'
 import PageTransition from '@/components/public/PageTransition'
