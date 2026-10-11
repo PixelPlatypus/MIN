@@ -2,27 +2,28 @@ import Hero from '@/components/public/Hero'
 import StatsCounter from '@/components/public/StatsCounter'
 import Mission from '@/components/public/Mission'
 import ProgramsGrid from '@/components/public/ProgramsGrid'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient, getSiteSettings } from '@/lib/supabase/server'
 import dynamic from 'next/dynamic'
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_SHORT_DESCRIPTION, SITE_SUMMARY } from '@/lib/site'
 
 const Timeline = dynamic(() => import('@/components/public/Timeline'), { ssr: true })
 const Recognition = dynamic(() => import('@/components/public/Recognition'), { ssr: true })
 const JoinUsCTA = dynamic(() => import('@/components/public/JoinUsCTA'), { ssr: true })
 
 export const metadata = {
-  metadataBase: new URL('https://mathsinitiatives.org.np'),
   title: 'Mathematics Initiatives in Nepal (MIN)',
-  description: 'MIN is a nonprofit making mathematics accessible, engaging, and inspiring for all students in Nepal. HundrED Top 100 Global Education Innovations 2025.',
+  description: SITE_DESCRIPTION,
   openGraph: {
     title: 'Mathematics Initiatives in Nepal (MIN)',
-    description: 'Making mathematics accessible for all students in Nepal.',
+    description: SITE_SHORT_DESCRIPTION,
     images: ['/images/og-default.png'],
-    url: 'https://mathsinitiatives.org.np',
+    url: SITE_URL,
   },
+  alternates: { canonical: '/' },
 }
 
 export default async function Home() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   
   // Parallel fetch for core data with correct table names
   const [
@@ -30,33 +31,22 @@ export default async function Home() {
     { data: programs },
     { data: timeline }
   ] = await Promise.all([
-    supabase.from('site_settings').select('*').eq('id', 'main').single(),
-    supabase.from('programs').select('*').eq('status', 'ACTIVE').order('order_index', { ascending: true }),
-    supabase.from('timeline').select('*').order('year', { ascending: true })
+    getSiteSettings().then(data => ({ data })),
+    supabase.from('programs').select('*').eq('status', 'ACTIVE').order('display_order', { ascending: true }),
+    supabase.from('timeline_events').select('*').order('sort_order', { ascending: true })
   ])
 
 
+  // Org (NGO) JSON-LD lives in the root layout on every page; the homepage adds the WebSite entity
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'NGO',
-    name: 'Mathematics Initiatives in Nepal',
+    '@type': 'WebSite',
+    name: SITE_NAME,
     alternateName: 'MIN',
-    url: 'https://mathsinitiatives.org.np',
-    logo: 'https://mathsinitiatives.org.np/images/logo.svg',
-    description: 'A nonprofit making mathematics accessible, engaging, and inspiring for all students in Nepal.',
-    foundingDate: '2020',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Kathmandu',
-      addressCountry: 'NP',
-    },
-    sameAs: [
-      'https://www.facebook.com/mathsinitiatives',
-      'https://www.instagram.com/minnepal',
-      'https://www.youtube.com/@mathsinitiatives',
-    ],
-    award: 'HundrED Top 100 Global Education Innovations 2025',
-    email: 'contact@mathsinitiatives.org.np',
+    url: SITE_URL,
+    description: SITE_SUMMARY,
+    inLanguage: 'en',
+    publisher: { '@type': 'NGO', name: SITE_NAME, url: SITE_URL },
   }
 
   return (

@@ -1,11 +1,11 @@
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
 import '@/styles/globals.css'
 import { ThemeProvider } from '@/components/shared/ThemeProvider'
-import GlobalGradients from '@/components/shared/GlobalGradients'
 import { ClientProviders } from './providers'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import SitePreloader from '@/components/shared/SitePreloader'
+import { SITE_URL, SITE_DESCRIPTION, SITE_SHORT_DESCRIPTION, SITE_SUMMARY, SOCIAL_LINKS } from '@/lib/site'
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -21,7 +21,7 @@ const jetBrainsMono = JetBrains_Mono({
   preload: false,
 })
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np'
+const BASE_URL = SITE_URL
 
 export const metadata = {
   metadataBase: new URL(BASE_URL),
@@ -29,11 +29,12 @@ export const metadata = {
     template: '%s | MIN Nepal',
     default: 'Mathematics Initiatives in Nepal (MIN)'
   },
-  description: 'Empowering students across Nepal to excel globally through innovative mathematics education, Olympiad preparation, research training, and inspiring events.',
+  description: SITE_DESCRIPTION,
   keywords: [
-    'Mathematics Initiatives Nepal', 'MIN Nepal', 'Math Olympiad Nepal',
-    'STEM Nepal', 'Nepal Math Education', 'Mathematics Competition Nepal',
-    'HundrED 2025', 'Research Training Olympiad', 'DMO Nepal', 'Math Club Nepal'
+    'Mathematics Initiatives in Nepal', 'MIN Nepal', 'Maths education Nepal',
+    'Accessible mathematics Nepal', 'Learn maths Nepal', 'Mathematics for students Nepal',
+    'Mathmagicians', 'Math Olympiad Nepal', 'Math workshops Nepal', 'STEM Nepal',
+    'HundrED 2025', 'Road to Olympiad', 'DMO Nepal'
   ],
   authors: [{ name: 'Mathematics Initiatives in Nepal', url: BASE_URL }],
   creator: 'MIN Team',
@@ -78,7 +79,7 @@ export const metadata = {
     url: BASE_URL,
     siteName: 'Mathematics Initiatives in Nepal',
     title: 'Mathematics Initiatives in Nepal (MIN)',
-    description: 'Empowering students across Nepal to excel globally through innovative mathematics education, Olympiad preparation, and research training.',
+    description: SITE_SHORT_DESCRIPTION,
     images: [
       {
         url: '/images/og-default.png',
@@ -93,7 +94,7 @@ export const metadata = {
     site: '@minnepal',
     creator: '@minnepal',
     title: 'Mathematics Initiatives in Nepal (MIN)',
-    description: 'Empowering students across Nepal to excel globally through innovative mathematics education.',
+    description: SITE_SHORT_DESCRIPTION,
     images: ['/images/og-default.png'],
   }
 }
@@ -105,20 +106,17 @@ const orgJsonLd = {
   alternateName: 'MIN',
   url: BASE_URL,
   logo: `${BASE_URL}/images/logo.png`,
-  description: 'A nonprofit making mathematics accessible, engaging, and inspiring for all students in Nepal.',
+  description: SITE_SUMMARY,
   foundingDate: '2020',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Kathmandu',
     addressCountry: 'NP',
   },
-  sameAs: [
-    'https://www.facebook.com/mathsinitiatives',
-    'https://www.instagram.com/minnepal',
-    'https://www.youtube.com/@mathsinitiatives',
-  ],
+  sameAs: SOCIAL_LINKS,
   award: 'HundrED Top 100 Global Education Innovations 2025',
-  email: 'website@mathsinitiatives.org.np',
+  email: 'contact@mathsinitiatives.org.np',
+  knowsAbout: ['Mathematics education', 'Mathematics accessibility', 'Math Olympiad training', 'Mathematics workshops', 'STEM education in Nepal'],
 }
 
 export default function RootLayout({ children }) {
@@ -131,6 +129,8 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
+        {/* Intro plays once per session and never on admin/login: hide it before first paint otherwise */}
+        <script dangerouslySetInnerHTML={{ __html: "try{var p=location.pathname;if(sessionStorage.getItem('min-preloaded')||/^\\/(admin|login)/.test(p))document.documentElement.classList.add('preloaded');else sessionStorage.setItem('min-preloaded','1')}catch(e){document.documentElement.classList.add('preloaded')}" }} />
         {/* Global Organization JSON-LD Schema */}
         <script
           type="application/ld+json"
@@ -141,7 +141,6 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
           <ClientProviders>
             <SitePreloader />
-            <GlobalGradients />
             {children}
             <Analytics />
             <SpeedInsights />

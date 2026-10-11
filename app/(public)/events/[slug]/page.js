@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import { Calendar, MapPin, ArrowRight, Video, PlayCircle } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -7,12 +7,14 @@ import ContentRenderer from '@/components/public/ContentRenderer'
 import AnalyticsTracker from '@/components/public/AnalyticsTracker'
 import EventActionLink from '@/components/public/EventActionLink'
 
-export const dynamic = 'force-dynamic'
+
+// Empty list = render each slug on first visit, then cache (ISR).
+export async function generateStaticParams() { return [] }
 
 export async function generateMetadata({ params }) {
   try {
     const { slug } = await params
-    const supabase = await createClient()
+    const supabase = createPublicClient()
     const { data: event, error } = await supabase
       .from('events')
       .select('title, description, cover_url')
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }) {
 
 export default async function EventDetailPage({ params }) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   // Verify fetch payload
   const { data: event, error } = await supabase
@@ -123,48 +125,46 @@ export default async function EventDetailPage({ params }) {
   }
 
   return (
-    <div className="pt-32 pb-24 space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="pb-24 space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <AnalyticsTracker 
         eventName="event_viewed" 
         properties={{ title: event.title, slug, event_type: event.event_type }} 
       />
       
       {/* Hero Section */}
-      <section className="container mx-auto px-6">
+      <section className="relative isolate pt-36 md:pt-40 overflow-hidden">
+        <div aria-hidden className="absolute inset-x-0 top-0 h-[36rem] -z-10 hero-glow pointer-events-none" />
+        <div aria-hidden className="absolute inset-x-0 top-0 h-[36rem] -z-10 bg-graph pointer-events-none [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+        <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto space-y-8">
-          <Link href="/events" className="inline-flex items-center gap-2 text-sm font-bold text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-colors">
+          <Link href="/events" className="inline-flex items-center gap-2 text-sm font-bold text-auto-tertiary hover:text-primary dark:hover:text-secondary transition-colors">
             ← Back to Events
           </Link>
           
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
-              <span className={`text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full border ${
-                event.event_type === 'RECURRING' ? 'bg-purple-500/10 text-purple-600 border-purple-500/20' :
-                event.event_type === 'EVERGOING' ? 'bg-cyan-500/10 text-cyan-600 border-cyan-500/20' :
-                event.event_type === 'SPECIAL' ? 'bg-orange-500/10 text-orange-600 border-orange-500/20' :
-                'bg-primary/10 text-primary border-primary/20'
-              }`}>
+              <span className="eyebrow">
                 {event.event_type}
               </span>
               {isPast && event.show_date !== false && (
-                <span className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-text-tertiary/10 text-auto-secondary border border-text-tertiary/20">
+                <span className="text-xs font-bold tracking-wide px-3 py-1.5 rounded-full bg-black/5 text-auto-secondary border border-black/10 dark:bg-white/10 dark:border-white/15">
                   Past Event
                 </span>
               )}
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight">{event.title}</h1>
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-[1.05] text-gradient-brand pb-1">{event.title}</h1>
             
             <div className="flex flex-wrap items-center gap-6 text-auto-secondary font-medium">
               {event.show_date !== false && formatDate(event.start_date) && (
                 <div className="flex items-center gap-2">
-                  <Calendar size={18} className="text-primary" />
+                  <Calendar size={18} className="text-primary dark:text-secondary shrink-0" />
                   <span>{formatDate(event.start_date)}</span>
                 </div>
               )}
               {event.location && (
                 <div className="flex items-center gap-2">
-                  <MapPin size={18} className="text-primary" />
+                  <MapPin size={18} className="text-primary dark:text-secondary shrink-0" />
                   <span>{event.location}</span>
                 </div>
               )}
@@ -173,10 +173,11 @@ export default async function EventDetailPage({ params }) {
           
           {/* Main Action Banner */}
           {event.action_link && event.show_action_link !== false && isActionActive && (
-            <div className="glass p-6 md:p-8 rounded-[2rem] border-2 border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-6 bg-gradient-to-r from-primary/5 to-transparent">
-              <div className="space-y-2 text-center sm:text-left">
+            <div className="card-brand relative overflow-hidden p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div aria-hidden className="absolute inset-0 -z-0 bg-gradient-to-r from-primary/[0.06] via-transparent to-secondary/20 dark:from-secondary/10 dark:to-transparent pointer-events-none" />
+              <div className="relative space-y-2 text-center sm:text-left">
                 <h3 className="text-xl font-bold">{event.action_title}</h3>
-                <p className="text-sm text-auto-tertiary">{event.action_description}</p>
+                <p className="text-sm text-auto-secondary">{event.action_description}</p>
               </div>
               <EventActionLink
                 href={event.action_link}
@@ -189,7 +190,7 @@ export default async function EventDetailPage({ params }) {
 
           {/* Cover Image */}
           {event.cover_url && (
-            <div className="aspect-[21/9] w-full rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-border dark:border-white/10 shadow-lg relative bg-bg-secondary dark:bg-white/5">
+            <div className="aspect-[16/9] md:aspect-[21/9] w-full rounded-[2rem] md:rounded-[2.5rem] overflow-hidden ring-brand-glow relative bg-primary-muted dark:bg-white/5">
               <Image 
                 src={event.cover_url} 
                 alt={event.title} 
@@ -201,6 +202,7 @@ export default async function EventDetailPage({ params }) {
             </div>
           )}
         </div>
+        </div>
       </section>
 
       {/* Content & Media Block */}
@@ -209,7 +211,7 @@ export default async function EventDetailPage({ params }) {
           
           {/* Description Content */}
           {event.description && (
-            <div className="glass rounded-[2.5rem] p-8 md:p-12 border border-border dark:border-white/10">
+            <div className="card-brand rounded-[2.5rem] p-6 sm:p-8 md:p-12">
               <ContentRenderer content={event.description} />
             </div>
           )}
@@ -218,8 +220,8 @@ export default async function EventDetailPage({ params }) {
           {allVideos.length > 0 && event.show_youtube_playlist !== false && (
             <div className="space-y-12">
               <div className="flex items-center gap-3 mb-8">
-                <PlayCircle size={32} className="text-coral flex-shrink-0" />
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight">
+                <PlayCircle size={32} weight="fill" className="text-coral flex-shrink-0" />
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
                   {event.youtube_title || 'Event Recordings'}
                 </h2>
               </div>
@@ -233,11 +235,11 @@ export default async function EventDetailPage({ params }) {
                     <div key={idx} className="space-y-4">
                       {vid.title && (
                         <h4 className="text-lg font-bold flex items-center gap-2">
-                          <Video size={18} className="text-auto-tertiary" />
+                          <Video size={18} className="text-primary dark:text-secondary shrink-0" />
                           {vid.title}
                         </h4>
                       )}
-                      <div className="aspect-video w-full rounded-[2.5rem] overflow-hidden border border-border dark:border-white/10 shadow-xl bg-black group transition-all hover:border-primary/30">
+                      <div className="aspect-video w-full rounded-[2rem] md:rounded-[2.5rem] overflow-hidden ring-brand-glow bg-black">
                         <iframe
                           width="100%"
                           height="100%"
@@ -259,12 +261,12 @@ export default async function EventDetailPage({ params }) {
           {Array.isArray(event.gallery_urls) && event.gallery_urls.length > 0 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <MapPin size={24} className="text-primary" />
-                <h2 className="text-2xl font-black tracking-tight">Event Gallery</h2>
+                <MapPin size={24} weight="fill" className="text-primary dark:text-secondary shrink-0" />
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Event Gallery</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {event.gallery_urls.map((url, i) => (
-                  <div key={i} className="aspect-square rounded-3xl overflow-hidden glass border border-border dark:border-white/10 hover:-translate-y-1 transition-transform cursor-pointer relative">
+                  <div key={i} className="card-brand card-brand-hover aspect-square rounded-[2rem] overflow-hidden cursor-pointer relative">
                     <Image 
                       src={url} 
                       alt={`Gallery ${i+1}`} 

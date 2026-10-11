@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Trophy as Award, ArrowRight } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -31,7 +31,7 @@ export default function Recognition({ settings: initialSettings = null }) {
 
   return (
     <section className="container mx-auto px-6 py-24 relative overflow-hidden">
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
@@ -41,6 +41,10 @@ export default function Recognition({ settings: initialSettings = null }) {
         {/* Decorative Circles */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full -ml-32 -mb-32 blur-3xl" />
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgb(255_255_255/0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255/0.06)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_80%_70%_at_70%_40%,#000_20%,transparent_100%)]"
+        />
 
         <div className="relative flex flex-col md:flex-row items-center gap-16 lg:gap-24">
           <div className="flex-1 space-y-8">
@@ -79,7 +83,7 @@ export default function Recognition({ settings: initialSettings = null }) {
                     href="https://hundred.org/en/innovations/mathematics-initiatives-in-nepal-min"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-auto bg-secondary hover:bg-secondary-dark text-[#16556D] px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-secondary/20 hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-1 active:scale-[0.98]"
+                    className="btn-shine w-full sm:w-auto bg-secondary hover:bg-secondary-dark text-[#16556D] px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-secondary/20 hover:shadow-2xl hover:shadow-secondary/30 hover:-translate-y-1 active:scale-[0.98]"
                     aria-label="View on HundrED"
                   >
                     View on HundrED
@@ -120,7 +124,7 @@ export default function Recognition({ settings: initialSettings = null }) {
             )}
           </div>
         </div>
-      </motion.div>
+      </m.div>
     </section>
   )
 }

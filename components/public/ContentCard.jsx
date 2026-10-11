@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { FileText, FileArrowDown as FileDown, ArrowRight, User, Tag, Video, List as LayoutList } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -18,7 +18,7 @@ export default function ContentCard({ item, index, fallbackImage }) {
   const icon = typeIcons[type] || <FileText className="text-primary" />
 
   return (
-    <motion.div
+    <m.div
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -27,12 +27,14 @@ export default function ContentCard({ item, index, fallbackImage }) {
       className="group h-full"
     >
       <Link href={`/content/${slug}`} className="block h-full">
-        <div className="relative glass rounded-[2.5rem] overflow-hidden flex flex-col h-full hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
+        <div className="relative card-brand card-brand-hover rounded-[2.5rem] overflow-hidden flex flex-col h-full group">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/10 dark:from-secondary/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
           <div className="relative z-10 flex flex-col h-full w-full">
             {/* Cover Image */}
             <div className="aspect-[16/10] relative overflow-hidden">
-              <Image 
+              <Image
+                loading={index < 4 ? 'eager' : 'lazy'}
+                fetchPriority={index < 4 ? 'high' : 'auto'}
                 src={
                   cover_url || 
                   (content_type === 'VIDEO' && video_metadata?.video_id ? `https://img.youtube.com/vi/${video_metadata.video_id}/hqdefault.jpg` : 
@@ -41,19 +43,19 @@ export default function ContentCard({ item, index, fallbackImage }) {
                 } 
                 alt={title}
                 fill
-                className={`object-cover transition-all duration-700 group-hover:scale-150 ${content_type === 'VIDEO' ? 'grayscale-0 scale-[1.35]' : 'grayscale-[20%] group-hover:grayscale-0 scale-100'}`}
+                className={`object-cover transition-all duration-700 ${content_type === 'VIDEO' ? 'grayscale-0 scale-[1.35] group-hover:scale-[1.45]' : 'grayscale-[20%] group-hover:grayscale-0 scale-100 group-hover:scale-110'}`}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 unoptimized={content_type === 'VIDEO'}
               />
               <div className="absolute top-4 left-4 z-20">
-                <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-white/90 dark:bg-black/80 text-primary border border-primary/10 backdrop-blur-md flex items-center gap-2">
+                <span className="text-[11px] font-bold tracking-wider px-3 py-1.5 rounded-full bg-white/90 dark:bg-primary-dark/85 text-primary dark:text-secondary border border-primary/10 dark:border-secondary/25 backdrop-blur-md flex items-center gap-2 shadow-sm">
                   {icon}
                   {type}
                 </span>
               </div>
               {content_type === 'PDF' && (
                 <div className="absolute bottom-4 right-4 z-20">
-                  <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-coral/90 text-white border border-coral/20 backdrop-blur-md flex items-center gap-2 shadow-lg">
+                  <span className="text-[11px] font-bold tracking-wider px-3 py-1.5 rounded-full bg-coral/90 text-white border border-coral/20 backdrop-blur-md flex items-center gap-2 shadow-lg">
                     <FileDown size={14} />
                     PDF
                   </span>
@@ -61,7 +63,7 @@ export default function ContentCard({ item, index, fallbackImage }) {
               )}
               {content_type === 'VIDEO' && video_metadata?.is_playlist && video_metadata?.video_count > 0 && (
                 <div className="absolute bottom-4 right-4 z-20">
-                  <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-coral text-white border border-white/10 backdrop-blur-md flex items-center gap-2 shadow-lg">
+                  <span className="text-[11px] font-bold tracking-wider px-3 py-1.5 rounded-full bg-coral text-white border border-white/10 backdrop-blur-md flex items-center gap-2 shadow-lg">
                     <LayoutList size={14} />
                     {video_metadata.video_count} VIDEOS
                   </span>
@@ -70,8 +72,8 @@ export default function ContentCard({ item, index, fallbackImage }) {
             </div>
 
             {/* Content */}
-            <div className="p-8 flex flex-col flex-grow space-y-4 bg-white/40 dark:bg-black/20">
-              <h3 className="text-xl font-bold tracking-tight line-clamp-2 text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors z-10">
+            <div className="p-8 flex flex-col flex-grow space-y-4">
+              <h3 className="text-xl font-bold tracking-tight line-clamp-2 text-text-primary dark:text-white group-hover:text-primary dark:group-hover:text-secondary transition-colors z-10">
                 {title}
               </h3>
 
@@ -81,30 +83,30 @@ export default function ContentCard({ item, index, fallbackImage }) {
 
               <div className="pt-4 flex flex-wrap gap-2 z-10">
                 {tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="text-[10px] font-bold px-2 py-1 rounded-lg bg-bg-secondary dark:bg-white/5 text-auto-tertiary border border-border dark:border-border-dark">
+                  <span key={tag} className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-primary/5 dark:bg-white/5 text-primary/80 dark:text-white/70 border border-primary/10 dark:border-white/10">
                     #{tag}
                   </span>
                 ))}
               </div>
 
-              <div className="pt-6 flex items-center justify-between mt-auto border-t border-border/50 dark:border-border-dark/50 z-10 bg-transparent">
+              <div className="pt-6 flex items-center justify-between mt-auto border-t border-primary/10 dark:border-white/10 z-10 bg-transparent">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mt-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-secondary/15 flex items-center justify-center text-primary dark:text-secondary mt-2">
                     <User size={14} />
                   </div>
                   <div className="flex flex-col mt-2">
-                    <span className="text-xs font-bold text-text dark:text-white truncate max-w-[100px]">{author_name}</span>
+                    <span className="text-xs font-bold text-text-primary dark:text-white truncate max-w-[100px]">{author_name}</span>
                     <span className="text-[10px] text-auto-tertiary">
                       {published_at && new Date(published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                     </span>
                   </div>
                 </div>
-                <ArrowRight size={18} className="text-auto-tertiary transition-transform mt-2 group-hover:translate-x-2 group-hover:text-primary-dark dark:duration-75" />
+                <ArrowRight size={18} className="text-auto-tertiary transition-transform mt-2 group-hover:translate-x-2 group-hover:text-primary dark:group-hover:text-secondary" />
               </div>
             </div>
           </div>
         </div>
       </Link>
-    </motion.div>
+    </m.div>
   )
 }

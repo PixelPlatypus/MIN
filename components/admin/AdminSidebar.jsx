@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { useSidebar } from './SidebarProvider'
 import { 
@@ -146,7 +146,7 @@ export default function AdminSidebar({ profile, isMaintenance }) {
       {/* Mobile Overlay */}
       <AnimatePresence>
         {isMobileOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -167,7 +167,7 @@ export default function AdminSidebar({ profile, isMaintenance }) {
               )}
             </div>
             {!isCollapsed && (
-              <motion.div 
+              <m.div 
                 initial={{ opacity: 0, x: -10 }} 
                 animate={{ opacity: 1, x: 0 }}
                 className="flex flex-col overflow-hidden"
@@ -179,7 +179,7 @@ export default function AdminSidebar({ profile, isMaintenance }) {
                    )}
                 </div>
                 <span className="text-[10px] text-primary font-semibold uppercase tracking-widest">{profile.role}</span>
-              </motion.div>
+              </m.div>
             )}
           </Link>
           
@@ -261,9 +261,9 @@ export default function AdminSidebar({ profile, isMaintenance }) {
                             </span>
                           )}
                           {isActive && (
-                            <motion.div layoutId="active-indicator">
+                            <m.div layoutId="active-indicator">
                               <CaretRight size={14} className="opacity-50" />
-                            </motion.div>
+                            </m.div>
                           )}
                         </div>
                       )}

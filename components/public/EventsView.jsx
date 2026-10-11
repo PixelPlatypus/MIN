@@ -70,22 +70,22 @@ export default function EventsView({ initialEvents, fallbackImage }) {
 
   return (
     <section className="container mx-auto px-6">
-      <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto mb-16">
-        <div className="flex-1 glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-primary/10 group-focus-within:border-primary transition-all shadow-sm">
-          <Search size={20} className="text-auto-tertiary" />
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 max-w-5xl mx-auto mb-16">
+        <div className="flex-1 card-brand rounded-2xl px-5 py-3.5 flex items-center gap-3 transition-colors focus-within:border-primary/40 dark:focus-within:border-secondary/50">
+          <Search size={20} className="text-primary dark:text-secondary shrink-0" />
           <input 
             type="text" 
             placeholder="Search events by title or location..." 
-            className="bg-transparent border-none text-base focus:outline-none w-full placeholder:text-auto-tertiary"
+            className="bg-transparent border-none text-base focus:outline-none w-full min-w-0 placeholder:text-auto-tertiary"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-3">
-          <Filter size={20} className="text-auto-tertiary" />
-          <div className="relative group">
+          <Filter size={20} className="text-primary dark:text-secondary shrink-0" />
+          <div className="relative group flex-1 md:flex-none">
             <select 
-              className="glass pl-6 pr-12 py-3 rounded-2xl text-base font-semibold border border-primary/10 focus:outline-none focus:border-primary transition-all bg-transparent cursor-pointer shadow-sm appearance-none min-w-[160px]"
+              className="card-brand rounded-2xl w-full pl-5 pr-12 py-3.5 text-base font-semibold focus:outline-none focus:border-primary/40 dark:focus:border-secondary/50 transition-colors cursor-pointer appearance-none min-w-[180px] dark:[&>option]:text-black"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             >
@@ -96,7 +96,7 @@ export default function EventsView({ initialEvents, fallbackImage }) {
               <option value="RECURRING">Recurring Events</option>
               <option value="EVERGOING">Evergoing Events</option>
             </select>
-            <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-auto-tertiary pointer-events-none group-focus-within:text-primary transition-colors" />
+            <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-auto-tertiary pointer-events-none group-focus-within:text-primary dark:group-focus-within:text-secondary transition-colors" />
           </div>
         </div>
       </div>
@@ -105,8 +105,8 @@ export default function EventsView({ initialEvents, fallbackImage }) {
         {sortedEvents.length > 0 ? (
           <div className="space-y-12">
             <div className="flex items-center gap-4">
-              <h2 className="text-3xl font-bold tracking-tight text-primary">Events</h2>
-              <div className="h-px flex-1 bg-primary/20" />
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Events</h2>
+              <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent dark:from-secondary/40" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {sortedEvents.map((event, i) => (
@@ -115,7 +115,7 @@ export default function EventsView({ initialEvents, fallbackImage }) {
             </div>
           </div>
         ) : (
-          <div className="text-center py-24 glass rounded-[3rem]">
+          <div className="text-center py-24 px-6 card-brand rounded-[2.5rem]">
             <p className="text-xl text-auto-tertiary">No events found matching your criteria.</p>
           </div>
         )}

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
+import LayoutMotion from '@/components/shared/LayoutMotion'
 import TeamCard from '@/components/public/TeamCard'
 import { Skeleton } from '@/components/ui/Skeleton'
 
@@ -53,7 +54,7 @@ export default function TeamView({ initialTenures, initialMembers, initialTenure
   return (
     <section className="container mx-auto px-6">
       {/* Tenure Selector */}
-      <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
         {tenures.length === 0 ? (
           [...Array(3)].map((_, i) => (
             <Skeleton key={i} className="w-32 h-12 rounded-2xl" />
@@ -63,10 +64,10 @@ export default function TeamView({ initialTenures, initialMembers, initialTenure
             <button
               key={tenure}
               onClick={() => setActiveTenure(tenure)}
-              className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
+              className={`px-6 md:px-7 py-3 rounded-full text-sm font-bold transition-all duration-300 border ${
                 activeTenure === tenure 
-                  ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                  : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary-dark dark:duration-75'
+                  ? 'pill-brand-active' 
+                  : 'pill-brand'
               }`}
             >
               {tenure === 'Alumni' || tenure === 'Advisors' ? tenure : `Tenure ${tenure}`}
@@ -79,31 +80,34 @@ export default function TeamView({ initialTenures, initialMembers, initialTenure
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="space-y-4">
-              <Skeleton className="aspect-[4/5] rounded-3xl" />
+              <Skeleton className="aspect-[4/5] rounded-[2rem]" />
               <Skeleton className="w-3/4 h-6" />
               <Skeleton className="w-1/2 h-4" />
             </div>
           ))}
         </div>
       ) : members.length > 0 ? (
-        <motion.div 
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-        >
-          <AnimatePresence mode="popLayout">
-            {members.map((member, i) => (
-              <TeamCard 
-                key={member.id} 
-                member={member} 
-                index={i}
-                fallbackImage={fallbackImage}
-                activeTab={activeTenure}
-              />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        <LayoutMotion>
+          <m.div 
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+          >
+            {/* initial={false}: first render paints from the server HTML; animations only on filter changes */}
+            <AnimatePresence mode="popLayout" initial={false}>
+              {members.map((member, i) => (
+                <TeamCard 
+                  key={member.id} 
+                  member={member} 
+                  index={i}
+                  fallbackImage={fallbackImage}
+                  activeTab={activeTenure}
+                />
+              ))}
+            </AnimatePresence>
+          </m.div>
+        </LayoutMotion>
       ) : (
-        <div className="text-center py-24 glass rounded-[3rem]">
+        <div className="text-center py-24 px-6 card-brand rounded-[2.5rem]">
           <p className="text-xl text-auto-tertiary">No team members found for this tenure.</p>
         </div>
       )}

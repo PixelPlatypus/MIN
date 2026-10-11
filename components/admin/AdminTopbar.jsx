@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { Bell, MagnifyingGlass, Gear, User, Clock, CaretRight, WarningCircle, List, SignOut, CircleNotch, Lock } from '@phosphor-icons/react'
 import Link from 'next/link'
 import ThemeToggle from '@/components/shared/ThemeToggle'
@@ -147,7 +147,7 @@ export default function AdminTopbar({ profile, isMaintenance }) {
 
           <AnimatePresence>
             {isOpen && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -211,7 +211,7 @@ export default function AdminTopbar({ profile, isMaintenance }) {
                 >
                   View All Activity
                 </Link>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>
@@ -234,7 +234,7 @@ export default function AdminTopbar({ profile, isMaintenance }) {
 
           <AnimatePresence>
             {isProfileOpen && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -288,7 +288,7 @@ export default function AdminTopbar({ profile, isMaintenance }) {
                     </div>
                   </button>
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>

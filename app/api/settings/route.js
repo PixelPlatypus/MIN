@@ -1,13 +1,15 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
 
-export async function GET() {
-  const supabase = await createClient()
-  const { data, error } = await supabase
+export async function GET(request) {
+  // Admin screens pass ?fresh to skip the CDN copy; public pages share a 60s edge cache.
+  const fresh = new URL(request.url).searchParams.has('fresh')
+  const { data, error } = await createPublicClient()
     .from('site_settings')
     .select('*')
+    .eq('id', 'main')
     .single()
 
   if (error && error.code !== 'PGRST116') { // PGRST116 is 'no rows'
@@ -16,8 +18,7 @@ export async function GET() {
 
   return Response.json(data || {}, {
     headers: {
-      // No CDN caching — settings must always be fresh after admin saves
-      'Cache-Control': 'no-store',
+      'Cache-Control': fresh ? 'no-store' : 'public, s-maxage=60, stale-while-revalidate=300',
       // Freshness signals for AI crawlers (Perplexity, GPTBot, etc.)
       'Last-Modified': new Date().toUTCString(),
       'X-Content-Date': new Date().toISOString(),
@@ -82,8 +83,7 @@ export async function PATCH(request) {
   }
 
   // Bust Next.js page cache so homepage/mission shows fresh image immediately
-  revalidatePath('/')
-  revalidatePath('/about')
+  revalidatePath('/', 'layout') // navbar/footer on every public page read settings
   revalidatePath('/admin/settings')
 
   return Response.json(data)

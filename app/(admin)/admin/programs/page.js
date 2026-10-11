@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence, Reorder } from 'framer-motion'
+import { m, AnimatePresence, Reorder } from 'framer-motion'
 import { 
   Plus, MagnifyingGlass as Search, PencilSimple as Edit2, Trash as Trash2, Funnel as Filter, Stack as Layers, 
   DotsSixVertical as GripVertical, CheckCircle as CheckCircle2, WarningCircle as AlertCircle, FloppyDisk as Save,
@@ -106,7 +106,7 @@ export default function AdminProgramsPage() {
         <div className="flex items-center gap-3">
           <AnimatePresence>
             {hasChanges && (
-              <motion.button 
+              <m.button 
                 initial={{ opacity: 0, scale: 0.9, x: 20 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.9, x: 20 }}
@@ -116,7 +116,7 @@ export default function AdminProgramsPage() {
               >
                 {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                 Save Changes
-              </motion.button>
+              </m.button>
             )}
           </AnimatePresence>
 

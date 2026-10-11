@@ -11,19 +11,18 @@
 
 # Local Environment Files (CRITICAL: Never commit these)
 .env
-.env*.local
-.env.local
-.env.test
-.env.production
-.env.development
-.env.private
-.env.keys
+.env.*
+!.env.example
 
 # Supabase (Local Development)
 supabase/.temp/
 supabase/.branches/
 supabase/migrations/
-supabase/config.toml # Uncomment to keep config untracked
+# supabase/config.toml   <- uncomment to keep config untracked (it is currently committed)
+
+# Database copy/rollback snapshots taken from the live project (contain real site data)
+supabase/copy_backups/
+*.dump
 
 # Logs
 npm-debug.log*
@@ -55,8 +54,17 @@ desktop.ini
 .gemini/
 .claude/
 .kiro/
+.windsurf/
+.continue/
 skills-lock.json
 antigravity/
+CLAUDE.local.md
+
+# MCP server configs (per-developer: project refs, auth, local tool paths)
+.mcp.json
+mcp.json
+.cursor/mcp.json
+.vscode/mcp.json
 
 # Certificates & Secrets
 *.pem
@@ -73,6 +81,11 @@ dump.rdb
 
 # Testing & Coverage
 /coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
+*.lighthouse.json
+lighthouse-report*
 
 # Vercel
 .vercel
@@ -86,10 +99,7 @@ plan.md
 pan.md
 scratch/
 /scripts/
-antigravity/
 .system_generated/
-*.tmp
-*.bak
 
 # Lock files (Project standard uses npm/package-lock.json)
 # yarn.lock

@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { House as Home, ArrowLeft, WarningCircle as AlertCircle } from '@phosphor-icons/react'
 
 import { useEffect } from 'react'
@@ -23,7 +23,7 @@ export default function NotFound() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[100px]" />
       </div>
 
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="max-w-xl w-full glass bg-bg-secondary-dynamic/40 border-border-dynamic backdrop-blur-3xl rounded-[3.5rem] p-10 md:p-16 text-center space-y-10 relative z-10 shadow-2xl"
@@ -79,7 +79,7 @@ export default function NotFound() {
              Redirecting to home shortly...
            </p>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   )
 }

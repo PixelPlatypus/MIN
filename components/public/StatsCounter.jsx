@@ -1,9 +1,10 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 // GSAP and ScrollTrigger are dynamically loaded inside useEffect
 import { Users, Trophy, BookOpen, Clock } from '@phosphor-icons/react'
 import { Skeleton } from '@/components/ui/Skeleton'
+import BrandSpotlightCard from '@/components/public/BrandSpotlightCard'
 
 export default function StatsCounter({ settings: initialSettings = null }) {
   const [settings, setSettings] = useState(initialSettings)
@@ -95,7 +96,7 @@ export default function StatsCounter({ settings: initialSettings = null }) {
   return (
     <section ref={containerRef} className="container mx-auto px-6 py-24 relative overflow-hidden">
       <div className="text-center mb-16 space-y-4">
-        <span className="text-primary font-bold uppercase tracking-widest text-sm">Key Metrics</span>
+        <span className="eyebrow">Key Metrics</span>
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
           {isLoading ? <Skeleton className="w-64 h-12 mx-auto" /> : settings?.stats_title}
         </h2>
@@ -126,21 +127,21 @@ export default function StatsCounter({ settings: initialSettings = null }) {
           ))
         ) : (
           dynamicStats.map((stat, i) => (
-            <motion.div
+            <m.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               viewport={{ once: true }}
-              className="relative glass rounded-[2.5rem] p-8 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 overflow-hidden will-change-transform"
+              className="group h-full"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br from-${stat.theme}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0`} />
+              <BrandSpotlightCard className="h-full">
               <div className="relative z-10 flex flex-col h-full w-full">
                 <div className={`w-16 h-16 bg-${stat.theme}/10 text-${stat.theme} rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm`}>
                   {stat.icon}
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-4xl font-bold tracking-tight text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors">
+                  <h3 className="text-5xl font-black tracking-tighter text-gradient-brand pb-1">
                     <span className="stat-value">0</span>{stat.suffix}
                   </h3>
                   <p className="text-sm font-semibold text-auto-tertiary uppercase tracking-widest group-hover:text-auto-secondary transition-colors">
@@ -148,7 +149,8 @@ export default function StatsCounter({ settings: initialSettings = null }) {
                   </p>
                 </div>
               </div>
-            </motion.div>
+              </BrandSpotlightCard>
+            </m.div>
           ))
         )}
       </div>

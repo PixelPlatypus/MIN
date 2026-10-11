@@ -1,7 +1,7 @@
 // app/(admin)/admin/certificates/page.js
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { Plus, MagnifyingGlass as Search, Trash as Trash2, PencilSimple as Edit2, Funnel as Filter, Trophy, UploadSimple, ShieldWarning, CheckCircle, Warning, X, ToggleLeft, ToggleRight, ArrowSquareOut } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'

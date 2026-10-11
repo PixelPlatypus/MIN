@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   Envelope as Mail, 
   MagnifyingGlass as Search, 
@@ -224,7 +224,7 @@ export default function AdminInquiriesPage() {
         {/* Inquiry Detail Inspector */}
         <AnimatePresence mode="wait">
           {selectedInquiry ? (
-            <motion.div 
+            <m.div 
               key={selectedInquiry.id}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -356,7 +356,7 @@ export default function AdminInquiriesPage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           ) : (
             <div className="hidden lg:flex w-[460px] shrink-0 h-full items-center justify-center glass rounded-[2.5rem] border border-dashed border-border dark:border-border-dark text-auto-tertiary italic text-sm">
               <div className="text-center space-y-4 opacity-30 py-32">

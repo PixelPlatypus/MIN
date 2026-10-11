@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { motion, AnimatePresence, Reorder } from 'framer-motion'
+import { m, AnimatePresence, Reorder } from 'framer-motion'
 import RTOEditor from '@/components/admin/RTOEditor'
 import ImageUploader from '@/components/admin/ImageUploader'
 import { FormSkeleton } from '@/components/shared/Skeletons'
@@ -193,7 +193,7 @@ export default function SiteEditor() {
   async function fetchInitialData() {
     try {
       const [settingsRes, timelineRes] = await Promise.all([
-        fetch('/api/settings'), fetch('/api/timeline')
+        fetch('/api/settings?fresh'), fetch('/api/timeline')
       ])
       const settingsData = await settingsRes.json()
       const timelineData = await timelineRes.json()
@@ -331,10 +331,10 @@ export default function SiteEditor() {
         <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
             <AnimatePresence>
               {message && (
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.1em] backdrop-blur-md shadow-lg ${message.type === 'success' ? 'bg-green/10 text-green border border-green/20' : 'bg-coral/10 text-coral border border-coral/20'}`}>
+                <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.1em] backdrop-blur-md shadow-lg ${message.type === 'success' ? 'bg-green/10 text-green border border-green/20' : 'bg-coral/10 text-coral border border-coral/20'}`}>
                   {message.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                   {message.text}
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
             <button
@@ -365,7 +365,7 @@ export default function SiteEditor() {
                           <span className={`${activeTab === tab.id ? 'text-white' : 'group-hover:text-primary-dark dark:duration-75 transition-colors'}`}>{tab.icon}</span>
                           <span className="tracking-tight uppercase">{tab.name}</span>
                        </div>
-                       {activeTab === tab.id && <motion.div layoutId="rail-arrow"><ArrowRight size={14} className="opacity-50" /></motion.div>}
+                       {activeTab === tab.id && <m.div layoutId="rail-arrow"><ArrowRight size={14} className="opacity-50" /></m.div>}
                      </button>
                    ))}
                 </div>
@@ -385,7 +385,7 @@ export default function SiteEditor() {
         {/* Content Canvas */}
         <main className="flex-1 min-w-0">
           <AnimatePresence mode="wait">
-             <motion.div key={activeTab} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="space-y-12">
+             <m.div key={activeTab} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="space-y-12">
                 
                 {activeTab === 'homepage' && (
                   <div className="space-y-16">
@@ -889,7 +889,7 @@ export default function SiteEditor() {
                         <div className="space-y-6">
                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                              {settings.team_identity_assets?.map((url, index) => (
-                               <motion.div 
+                               <m.div 
                                  key={index} 
                                  layout
                                  className="group relative aspect-square rounded-2xl overflow-hidden border border-border dark:border-white/10 hover:border-primary/50 transition-all shadow-sm"
@@ -905,7 +905,7 @@ export default function SiteEditor() {
                                  >
                                    <Trash2 size={24} />
                                  </button>
-                               </motion.div>
+                               </m.div>
                              ))}
                              <div className="aspect-square rounded-2xl border-2 border-dashed border-primary/20 hover:border-primary flex flex-col items-center justify-center gap-2 transition-all p-4 text-center group bg-primary/5">
                                 <ImageUploader 
@@ -998,7 +998,7 @@ export default function SiteEditor() {
                         <InputField label="Institutional Footer Narrative" value={settings.footer_description} onChange={e => setSettings(prev => ({...prev, footer_description: e.target.value}))} rows={5} description="Displayed at the base of every page interaction"/>
                      </div>
                   </SettingSection>
-             </motion.div>
+             </m.div>
           </AnimatePresence>
         </main>
       </div>
@@ -1007,14 +1007,14 @@ export default function SiteEditor() {
       <AnimatePresence>
         {showConfirm && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div 
+            <m.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
               onClick={() => setShowConfirm(false)}
               className="absolute inset-0 bg-black/60 backdrop-blur-md" 
             />
-            <motion.div 
+            <m.div 
               initial={{ opacity: 0, scale: 0.95, y: 20 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -1069,7 +1069,7 @@ export default function SiteEditor() {
                 </div>
                 <p className="text-[9px] text-center text-auto-tertiary font-medium">This action will be permanently recorded in the forensic audit log.</p>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

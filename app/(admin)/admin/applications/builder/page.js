@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence, Reorder } from 'framer-motion'
+import { m, AnimatePresence, Reorder } from 'framer-motion'
 import {
   FilePlus, Gear as Settings, CheckCircle as CheckCircle2, XCircle,
   CircleNotch as Loader2, Layout, Plus, FloppyDisk as Save, Pulse as Activity, Stack as Layers,
@@ -325,7 +325,7 @@ export default function FormBuilderPage() {
         <div className="lg:col-span-8">
           <AnimatePresence mode="wait">
             {editing ? (
-              <motion.div
+              <m.div
                 key="editor"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -654,9 +654,9 @@ export default function FormBuilderPage() {
                     {form.is_active ? 'Deactivate' : 'Activate'}
                   </button>
                 </div>
-              </motion.div>
+              </m.div>
             ) : (
-              <motion.div
+              <m.div
                 key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -671,7 +671,7 @@ export default function FormBuilderPage() {
                     Choose an existing form from the sidebar or create a new one to get started.
                   </p>
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>

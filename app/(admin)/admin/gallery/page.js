@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence, Reorder } from 'framer-motion'
+import { m, AnimatePresence, Reorder } from 'framer-motion'
 import Link from 'next/link'
 import { Plus, MagnifyingGlass as Search, Trash as Trash2, Funnel as Filter, Image as ImageIcon, UploadSimple as Upload, X, FloppyDisk as Save, PencilSimple as Pencil, DotsSixVertical as GripVertical, Check } from '@phosphor-icons/react'
 import { ContentGridSkeleton } from '@/components/shared/Skeletons'
@@ -168,7 +168,7 @@ export default function AdminGalleryPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             <AnimatePresence>
               {filteredImages.map((img) => (
-                <motion.div
+                <m.div
                   key={img.id}
                   layout
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -199,7 +199,7 @@ export default function AdminGalleryPage() {
                       </button>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </AnimatePresence>
           </div>

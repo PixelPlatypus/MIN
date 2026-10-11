@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { CheckCircle, Trophy, Target, Heart } from '@phosphor-icons/react'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -54,7 +54,7 @@ export default function Mission({ settings: initialSettings = null }) {
   return (
     <section className="container mx-auto px-6 py-24 relative overflow-hidden">
       <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
@@ -62,7 +62,7 @@ export default function Mission({ settings: initialSettings = null }) {
           className="lg:w-1/2 space-y-8"
         >
           <div className="space-y-4">
-            <span className="text-primary font-bold uppercase tracking-widest text-sm">
+            <span className="eyebrow">
               {isLoading ? <Skeleton className="w-24 h-4" /> : settings?.mission_badge}
             </span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
@@ -111,16 +111,16 @@ export default function Mission({ settings: initialSettings = null }) {
               ))
             )}
           </div>
-        </motion.div>
+        </m.div>
 
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
           className="lg:w-1/2 relative"
         >
-          <div className="aspect-square relative rounded-[3rem] overflow-hidden shadow-2xl min-h-[300px]">
+          <div className="aspect-square relative rounded-[3rem] overflow-hidden ring-brand-glow min-h-[300px]">
             {isLoading ? (
               <Skeleton className="w-full h-full" />
             ) : (
@@ -152,7 +152,7 @@ export default function Mission({ settings: initialSettings = null }) {
               </p>
             </div>
           )}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

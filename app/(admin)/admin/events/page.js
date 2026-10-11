@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { Plus, MagnifyingGlass as Search, DotsThreeVertical as MoreVertical, PencilSimple as Edit2, Trash as Trash2, Funnel as Filter, CalendarPlus } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'

@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { ArrowRight, HandHeart as Sparkles } from '@phosphor-icons/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -32,7 +32,7 @@ export default function JoinUsCTA({ settings: initialSettings = null }) {
   return (
     <section className="container mx-auto px-6 py-24 relative overflow-hidden">
       <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
@@ -40,7 +40,7 @@ export default function JoinUsCTA({ settings: initialSettings = null }) {
           className="lg:w-1/2 space-y-8"
         >
           <div className="space-y-4">
-            <span className="text-primary font-bold uppercase tracking-widest text-sm">Join the Community</span>
+            <span className="eyebrow">Join the Community</span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
               {isLoading ? (
                 <>
@@ -74,30 +74,30 @@ export default function JoinUsCTA({ settings: initialSettings = null }) {
               <>
                 <Link 
                   href="/join"
-                  className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-[0.98] group"
+                  className="btn-brand w-full sm:w-auto text-lg group"
                 >
                   {settings?.join_cta_btn_text}
                   <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link 
                   href="/join#contact"
-                  className="w-full sm:w-auto glass hover:bg-black/5 dark:hover:bg-white/5 px-8 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all border border-primary/20"
+                  className="btn-brand-outline w-full sm:w-auto text-lg"
                 >
                   Contact Us
                 </Link>
               </>
             )}
           </div>
-        </motion.div>
+        </m.div>
 
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
           className="lg:w-1/2 relative"
         >
-          <div className="aspect-video relative rounded-[3rem] overflow-hidden shadow-2xl group">
+          <div className="aspect-video relative rounded-[3rem] overflow-hidden ring-brand-glow group">
             {isLoading ? (
               <Skeleton className="w-full h-full" />
             ) : (
@@ -131,7 +131,7 @@ export default function JoinUsCTA({ settings: initialSettings = null }) {
           {/* Decorative Elements */}
           <div className="absolute -top-8 -right-8 w-48 h-48 bg-primary/20 rounded-full blur-3xl -z-10" />
           <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-secondary/30 rounded-full blur-3xl -z-10" />
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

@@ -1,11 +1,14 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import ContentDetailView from '@/components/public/ContentDetailView'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+// Empty list = render each slug on first visit, then cache (ISR).
+export async function generateStaticParams() { return [] }
+
 export default async function ContentDetailPage({ params }) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const { data: content, error } = await supabase
     .from('content')
@@ -17,10 +20,10 @@ export default async function ContentDetailPage({ params }) {
   if (error || !content) {
     if (error) console.error('ContentDetailPage Error:', error)
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center pt-32 space-y-8">
-        <h1 className="text-4xl font-bold text-gradient">Content Not Found</h1>
-        <p className="text-auto-tertiary">We couldn't find the resource you're looking for.</p>
-        <Link href="/content" className="bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:-translate-y-1 transition-all shadow-lg shadow-primary/20">
+      <div className="min-h-screen flex flex-col items-center justify-center pt-36 pb-24 px-6 text-center space-y-8">
+        <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-gradient-brand pb-1">Content Not Found</h1>
+        <p className="text-lg text-auto-secondary">We couldn't find the resource you're looking for.</p>
+        <Link href="/content" className="btn-brand">
           Back to Library
         </Link>
       </div>

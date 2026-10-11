@@ -4,6 +4,7 @@ import AdminLayoutClient from '@/components/admin/AdminLayoutClient'
 import OnboardingTour from '@/components/admin/OnboardingTour'
 import { SidebarProvider } from '@/components/admin/SidebarProvider'
 import NetworkResilience from '@/components/shared/NetworkResilience'
+import LayoutMotion from '@/components/shared/LayoutMotion'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -46,17 +47,20 @@ export default async function AdminLayout({ children }) {
     .single()
 
   return (
-    <SidebarProvider>
-      <NetworkResilience />
-      {!profile.has_completed_onboarding && (
-        <OnboardingTour role={profile.role} profileName={profile.name} />
-      )}
-      <AdminLayoutClient 
-        sidebar={<AdminSidebar profile={profile} isMaintenance={settings?.is_maintenance_mode} />}
-        topbar={<AdminTopbar profile={profile} isMaintenance={settings?.is_maintenance_mode} />}
-      >
-        {children}
-      </AdminLayoutClient>
-    </SidebarProvider>
+    // Admin uses layout / layoutId animations throughout, so it loads the full motion feature set
+    <LayoutMotion>
+      <SidebarProvider>
+        <NetworkResilience />
+        {!profile.has_completed_onboarding && (
+          <OnboardingTour role={profile.role} profileName={profile.name} />
+        )}
+        <AdminLayoutClient 
+          sidebar={<AdminSidebar profile={profile} isMaintenance={settings?.is_maintenance_mode} />}
+          topbar={<AdminTopbar profile={profile} isMaintenance={settings?.is_maintenance_mode} />}
+        >
+          {children}
+        </AdminLayoutClient>
+      </SidebarProvider>
+    </LayoutMotion>
   )
 }

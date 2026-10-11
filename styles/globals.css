@@ -111,6 +111,10 @@
     --color-bg-secondary-dynamic: var(--color-bg-secondary-dark);
     --color-border-dynamic: var(--color-border-dark);
     --color-preloader-accent: var(--color-secondary-light);
+
+    /* Accents lifted for contrast on the teal dark background (≥3:1 for icons) */
+    --color-purple: #D7A8F0;
+    --color-coral:  #FFB3A8;
   }
 
   body {
@@ -180,43 +184,222 @@
         radial-gradient(circle at 50% 50%, rgba(22, 85, 109, 0.05) 0%, transparent 60%);
     }
   }
-  .dark .text-primary {
+  /* Site-wide graph-paper grid: very faint, fades out toward the bottom of the viewport */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgb(22 85 109 / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(22 85 109 / 0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 85%);
+    pointer-events: none;
+    z-index: -10;
+  }
+  .dark body::after {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+  }
+
+  /* Legacy dark-mode remaps: skipped when the element sets its own dark: colour */
+  .dark .text-primary:not([class*="dark:text-"]) {
     color: var(--color-secondary) !important;
   }
   
-  .dark .bg-primary {
+  .dark .bg-primary:not([class*="dark:bg-"]) {
     background-color: var(--color-primary-medium) !important;
   }
   
-  .dark .border-primary {
+  .dark .border-primary:not([class*="dark:border-"]) {
     border-color: var(--color-secondary) !important;
   }
 }
 
+/* Brand primitives live in the components layer so utilities (px-6, rounded-xl…) can override them */
+@layer components {
+  /* Section eyebrow: small pill with a pulsing brand dot */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+    background: rgb(22 85 109 / 0.07);
+    border: 1px solid rgb(22 85 109 / 0.14);
+  }
+  .eyebrow::before {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 9999px;
+    background: var(--color-secondary-dark);
+    box-shadow: 0 0 0 3px rgb(232 224 80 / 0.25);
+  }
+  /* An icon already marks the pill; drop the dot */
+  .eyebrow:has(svg)::before { display: none; }
+  .dark .eyebrow {
+    color: var(--color-secondary);
+    background: rgb(255 255 255 / 0.06);
+    border-color: rgb(246 240 148 / 0.25);
+  }
+
+  /* ── Shared brand primitives (use these instead of one-off class soups) ── */
+
+  /* Primary CTA: solid teal, lift + shine on hover */
+  .btn-brand {
+    @apply relative isolate overflow-hidden inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 font-bold text-white
+      shadow-xl shadow-primary/25 transition-all duration-300 hover:-translate-y-1 hover:bg-primary-dark hover:shadow-2xl hover:shadow-primary/35
+      active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .dark .btn-brand {
+    @apply bg-secondary text-primary-dark shadow-black/20 hover:bg-secondary-light;
+  }
+
+  /* Secondary CTA: glass outline */
+  .btn-brand-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-primary/20 bg-white/70 px-8 py-4 font-bold text-primary
+      backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/45 hover:bg-white
+      active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .dark .btn-brand-outline {
+    @apply border-white/20 bg-white/5 text-white hover:border-secondary/60 hover:bg-white/10;
+  }
+
+  /* Static surface card (lists, forms, panels) — same skin as BrandSpotlightCard */
+  .card-brand {
+    @apply rounded-[2rem] border border-primary/10 bg-white/85 shadow-[0_1px_2px_rgba(22,85,109,0.05),0_24px_48px_-24px_rgba(22,85,109,0.22)];
+  }
+  .dark .card-brand {
+    @apply border-white/15 bg-white/[0.06] shadow-[0_24px_48px_-24px_rgba(0,0,0,0.45)];
+  }
+  .card-brand-hover {
+    @apply transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/25;
+  }
+  .dark .card-brand-hover:hover { border-color: rgb(246 240 148 / 0.35); }
+
+  /* Page-level hero glow (CSS only; the WebGL aurora is reserved for the home hero) */
+  .hero-glow {
+    background:
+      radial-gradient(ellipse 55% 45% at 50% 0%, rgb(74 144 164 / 0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 30% at 78% 18%, rgb(246 240 148 / 0.28) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 30% at 18% 25%, rgb(0 207 232 / 0.10) 0%, transparent 70%);
+  }
+  .dark .hero-glow {
+    background:
+      radial-gradient(ellipse 55% 45% at 50% 0%, rgb(74 144 164 / 0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 30% at 78% 18%, rgb(246 240 148 / 0.14) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 30% at 18% 25%, rgb(0 207 232 / 0.12) 0%, transparent 70%);
+  }
+
+  /* Small tinted inner panel (rows inside a card-brand) */
+  .panel-brand-tint {
+    @apply rounded-[1.5rem] border border-primary/10 bg-primary/[0.04];
+  }
+  .dark .panel-brand-tint {
+    @apply border-white/10 bg-white/5;
+  }
+
+  /* Form controls */
+  .input-brand {
+    @apply w-full rounded-2xl border border-primary/15 bg-white/60 px-5 py-4 font-medium outline-none transition-all
+      placeholder:opacity-50 hover:border-primary/30 focus:border-primary focus:ring-4 focus:ring-primary/10;
+  }
+  .dark .input-brand {
+    @apply border-white/15 bg-white/5 hover:border-white/25 focus:border-secondary focus:ring-secondary/10;
+  }
+  .label-brand {
+    @apply ml-1 text-xs font-bold tracking-wide;
+    color: var(--color-text-secondary-dynamic);
+  }
+
+  /* Filter / tab pills */
+  .pill-brand {
+    @apply rounded-full border border-primary/10 bg-white/85 transition-all hover:border-primary/30 hover:text-primary;
+    color: var(--color-text-secondary-dynamic);
+  }
+  .dark .pill-brand {
+    @apply border-white/15 bg-white/[0.06] hover:border-secondary/40 hover:text-secondary;
+  }
+  .pill-brand-active {
+    @apply rounded-full border border-primary bg-primary text-white shadow-lg shadow-primary/25;
+  }
+  .dark .pill-brand-active {
+    @apply border-secondary bg-secondary text-primary-dark shadow-black/20;
+  }
+
+  /* Compact button size */
+  .btn-brand-sm {
+    @apply rounded-xl px-5 py-2.5 text-sm;
+  }
+}
+
 @layer utilities {
-  /* Override hover colors in dark mode for text, cards, and links using attribute selectors for maximum robustness */
-  .dark [class*="hover:text-primary"]:hover,
-  .dark .group:hover [class*="group-hover:text-primary"] {
+
+  @keyframes page-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-page-in { animation: page-in 0.3s var(--ease-out) both; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-page-in { animation: none; }
+  }
+
+  /* Dark-mode hover colours. Exact class selectors (generated from the classes in use) instead of
+     [class*="..."]: substring selectors can't be indexed, so the browser tested them on every element
+     during every hover-driven style recalc. Add new hover:*-primary classes here if you introduce them.
+     Elements that also carry an explicit dark:hover / dark:group-hover class are excluded with :not():
+     they already pick their dark-mode hover colour, and overriding them made icons vanish (yellow on
+     yellow). Add new dark: hover classes to the :not() lists if you introduce them. */
+  .dark .group-hover\:text-primary:not(.dark\:group-hover\:text-primary-dark, .dark\:group-hover\:text-secondary, .dark\:hover\:text-primary-dark, .dark\:hover\:text-secondary, .dark\:hover\:text-white\/60):hover,
+  .dark .group:hover .group-hover\:text-primary:not(.dark\:group-hover\:text-primary-dark, .dark\:group-hover\:text-secondary, .dark\:hover\:text-primary-dark, .dark\:hover\:text-secondary, .dark\:hover\:text-white\/60),
+  .dark .group-hover\:text-primary-dark:not(.dark\:group-hover\:text-primary-dark, .dark\:group-hover\:text-secondary, .dark\:hover\:text-primary-dark, .dark\:hover\:text-secondary, .dark\:hover\:text-white\/60):hover,
+  .dark .group:hover .group-hover\:text-primary-dark:not(.dark\:group-hover\:text-primary-dark, .dark\:group-hover\:text-secondary, .dark\:hover\:text-primary-dark, .dark\:hover\:text-secondary, .dark\:hover\:text-white\/60),
+  .dark .hover\:text-primary:not(.dark\:group-hover\:text-primary-dark, .dark\:group-hover\:text-secondary, .dark\:hover\:text-primary-dark, .dark\:hover\:text-secondary, .dark\:hover\:text-white\/60):hover,
+  .dark .hover\:text-primary-dark:not(.dark\:group-hover\:text-primary-dark, .dark\:group-hover\:text-secondary, .dark\:hover\:text-primary-dark, .dark\:hover\:text-secondary, .dark\:hover\:text-white\/60):hover {
     color: var(--color-secondary-light) !important;
   }
 
-  .dark [class*="hover:border-primary"]:hover {
+  .dark .group-hover\:border-primary:not(.dark\:group-hover\:border-secondary\/50, .dark\:hover\:border-secondary, .dark\:hover\:border-secondary\/50):hover,
+  .dark .group-hover\:border-primary\/20:not(.dark\:group-hover\:border-secondary\/50, .dark\:hover\:border-secondary, .dark\:hover\:border-secondary\/50):hover,
+  .dark .group-hover\:border-primary\/30:not(.dark\:group-hover\:border-secondary\/50, .dark\:hover\:border-secondary, .dark\:hover\:border-secondary\/50):hover,
+  .dark .hover\:border-primary:not(.dark\:group-hover\:border-secondary\/50, .dark\:hover\:border-secondary, .dark\:hover\:border-secondary\/50):hover,
+  .dark .hover\:border-primary\/20:not(.dark\:group-hover\:border-secondary\/50, .dark\:hover\:border-secondary, .dark\:hover\:border-secondary\/50):hover,
+  .dark .hover\:border-primary\/30:not(.dark\:group-hover\:border-secondary\/50, .dark\:hover\:border-secondary, .dark\:hover\:border-secondary\/50):hover,
+  .dark .hover\:border-primary\/40:not(.dark\:group-hover\:border-secondary\/50, .dark\:hover\:border-secondary, .dark\:hover\:border-secondary\/50):hover,
+  .dark .hover\:border-primary\/50:not(.dark\:group-hover\:border-secondary\/50, .dark\:hover\:border-secondary, .dark\:hover\:border-secondary\/50):hover {
     border-color: var(--color-secondary-light) !important;
   }
 
   /* Fix primary buttons/links merging with the background in dark mode.
      Scoped to interactive elements only — does NOT affect decorative uses
      of bg-primary (e.g. timeline dots, progress bars, badges) */
-  .dark a.bg-primary,
-  .dark button.bg-primary,
-  .dark [role="button"].bg-primary {
+  .dark a.bg-primary:not([class*="dark:bg-"]),
+  .dark button.bg-primary:not([class*="dark:bg-"]),
+  .dark [role="button"].bg-primary:not([class*="dark:bg-"]) {
     background-color: rgba(255, 255, 255, 0.1) !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
     color: #FFFFFF !important;
     backdrop-filter: blur(8px);
   }
   
-  .dark [class*="hover:bg-primary"]:hover {
+  .dark .group-hover\:bg-primary:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .group-hover\:bg-primary\/10:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .group-hover\:bg-primary\/12:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .group-hover\:bg-primary\/20:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .hover\:bg-primary:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .hover\:bg-primary-dark:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .hover\:bg-primary\/10:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .hover\:bg-primary\/20:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .hover\:bg-primary\/30:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .hover\:bg-primary\/5:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .hover\:bg-primary\/\[0\.02\]:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover,
+  .dark .hover\:bg-primary\/\[0\.05\]:not(.dark\:group-hover\:bg-secondary, .dark\:group-hover\:bg-secondary\/10, .dark\:hover\:bg-black\/50, .dark\:hover\:bg-primary\/\[0\.05\], .dark\:hover\:bg-secondary, .dark\:hover\:bg-secondary\/40, .dark\:hover\:bg-white\/5, .dark\:hover\:bg-white\/10, .dark\:hover\:bg-white\/20, .dark\:hover\:bg-white\/30):hover {
     background-color: rgba(250, 250, 192, 0.1) !important; /* Faint secondary-light tint */
     color: var(--color-secondary-light) !important;
     border-color: var(--color-secondary-light) !important;
@@ -235,14 +418,6 @@
   }
   .dark .scroll-dot-border {
     border-color: rgba(250, 250, 192, 0.5);
-  }
-
-  /* Preloader clock hand and dot — forced secondary-light in dark mode */
-  .preloader-accent {
-    background-color: var(--color-primary);
-  }
-  .dark .preloader-accent {
-    background-color: var(--color-secondary-light);
   }
 
   .text-dynamic {
@@ -301,19 +476,6 @@
   .glass-brand::before {
     content: '';
     @apply absolute inset-0 bg-primary/5 dark:bg-primary/10 pointer-events-none;
-  }
-
-  /* Gradient text for hero headlines */
-  .text-gradient {
-    background-image: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-  }
-
-  .dark .text-gradient {
-    background-image: linear-gradient(to right, var(--color-primary-light), var(--color-secondary));
   }
 
   /* ── react-phone-number-input overrides ── */
@@ -425,6 +587,58 @@
     cursor: pointer;
   }
 
+  /* Hero: graph-paper backdrop that fades out toward the edges */
+  .bg-graph {
+    background-image:
+      linear-gradient(to right, rgb(22 85 109 / 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(22 85 109 / 0.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-attachment: fixed; /* lines up with the site-wide grid */
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 35%, transparent 100%);
+  }
+  .dark .bg-graph {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+  }
+
+  /* Infinite hero loops as CSS (compositor thread) instead of per-frame JS */
+  /* Entrance for above-the-fold hero content. CSS (not framer `initial`) so the text is in the
+     server HTML and paints before hydration; starts at 0.01 so it counts for LCP on first paint. */
+  @keyframes rise {
+    from { opacity: 0.01; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  .animate-rise, [data-rise] { animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-rise, [data-rise] { animation: none; }
+  }
+
+  @keyframes soft-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  .animate-soft-pulse { animation: soft-pulse 2.5s ease-in-out infinite; }
+  @keyframes scroll-dot {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(12px); }
+  }
+  .animate-scroll-dot { animation: scroll-dot 1.5s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-soft-pulse, .animate-scroll-dot { animation: none; }
+  }
+
+  @keyframes float-glyph {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-14px) rotate(6deg); }
+  }
+  .animate-float-glyph {
+    animation: float-glyph 7s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float-glyph { animation: none; }
+  }
+
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
@@ -434,6 +648,52 @@
   }
   .animate-marquee:hover {
     animation-play-state: paused;
+  }
+
+  /* ── Brand "pop" layer ── */
+
+  /* Brand headline colour. Kept as a class name for existing usages, but solid on purpose:
+     the site avoids gradient text. Teal in light mode, brand yellow in dark mode. */
+  .text-gradient-brand {
+    color: var(--color-primary);
+  }
+  .dark .text-gradient-brand {
+    color: var(--color-secondary);
+  }
+
+  /* Light sweep across a CTA on hover */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shine::after, .btn-brand::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.8s var(--ease-out);
+    pointer-events: none;
+  }
+  .btn-shine:hover::after, .btn-brand:hover::after { transform: translateX(120%); }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-shine::after, .btn-brand::after { display: none; }
+  }
+
+  /* Soft brand glow ring for featured images */
+  .ring-brand-glow {
+    box-shadow:
+      0 0 0 1px rgb(22 85 109 / 0.08),
+      0 30px 60px -20px rgb(22 85 109 / 0.35),
+      0 0 80px -20px rgb(246 240 148 / 0.35);
+  }
+  .dark .ring-brand-glow {
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.12),
+      0 30px 60px -20px rgb(0 0 0 / 0.45),
+      0 0 80px -20px rgb(246 240 148 / 0.25);
   }
 
   /* ── Skeleton / Premium Fluid Shimmer ── */
@@ -477,3 +737,110 @@
     );
   }
 }
+
+/* ── First-visit intro (components/shared/SitePreloader.jsx) ──
+   ~0.9s total: dial sweeps and counts to 100 (0–0.5s), wordmark appears, overlay fades (0.65–0.9s).
+   Pure CSS so it runs before hydration; `visibility: hidden` at the end lets clicks through. */
+@property --preload-n {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+.site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--color-bg-dynamic);
+  color: var(--color-text-primary-dynamic);
+  animation: preload-out 0.25s ease-out 0.65s forwards;
+}
+.preloaded .site-preloader { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .site-preloader { display: none; }
+}
+.site-preloader-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image:
+    linear-gradient(to right, currentColor 1px, transparent 1px),
+    linear-gradient(to bottom, currentColor 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.site-preloader-dial {
+  position: relative;
+  width: min(20rem, 70vw);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.site-preloader-ring {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.site-preloader-ring circle {
+  fill: none;
+  stroke: var(--color-preloader-accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  opacity: 0.5;
+  animation: preload-ring 0.5s linear forwards;
+}
+.site-preloader-hand {
+  position: absolute;
+  inset: 0;
+  animation: preload-hand 0.5s linear forwards;
+}
+.site-preloader-hand span {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 2px;
+  height: 40%;
+  transform: translateX(-50%);
+  background: var(--color-preloader-accent);
+}
+.site-preloader-count {
+  position: absolute;
+  font-size: 3.75rem;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  opacity: 0.2;
+  counter-reset: preload var(--preload-n);
+  animation: preload-count 0.5s linear forwards, preload-hide 0.1s linear 0.5s forwards;
+}
+.site-preloader-count::after { content: counter(preload); }
+.site-preloader-logo {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  animation: preload-logo 0.3s ease-out 0.45s forwards;
+}
+.site-preloader-wordmark {
+  font-size: clamp(5rem, 22vw, 8rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.site-preloader-logo p {
+  margin: 1.5rem 0 0 1em;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1em;
+  opacity: 0.5;
+}
+@keyframes preload-ring { to { stroke-dashoffset: 0; } }
+@keyframes preload-hand { to { transform: rotate(360deg); opacity: 0; } }
+@keyframes preload-count { to { --preload-n: 100; } }
+@keyframes preload-hide { to { opacity: 0; } }
+@keyframes preload-logo { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes preload-out { to { opacity: 0; visibility: hidden; } }

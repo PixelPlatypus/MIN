@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 // GSAP and ScrollTrigger are dynamically loaded inside useEffect to reduce main-thread work
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 
 export default function Timeline({ initialEvents = [] }) {
   const [events, setEvents] = useState(initialEvents || [])
@@ -54,9 +54,8 @@ export default function Timeline({ initialEvents = [] }) {
                 ease: 'power3.out',
                 scrollTrigger: {
                   trigger: item,
-                  start: 'top 80%',
-                  end: 'bottom 20%',
-                  toggleActions: 'play none none reverse'
+                  start: 'top 85%',
+                  once: true // stay visible after the first reveal; reversing left a blank section on scroll-up
                 }
               }
             )
@@ -89,7 +88,7 @@ export default function Timeline({ initialEvents = [] }) {
   return (
     <section ref={containerRef} className="container mx-auto px-6 pt-12 pb-16 relative">
       <div className="text-center mb-12 space-y-4">
-        <span className="block text-primary font-bold uppercase tracking-widest text-sm">Our Journey</span>
+        <span className="eyebrow">Our History</span>
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Timeline of Impact</h2>
         <p className="text-lg text-auto-secondary max-w-2xl mx-auto">
           From humble beginnings to global recognition, here's how we've grown.
@@ -104,7 +103,7 @@ export default function Timeline({ initialEvents = [] }) {
         <div className="space-y-12 md:space-y-24 relative">
           {events.map((event, i) => (
             <div
-              key={event.year}
+              key={event.id ?? event.year}
               className={`timeline-item flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 ${
                 i % 2 !== 0 ? 'md:flex-row-reverse' : ''
               }`}

@@ -1,10 +1,10 @@
 export const metadata = {
   title: 'Join MIN',
-  description: 'Apply to become a volunteer, ambassador, or school representative at Mathematics Initiatives in Nepal. Make a meaningful impact on math education across Nepal.',
+  description: 'Apply to volunteer with Mathematics Initiatives in Nepal as an ambassador or school representative, and help make mathematics accessible to every student in Nepal.',
   keywords: ['Join MIN Nepal', 'Math Volunteer Nepal', 'Mathematics Initiatives Nepal Apply', 'Math Club Nepal Join', 'STEM Volunteer Nepal'],
   openGraph: {
     title: 'Join MIN | Mathematics Initiatives in Nepal',
-    description: 'Apply to become a volunteer, ambassador, or school representative. Make a difference in the landscape of mathematics in Nepal.',
+    description: 'Apply to volunteer with MIN as an ambassador or school representative, and help make mathematics accessible to every student in Nepal.',
     images: [{ url: '/images/og-default.png', width: 1200, height: 630, alt: 'Join MIN — Mathematics Initiatives in Nepal' }],
   },
   alternates: { canonical: '/join' },
@@ -52,7 +52,7 @@ const faqJsonLd = {
       name: 'When does MIN open applications?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'MIN reviews applications on a rolling basis throughout the year. Some specific programs like the Research Training Olympiad (RTO) have dedicated application windows announced on the website.',
+        text: 'MIN reviews applications on a rolling basis throughout the year. Some programs have their own application windows, which are announced on the website.',
       },
     },
   ],

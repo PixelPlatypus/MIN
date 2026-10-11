@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { CircleNotch as Loader2, ArrowLeft, Envelope as Mail, Calendar, ChatTeardropText as MessageSquare, CheckCircle as CheckCircle2 } from '@phosphor-icons/react'
 
 export default function InquiryDetailPage() {

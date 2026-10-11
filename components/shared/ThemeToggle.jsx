@@ -1,7 +1,7 @@
 'use client'
 import { Sun, Moon } from '@phosphor-icons/react'
 import { useTheme } from 'next-themes'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 export default function ThemeToggle() {
@@ -25,7 +25,7 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
     >
       <AnimatePresence mode="wait">
-        <motion.div
+        <m.div
           key={theme}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -37,7 +37,7 @@ export default function ThemeToggle() {
           ) : (
             <Moon size={20} className="text-auto-secondary-dark group-hover:text-secondary transition-colors" />
           )}
-        </motion.div>
+        </m.div>
       </AnimatePresence>
     </button>
   )

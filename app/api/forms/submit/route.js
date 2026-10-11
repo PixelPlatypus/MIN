@@ -59,7 +59,7 @@ export async function POST(request) {
         if (email) {
           await sendTemplatedEmail(eventKey, email, {
             applicant_name: name,
-            site_url: process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np',
+            site_url: process.env.NEXT_PUBLIC_APP_URL || 'https://www.mathsinitiatives.org.np',
             contact_message: data.Message || data.message || ''
           })
         }

@@ -1,12 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient, getSiteSettings } from '@/lib/supabase/server'
+import { SITE_URL } from '@/lib/site'
 import EventsView from '@/components/public/EventsView'
 import EventsHero from '@/components/public/EventsHero'
 
 export default async function EventsPage() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const [settingsResult, eventsResult] = await Promise.all([
-    supabase.from('site_settings').select('*').eq('id', 'main').single(),
+    getSiteSettings().then(data => ({ data })),
     supabase.from('events')
       .select('*')
       .eq('status', 'PUBLISHED')
@@ -18,7 +19,7 @@ export default async function EventsPage() {
 
   const settings = settingsResult.data
   const initialEvents = eventsResult.data || []
-  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np'
+  const BASE_URL = SITE_URL
 
   // Build EventList JSON-LD for AI + Google rich results
   const eventsJsonLd = {
@@ -60,7 +61,7 @@ export default async function EventsPage() {
   }
 
   return (
-    <div className="pt-32 pb-24 space-y-24">
+    <div className="pb-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventsJsonLd) }}

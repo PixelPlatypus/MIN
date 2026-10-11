@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   CaretRight as ChevronRight, CaretLeft as ChevronLeft, X, RocketLaunch as Sparkles, 
   SquaresFour as LayoutDashboard, Users, Books as Library, Globe, 
@@ -149,14 +149,14 @@ export default function OnboardingTour({ role, profileName }) {
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           exit={{ opacity: 0 }} 
           className="absolute inset-0 bg-black/60 backdrop-blur-md" 
         />
         
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, scale: 0.9, y: 20 }} 
           animate={{ opacity: 1, scale: 1, y: 0 }} 
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -242,7 +242,7 @@ export default function OnboardingTour({ role, profileName }) {
               </div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </AnimatePresence>
   )

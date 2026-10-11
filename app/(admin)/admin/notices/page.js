@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { 
   Bell, 
@@ -125,7 +125,7 @@ export default function AdminNoticesPage() {
       ) : filteredNotices.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNotices.map((notice) => (
-            <motion.div 
+            <m.div 
               layout
               key={notice.id}
               className="glass rounded-[2rem] p-6 border border-border dark:border-border-dark flex flex-col justify-between hover:shadow-xl hover:shadow-primary/5 transition-all group"
@@ -197,7 +197,7 @@ export default function AdminNoticesPage() {
                   <div className="w-11 h-6 bg-text-tertiary/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </label>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       ) : (

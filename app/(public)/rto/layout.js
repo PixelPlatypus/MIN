@@ -1,40 +1,31 @@
 export const metadata = {
-  title: 'Research Training Olympiad (RTO)',
-  description: 'Apply to the Research Training Olympiad — MIN\'s flagship program transforming high-school students into researchers through rigorous mathematical thinking and academic mentorship.',
-  keywords: ['Research Training Olympiad', 'RTO', 'Nepal Math Olympiad', 'High School Research', 'Mathematics Research Nepal', 'MIN RTO', 'Math Mentorship Nepal'],
+  title: 'Road to Olympiad (RTO)',
+  description: 'How the mathematics olympiad pathway works in Nepal, from the District Mathematics Olympiad to the IMO, with a study roadmap for each stage and links to practice material.',
+  keywords: ['Road to Olympiad', 'RTO', 'Nepal Math Olympiad', 'DMO Nepal', 'PMO Nepal', 'NMO Nepal', 'IMO Nepal', 'Olympiad preparation Nepal', 'MIN RTO'],
   openGraph: {
-    title: 'Research Training Olympiad (RTO) | MIN',
-    description: 'MIN\'s flagship program transforming high-school students into researchers through rigorous mathematical thinking and academic mentorship.',
-    images: [{ url: '/images/og-default.png', width: 1200, height: 630, alt: 'Research Training Olympiad — MIN' }],
+    title: 'Road to Olympiad (RTO) | MIN',
+    description: 'The olympiad pathway in Nepal, from DMO to IMO, with a study roadmap for each stage.',
+    images: [{ url: '/images/og-default.png', width: 1200, height: 630, alt: 'Road to Olympiad — MIN' }],
   },
   alternates: { canonical: '/rto' },
 }
 
-// Course + FAQ JSON-LD for AI answer engines
+// LearningResource + FAQ JSON-LD for AI answer engines
 const jsonLd = [
   {
     '@context': 'https://schema.org',
-    '@type': 'Course',
-    name: 'Research Training Olympiad (RTO)',
-    description: 'MIN\'s flagship program that selects talented high-school students and pairs them with university mentors for structured research training in advanced mathematics.',
+    '@type': 'LearningResource',
+    name: 'Road to Olympiad (RTO)',
+    description: 'A guide from Mathematics Initiatives in Nepal to the mathematics olympiad pathway in Nepal: the selection stages from the District Mathematics Olympiad to the International Mathematical Olympiad, a four-phase study roadmap, and recommended books, platforms and past papers.',
     provider: {
       '@type': 'NGO',
       name: 'Mathematics Initiatives in Nepal',
-      sameAs: 'https://mathsinitiatives.org.np',
+      sameAs: 'https://www.mathsinitiatives.org.np',
     },
     educationalLevel: 'High School',
-    inLanguage: ['en', 'ne'],
+    learningResourceType: 'Study guide',
     isAccessibleForFree: true,
-    courseMode: 'blended',
-    teaches: 'Advanced mathematics, research methodology, academic writing, mathematical problem-solving',
-    hasCourseInstance: {
-      '@type': 'CourseInstance',
-      courseMode: 'blended',
-      location: {
-        '@type': 'Place',
-        name: 'Nepal',
-      },
-    },
+    teaches: 'Olympiad algebra, number theory, geometry, combinatorics and proof writing',
   },
   {
     '@context': 'https://schema.org',
@@ -42,34 +33,26 @@ const jsonLd = [
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'What is the Research Training Olympiad (RTO) by MIN?',
+        name: 'What is Road to Olympiad (RTO) by MIN?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The Research Training Olympiad (RTO) is Mathematics Initiatives in Nepal\'s flagship program that selects talented high-school students and pairs them with university mentors for a structured research training experience focused on advanced mathematics. Students work on original research problems and develop academic skills.',
+          text: 'Road to Olympiad (RTO) is a guide from Mathematics Initiatives in Nepal for students preparing for mathematics olympiads. It explains how students in Nepal are selected for the International Mathematical Olympiad, what to study at each stage, and where to find books, online platforms and past papers.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Who is eligible for the MIN Research Training Olympiad?',
+        name: 'What are the stages of the mathematics olympiad in Nepal?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The RTO is open to high-school students across Nepal who demonstrate strong interest and aptitude in mathematics. Students must apply during the application window and go through a selection process.',
+          text: 'Students start at the District Math Olympiad (DMO). Top performers move on to the Provincial Math Olympiad (PMO) and then the National Math Olympiad (NMO). The strongest students attend the Olympiad Training Camp, and the national team represents Nepal at the International Mathematical Olympiad (IMO).',
         },
       },
       {
         '@type': 'Question',
-        name: 'Is the Research Training Olympiad free?',
+        name: 'How should I prepare for the DMO?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes. The RTO is a free program offered by MIN as part of its mission to make quality math education accessible to all students in Nepal regardless of background.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'How do I apply for the MIN RTO?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Applications for the Research Training Olympiad open annually. Visit mathsinitiatives.org.np/rto for the current application window, eligibility criteria, and the application form.',
+          text: 'The RTO roadmap suggests building school mathematics first: algebra basics, number theory basics such as GCD, LCM and modular arithmetic, geometry and counting, along with exam skills like time management. MIN also offers free timed DMO mock papers at mathsinitiatives.org.np/dmopractice.',
         },
       },
     ],

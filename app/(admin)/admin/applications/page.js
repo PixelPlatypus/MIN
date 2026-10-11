@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   UserPlus, 
   MagnifyingGlass as Search, 
@@ -405,14 +405,14 @@ export default function AdminApplicationsPage() {
       {/* Candidate Profile & Stage Action Drawer */}
       <AnimatePresence>
         {selectedApp && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
             onClick={() => setSelectedApp(null)}
           >
-            <motion.div
+            <m.div
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
@@ -652,8 +652,8 @@ export default function AdminApplicationsPage() {
                   className="w-full bg-white dark:bg-white/5 border border-border rounded-2xl p-4 text-xs font-medium leading-relaxed text-dynamic outline-none focus:border-primary transition-all resize-y shadow-inner"
                 />
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

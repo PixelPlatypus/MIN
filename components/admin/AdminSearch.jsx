@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   MagnifyingGlass as Search, 
   X, 
@@ -116,7 +116,7 @@ export default function AdminSearch() {
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-4 md:px-0">
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -124,7 +124,7 @@ export default function AdminSearch() {
               className="absolute inset-0 bg-black/40 backdrop-blur-md"
             />
             
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -197,7 +197,7 @@ export default function AdminSearch() {
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">Forensic Search Ready</span>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

@@ -9,6 +9,7 @@ import * as z from 'zod'
 import ImageUploader from './ImageUploader'
 import TipTapEditor from './TipTapEditor'
 import { slugify } from '@/lib/slugify'
+import { m } from 'framer-motion'
 
 const eventSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters'),
@@ -524,14 +525,14 @@ export default function EventForm({ initialData = null }) {
 
             {/* Error Message */}
             {error && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="p-4 rounded-2xl bg-coral/10 border border-coral/20 flex items-center gap-3 text-coral text-sm"
               >
                 <AlertCircle size={18} />
                 <p>{error}</p>
-              </motion.div>
+              </m.div>
             )}
 
             {/* Form Actions */}

@@ -1,9 +1,9 @@
 export const metadata = {
   title: 'Gallery',
-  description: 'View the vibrant impact of our educational initiatives, programs, and math tournaments captured across Nepal.',
+  description: 'Photos from MIN\'s workshops, camps and maths competitions across Nepal.',
   openGraph: {
     title: 'Gallery | MIN',
-    description: 'View the vibrant impact of our educational initiatives, programs, and math tournaments captured across Nepal.',
+    description: 'Photos from MIN\'s workshops, camps and maths competitions across Nepal.',
   }
 }
 
