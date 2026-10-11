@@ -1,124 +1,69 @@
-# MIN Project Contribution Guide
-
 <div align="center">
   <h1>Mathematics Initiatives in Nepal (MIN)</h1>
-  <p>Empowering Students Across Nepal Through Innovative Mathematics Education.</p>
-  
-  <p align="center">
-    <a href="https://github.com/PixelPlatypus/MIN/graphs/contributors"><img src="https://img.shields.io/github/contributors/PixelPlatypus/MIN.svg?style=flat-square" alt="Contributors"></a>
-    <a href="https://github.com/PixelPlatypus/MIN/network/members"><img src="https://img.shields.io/github/forks/PixelPlatypus/MIN.svg?style=flat-square" alt="Forks"></a>
-    <a href="https://github.com/PixelPlatypus/MIN/stargazers"><img src="https://img.shields.io/github/stars/PixelPlatypus/MIN.svg?style=flat-square" alt="Stargazers"></a>
-    <a href="https://github.com/PixelPlatypus/MIN/issues"><img src="https://img.shields.io/github/issues/PixelPlatypus/MIN.svg?style=flat-square" alt="Issues"></a>
-  </p>
+  <p>The website and admin panel for MIN, a non-profit that helps students across Nepal learn mathematics and enjoy it.</p>
+  <p><a href="https://mathsinitiatives.org.np">mathsinitiatives.org.np</a></p>
 </div>
 
----
+## About the project
 
-## 🚀 About The Project
+The public site covers MIN's programs, events, team, content library, Road to Olympiad guide, DMO practice papers, applications and certificate verification.
 
-**Mathematics Initiatives in Nepal (MIN)** is an open-source, Next.js engineered web platform designed to bridge the gap in mathematics education. It provides an advanced digital ecosystem for students to practice mock exams (DMO), read content, discover events, and for administrators to seamlessly manage volunteers and website configurations via an integrated headless CMS approach.
+The site has its own built-in CMS, so the MIN team can publish content and edit any page without touching the code.
 
-### 🛠 Built With
+## Stack
 
-* **Framework:** [Next.js (App Router)](https://nextjs.org/)
-* **Styling:** [Tailwind CSS](https://tailwindcss.com/) & Modern Framer Motion Micro-animations
-* **Database & Auth:** [Supabase](https://supabase.com/)
-* **Media & Cloud:** Cloudinary, Resend, Upstash Redis
+- **Next.js 16** (App Router, React 19), deployed on Vercel
+- **Tailwind CSS v4**
+- **Supabase** for the database, auth and storage
+- **Cloudinary** (images), **Resend** (email), **Upstash Redis** (rate limiting)
 
----
+## Getting started
 
-## 💻 Local Development Setup
+You need **Node.js 20.9 or newer** and access to a Supabase project.
 
-Follow these step-by-step instructions to get the project running seamlessly on your local machine.
-
-### 1. Install Dependencies
-Make sure you have Node.js (v18+) installed, then run:
 ```bash
+git clone https://github.com/PixelPlatypus/MIN.git
+cd MIN
 npm install
+cp .env.example .env.local   # fill in the keys
+npm run dev                  # http://localhost:3000
 ```
 
-### 2. Environment Variables
-You need to configure your local environment variables to connect to various required external services. We have provided a template for you:
-1. Duplicate the `.env.example` file located in the root directory.
-2. Rename the duplicated file to `.env.local`
-3. Fill in the required keys. This architecture relies on several integrations:
-   - **Supabase:** Core Database & Authentication *(Required)*
-   - **Cloudinary:** Image hosting & Gallery administration *(Required)*
-   - **Resend:** Email delivery and automated notifications *(Required)*
-   - **Upstash Redis:** API Rate limiting *(Required)*
+To set up a fresh database, follow the [Supabase setup guide](./supabase/example_migration/README.md).
 
-### 3. Database Setup (Crucial)
-For detailed instructions on setting up your local Supabase PostgreSQL database (including creating tables, policies, and injecting complete dummy data), please closely follow our **[Supabase Database Setup Guide](./supabase/example_migration/README.md)**.
+Never commit `.env.local` or real keys. It is already git-ignored.
 
-### 4. Run the Development Server
-Once dependencies are installed and `.env.local` is fully configured alongside the Supabase backend, start the application:
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Commit convention
 
----
+We use [Conventional Commits](https://www.conventionalcommits.org/): `type: short description`
 
-## 🤝 Contribution Guide (Git Workflow)
+| Type | For |
+|---|---|
+| `feat:` | New features |
+| `fix:` | Bug fixes |
+| `perf:` | Performance improvements |
+| `refactor:` | Code changes that don't change behaviour |
+| `style:` | Formatting only |
+| `docs:` | Documentation |
+| `chore:` | Dependencies, config, tooling |
 
-We are thrilled to have you contribute! To maintain an organized project history, we follow a strict Github Flow.
+Example: `fix: stop gallery filters shifting on load`
 
-### 1. Fork & Clone
-1. **Fork** the repository using the "Fork" button in the top right corner of GitHub.
-2. **Clone** your forked repository to your local machine:
+## Pull requests
+
+1. Create a branch from the latest `main`, named after you and the task:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/MIN.git
-   cd MIN
+   git checkout main
+   git pull
+   git checkout -b your-name/short-description
    ```
-3. **Set Upstream:** Link the original repository so you can pull the latest updates later:
-   ```bash
-   git remote add upstream https://github.com/PixelPlatypus/MIN.git
-   ```
+2. Commit your work using the convention above.
+3. Run `npm run build` and make sure it passes.
+4. Push your branch and open a pull request against `main`. Describe what changed, why, and how to test it. For UI changes, add screenshots in light and dark mode.
+5. Ask a team member for review. Don't merge your own PR.
 
-### 2. Sync Your Fork (Pull Latest Changes)
-Before starting any new work, make sure your local `dev` branch is perfectly synced with the original repository target:
-```bash
-git fetch upstream
-git checkout dev
-git merge upstream/dev
-```
+## Contributions welcome
 
-### 3. Branch Creation
-Always create a new checkout branch for your work using your name and a brief description of the task. Do **not** work directly on the `dev` or `main` branch.
+Anyone is welcome to contribute, from first-time coders to experienced developers. If you spot a bug or have an idea, open an issue or a pull request and someone from the team will get back to you.
 
-```bash
-git checkout -b your-name/feature-or-fix-description
-```
-*Example: `ram/update-homepage-styles`*
-
----
-
-## 📝 Commit Message Convention
-
-We enforce a strict format for commit messages to maintain semantic, readable project histories.
-
-`type:(description)`
-
-### Common Types:
-- **`fix:`** — For bug fixes. *(e.g., `fix: resolve image loading issue on mobile`)*
-- **`update:`** — For new features. *(e.g., `update: add dark mode toggle button`)*
-- **`docs:`** — Documentation changes. *(e.g., `docs: update API documentation`)*
-- **`style:`** — Code style formatting. *(e.g., `style: format components with prettier`)*
-- **`refactor:`** — Code logic overhaul without feature change. *(e.g., `refactor: simplify authentication logic`)*
-- **`test:`** — Testing protocols. *(e.g., `test: add unit tests for utils`)*
-- **`chore:`** — Build/maintenance tasks. *(e.g., `chore: update dependencies`)*
-
----
-
-## 📬 Pull Requests
-
-Once you have completed your work on your local branch, follow these steps to integrate it:
-
-1. **Push your branch to your forked repository:**
-   ```bash
-   git push origin your-name/feature-or-fix-description
-   ```
-2. **Open a Pull Request:** Navigate to the original [PixelPlatypus/MIN](https://github.com/PixelPlatypus/MIN) repository on GitHub. You should see a prompt to "Compare & pull request" for your recently pushed branch.
-3. **Compare Across Forks:** Ensure the base repository is the original project (`dev` branch) and the head repository is your fork containing your new branch.
-4. **Describe Your Changes:** Include a detailed description of what you changed, why you changed it, and how to test it.
-5. **Request Review:** Request a technical review from project team members.
+Thank you for helping more students in Nepal enjoy mathematics. 💙
