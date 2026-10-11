@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -63,14 +63,14 @@ export default function CreateUserPage() {
 
       <form onSubmit={onSubmit} className="glass rounded-[2rem] p-8 space-y-6">
         {error && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="p-4 rounded-2xl bg-coral/10 border border-coral/20 flex items-center gap-3 text-coral text-sm"
           >
             <AlertCircle size={18} />
             <p>{error}</p>
-          </motion.div>
+          </m.div>
         )}
 
         <div className="space-y-2">

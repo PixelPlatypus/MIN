@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { FloppyDisk as Save, DownloadSimple as Download, Funnel as Filter, MagnifyingGlass as Search, X, CircleNotch as Loader2, WarningCircle as AlertCircle, Plus, Clock, User } from '@phosphor-icons/react'
 
 export default function TeamExcelView({ members, onSave, onRefresh }) {

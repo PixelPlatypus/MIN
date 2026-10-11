@@ -1,21 +1,9 @@
 'use client'
-import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 
+// Opacity-only fade keyed on the route. No exit animation (the App Router unmounts the old
+// page immediately) and no transform, which would break fixed/sticky children.
 export default function PageTransition({ children }) {
   const pathname = usePathname()
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }} // --ease-apple
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  )
+  return <div key={pathname} className="animate-page-in">{children}</div>
 }

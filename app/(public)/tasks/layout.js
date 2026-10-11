@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Task Bank',
-  description: 'Browse and complete tasks assigned by the Mathematics Initiatives in Nepal team. Find your active assignments, deadlines, and submission instructions here.',
+  description: 'Browse and complete tasks assigned by the Mathematics Initiatives in Nepal team. Find your active assignments, with deadlines and how to submit.',
   keywords: ['MIN Task Bank', 'Mathematics Initiatives Nepal Tasks', 'Volunteer Tasks', 'MIN Assignments', 'Math Nepal Tasks'],
   openGraph: {
     title: 'Task Bank | MIN',

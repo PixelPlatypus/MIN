@@ -1,6 +1,6 @@
 'use client'
 import dynamic from 'next/dynamic'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Calculator, RocketLaunch as Sparkles } from '@phosphor-icons/react'
 
 // Load QuestionBank without SSR to prevent hydration issues with KaTeX

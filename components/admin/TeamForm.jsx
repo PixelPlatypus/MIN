@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { UploadSimple as Upload, X, CircleNotch as Loader2, WarningCircle as AlertCircle, FloppyDisk as Save, ArrowLeft, Image as ImageIcon } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -52,7 +52,7 @@ export default function TeamForm({ initialData = null }) {
   const isEditing = !!initialData
 
   useEffect(() => {
-    fetch('/api/settings')
+    fetch('/api/settings?fresh')
       .then(res => res.ok ? res.json() : null)
       .then(data => data && setSettings(data))
       .catch(err => console.error('Settings load error:', err))
@@ -450,14 +450,14 @@ export default function TeamForm({ initialData = null }) {
 
             {/* Error Message */}
             {error && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="p-4 rounded-2xl bg-coral/10 border border-coral/20 flex items-center gap-3 text-coral text-sm"
               >
                 <AlertCircle size={18} />
                 <p>{error}</p>
-              </motion.div>
+              </m.div>
             )}
 
             {/* Form Actions */}

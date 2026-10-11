@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   PaperPlaneTilt as Send, 
   Heart, 
@@ -8,7 +8,6 @@ import {
   Buildings as Building2, 
   Handshake, 
   CaretLeft as ChevronLeft, 
-  HandHeart as Sparkles, 
   CircleNotch as Loader2, 
   Wrench,
   Plus,
@@ -44,39 +43,30 @@ const defaultSchemas = {
   }
 }
 
+const inputClass = 'input-brand'
+const labelClass = 'label-brand'
+
 const categories = [
   { 
     id: 'VOLUNTEER', 
     label: 'Volunteer', 
     icon: <Heart size={32} />, 
     desc: 'Support events, teach sessions, or help with outreach.',
-    borderColor: 'border-primary/20 dark:border-primary/10',
-    hoverBorder: 'hover:border-primary/50',
-    hoverText: 'group-hover:text-primary-dark dark:duration-75',
-    gradient: 'from-primary/10',
-    accent: 'bg-primary'
+    iconTint: 'bg-primary/10 text-primary dark:bg-secondary/15 dark:text-secondary'
   },
   { 
     id: 'ORGANIZATION', 
     label: 'Organization', 
     icon: <Building2 size={32} />, 
     desc: 'Schools or institutions looking for educational collaboration.',
-    borderColor: 'border-secondary/20 dark:border-secondary/10',
-    hoverBorder: 'hover:border-secondary-dark/50',
-    hoverText: 'group-hover:text-secondary-dark',
-    gradient: 'from-secondary-dark/10',
-    accent: 'bg-secondary-dark'
+    iconTint: 'bg-secondary/40 text-primary-dark dark:bg-secondary/15 dark:text-secondary'
   },
   { 
     id: 'PARTNERSHIP', 
     label: 'Partnership', 
     icon: <Handshake size={32} />, 
     desc: 'Corporate sponsors or NGOs looking to scale impact.',
-    borderColor: 'border-coral/20 dark:border-coral/10',
-    hoverBorder: 'hover:border-coral/50',
-    hoverText: 'group-hover:text-coral',
-    gradient: 'from-coral/10',
-    accent: 'bg-coral'
+    iconTint: 'bg-coral/10 text-coral'
   },
 ]
 
@@ -188,42 +178,42 @@ export default function JoinForm() {
       const isUploaded = !!formQuestions[field.id || field.label]
       return (
         <div key={field.id} className="space-y-4">
-          <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
+          <label className={labelClass}>
             {field.label} {field.required && <span className="text-coral">*</span>}
           </label>
           <div className={`relative group transition-all duration-300 ${
-            isUploaded ? 'bg-green/5 border-green/30' : 'bg-white/10 dark:bg-white/5 border-primary/20 hover:border-primary/40'
+            isUploaded ? 'bg-emerald-500/5 border-emerald-500/30' : 'bg-white/60 dark:bg-white/5 border-primary/20 hover:border-primary/40 dark:border-white/15 dark:hover:border-secondary/50'
           } border-2 border-dashed rounded-[2rem] p-8 text-center`}>
             {uploadingFile === field.id ? (
               <div className="flex flex-col items-center gap-3 py-4">
-                <Loader2 className="animate-spin text-primary" size={32} />
-                <span className="text-xs font-bold text-primary animate-pulse">Uploading PDF...</span>
+                <Loader2 className="animate-spin text-primary dark:text-secondary" size={32} />
+                <span className="text-xs font-bold text-primary dark:text-secondary animate-pulse">Uploading PDF...</span>
               </div>
             ) : isUploaded ? (
               <div className="flex flex-col items-center gap-3">
-                <div className="w-12 h-12 bg-green/20 text-green rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center">
                   <CheckCircle2 size={24} />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-bold text-green">CV Uploaded Successfully</p>
-                  <p className="text-[10px] font-medium text-auto-tertiary">File is ready for review</p>
+                  <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">CV Uploaded Successfully</p>
+                  <p className="text-xs font-medium text-auto-tertiary">File is ready for review</p>
                 </div>
                 <button 
                   type="button" 
                   onClick={() => handleFormChange(field.id || field.label, null)}
-                  className="text-[10px] font-bold text-coral uppercase tracking-widest hover:underline mt-2"
+                  className="text-xs font-bold text-coral hover:underline mt-2"
                 >
                   Remove & Replace
                 </button>
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-primary/10 text-primary dark:bg-secondary/15 dark:text-secondary rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
                   <Plus size={24} />
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-bold">Select PDF Document</p>
-                  <p className="text-[10px] text-auto-tertiary font-medium">Click or drag & drop (Max 5MB)</p>
+                  <p className="text-xs text-auto-tertiary font-medium">Click or drag & drop (Max 5MB)</p>
                 </div>
                 <input 
                   type="file" 
@@ -242,12 +232,12 @@ export default function JoinForm() {
     const commonProps = {
       required: field.required,
       onChange: (e) => handleFormChange(field.label, e.target.value),
-      className: "w-full glass bg-white/60 dark:bg-white/5 px-6 py-5 rounded-2xl focus:ring-2 ring-primary/20 outline-none transition-all placeholder:opacity-30 border border-white/40 dark:border-white/10 hover:border-primary/30",
+      className: inputClass,
     }
 
     return (
       <div key={field.id} className="space-y-2">
-        <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary">
+        <label className={labelClass}>
           {field.label} {field.required && <span className="text-coral">*</span>}
         </label>
         {field.type === 'textarea' ? (
@@ -268,13 +258,13 @@ export default function JoinForm() {
             <div key={num} className="flex items-center gap-4">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black transition-all ${
                 step >= num 
-                  ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                  : 'bg-black/5 dark:bg-white/5 text-auto-tertiary border border-border'
+                  ? 'bg-primary text-white shadow-lg shadow-primary/20 dark:bg-secondary dark:text-primary-dark' 
+                  : 'bg-primary/5 dark:bg-white/5 text-auto-tertiary border border-primary/15 dark:border-white/15'
               }`}>
                 {num}
               </div>
               {num === 1 && (
-                <div className={`w-20 h-1 rounded-full transition-all ${step > 1 ? 'bg-primary' : 'bg-black/5 dark:bg-white/5'}`} />
+                <div className={`w-12 sm:w-20 h-1 rounded-full transition-all ${step > 1 ? 'bg-primary dark:bg-secondary' : 'bg-primary/10 dark:bg-white/10'}`} />
               )}
             </div>
           ))}
@@ -283,21 +273,21 @@ export default function JoinForm() {
 
       <AnimatePresence mode="wait">
         {submitted ? (
-          <motion.div 
+          <m.div 
             key="success"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass rounded-[3.5rem] p-20 text-center space-y-8 shadow-2xl relative overflow-hidden"
+            className="card-brand rounded-[2.5rem] px-6 py-14 sm:p-20 text-center space-y-8 relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary-dark/5 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/20 dark:to-secondary/5 pointer-events-none" />
             
             <div className="relative z-10">
-              <div className="w-24 h-24 bg-green/10 text-green rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-lg shadow-green/10 border border-green/20">
+              <div className="w-24 h-24 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-[2rem] flex items-center justify-center mx-auto mb-10 border border-emerald-500/20">
                 <CheckCircle2 size={48} />
               </div>
-              <h2 className="text-5xl font-black tracking-tight mb-4 text-text dark:text-white">Submission Successful!</h2>
-              <p className="text-xl font-bold text-auto-tertiary max-w-xl mx-auto leading-relaxed">
-                Thank you for reaching out to MIN Nepal. We've received your {type.toLowerCase()} application and sent a confirmation to <span className="text-primary font-black uppercase tracking-tight">{formData.email}</span>.
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4 text-gradient-brand pb-1">Submission Successful!</h2>
+              <p className="text-lg md:text-xl font-medium text-auto-secondary max-w-xl mx-auto leading-relaxed">
+                Thank you for reaching out to MIN Nepal. We've received your {type.toLowerCase()} application and sent a confirmation to <span className="text-primary dark:text-secondary font-bold break-all">{formData.email}</span>.
               </p>
             </div>
 
@@ -309,14 +299,14 @@ export default function JoinForm() {
                   setFormData({ name: '', email: '', phone: '' })
                   setFormQuestions({})
                 }}
-                className="px-12 py-5 rounded-2xl bg-black/5 dark:bg-white/5 text-auto-tertiary hover:text-primary-dark dark:duration-75 font-black text-xs uppercase tracking-widest transition-all border border-border"
+                className="btn-brand-outline"
               >
                 Submit another application
               </button>
             </div>
-          </motion.div>
+          </m.div>
         ) : step === 1 ? (
-          <motion.div 
+          <m.div 
             key="step1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -327,90 +317,89 @@ export default function JoinForm() {
               <button
                 key={cat.id}
                 onClick={() => handleCategorySelect(cat.id)}
-                className={`relative flex flex-col items-center text-center p-10 rounded-[3.5rem] border-2 transition-all duration-500 group hover:shadow-2xl hover:-translate-y-2 ${cat.borderColor} ${cat.hoverBorder} glass overflow-hidden`}
+                className="card-brand card-brand-hover rounded-[2.5rem] relative flex flex-col items-center text-center p-10 group overflow-hidden"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${cat.gradient} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/20 dark:from-white/5 dark:to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="relative z-10 flex flex-col items-center">
-                  <div className={`w-24 h-24 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-sm border border-border dark:border-white/10 transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 bg-white dark:bg-white/5 text-text dark:text-white ${cat.hoverText}`}>
+                  <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center mb-8 transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 ${cat.iconTint}`}>
                     {cat.icon}
                   </div>
-                  <h3 className={`text-3xl font-black mb-3 text-text dark:text-white transition-colors ${cat.hoverText}`}>{cat.label}</h3>
-                  <p className="text-sm font-bold opacity-70 leading-relaxed max-w-[200px] text-auto-secondary">
+                  <h3 className="text-3xl font-black mb-3 transition-colors group-hover:text-primary dark:group-hover:text-secondary">{cat.label}</h3>
+                  <p className="text-sm font-medium leading-relaxed max-w-[220px] text-auto-secondary">
                     {cat.desc}
                   </p>
                 </div>
               </button>
             ))}
-          </motion.div>
+          </m.div>
         ) : (
-          <motion.form 
+          <m.form 
             key="step2"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             onSubmit={handleSubmit}
-            className="glass rounded-[3.5rem] p-10 md:p-16 space-y-12 relative overflow-hidden shadow-2xl"
+            className="card-brand rounded-[2.5rem] p-6 sm:p-10 md:p-16 space-y-12 relative overflow-hidden"
           >
-            <div className="flex items-center justify-between relative z-10">
+            <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
               <button 
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-auto-tertiary hover:text-primary-dark dark:duration-75 transition-all group"
+                className="flex items-center gap-2 text-sm font-bold text-auto-secondary hover:text-primary dark:hover:text-secondary transition-all group"
               >
                 <ChevronLeft size={20} className="transition-transform group-hover:-translate-x-1" />
                 Change Category
               </button>
-              <div className="flex items-center gap-3 px-6 py-2 rounded-full bg-black/5 dark:bg-white/5 text-primary text-[10px] font-black uppercase tracking-widest border border-border">
-                <Sparkles size={14} className="text-secondary-dark" />
+              <div className="eyebrow">
                 {type} Selection
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 relative z-10">
               <div className="space-y-8">
-                <div className="border-l-4 border-primary pl-4 mb-10">
+                <div className="border-l-4 border-primary dark:border-secondary pl-4 mb-10">
                   <h4 className="text-3xl font-black tracking-tight">Identity</h4>
-                  <p className="text-[10px] font-bold text-auto-tertiary uppercase tracking-widest">How should we address you?</p>
+                  <p className="text-sm font-medium text-auto-tertiary">How should we address you?</p>
                 </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Full Name <span className="text-coral">*</span></label>
+                <div className="space-y-2">
+                  <label className={labelClass}>Full Name <span className="text-coral">*</span></label>
                   <input 
                     required 
                     type="text" 
                     placeholder="Enter your name"
-                    className="w-full glass bg-white/60 dark:bg-white/5 px-8 py-6 rounded-3xl focus:ring-2 ring-primary/20 outline-none transition-all border border-white/40 dark:border-white/10 hover:border-primary/30 shadow-sm" 
+                    className={inputClass}
                     value={formData.name} 
                     onChange={e => setFormData({ ...formData, name: e.target.value })} 
                   />
                 </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Email Address <span className="text-coral">*</span></label>
+                <div className="space-y-2">
+                  <label className={labelClass}>Email Address <span className="text-coral">*</span></label>
                   <input 
                     required 
                     type="email" 
                     placeholder="your@email.com"
-                    className="w-full glass bg-white/60 dark:bg-white/5 px-8 py-6 rounded-3xl focus:ring-2 ring-primary/20 outline-none transition-all border border-white/40 dark:border-white/10 hover:border-primary/30 shadow-sm" 
+                    className={inputClass}
                     value={formData.email} 
                     onChange={e => setFormData({ ...formData, email: e.target.value })} 
                   />
                 </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-auto-tertiary ml-2">Phone Number</label>
+                <div className="space-y-2">
+                  <label className={labelClass}>Phone Number</label>
                   <PhoneInput 
                     international
                     defaultCountry="NP"
                     flags={flags}
                     value={formData.phone}
                     onChange={val => setFormData({ ...formData, phone: val || '' })}
-                    className="w-full glass bg-white/60 dark:bg-white/5 px-8 py-6 rounded-3xl focus-within:ring-2 ring-primary/20 outline-none transition-all border border-white/40 dark:border-white/10 hover:border-primary/30 shadow-sm"
+                    className="w-full"
                   />
                 </div>
               </div>
 
               <div className="space-y-8">
-                <div className="border-l-4 border-secondary-dark pl-4 mb-10">
+                <div className="border-l-4 border-secondary-dark dark:border-secondary/50 pl-4 mb-10">
                   <h4 className="text-3xl font-black tracking-tight">Context</h4>
-                  <p className="text-[10px] font-bold text-auto-tertiary uppercase tracking-widest">What brings you to MIN?</p>
+                  <p className="text-sm font-medium text-auto-tertiary">What brings you to MIN?</p>
                 </div>
                 <div className="space-y-6">
                   {schemas[type]?.fields.map(renderField)}
@@ -418,19 +407,19 @@ export default function JoinForm() {
               </div>
             </div>
 
-            <div className="pt-12 border-t border-border dark:border-white/5 flex items-center justify-end relative z-10">
+            <div className="pt-10 border-t border-primary/10 dark:border-white/10 flex items-center justify-end relative z-10">
               <button 
                 type="submit"
                 disabled={loading}
-                className="group relative bg-primary hover:bg-primary-dark text-white px-20 py-7 rounded-[3rem] font-black text-xl uppercase tracking-widest shadow-2xl shadow-primary/30 transition-all hover:-translate-y-2 active:scale-95 disabled:opacity-50 overflow-hidden"
+                className="btn-brand group w-full sm:w-auto px-12 py-5 text-lg"
               >
-                <div className="relative z-10 flex items-center gap-4">
-                  {loading ? <Loader2 className="animate-spin" size={24} /> : <Send size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
+                <div className="flex items-center gap-3">
+                  {loading ? <Loader2 className="animate-spin" size={24} /> : <Send size={24} weight="bold" className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
                   <span>{loading ? 'Sending...' : 'Complete Application'}</span>
                 </div>
               </button>
             </div>
-          </motion.form>
+          </m.form>
         )}
       </AnimatePresence>
     </div>

@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useRef, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import {
   Envelope,
   PaperPlaneTilt,
@@ -123,7 +123,7 @@ export default function AdminEmailsPage() {
 
   async function fetchSiteSettings() {
     try {
-      const res = await fetch('/api/settings')
+      const res = await fetch('/api/settings?fresh')
       if (res.ok) {
         const data = await res.json()
         setSiteSettings(data)
@@ -510,7 +510,7 @@ export default function AdminEmailsPage() {
               {/* Notification Banner */}
               <AnimatePresence>
                 {saveSuccess && (
-                  <motion.div
+                  <m.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
@@ -521,10 +521,10 @@ export default function AdminEmailsPage() {
                       Template changes committed live to system database
                     </div>
                     <span className="text-[10px] font-bold">Active in dispatch</span>
-                  </motion.div>
+                  </m.div>
                 )}
                 {saveError && (
-                  <motion.div
+                  <m.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
@@ -532,7 +532,7 @@ export default function AdminEmailsPage() {
                   >
                     <WarningCircle size={16} />
                     {saveError}
-                  </motion.div>
+                  </m.div>
                 )}
               </AnimatePresence>
 
@@ -934,14 +934,14 @@ export default function AdminEmailsPage() {
       {/* Send Live Test Email Modal */}
       <AnimatePresence>
         {showTestModal && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
             onClick={() => setShowTestModal(false)}
           >
-            <motion.div
+            <m.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
@@ -1005,8 +1005,8 @@ export default function AdminEmailsPage() {
                   </button>
                 </div>
               </form>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

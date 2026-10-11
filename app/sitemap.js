@@ -1,12 +1,13 @@
 // app/sitemap.js — auto-generate sitemap.xml for Next.js
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
+import { SITE_URL } from '@/lib/site'
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np'
+const BASE_URL = SITE_URL
 
 export const revalidate = 3600 // revalidate sitemap every hour
 
 export default async function sitemap() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   // Static routes — all actively rendered public pages
   const staticRoutes = [
@@ -29,7 +30,7 @@ export default async function sitemap() {
     { path: '/about/legal',   priority: 0.3, freq: 'yearly' },
   ].map(({ path, priority, freq }) => ({
     url: `${BASE_URL}${path}`,
-    lastModified: new Date().toISOString(),
+    // No lastModified on static pages: stamping "now" on every regeneration teaches Google to ignore it
     changeFrequency: freq,
     priority,
   }))
@@ -43,7 +44,7 @@ export default async function sitemap() {
 
   const eventRoutes = (events || []).map(e => ({
     url: `${BASE_URL}/events/${e.slug}`,
-    lastModified: e.updated_at || new Date().toISOString(),
+    lastModified: e.updated_at || undefined,
     changeFrequency: 'weekly',
     priority: 0.7,
   }))
@@ -57,13 +58,37 @@ export default async function sitemap() {
 
   const contentRoutes = (content || []).map(c => ({
     url: `${BASE_URL}/content/${c.slug}`,
-    lastModified: c.updated_at || new Date().toISOString(),
+    lastModified: c.updated_at || undefined,
     changeFrequency: 'weekly',
     priority: 0.7,
   }))
 
-  // Dynamic: team member profiles (if they have public profile URLs)
-  // Dynamic: active tasks (public task bank entries)
+  // Dynamic: team member profiles
+  const { data: team } = await supabase
+    .from('team_members')
+    .select('slug, updated_at')
+    .not('slug', 'is', null)
+    .neq('status', 'REMOVED')
 
-  return [...staticRoutes, ...eventRoutes, ...contentRoutes]
+  const teamRoutes = (team || []).map(m => ({
+    url: `${BASE_URL}/team/${m.slug}`,
+    lastModified: m.updated_at || undefined,
+    changeFrequency: 'monthly',
+    priority: 0.4,
+  }))
+
+  // Dynamic: published tasks
+  const { data: tasks } = await supabase
+    .from('tasks')
+    .select('slug, updated_at')
+    .eq('status', 'published')
+
+  const taskRoutes = (tasks || []).filter(t => t.slug).map(t => ({
+    url: `${BASE_URL}/tasks/${t.slug}`,
+    lastModified: t.updated_at || undefined,
+    changeFrequency: 'weekly',
+    priority: 0.5,
+  }))
+
+  return [...staticRoutes, ...eventRoutes, ...contentRoutes, ...teamRoutes, ...taskRoutes]
 }

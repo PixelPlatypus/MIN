@@ -1,7 +1,7 @@
 // components/admin/BulkUploadModal.jsx
 'use client'
 import { useState, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { X, UploadSimple as Upload, Table, CheckCircle, Warning, CircleNotch as Loader2, Info } from '@phosphor-icons/react'
 
 export default function BulkUploadModal({ isOpen, onClose, onSuccess }) {

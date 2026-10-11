@@ -37,12 +37,12 @@ export default async function VerifyDetailPage({ params }) {
   if (!cert.is_valid) {
     return (
       <VerificationWrapper cert={cert} status="REVOKED">
-        <div className="glass rounded-[2rem] p-8 border border-coral/30 bg-coral/5 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-coral/10 border border-coral/20 flex items-center justify-center mx-auto text-coral">
+        <div className="card-brand p-8 border-rose-500/30 bg-rose-500/5 text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto text-rose-600 dark:text-rose-400">
             <ShieldWarning size={32} weight="duotone" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-xl font-bold text-coral">Certificate Revoked</h3>
+            <h3 className="text-xl font-bold text-rose-600 dark:text-rose-400">Certificate Revoked</h3>
             <p className="text-xs text-auto-secondary max-w-sm mx-auto">
               This certificate has been explicitly revoked by MIN administrators and is no longer valid.
             </p>
@@ -57,12 +57,12 @@ export default async function VerifyDetailPage({ params }) {
   if (isExpired) {
     return (
       <VerificationWrapper cert={cert} status="EXPIRED">
-        <div className="glass rounded-[2rem] p-8 border border-amber-500/30 bg-amber-500/5 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto text-amber-500">
+        <div className="card-brand p-8 border-amber-500/30 bg-amber-500/5 text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto text-amber-600 dark:text-amber-400">
             <Warning size={32} weight="duotone" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-xl font-bold text-amber-500">Certificate Expired</h3>
+            <h3 className="text-xl font-bold text-amber-600 dark:text-amber-400">Certificate Expired</h3>
             <p className="text-xs text-auto-secondary max-w-sm mx-auto">
               This certificate was valid but has passed its expiry date of{' '}
               {new Date(cert.expiry_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.
@@ -78,12 +78,12 @@ export default async function VerifyDetailPage({ params }) {
   if (isEventSuspended) {
     return (
       <VerificationWrapper cert={cert} status="SUSPENDED">
-        <div className="glass rounded-[2rem] p-8 border border-amber-500/30 bg-amber-500/5 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto text-amber-500">
+        <div className="card-brand p-8 border-amber-500/30 bg-amber-500/5 text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto text-amber-600 dark:text-amber-400">
             <Warning size={32} weight="duotone" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-xl font-bold text-amber-500">Verification Suspended</h3>
+            <h3 className="text-xl font-bold text-amber-600 dark:text-amber-400">Verification Suspended</h3>
             <p className="text-xs text-auto-secondary max-w-sm mx-auto">
               Certificate verification for event "{cert.events?.title || cert.event_name}" is temporarily suspended.
             </p>
@@ -97,12 +97,12 @@ export default async function VerifyDetailPage({ params }) {
   // 5. Valid Certificate
   return (
     <VerificationWrapper cert={cert} status="VALID">
-      <div className="glass rounded-[2rem] p-8 border border-green/30 bg-green/5 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-green/10 border border-green/20 flex items-center justify-center mx-auto text-green">
+      <div className="card-brand p-8 border-emerald-500/30 bg-emerald-500/5 text-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto text-emerald-600 dark:text-emerald-400">
           <ShieldCheck size={32} weight="duotone" />
         </div>
         <div className="space-y-1">
-          <h3 className="text-xl font-bold text-green">Authentic Credential Verified</h3>
+          <h3 className="text-xl font-bold text-emerald-600 dark:text-emerald-400">Authentic Credential Verified</h3>
           <p className="text-xs text-auto-secondary max-w-sm mx-auto">
             This certificate is a verified, authentic document issued by Mathematics Initiatives in Nepal.
           </p>
@@ -114,19 +114,20 @@ export default async function VerifyDetailPage({ params }) {
 
 function ErrorState({ message, description }) {
   return (
-    <div className="min-h-[70vh] flex items-center justify-center py-20 px-6">
-      <div className="max-w-md w-full text-center space-y-6 glass rounded-[2.5rem] p-10 border border-border dark:border-border-dark shadow-xl">
-        <div className="w-16 h-16 rounded-full bg-coral/10 border border-coral/20 flex items-center justify-center mx-auto text-coral">
+    <div className="relative isolate min-h-[80vh] flex items-center justify-center pt-36 md:pt-40 pb-24 px-6 overflow-hidden">
+      <div aria-hidden className="absolute inset-0 -z-10 hero-glow pointer-events-none" />
+      <div className="max-w-md w-full text-center space-y-6 card-brand rounded-[2.5rem] p-8 sm:p-10">
+        <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto text-rose-600 dark:text-rose-400">
           <ShieldWarning size={32} weight="duotone" />
         </div>
         <div className="space-y-2">
           <h2 className="text-2xl font-bold tracking-tight">{message}</h2>
-          <p className="text-xs text-auto-secondary leading-relaxed">{description}</p>
+          <p className="text-sm text-auto-secondary leading-relaxed">{description}</p>
         </div>
         <div className="pt-4">
           <Link 
             href="/verify"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold text-xs px-6 py-3 rounded-xl transition-all shadow-md shadow-primary/10"
+            className="btn-brand btn-brand-sm"
           >
             <ArrowLeft size={14} />
             Go to Search Portal
@@ -155,17 +156,19 @@ async function VerificationWrapper({ cert, status, children }) {
   const isPdf = cert.pdf_url?.toLowerCase().endsWith('.pdf')
 
   return (
-    <div className="container mx-auto px-6 py-24 space-y-12">
-      <div className="flex items-center gap-4">
+    <div className="relative isolate pt-36 md:pt-40 pb-24 overflow-hidden">
+      <div aria-hidden className="absolute inset-x-0 top-0 h-[32rem] -z-10 hero-glow pointer-events-none" />
+      <div className="container mx-auto px-6 space-y-12">
+      <div className="flex items-start sm:items-center gap-4">
         <Link 
           href="/verify"
-          className="p-2 rounded-xl bg-bg-secondary dark:bg-white/5 hover:bg-bg-tertiary dark:hover:bg-white/10 transition-all text-auto-tertiary hover:text-primary-dark dark:duration-75"
+          className="p-3 rounded-2xl border border-primary/15 bg-white/70 dark:border-white/15 dark:bg-white/5 hover:border-primary/40 dark:hover:border-secondary/50 transition-all text-auto-tertiary hover:text-primary dark:hover:text-secondary shrink-0"
         >
           <ArrowLeft size={20} />
         </Link>
-        <div>
-          <span className="text-[10px] text-primary font-bold uppercase tracking-widest">Verification Result</span>
-          <h2 className="text-2xl font-bold tracking-tight">Credential Certificate</h2>
+        <div className="space-y-2 min-w-0">
+          <span className="eyebrow">Verification Result</span>
+          <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-gradient-brand pb-1">Credential Certificate</h2>
         </div>
       </div>
 
@@ -175,27 +178,27 @@ async function VerificationWrapper({ cert, status, children }) {
           {children}
 
           {/* Details Card */}
-          <div className="glass rounded-[2rem] p-8 space-y-6 border border-border dark:border-border-dark">
-            <h4 className="font-bold text-sm border-b border-border pb-3">Credential Details</h4>
+          <div className="card-brand p-8 space-y-6">
+            <h4 className="font-bold text-sm border-b border-primary/10 dark:border-white/10 pb-3">Credential Details</h4>
             
             <div className="space-y-4">
               <div>
-                <span className="text-[10px] uppercase font-bold text-auto-tertiary block">Recipient Name</span>
+                <span className="text-[11px] font-bold tracking-wide text-auto-tertiary block">Recipient Name</span>
                 <span className="text-sm font-bold text-auto-primary">{cert.recipient_name}</span>
               </div>
 
               <div>
-                <span className="text-[10px] uppercase font-bold text-auto-tertiary block">Event Name</span>
+                <span className="text-[11px] font-bold tracking-wide text-auto-tertiary block">Event Name</span>
                 <span className="text-sm font-semibold text-auto-secondary">{cert.event_name || 'N/A'}</span>
               </div>
 
               <div>
-                <span className="text-[10px] uppercase font-bold text-auto-tertiary block">Program</span>
+                <span className="text-[11px] font-bold tracking-wide text-auto-tertiary block">Program</span>
                 <span className="text-xs font-medium text-auto-secondary font-mono">{cert.program_name}</span>
               </div>
 
               <div>
-                <span className="text-[10px] uppercase font-bold text-auto-tertiary block">Date of Issue</span>
+                <span className="text-[11px] font-bold tracking-wide text-auto-tertiary block">Date of Issue</span>
                 <span className="text-sm font-medium text-auto-secondary">
                   {new Date(cert.issued_date).toLocaleDateString('en-US', {
                     month: 'long',
@@ -207,7 +210,7 @@ async function VerificationWrapper({ cert, status, children }) {
 
               {cert.expiry_date && (
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-auto-tertiary block">Expiry Date</span>
+                  <span className="text-[11px] font-bold tracking-wide text-auto-tertiary block">Expiry Date</span>
                   <span className="text-sm font-medium text-auto-secondary">
                     {new Date(cert.expiry_date).toLocaleDateString('en-US', {
                       month: 'long',
@@ -219,8 +222,8 @@ async function VerificationWrapper({ cert, status, children }) {
               )}
 
               <div>
-                <span className="text-[10px] uppercase font-bold text-auto-tertiary block">Verification ID</span>
-                <span className="text-[10px] font-mono text-auto-tertiary block select-all break-all bg-bg-secondary dark:bg-white/5 p-2 rounded-lg border border-border mt-1">
+                <span className="text-[11px] font-bold tracking-wide text-auto-tertiary block">Verification ID</span>
+                <span className="text-[11px] font-mono text-auto-tertiary block select-all break-all bg-primary/5 dark:bg-white/5 p-2.5 rounded-xl border border-primary/10 dark:border-white/10 mt-1">
                   {cert.cert_uuid}
                 </span>
               </div>
@@ -229,11 +232,11 @@ async function VerificationWrapper({ cert, status, children }) {
 
           {/* QR Code Card */}
           {status === 'VALID' && (
-            <div className="glass rounded-[2rem] p-6 border border-border text-center space-y-4 flex flex-col items-center">
+            <div className="card-brand p-6 text-center space-y-4 flex flex-col items-center">
               <img 
                 src={qrCodeUrl} 
                 alt="Verification QR Code" 
-                className="w-44 h-44 object-contain rounded-2xl border border-border p-2 bg-white"
+                className="w-44 h-44 object-contain rounded-2xl border border-primary/10 p-2 bg-white"
               />
               <div className="space-y-1">
                 <span className="text-xs font-bold block">Quick Verification QR Code</span>
@@ -247,7 +250,7 @@ async function VerificationWrapper({ cert, status, children }) {
 
         {/* Certificate Preview Pane */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
             <h4 className="font-bold text-sm">Certificate Document Preview</h4>
             {cert.pdf_url && (
               <a 
@@ -255,7 +258,7 @@ async function VerificationWrapper({ cert, status, children }) {
                 download
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-bg-secondary dark:bg-white/5 border border-border hover:bg-bg-tertiary dark:hover:bg-white/10 px-4 py-2 rounded-xl text-xs font-bold transition-all text-auto-secondary"
+                className="btn-brand-outline btn-brand-sm"
               >
                 <DownloadSimple size={14} />
                 Open / Download File
@@ -263,7 +266,7 @@ async function VerificationWrapper({ cert, status, children }) {
             )}
           </div>
 
-          <div className="glass rounded-[2rem] p-4 border border-border dark:border-border-dark overflow-hidden flex items-center justify-center bg-black/5 dark:bg-white/5 relative min-h-[300px]">
+          <div className="card-brand p-3 sm:p-4 overflow-hidden flex items-center justify-center relative min-h-[300px]">
             {cert.pdf_url ? (
               isPdf ? (
                 <iframe 
@@ -275,7 +278,7 @@ async function VerificationWrapper({ cert, status, children }) {
                 <img 
                   src={cert.pdf_url} 
                   alt={`${cert.recipient_name} Certificate`} 
-                  className="w-full rounded-2xl border border-border object-contain max-h-[80vh]" 
+                  className="w-full rounded-2xl border border-primary/10 dark:border-white/10 object-contain max-h-[80vh]" 
                 />
               )
             ) : (
@@ -286,6 +289,7 @@ async function VerificationWrapper({ cert, status, children }) {
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

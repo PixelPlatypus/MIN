@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   Plus, Trash as Trash2, PencilSimple as Edit3, FloppyDisk as Save, X, 
   CaretRight as ChevronRight, Calculator, Clock, 
@@ -72,7 +72,7 @@ export default function QuestionBank() {
     setLoadingQuestions(true)
     setQuestionsError(null)
     try {
-      const res = await fetch(`/api/practice/questions?set_id=${setId}`)
+      const res = await fetch(`/api/practice/questions?fresh&set_id=${setId}`)
       if (!res.ok) throw new Error('Failed to load questions')
       const data = await res.json()
       setQuestions(data)
@@ -231,7 +231,7 @@ export default function QuestionBank() {
 
         <AnimatePresence>
           {(isAddingSet || editingSet) && (
-            <motion.div 
+            <m.div 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -269,7 +269,7 @@ export default function QuestionBank() {
                 </button>
                 <button onClick={() => { setIsAddingSet(false); setEditingSet(null); }} className="flex-1 bg-bg-secondary dark:bg-white/5 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-auto-tertiary">Cancel</button>
               </div>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
 
@@ -467,7 +467,7 @@ export default function QuestionBank() {
             {/* Question Editor Overlay/Form */}
             <AnimatePresence>
               {(isAddingQuestion || editingQuestion) && (
-                <motion.div 
+                <m.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
@@ -659,14 +659,14 @@ export default function QuestionBank() {
                       </button>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
 
             {/* Questions List */}
             <div className="space-y-4">
               {questions.map((q, idx) => (
-                <motion.div 
+                <m.div 
                   key={q.id}
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -751,7 +751,7 @@ export default function QuestionBank() {
                       <Trash2 size={16} />
                     </button>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
 
               {questions.length === 0 && !isAddingQuestion && (

@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { Users, MagnifyingGlass as Search, PlusCircle, CircleNotch as Loader2, Shield, Trash as Trash2, PencilSimple as Edit2, CheckCircle as CheckCircle2, XCircle, UserCheck, LockSimple } from '@phosphor-icons/react'
 import { TableSkeleton } from '@/components/shared/Skeletons'
 import Link from 'next/link'
@@ -84,7 +84,7 @@ export default function AdminUsersPage() {
       {/* Feedback toast */}
       <AnimatePresence>
         {feedback && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -96,7 +96,7 @@ export default function AdminUsersPage() {
           >
             {feedback.type === 'success' ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
             {feedback.message}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 

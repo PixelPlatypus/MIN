@@ -1,16 +1,16 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient, getSiteSettings } from '@/lib/supabase/server'
 import TeamView from '@/components/public/TeamView'
 import TeamHero from '@/components/public/TeamHero'
 
 export default async function TeamPage() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   // Fetch settings and tenures in parallel
   const [
     { data: settings },
     { data: tenuresData }
   ] = await Promise.all([
-    supabase.from('site_settings').select('*').eq('id', 'main').single(),
+    getSiteSettings().then(data => ({ data })),
     supabase.rpc('get_team_tenures') // Assuming this exists or using fallback below
   ])
 
@@ -84,7 +84,7 @@ export default async function TeamPage() {
   }
 
   return (
-    <div className="pt-32 pb-24 space-y-24">
+    <div className="pb-24">
       <TeamHero settings={settings} />
       
       <TeamView 

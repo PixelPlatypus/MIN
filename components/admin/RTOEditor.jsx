@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   Plus, Trash as Trash2, DotsSixVertical as GripVertical, 
   MapPin, Flag, Medal as Award, Users, Globe, 
@@ -91,7 +91,7 @@ export default function RTOEditor({ settings, setSettings }) {
       <AnimatePresence mode="wait">
         {/* STAGES EDITOR */}
         {activeSubTab === 'stages' && (
-          <motion.div 
+          <m.div 
             key="stages"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -150,12 +150,12 @@ export default function RTOEditor({ settings, setSettings }) {
                   </div>
                 ))}
              </div>
-          </motion.div>
+          </m.div>
         )}
 
         {/* ROADMAP EDITOR */}
         {activeSubTab === 'roadmap' && (
-          <motion.div 
+          <m.div 
             key="roadmap"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -249,12 +249,12 @@ export default function RTOEditor({ settings, setSettings }) {
                   </div>
                 ))}
              </div>
-          </motion.div>
+          </m.div>
         )}
 
         {/* RESOURCES EDITOR */}
         {activeSubTab === 'resources' && (
-          <motion.div 
+          <m.div 
             key="resources"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -342,7 +342,7 @@ export default function RTOEditor({ settings, setSettings }) {
                   </div>
                 ))}
              </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

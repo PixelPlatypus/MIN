@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle, ShieldWarning as ShieldAlert, Key, User as UserIcon } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
@@ -97,17 +97,17 @@ export default function EditUserPage() {
 
       <form onSubmit={onSubmit} className="space-y-8">
         {error && (
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-5 rounded-3xl bg-coral/10 border border-coral/20 flex items-center gap-4 text-coral text-sm font-bold shadow-xl shadow-coral/5">
+          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-5 rounded-3xl bg-coral/10 border border-coral/20 flex items-center gap-4 text-coral text-sm font-bold shadow-xl shadow-coral/5">
             <AlertCircle size={20} />
             <p>{error}</p>
-          </motion.div>
+          </m.div>
         )}
         
         {success && (
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-5 rounded-3xl bg-green/10 border border-green/20 flex items-center gap-4 text-green text-sm font-bold shadow-xl shadow-green/5">
+          <m.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-5 rounded-3xl bg-green/10 border border-green/20 flex items-center gap-4 text-green text-sm font-bold shadow-xl shadow-green/5">
              <ShieldAlert size={20} />
              <p>Account synchronized successfully. Redirecting...</p>
-          </motion.div>
+          </m.div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

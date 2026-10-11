@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -7,7 +7,8 @@ export async function GET(request) {
   const category = searchParams.get('category')
   const slug = searchParams.get('slug')
 
-  const supabase = await createClient()
+  // Only published tasks are returned, identical for every visitor: anon client + edge cache
+  const supabase = createPublicClient()
   let query = supabase
     .from('tasks')
     .select('*')
@@ -23,7 +24,7 @@ export async function GET(request) {
       .single()
 
     if (error) return Response.json({ error: 'Task not found' }, { status: 404 })
-    return Response.json(data)
+    return Response.json(data, { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } })
   }
 
   if (category && category !== 'All') {
@@ -36,5 +37,5 @@ export async function GET(request) {
     return Response.json({ error: error.message }, { status: 500 })
   }
 
-  return Response.json(data || [])
+  return Response.json(data || [], { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } })
 }

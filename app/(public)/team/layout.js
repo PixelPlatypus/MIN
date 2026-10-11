@@ -1,9 +1,9 @@
 export const metadata = {
   title: 'Our Team',
-  description: 'Meet the brilliant and passionate educators, mathematicians, and volunteers driving MIN forward.',
+  description: 'Meet the teachers, mathematicians and volunteers who run MIN\'s programs.',
   openGraph: {
     title: 'Our Team | MIN',
-    description: 'Meet the brilliant and passionate educators, mathematicians, and volunteers driving MIN forward.',
+    description: 'Meet the teachers, mathematicians and volunteers who run MIN\'s programs.',
   }
 }
 

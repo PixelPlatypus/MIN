@@ -1,6 +1,9 @@
 // app/robots.js — production robots.txt with AEO rules
+import { SITE_URL } from '@/lib/site'
+
+// /_next/ must stay crawlable: Google renders pages with the JS/CSS served from there.
 export default function robots() {
-  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mathsinitiatives.org.np'
+  const BASE_URL = SITE_URL
 
   return {
     rules: [
@@ -13,7 +16,6 @@ export default function robots() {
           '/api/',
           '/login',
           '/auth/',
-          '/_next/',
           '/admin/users/',
           '/admin/audit/',
           '/admin/settings/',
@@ -65,7 +67,6 @@ export default function robots() {
           '/api/',
           '/login',
           '/auth/',
-          '/_next/',
         ],
       },
 
@@ -92,7 +93,6 @@ export default function robots() {
           '/api/',
           '/login',
           '/auth/',
-          '/_next/',
         ],
       },
     ],

@@ -1,9 +1,9 @@
 export const metadata = {
   title: 'Submit Content',
-  description: 'Contribute to the MIN community by submitting articles, math resources, and thought leadership pieces.',
+  description: 'Submit articles and maths resources to share with the MIN community.',
   openGraph: {
     title: 'Submit Content | MIN',
-    description: 'Contribute to the MIN community by submitting articles, math resources, and thought leadership pieces.',
+    description: 'Submit articles and maths resources to share with the MIN community.',
   }
 }
 

@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   ClockCounterClockwise as History, MagnifyingGlass as Search, CircleNotch as Loader2, Link as LinkIcon, 
   ShieldWarning as ShieldAlert, User, Pulse as Activity, Clock, Trash as Trash2, 
@@ -251,7 +251,7 @@ export default function AuditLogPage() {
         {/* Detail Panel */}
         <AnimatePresence>
            {selectedLog && (
-             <motion.aside 
+             <m.aside 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
@@ -344,7 +344,7 @@ export default function AuditLogPage() {
                       </div>
                    </div>
                 </div>
-             </motion.aside>
+             </m.aside>
            )}
         </AnimatePresence>
       </div>

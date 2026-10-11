@@ -1,7 +1,7 @@
 // components/admin/CertificateForm.jsx
 'use client'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle, Trophy, FileText, CheckCircle as CheckCircle2 } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

@@ -1,9 +1,9 @@
 export const metadata = {
   title: 'Events',
-  description: 'Explore our upcoming mathematics tournaments, workshops, and educational programs held across Nepal.',
+  description: 'Upcoming MIN workshops, competitions and other mathematics events across Nepal.',
   openGraph: {
     title: 'Events | MIN',
-    description: 'Explore our upcoming mathematics tournaments, workshops, and educational programs held across Nepal.',
+    description: 'Upcoming MIN workshops, competitions and other mathematics events across Nepal.',
   }
 }
 

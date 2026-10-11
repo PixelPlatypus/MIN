@@ -1,3 +1,5 @@
+import { SITE_URL } from '@/lib/site'
+
 export const metadata = {
   title: 'Contact & Inquiries',
   description: 'Get in touch with Mathematics Initiatives in Nepal (MIN) for academic collaborations, partnership proposals, Olympiad inquiries, or general questions.',
@@ -10,7 +12,7 @@ export const metadata = {
   alternates: { canonical: '/contact' },
 }
 
-const BASE_URL = 'https://mathsinitiatives.org.np'
+const BASE_URL = SITE_URL
 
 const contactJsonLd = {
   '@context': 'https://schema.org',
@@ -22,7 +24,7 @@ const contactJsonLd = {
     '@type': 'NGO',
     name: 'Mathematics Initiatives in Nepal',
     url: BASE_URL,
-    email: 'website@mathsinitiatives.org.np',
+    email: 'contact@mathsinitiatives.org.np',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Kathmandu',
@@ -31,7 +33,7 @@ const contactJsonLd = {
     contactPoint: [
       {
         '@type': 'ContactPoint',
-        email: 'website@mathsinitiatives.org.np',
+        email: 'contact@mathsinitiatives.org.np',
         contactType: 'general inquiry',
         availableLanguage: ['English', 'Nepali'],
       },

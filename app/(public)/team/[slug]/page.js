@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,9 +15,12 @@ const socialIcons = {
 
 import TeamMemberProfile from '@/components/public/TeamMemberProfile'
 
+// Empty list = render each slug on first visit, then cache (ISR).
+export async function generateStaticParams() { return [] }
+
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug)
   let query = supabase.from('team_members').select('*')
@@ -41,7 +44,7 @@ export async function generateMetadata({ params }) {
 
 export default async function TeamMemberPage({ params }) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug)
   let query = supabase.from('team_members').select('*')

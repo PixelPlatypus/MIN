@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Lock, CircleNotch as Loader2, WarningCircle as AlertCircle, CheckCircle } from '@phosphor-icons/react'
 
 export default function ResetPasswordPage() {
@@ -39,7 +39,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       className="glass rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
@@ -52,18 +52,18 @@ export default function ResetPasswordPage() {
       </div>
 
       {error && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-6 p-4 rounded-xl bg-coral/10 border border-coral/20 flex items-center gap-3 text-coral text-sm"
         >
           <AlertCircle size={18} />
           <p>{error}</p>
-        </motion.div>
+        </m.div>
       )}
 
       {success ? (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="p-6 rounded-xl bg-green/10 border border-green/20 flex flex-col items-center gap-4 text-green text-center"
@@ -71,7 +71,7 @@ export default function ResetPasswordPage() {
           <CheckCircle size={32} />
           <p className="font-bold">Password successfully updated!</p>
           <p className="text-sm">Redirecting to dashboard...</p>
-        </motion.div>
+        </m.div>
       ) : (
         <form onSubmit={handleUpdatePassword} className="space-y-6">
           <div className="space-y-2 text-left">
@@ -101,6 +101,6 @@ export default function ResetPasswordPage() {
           </button>
         </form>
       )}
-    </motion.div>
+    </m.div>
   )
 }

@@ -1,9 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { ArrowRight, BookOpen, GraduationCap, Monitor as Laptop, Megaphone, Lightbulb, Trophy, Users, Stack as Layers } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/Skeleton'
+import BrandSpotlightCard from '@/components/public/BrandSpotlightCard'
 
 export default function ProgramsGrid({ initialPrograms = [], settings: initialSettings = null }) {
   const [settings, setSettings] = useState(initialSettings)
@@ -33,15 +34,16 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
 
   const getIcon = (slug) => {
     const icons = {
-      'eta-campaigns': <Megaphone className="text-primary" />,
-      'jmoc': <Trophy className="text-cyan" />,
-      'm3-bootcamp': <Laptop className="text-purple" />,
-      'women-in-mathematics': <GraduationCap className="text-coral" />,
-      'road-to-olympiad': <BookOpen className="text-orange" />,
-      'digital-content': <Users className="text-green" />,
-      'minspire': <Lightbulb className="text-primary" />,
+      'eta-campaigns': <Megaphone size={30} weight="duotone" className="text-primary" />,
+      'jmoc': <Trophy size={30} weight="duotone" className="text-cyan" />,
+      'm3-bootcamp': <Laptop size={30} weight="duotone" className="text-purple" />,
+      'm³-bootcamp': <Laptop size={30} weight="duotone" className="text-purple" />, // slug in the DB uses a superscript 3
+      'women-in-mathematics': <GraduationCap size={30} weight="duotone" className="text-coral" />,
+      'road-to-olympiad': <BookOpen size={30} weight="duotone" className="text-orange" />,
+      'digital-content': <Users size={30} weight="duotone" className="text-green" />,
+      'minspire': <Lightbulb size={30} weight="duotone" className="text-primary" />,
     }
-    return icons[slug] || <Layers className="text-primary" />
+    return icons[slug] || <Layers size={30} weight="duotone" className="text-primary" />
   }
 
   const getColor = (slug) => {
@@ -49,6 +51,7 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
       'eta-campaigns': 'bg-primary/10',
       'jmoc': 'bg-cyan/10',
       'm3-bootcamp': 'bg-purple/10',
+      'm³-bootcamp': 'bg-purple/10',
       'women-in-mathematics': 'bg-coral/10',
       'road-to-olympiad': 'bg-orange/10',
       'digital-content': 'bg-green/10',
@@ -56,10 +59,20 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
     return colors[slug] || 'bg-primary/10'
   }
 
+  // Full class names so Tailwind compiles them
+  const getBar = (slug) => ({
+    'jmoc': 'bg-cyan',
+    'm3-bootcamp': 'bg-purple',
+    'm³-bootcamp': 'bg-purple',
+    'women-in-mathematics': 'bg-coral',
+    'road-to-olympiad': 'bg-orange',
+    'digital-content': 'bg-green',
+  })[slug] || 'bg-primary dark:bg-secondary'
+
   return (
-    <section className="container mx-auto px-6 py-24 relative overflow-hidden">
+    <section id="programs" className="container mx-auto px-6 py-24 relative overflow-hidden scroll-mt-24">
       <div className="text-center mb-16 space-y-4">
-        <span className="text-primary font-bold uppercase tracking-widest text-sm">Our Initiatives</span>
+        <span className="eyebrow">Our Initiatives</span>
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
           {loading ? <Skeleton className="w-64 h-12 mx-auto" /> : settings?.programs_title}
         </h2>
@@ -91,21 +104,21 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
           ))
         ) : (
           programs.map((program, i) => (
-            <motion.div
+            <m.div
               key={program.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               viewport={{ once: true }}
-              className="group"
+              className="group h-full"
             >
-              <div className="relative block glass bg-white/60 dark:bg-white/5 backdrop-blur-2xl rounded-[2.5rem] p-8 flex flex-col items-center text-center h-full border border-white/40 dark:border-white/10 hover:border-primary/30 transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 group overflow-hidden">
-                <div className={`absolute inset-0 bg-gradient-to-br ${getColor(program.slug)} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0`} />
+              <BrandSpotlightCard className="flex flex-col items-center text-center h-full">
+                <div className={`absolute top-0 inset-x-12 h-1.5 rounded-b-full ${getBar(program.slug)} transition-all duration-500 group-hover:inset-x-6`} />
                 <div className="relative z-10 flex flex-col items-center h-full w-full">
                   <div className={`w-16 h-16 ${getColor(program.slug)} rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm`}>
                     {getIcon(program.slug)}
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-text dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors">{program.name}</h3>
+                  <h3 className="text-xl font-bold mb-3 text-text-primary dark:text-white group-hover:text-primary-dark dark:duration-75 transition-colors">{program.name}</h3>
                   <p className="text-sm text-auto-secondary leading-relaxed mb-6 flex-grow">
                     {program.tagline}
                   </p>
@@ -119,8 +132,8 @@ export default function ProgramsGrid({ initialPrograms = [], settings: initialSe
                     </Link>
                   )}
                 </div>
-              </div>
-            </motion.div>
+              </BrandSpotlightCard>
+            </m.div>
           ))
         )}
       </div>

@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   Tray as Inbox, 
   MagnifyingGlass as Search, 
@@ -122,7 +122,7 @@ export default function AdminSubmissionsPage() {
       ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 gap-4">
           {filtered.map((sub) => (
-            <motion.div
+            <m.div
               key={sub.id}
               layout
               className={`glass rounded-3xl p-6 border transition-all cursor-pointer group flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ${
@@ -152,7 +152,7 @@ export default function AdminSubmissionsPage() {
                 </div>
               </div>
               <ChevronRight size={20} className="text-auto-tertiary group-hover:translate-x-1 transition-transform" />
-            </motion.div>
+            </m.div>
           ))}
         </div>
       ) : (
@@ -169,7 +169,7 @@ export default function AdminSubmissionsPage() {
       <AnimatePresence>
         {selectedSubmission && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12">
-            <motion.div 
+            <m.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -177,7 +177,7 @@ export default function AdminSubmissionsPage() {
               onClick={() => setSelectedSubmission(null)}
             />
             
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.95, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 40 }}
@@ -297,7 +297,7 @@ export default function AdminSubmissionsPage() {
                   )}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

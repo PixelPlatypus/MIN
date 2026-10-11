@@ -44,8 +44,8 @@ export default function ContentRenderer({ html, content }) {
           font-weight: 700 !important;
         }
         .prose blockquote {
-          border-left: 5px solid #008080 !important;
-          background: rgba(0, 128, 128, 0.05) !important;
+          border-left: 5px solid var(--color-primary) !important;
+          background: rgba(22, 85, 109, 0.05) !important;
           padding: 1.5rem 2rem !important;
           margin: 2.5rem 0 !important;
           font-style: italic !important;
@@ -54,6 +54,10 @@ export default function ContentRenderer({ html, content }) {
         .dark .prose h1,
         .dark .prose h2,
         .dark .prose h3 { color: white !important; }
+        .dark .prose blockquote {
+          border-left-color: var(--color-secondary) !important;
+          background: rgba(246, 240, 148, 0.06) !important;
+        }
         
         .prose ul { 
           list-style-type: disc !important; 
@@ -70,15 +74,27 @@ export default function ContentRenderer({ html, content }) {
           display: list-item !important;
         }
         .prose a {
-          color: #008080 !important;
+          color: var(--color-primary) !important;
           text-decoration: underline !important;
+          text-decoration-color: rgba(22, 85, 109, 0.35) !important;
+          text-underline-offset: 3px !important;
           font-weight: 800 !important;
+        }
+        .dark .prose a {
+          color: var(--color-secondary) !important;
+          text-decoration-color: rgba(246, 240, 148, 0.4) !important;
         }
         .prose hr {
           margin: 2rem 0 !important;
           border: none !important;
-          border-top: 2px solid rgba(0, 128, 128, 0.2) !important;
+          border-top: 2px solid rgba(22, 85, 109, 0.15) !important;
         }
+        .dark .prose hr { border-top-color: rgba(255, 255, 255, 0.12) !important; }
+        .prose pre {
+          border-radius: 1.25rem !important;
+          border: 1px solid rgba(22, 85, 109, 0.15) !important;
+        }
+        .prose img { border-radius: 1.5rem !important; }
       `}</style>
       <ReactMarkdown 
         remarkPlugins={[remarkGfm, remarkBreaks]} 

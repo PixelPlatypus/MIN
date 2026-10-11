@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { ArrowUp } from '@phosphor-icons/react'
 
 export default function ScrollToTop() {
@@ -15,7 +15,7 @@ export default function ScrollToTop() {
       }
     }
 
-    window.addEventListener('scroll', toggleVisibility)
+    window.addEventListener('scroll', toggleVisibility, { passive: true })
     return () => window.removeEventListener('scroll', toggleVisibility)
   }, [])
 
@@ -29,16 +29,16 @@ export default function ScrollToTop() {
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.button
+        <m.button
           initial={{ opacity: 0, scale: 0.5, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.5, y: 20 }}
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-[90] p-4 rounded-2xl bg-primary text-white shadow-2xl shadow-primary/30 hover:bg-primary-dark hover:-translate-y-1 transition-all active:scale-95 group"
+          className="btn-brand fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-[90] size-14 p-0 rounded-full group"
           aria-label="Scroll to top"
         >
-          <ArrowUp size={24} className="group-hover:animate-bounce" />
-        </motion.button>
+          <ArrowUp size={22} weight="bold" className="transition-transform duration-300 group-hover:-translate-y-0.5" />
+        </m.button>
       )}
     </AnimatePresence>
   )

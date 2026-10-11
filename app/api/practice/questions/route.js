@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createPublicClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
@@ -6,8 +6,10 @@ import { logAudit } from '@/lib/audit'
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const setId = searchParams.get('set_id')
-  
-  const supabase = await createClient()
+  // Questions are publicly readable; admin screens pass ?fresh to skip the 60s edge cache
+  const fresh = searchParams.has('fresh')
+
+  const supabase = fresh ? await createClient() : createPublicClient()
   let query = supabase.from('practice_questions').select('*').order('sort_order', { ascending: true })
   
   if (setId) {
@@ -17,7 +19,7 @@ export async function GET(request) {
   const { data, error } = await query
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  return NextResponse.json(data, fresh ? undefined : { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } })
 }
 
 export async function POST(request) {

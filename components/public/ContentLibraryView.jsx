@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
+import LayoutMotion from '@/components/shared/LayoutMotion'
 import ContentCard from '@/components/public/ContentCard'
 import { MagnifyingGlass as Search } from '@phosphor-icons/react'
 import { ContentGridSkeleton } from '@/components/shared/Skeletons'
@@ -51,9 +52,9 @@ export default function ContentLibraryView({ initialContent, initialType = 'ALL'
 
   return (
     <section className="container mx-auto px-6">
-      <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto mb-16">
-        <div className="flex-1 glass px-6 py-3 rounded-2xl flex items-center gap-3 border border-primary/10 group-focus-within:border-primary transition-all shadow-sm">
-          <Search size={20} className="text-auto-tertiary" />
+      <div className="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto mb-10">
+        <div className="flex-1 card-brand rounded-2xl px-6 py-4 flex items-center gap-3 transition-all focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 dark:focus-within:border-secondary/60 dark:focus-within:ring-secondary/10">
+          <Search size={20} className="text-primary/60 dark:text-secondary/70 shrink-0" />
           <input 
             type="text" 
             placeholder="Search by title, excerpt, or tags..." 
@@ -64,15 +65,15 @@ export default function ContentLibraryView({ initialContent, initialType = 'ALL'
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-14">
         {contentTypes.map((type) => (
           <button
             key={type.value}
             onClick={() => setActiveType(type.value)}
-            className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all border ${
               activeType === type.value 
-                ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
-                : 'glass border-transparent hover:border-primary/20 text-auto-secondary hover:text-primary-dark dark:duration-75'
+                ? 'pill-brand-active' 
+                : 'pill-brand'
             }`}
           >
             {type.label}
@@ -83,18 +84,21 @@ export default function ContentLibraryView({ initialContent, initialType = 'ALL'
       {loading ? (
         <ContentGridSkeleton count={6} />
       ) : filteredContent.length > 0 ? (
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredContent.map((item, i) => (
-              <ContentCard key={item.id} item={item} index={i} fallbackImage={fallbackImage} />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        <LayoutMotion>
+          <m.div 
+            layout
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {/* initial={false}: first render paints from the server HTML; animations only on filter changes */}
+            <AnimatePresence mode="popLayout" initial={false}>
+              {filteredContent.map((item, i) => (
+                <ContentCard key={item.id} item={item} index={i} fallbackImage={fallbackImage} />
+              ))}
+            </AnimatePresence>
+          </m.div>
+        </LayoutMotion>
       ) : (
-        <div className="text-center py-24 glass rounded-[3rem]">
+        <div className="text-center py-24 card-brand rounded-[2.5rem]">
           <p className="text-xl text-auto-tertiary">No content found matching your criteria.</p>
         </div>
       )}

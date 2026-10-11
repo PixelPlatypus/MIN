@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { Bell, X, ArrowSquareOut as ExternalLink, ArrowRight } from '@phosphor-icons/react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -96,7 +96,7 @@ export default function NoticePopup() {
         <div className="fixed bottom-6 left-6 right-6 z-[100] sm:left-auto sm:right-8 sm:bottom-8 sm:w-[400px]">
           <>
             {/* Backdrop Blur — localized fallback */}
-            <motion.div 
+            <m.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -104,7 +104,7 @@ export default function NoticePopup() {
               className="fixed inset-0 pointer-events-auto -z-10"
             />
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 100, scale: 0.9, filter: 'blur(10px)' }}
               animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               exit={{ opacity: 0, y: 20, scale: 0.9, filter: 'blur(10px)' }}
@@ -182,7 +182,7 @@ export default function NoticePopup() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </>
         </div>
       )}

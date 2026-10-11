@@ -1,90 +1,53 @@
+import { SITE_URL, SITE_NAME, SITE_SUMMARY } from '@/lib/site'
+
 export const metadata = {
   title: 'About MIN',
-  description: 'Learn about Mathematics Initiatives in Nepal (MIN) — our mission to make mathematics accessible, engaging, and inspiring for every student in Nepal. HundrED Top 100 Global Innovations 2025.',
-  keywords: ['About MIN Nepal', 'Mathematics Initiatives Nepal Mission', 'MIN History', 'Math Education Nepal', 'HundrED 2025 Nepal'],
+  description: 'Mathematics Initiatives in Nepal (MIN) is a nonprofit making mathematics accessible and fun for every student in Nepal, and teaching it as a tool for life.',
+  keywords: ['About MIN Nepal', 'Mathematics Initiatives in Nepal', 'Accessible mathematics Nepal', 'Maths education Nepal', 'Mathmagicians', 'HundrED 2025 Nepal'],
   openGraph: {
     title: 'About MIN | Mathematics Initiatives in Nepal',
-    description: 'Learn about our mission to make mathematics accessible, engaging, and inspiring for every student in Nepal.',
+    url: '/about',
+    description: 'Making mathematics accessible and fun for every student in Nepal, and teaching it as a tool for life.',
     images: [{ url: '/images/og-default.png', width: 1200, height: 630, alt: 'About MIN — Mathematics Initiatives in Nepal' }],
   },
   alternates: { canonical: '/about' },
 }
 
-const BASE_URL = 'https://mathsinitiatives.org.np'
+// The NGO entity is defined once in the root layout; this page adds AboutPage + FAQ (used by AI answers)
+const faq = [
+  ['What is Mathematics Initiatives in Nepal (MIN)?',
+   'Mathematics Initiatives in Nepal (MIN) is a nonprofit founded in 2020 in Kathmandu. It works to make mathematics accessible and fun for every student in Nepal, and teaches it as a practical tool for everyday life.'],
+  ['What does MIN do?',
+   'MIN helps students see mathematics as a tool they can use anywhere, not only as a school subject. Alongside that core work, MIN runs Olympiad training, workshops and other events for students across Nepal.'],
+  ['Is MIN only for Olympiad students?',
+   'No. MIN is for every student. Its main focus is general mathematics and making it accessible to all. Olympiad training is one of several programs for students who want to go further.'],
+  ['What is a mathmagician?',
+   'Mathmagician is the word MIN uses for a student who is confident with mathematics and uses it as a tool wherever they go. MIN wants every student in Nepal to become one.'],
+  ['When was MIN founded?',
+   'Mathematics Initiatives in Nepal (MIN) was founded in 2020 and is based in Kathmandu, Nepal.'],
+  ['What recognition has MIN received?',
+   'In 2025, HundrED named MIN one of its Top 100 global education innovations.'],
+  ['How can I contact MIN?',
+   `Email contact@mathsinitiatives.org.np or use the contact form at ${SITE_URL}/contact.`],
+]
 
 const jsonLd = [
   {
     '@context': 'https://schema.org',
-    '@type': 'NGO',
-    name: 'Mathematics Initiatives in Nepal',
-    alternateName: 'MIN',
-    url: BASE_URL,
-    logo: `${BASE_URL}/images/logo.png`,
-    foundingDate: '2020',
-    description: 'A nonprofit making mathematics accessible, engaging, and inspiring for all students in Nepal.',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Kathmandu',
-      addressCountry: 'NP',
-    },
-    contactPoint: {
-      '@type': 'ContactPoint',
-      email: 'website@mathsinitiatives.org.np',
-      contactType: 'customer support',
-    },
-    award: 'HundrED Top 100 Global Education Innovations 2025',
-    knowsAbout: ['Mathematics Education', 'Math Olympiad', 'Research Training', 'STEM Nepal'],
-    sameAs: [
-      'https://www.facebook.com/mathsinitiatives',
-      'https://www.instagram.com/minnepal',
-      'https://www.youtube.com/@mathsinitiatives',
-    ],
+    '@type': 'AboutPage',
+    name: `About ${SITE_NAME}`,
+    url: `${SITE_URL}/about`,
+    description: SITE_SUMMARY,
+    about: { '@type': 'NGO', name: SITE_NAME, url: SITE_URL },
   },
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'What is Mathematics Initiatives in Nepal (MIN)?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Mathematics Initiatives in Nepal (MIN) is a non-profit organization founded in 2020 that works to make mathematics accessible, engaging, and inspiring for every student in Nepal. MIN was recognized as a HundrED Top 100 Global Education Innovation in 2025.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'When was MIN founded?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Mathematics Initiatives in Nepal (MIN) was founded in 2020 and is headquartered in Kathmandu, Nepal.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What awards has MIN received?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'MIN was recognized as a Top 100 Global Education Innovation by HundrED in 2025, placing it among the world\'s most impactful educational initiatives.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What is the mission of MIN?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'MIN\'s mission is to make mathematics accessible, engaging, and inspiring for every student in Nepal, regardless of socioeconomic background or geographic location.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'How can I contact MIN?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'You can contact Mathematics Initiatives in Nepal by emailing website@mathsinitiatives.org.np or using the contact form at mathsinitiatives.org.np/contact.',
-        },
-      },
-    ],
+    mainEntity: faq.map(([q, a]) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
   },
 ]
 

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   User, Key, ShieldCheck, Envelope as Mail, 
   Smartphone, FloppyDisk as Save, CircleNotch as Loader2, WarningCircle as AlertCircle, 
@@ -133,7 +133,7 @@ export default function AccountSettingsClient({ initialProfile }) {
           <form onSubmit={handleUpdateProfile} className="space-y-8">
             <AnimatePresence mode="wait">
               {error && (
-                <motion.div 
+                <m.div 
                   initial={{ opacity: 0, height: 0 }} 
                   animate={{ opacity: 1, height: 'auto' }} 
                   exit={{ opacity: 0, height: 0 }}
@@ -141,10 +141,10 @@ export default function AccountSettingsClient({ initialProfile }) {
                 >
                   <AlertCircle size={20} />
                   {error}
-                </motion.div>
+                </m.div>
               )}
               {success && (
-                <motion.div 
+                <m.div 
                   initial={{ opacity: 0, height: 0 }} 
                   animate={{ opacity: 1, height: 'auto' }} 
                   exit={{ opacity: 0, height: 0 }}
@@ -152,7 +152,7 @@ export default function AccountSettingsClient({ initialProfile }) {
                 >
                   <CheckCircle2 size={20} />
                   {success}
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
 

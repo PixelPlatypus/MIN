@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import {
   ClipboardText,
   Clock,
@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Compass
 } from '@phosphor-icons/react'
+import PageHero from '@/components/public/PageHero'
 
 const CATEGORIES = [
   'All',
@@ -55,26 +56,20 @@ export default function PublicTasksPage() {
   }, [tasks, selectedCategory, search])
 
   return (
-    <div className="min-h-screen bg-bg-dynamic text-dynamic pt-28 pb-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-12">
-        {/* Hero Section */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-black uppercase tracking-widest">
-            <Sparkle size={14} weight="fill" />
-            MIN Selection Pool
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-dynamic">
-            Collaborative Task Bank
-          </h1>
-          <p className="text-base text-auto-secondary leading-relaxed">
-            Welcome to the practical problem-solving round! Choose <strong>one project brief</strong> that best aligns with your strengths and passion. Quality, depth of thought, and authenticity are what make submissions shine.
-          </p>
-        </div>
+    <div className="min-h-screen text-dynamic pb-24">
+      {/* Hero Section */}
+      <PageHero
+        eyebrow="MIN Selection Pool"
+        icon={<Sparkle size={14} weight="fill" />}
+        title="Collaborative Task Bank"
+        description={<>Welcome to the practical problem-solving round! Choose <strong className="text-dynamic">one project brief</strong> that best aligns with your strengths and passion. Quality, depth of thought, and authenticity are what make submissions shine.</>}
+      />
 
+      <div className="container mx-auto px-6 space-y-12">
         {/* Filters */}
-        <div className="glass p-5 rounded-[2.5rem] border border-border dark:border-white/10 space-y-4 max-w-4xl mx-auto shadow-sm">
-          <div className="flex items-center gap-2 bg-bg-secondary dark:bg-white/5 px-4 py-3 rounded-2xl border border-border/50">
-            <MagnifyingGlass size={18} className="text-auto-tertiary" />
+        <div className="card-brand p-4 sm:p-5 space-y-4 max-w-4xl mx-auto">
+          <div className="flex items-center gap-2 bg-white dark:bg-white/5 px-4 py-3 rounded-2xl border border-primary/15 dark:border-white/15 transition-all focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 dark:focus-within:border-secondary/60 dark:focus-within:ring-secondary/10">
+            <MagnifyingGlass size={18} className="text-primary/60 dark:text-secondary/70 shrink-0" />
             <input
               type="text"
               placeholder="Search by topic, track, or project keyword..."
@@ -89,10 +84,10 @@ export default function PublicTasksPage() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`shrink-0 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all border ${
+                className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold tracking-wide transition-all border ${
                   selectedCategory === cat
-                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-[1.02]'
-                    : 'bg-bg-secondary dark:bg-white/5 text-auto-tertiary border-border/50 hover:border-primary/40'
+                    ? 'pill-brand-active'
+                    : 'pill-brand'
                 }`}
               >
                 {cat}
@@ -105,7 +100,7 @@ export default function PublicTasksPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {loading ? (
             [1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="glass p-8 rounded-[2.5rem] border border-border animate-pulse space-y-4">
+              <div key={i} className="card-brand p-8 animate-pulse space-y-4">
                 <div className="h-4 bg-black/10 dark:bg-white/10 rounded w-1/3" />
                 <div className="h-6 bg-black/10 dark:bg-white/10 rounded w-3/4" />
                 <div className="h-20 bg-black/5 dark:bg-white/5 rounded w-full" />
@@ -115,12 +110,12 @@ export default function PublicTasksPage() {
             filteredTasks.map(task => (
               <div
                 key={task.id}
-                className="glass p-8 rounded-[2.5rem] border border-border dark:border-white/10 flex flex-col justify-between space-y-6 hover:border-primary/40 transition-all duration-300 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 group"
+                className="card-brand card-brand-hover p-8 flex flex-col justify-between space-y-6 group"
               >
                 <div className="space-y-4">
                   {/* Category & Badge */}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="px-3 py-1 rounded-xl bg-primary/10 text-primary border border-primary/20 text-[10px] font-black uppercase tracking-wider">
+                    <span className="px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/15 dark:bg-secondary/10 dark:text-secondary dark:border-secondary/25 text-[11px] font-bold tracking-wide">
                       {task.category}
                     </span>
 
@@ -130,25 +125,25 @@ export default function PublicTasksPage() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl font-black text-dynamic tracking-tight group-hover:text-primary transition-colors line-clamp-2">
+                  <h3 className="text-xl font-bold text-dynamic tracking-tight group-hover:text-primary dark:group-hover:text-secondary transition-colors line-clamp-2">
                     {task.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xs text-auto-secondary leading-relaxed line-clamp-4 font-medium">
+                  <p className="text-sm text-auto-secondary leading-relaxed line-clamp-4">
                     {task.description || (task.task_type === 'link' ? 'External Google Docs task specification. Click below to view the full prompt and guidelines.' : 'Practical project brief.')}
                   </p>
 
                   {/* Prominent Mentioned Deadline Badge */}
-                  <div className="p-4 bg-[#E8F4F8] dark:bg-white/5 rounded-2xl border border-[#D4EBF2] dark:border-white/10 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                  <div className="p-4 panel-brand-tint flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 dark:bg-secondary/15 flex items-center justify-center text-primary dark:text-secondary shrink-0">
                       <Clock size={18} weight="bold" />
                     </div>
                     <div>
-                      <span className="text-[9px] font-black uppercase tracking-widest text-auto-tertiary block">
+                      <span className="text-[11px] font-bold tracking-wide text-auto-tertiary block">
                         Submission Deadline
                       </span>
-                      <span className="text-xs font-black text-[#0D3D52] dark:text-white">
+                      <span className="text-xs font-bold text-primary-dark dark:text-white">
                         {task.deadline_type === 'fixed' && task.deadline_date
                           ? new Date(task.deadline_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
                           : `${task.duration_days || 7} Days from when assigned to you`}
@@ -158,13 +153,13 @@ export default function PublicTasksPage() {
                 </div>
 
                 {/* Call to Action */}
-                <div className="pt-4 border-t border-border/50 flex items-center justify-between">
+                <div className="pt-4 border-t border-primary/10 dark:border-white/10 flex items-center justify-between">
                   {task.task_type === 'link' && task.external_url ? (
                     <a
                       href={task.external_url}
                       target="_blank"
                       rel="noreferrer"
-                      className="w-full bg-primary hover:bg-primary-dark text-white py-3.5 px-5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 group-hover:scale-[1.02]"
+                      className="btn-brand w-full py-3.5 px-5 text-sm"
                     >
                       <ArrowSquareOut size={16} weight="bold" />
                       Open Google Doc Brief
@@ -172,7 +167,7 @@ export default function PublicTasksPage() {
                   ) : (
                     <Link
                       href={`/tasks/${task.slug}`}
-                      className="w-full bg-primary hover:bg-primary-dark text-white py-3.5 px-5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 group-hover:scale-[1.02]"
+                      className="btn-brand w-full py-3.5 px-5 text-sm"
                     >
                       <span>View Full Task Details</span>
                       <ArrowRight size={16} weight="bold" />
@@ -182,8 +177,8 @@ export default function PublicTasksPage() {
               </div>
             ))
           ) : (
-            <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-dashed border-border space-y-3">
-              <ClipboardText size={48} className="mx-auto text-primary opacity-30" />
+            <div className="col-span-full py-20 px-6 text-center card-brand rounded-[2.5rem] border-dashed space-y-3">
+              <ClipboardText size={48} className="mx-auto text-primary dark:text-secondary opacity-40" />
               <h3 className="text-lg font-bold">No active task briefs in this category</h3>
               <p className="text-xs text-auto-tertiary">Try selecting "All" or search for another mathematical topic.</p>
             </div>

@@ -1,9 +1,9 @@
 export const metadata = {
   title: 'Articles',
-  description: 'Read the latest thought leadership, educational resources, and articles published by the MIN community.',
+  description: 'Read articles and learning resources published by the MIN community.',
   openGraph: {
     title: 'Articles and Content | MIN',
-    description: 'Read the latest thought leadership, educational resources, and articles published by the MIN community.',
+    description: 'Read articles and learning resources published by the MIN community.',
   }
 }
 

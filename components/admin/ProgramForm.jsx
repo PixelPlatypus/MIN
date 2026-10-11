@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { FloppyDisk as Save, ArrowLeft, CircleNotch as Loader2, WarningCircle as AlertCircle, Stack as Layers, Globe, ListNumbers as ListOrdered, CheckCircle as CheckCircle2, Gear as Settings } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -191,7 +191,7 @@ export default function ProgramForm({ initialData }) {
 
         {/* Global Error Message */}
         {error && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="p-6 rounded-[2rem] bg-coral/10 border border-coral/20 flex items-center gap-4 text-coral"
@@ -203,7 +203,7 @@ export default function ProgramForm({ initialData }) {
                 <p className="font-black text-sm uppercase tracking-widest">Process Error</p>
                 <p className="text-sm opacity-80">{error}</p>
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         {/* Action Bar */}

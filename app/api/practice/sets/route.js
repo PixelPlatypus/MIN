@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createPublicClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { withRole } from '@/lib/rbac'
 import { logAudit } from '@/lib/audit'
@@ -7,7 +7,8 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const showAll = searchParams.get('show_all') === 'true'
   
-  const supabase = await createClient()
+  // Published sets are the same for everyone: anon client + 60s edge cache. show_all is the admin view.
+  const supabase = showAll ? await createClient() : createPublicClient()
   let query = supabase
     .from('practice_sets')
     .select('*, practice_questions(count)')
@@ -20,7 +21,7 @@ export async function GET(request) {
   const { data, error } = await query
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  return NextResponse.json(data, showAll ? undefined : { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } })
 }
 
 export async function POST(request) {

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { 
   ArrowLeft, 
   UploadSimple as Upload, 
@@ -135,7 +135,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
           <div className="glass rounded-[3rem] overflow-hidden border border-border dark:border-border-dark aspect-video relative group">
             <AnimatePresence mode="wait">
               {previewUrl ? (
-                <motion.div 
+                <m.div 
                   key="preview"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -155,9 +155,9 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
                       <X size={24} />
                     </button>
                   </div>
-                </motion.div>
+                </m.div>
               ) : (
-                <motion.div 
+                <m.div 
                   key="empty"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -177,7 +177,7 @@ export default function GalleryForm({ initialData = null, isEditing = false }) {
                     label="Choose File"
                     className="w-full max-w-xs"
                   />
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>
